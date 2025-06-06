@@ -58,7 +58,7 @@ const SuperAdminNavigation = () => {
                 <Link
                     className={`block rounded px-3 py-2 transition-all duration-300 ${
                         isRouteActive("super-admin.dashboard")
-                            ? "bg-[#ECF6EE] font-medium"
+                            ? "bg-teal-400 font-medium text-white"
                             : "bg-transparent hover:bg-neutral-300"
                     }`}
                     href={route("super-admin.dashboard")}

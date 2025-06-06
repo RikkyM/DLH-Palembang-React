@@ -1,11 +1,11 @@
-import { useSidebar } from "@/Context/SidebarContext";
 import { Menu } from "lucide-react";
+import { useProvider } from "../Context/GlobalContext";
 
 const Header = ({ title }) => {
-    const { toggleSidebar } = useSidebar();
+    const { toggleSidebar } = useProvider();
 
     return (
-        <header className="h-20 p-2">
+        <header className="h-20 p-2 sticky md:relative top-0 z-0">
             <nav className="w-full h-full rounded flex items-center justify-between px-4 bg-white shadow-sm md:bg-transparent md:shadow-none">
                 <h3 className="font-semibold text-lg">{title}</h3>
                 <button

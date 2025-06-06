@@ -25,6 +25,8 @@ Route::prefix('sirep')->group(function () {
         Route::prefix('settings')->group(function () {
             Route::controller(UptdController::class)->group(function () {
                 Route::get('/uptd', 'index')->name('uptd');
+                Route::post('/uptd', 'store')->name('uptd.store');
+                Route::put('/uptd/{uptd}', 'update')->name('uptd.update');
             });
         });
     });

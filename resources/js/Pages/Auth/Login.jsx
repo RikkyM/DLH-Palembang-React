@@ -2,11 +2,11 @@ import AuthLayout from "@/Layouts/AuthLayout";
 import { useForm, usePage } from "@inertiajs/react";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSidebar } from "../../Context/SidebarContext";
+import { useProvider } from "../../Context/GlobalContext";
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const { setIsOpen } = useSidebar();
+    const { setIsOpen } = useProvider();
     const { props } = usePage();
 
     const user = props[0]?.auth?.user;

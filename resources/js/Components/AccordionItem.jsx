@@ -1,10 +1,30 @@
 import { useState, useEffect } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { ChevronDown } from "lucide-react";
 
 const AccordionItem = ({ title, items, isRouteActive }) => {
+    const { url } = usePage();
+
+    // Custom function to check if route is active, ignoring query parameters
+    const isRouteActiveIgnoreQuery = (routeName) => {
+        if (!routeName) return false;
+
+        try {
+            const routeUrl = route(routeName);
+            const currentPathname = new URL(url, window.location.origin)
+                .pathname;
+            const routePathname = new URL(routeUrl, window.location.origin)
+                .pathname;
+
+            return currentPathname === routePathname;
+        } catch (error) {
+            // Fallback to original function if route() fails
+            return isRouteActive ? isRouteActive(routeName) : false;
+        }
+    };
+
     const hasActiveItem = items.some(
-        (item) => item.route && isRouteActive(item.route)
+        (item) => item.route && isRouteActiveIgnoreQuery(item.route)
     );
 
     const [isOpen, setIsOpen] = useState(hasActiveItem);
@@ -51,8 +71,9 @@ const AccordionItem = ({ title, items, isRouteActive }) => {
                                 <Link
                                     href={item.route ? route(item.route) : "#"}
                                     className={`inline-block w-full p-2 rounded transition-all duration-300 ${
-                                        item.route && isRouteActive(item.route)
-                                            ? "bg-[#ECF6EE]"
+                                        item.route &&
+                                        isRouteActiveIgnoreQuery(item.route)
+                                            ? "bg-teal-400 font-medium text-white"
                                             : "hover:bg-neutral-100"
                                     }`}
                                 >

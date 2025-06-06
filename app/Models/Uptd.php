@@ -9,7 +9,8 @@ class Uptd extends Model
     protected $table = 'uptd';
 
     protected $fillable = [
-        'nama',
-        'alamat'
+        'namaUptd',
+        'alamat',
+        'kodeKecamatan'
     ];
 }
