@@ -18,7 +18,7 @@ const SuperAdminNavigation = () => {
         },
         {
             label: "Data Wajib Retribusi",
-            route: "super-admin.wajib-retribusi",
+            // route: "super-admin.laporan.data-wajib-retribusi",
         },
         {
             label: "Penerimaan Retribusi",
@@ -33,11 +33,11 @@ const SuperAdminNavigation = () => {
     const settingItems = [
         {
             label: "Uptd",
-            route: "super-admin.uptd",
+            // route: "super-admin.uptd",
         },
         {
             label: "User / Pegawai",
-            route: "super-admin.user",
+            // route: "super-admin.user",
         },
         {
             label: "Kecamatan",
@@ -62,7 +62,7 @@ const SuperAdminNavigation = () => {
                             ? "bg-teal-400 font-medium text-white"
                             : "bg-transparent hover:bg-neutral-300"
                     }`}
-                    href={route("super-admin.dashboard")}
+                    href={route("pendaftar.dashboard")}
                 >
                     Dashboard
                 </Link>

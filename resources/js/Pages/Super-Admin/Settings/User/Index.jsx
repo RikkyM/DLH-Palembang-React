@@ -1,34 +1,26 @@
-import {
-    PencilLine,
-    Search,
-    Trash,
-    ChevronLeft,
-    ChevronRight,
-} from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Users } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useState } from "react";
-import { router } from "@inertiajs/react";
-import DialogDelete from "./DialogDelete";
 import { useProvider } from "@/Context/GlobalContext";
-import DialogEdit from "./DialogEdit";
+import { router } from "@inertiajs/react";
 import DialogCreate from "./DialogCreate";
 
-const Index = ({ datas, filters }) => {
+const Index = ({ users, uptd, filters }) => {
     const { modalState, openModal, closeModal } = useProvider();
     const [search, setSearch] = useState(filters.search || "");
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
-            const params = {};
+            const params = new URLSearchParams();
 
             if (search && search.trim() !== "") {
-                params.search = search;
+                params.append("search", search.trim());
             }
 
-            router.get(route("super-admin.uptd"), params, {
+            router.get(route("super-admin.user"), params, {
                 preserveState: true,
                 replace: true,
-                only: ["datas"],
+                only: ["users"],
             });
         }, 300);
 
@@ -40,17 +32,16 @@ const Index = ({ datas, filters }) => {
             router.visit(url, {
                 preserveState: true,
                 replace: true,
-                only: ["datas"],
+                only: ["users"],
             });
         }
     };
 
     const renderSmartPagination = () => {
-        if (!datas?.links) return null;
+        if (!users?.links) return null;
 
-        // const links = datas.links;
-        const currentPage = datas.current_page;
-        const lastPage = datas.last_page;
+        const currentPage = users.current_page;
+        const lastPage = users.last_page;
 
         let pagesToShow = [];
 
@@ -84,7 +75,7 @@ const Index = ({ datas, filters }) => {
             <div className="flex items-center gap-1">
                 <button
                     onClick={() =>
-                        currentPage > 1 && handlePageChange(datas.prev_page_url)
+                        currentPage > 1 && handlePageChange(users.prev_page_url)
                     }
                     className={`px-2 py-2 border border-gray-200 rounded-lg bg-white transition-colors duration-200 ${
                         currentPage <= 1
@@ -122,7 +113,7 @@ const Index = ({ datas, filters }) => {
                                 router.visit(targetUrl, {
                                     preserveState: true,
                                     replace: true,
-                                    only: ["datas"],
+                                    only: ["users"],
                                 });
                             }}
                             className={`px-3 py-2 text-sm rounded-lg border transition-colors duration-200 ${
@@ -139,7 +130,7 @@ const Index = ({ datas, filters }) => {
                 <button
                     onClick={() =>
                         currentPage < lastPage &&
-                        handlePageChange(datas.next_page_url)
+                        handlePageChange(users.next_page_url)
                     }
                     className={`px-2 py-2 border border-gray-200 rounded-lg bg-white transition-colors duration-200 ${
                         currentPage >= lastPage
@@ -155,7 +146,7 @@ const Index = ({ datas, filters }) => {
     };
 
     return (
-        <Layout title="UPTD">
+        <Layout title="User">
             <section className="p-3">
                 <div className="flex flex-col gap-3 md:gap-0 md:flex-row items-center justify-between w-full mb-3 bg-white p-2 rounded">
                     <label
@@ -166,7 +157,7 @@ const Index = ({ datas, filters }) => {
                         <input
                             type="search"
                             id="search"
-                            placeholder="Cari nama uptd..."
+                            placeholder="Cari nama user..."
                             className="outline-none flex-1"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -178,25 +169,49 @@ const Index = ({ datas, filters }) => {
                         }}
                         className="flex justify-center items-center gap-1.5 text-sm bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-2 text-white w-full md:w-auto rounded outline-none"
                     >
-                        <span>Tambah Uptd</span>
+                        <span>Tambah User</span>
                     </button>
                 </div>
 
                 <div className="overflow-x-auto bg-white rounded">
                     <table className="p-3 min-w-full divide-y divide-gray-300 whitespace-nowrap">
                         <thead>
-                            <tr className="*:font-medium *:text-sm *:p-2">
+                            <tr className="*:font-medium *:text-sm *:p-2 *:uppercase">
                                 <th className="text-center">No</th>
-                                <th className="text-left">Nama Uptd</th>
-                                <th className="text-left">Alamat</th>
-                                <th className="text-right">Aksi</th>
+                                <th className="text-left">Nama Lengkap</th>
+                                <th className="text-left">Jabatan</th>
+                                <th className="text-left">Kelamin</th>
+                                <th className="text-left">Lokasi</th>
+                                <th className="text-left">NIP</th>
+                                <th className="text-left">Pangkat</th>
+                                <th className="text-left">Role</th>
+                                <th className="text-right">History Login</th>
                             </tr>
                         </thead>
                         <tbody className="text-xs md:text-sm divide-y divide-neutral-300">
-                            {datas?.data?.length > 0 ? (
-                                datas.data.map((data, index) => (
+                            {!users?.data || users.data.length === 0 ? (
+                                <tr>
+                                    <td
+                                        colSpan="9"
+                                        className="p-8 text-center text-gray-500"
+                                    >
+                                        <div className="flex flex-col items-center gap-2">
+                                            <Users size={35} />
+                                            <p className="text-lg font-medium">
+                                                Tidak ada data user
+                                            </p>
+                                            <p className="text-sm">
+                                                {search
+                                                    ? `Tidak ditemukan hasil untuk "${search}"`
+                                                    : "Belum ada user yang terdaftar"}
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : (
+                                users.data.map((user, index) => (
                                     <tr
-                                        key={data.id || index}
+                                        key={user.id || index}
                                         className={`*:p-2 ${
                                             index % 2 === 0
                                                 ? "bg-[#F7FBFE]"
@@ -204,67 +219,55 @@ const Index = ({ datas, filters }) => {
                                         }`}
                                     >
                                         <td className="text-center">
-                                            {(datas.current_page - 1) *
-                                                datas.per_page +
-                                                index +
-                                                1}
+                                            {users.from + index}
                                         </td>
-                                        <td>{data.namaUptd}</td>
-                                        <td>{data.alamat}</td>
-                                        <td className="space-x-1 md:space-x-2 text-right">
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    openModal("edit", data);
-                                                }}
-                                                className="rounded-full outline-none p-1 hover:bg-neutral-300 transition-all duration-300"
-                                            >
-                                                <PencilLine size={20} />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    openModal("delete", data);
-                                                }}
-                                                className="rounded-full outline-none p-1 hover:bg-neutral-300 transition-all duration-300"
-                                            >
-                                                <Trash size={20} />
-                                            </button>
+                                        <td className="capitalize">{user.namaLengkap}</td>
+                                        <td>{user.jabatan || "-"}</td>
+                                        <td>{user.kelamin || "-"}</td>
+                                        <td>{user.lokasi || "-"}</td>
+                                        <td>{user.nip || "-"}</td>
+                                        <td>{user.pangkat || "-"}</td>
+                                        <td>{user.role || "-"}</td>
+                                        <td className="text-right">
+                                            {user.historyLogin
+                                                ? new Date(
+                                                      user.historyLogin
+                                                  ).toLocaleDateString(
+                                                      "id-ID",
+                                                      {
+                                                          weekday: "short",
+                                                          month: "short",
+                                                          day: "numeric",
+                                                          year: "numeric",
+                                                          hour: "numeric",
+                                                          minute: "2-digit",
+                                                          hour12: true,
+                                                      }
+                                                  )
+                                                : "-"}
                                         </td>
                                     </tr>
                                 ))
-                            ) : (
-                                <tr>
-                                    <td
-                                        colSpan="4"
-                                        className="text-center py-8 text-center text-gray-500"
-                                    >
-                                        {search
-                                            ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
-                                            : "Belum ada data UPTD"}
-                                    </td>
-                                </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
 
-                {/* Pagination */}
-                {datas?.data?.length > 0 && (
+                {users?.data?.length > 0 && (
                     <div className="px-4 py-3 border-t border-gray-200 bg-white">
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
                             <div className="text-sm text-gray-700 hidden md:block">
                                 Menampilkan{" "}
                                 <span className="font-medium">
-                                    {datas.from || 0}
+                                    {users.from || 0}
                                 </span>{" "}
                                 sampai{" "}
                                 <span className="font-medium">
-                                    {datas.to || 0}
+                                    {users.to || 0}
                                 </span>{" "}
                                 dari{" "}
                                 <span className="font-medium">
-                                    {datas.total}
+                                    {users.total}
                                 </span>
                             </div>
 
@@ -276,22 +279,10 @@ const Index = ({ datas, filters }) => {
                 )}
             </section>
 
-            {/* modal */}
             <DialogCreate
                 isOpen={modalState.type === "create"}
                 onClose={closeModal}
-            />
-
-            <DialogEdit
-                isOpen={modalState.type === "edit"}
-                onClose={closeModal}
-                uptd={modalState.data}
-            />
-
-            <DialogDelete
-                isOpen={modalState.type === "delete"}
-                onClose={closeModal}
-                uptd={modalState.data}
+                uptdOptions={uptd}
             />
         </Layout>
     );

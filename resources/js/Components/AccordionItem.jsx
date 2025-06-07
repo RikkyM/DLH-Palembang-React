@@ -5,7 +5,6 @@ import { ChevronDown } from "lucide-react";
 const AccordionItem = ({ title, items, isRouteActive }) => {
     const { url } = usePage();
 
-    // Custom function to check if route is active, ignoring query parameters
     const isRouteActiveIgnoreQuery = (routeName) => {
         if (!routeName) return false;
 
@@ -18,7 +17,6 @@ const AccordionItem = ({ title, items, isRouteActive }) => {
 
             return currentPathname === routePathname;
         } catch (error) {
-            // Fallback to original function if route() fails
             return isRouteActive ? isRouteActive(routeName) : false;
         }
     };

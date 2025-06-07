@@ -2,29 +2,33 @@ import { useEffect } from "react";
 import Dialog from "@/Components/Dialog";
 import { useForm } from "@inertiajs/react";
 import { X } from "lucide-react";
+import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 
 const DialogCreate = ({ isOpen, onClose }) => {
-    const { data, setData, errors, processing, reset, post } = useForm({
+    const firstInputRef = useAutoFocusInput(isOpen);
+
+    const initialData = {
         namaUptd: "",
         alamat: "",
-        kodeKecamatan: "",
-    });
+    };
+
+    const { data, setData, errors, processing, clearErrors, post } =
+        useForm(initialData);
 
     useEffect(() => {
-        if (isOpen || !isOpen) {
-            reset();
+        if (isOpen) {
+            setData(initialData);
+            clearErrors();
         }
-    }, [isOpen, reset]);
+    }, [isOpen]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         post(route("super-admin.uptd.store"), {
             onSuccess: () => {
+                setData(initialData);
                 onClose();
-            },
-            onFinish: () => {
-                reset();
             },
             onError: (e) => {
                 console.error(e);
@@ -46,14 +50,15 @@ const DialogCreate = ({ isOpen, onClose }) => {
                         <X size={20} />
                     </button>
                 </div>
-                <form onSubmit={handleSubmit} className="space-y-5 p-5">
+                <form onSubmit={handleSubmit} className="space-y-5 px-5 pb-5">
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label htmlFor="nama">Nama UPTD</label>
                         <input
+                            ref={firstInputRef}
                             id="nama"
                             type="text"
                             placeholder="Masukkan nama UPTD..."
-                            className="px-3 py-2 bg-neutral-300 outline-none"
+                            className="px-3 py-2 bg-neutral-300 outline-none rounded"
                             value={data.namaUptd}
                             onChange={(e) =>
                                 setData("namaUptd", e.target.value)
@@ -70,28 +75,28 @@ const DialogCreate = ({ isOpen, onClose }) => {
                         <input
                             id="alamat"
                             type="text"
-                            placeholder="Masukkan nama UPTD..."
-                            className="px-3 py-2 bg-neutral-300 outline-none"
+                            placeholder="Masukkan alamat UPTD..."
+                            className="px-3 py-2 bg-neutral-300 outline-none rounded"
                             value={data.alamat}
                             onChange={(e) => setData("alamat", e.target.value)}
                         />
-                        {errors.namaUptd && (
+                        {errors.alamat && (
                             <span className="text-sm text-red-500">
-                                {errors.namaUptd}
+                                {errors.alamat}
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col md:flex-row md:justify-end gap-1 md:gap-2 text-sm">
+                    <div className="flex flex-col md:flex-row md:justify-end gap-3 md:gap-2 text-sm">
                         <button
-                            className="px-3 py-2 font-medium order-1 md:order-2 rounded text-white bg-teal-400"
+                            className="px-3 py-2 font-medium order-1 md:order-2 rounded text-white bg-teal-400 hover:bg-teal-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={processing}
                             type="submit"
                         >
-                            Simpan Data
+                            {processing ? "Menyimpan..." : "Simpan Data"}
                         </button>
                         <button
                             onClick={onClose}
-                            className="px-3 py-2 font-medium order-2 md:order-1"
+                            className="px-3 py-2 font-medium order-2 md:order-1 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
                             type="button"
                         >
                             Batal

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Kecamatan;
 use App\Models\Uptd;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -28,7 +27,6 @@ class UptdController extends Controller
 
         return Inertia::render('Super-Admin/Settings/Uptd/Index', [
             'datas' => $data,
-            'kecamatan' => Kecamatan::get(),
             'filters' => [
                 'search' => $request->search ?? ''
             ]
@@ -37,22 +35,32 @@ class UptdController extends Controller
 
     public function store(Request $request)
     {
-        // $validated = $request->validate([
-        //     'namaUptd' => 'required',
-        //     'alamat' => 'required'
-        // ]);
+        $validated = $request->validate([
+            'namaUptd' => 'required|min:5',
+            'alamat' => 'required|min:8'
+        ]);
 
-        // // dd($validated)
-
-        // Uptd::create($validated);
-
-        dd($request->all());
+        Uptd::create($validated);
 
         return redirect()->back()->withInput([]);
     }
 
     public function update(Request $request, Uptd $uptd)
     {
-        dd($uptd);
+        $validated = $request->validate([
+            'namaUptd' => 'sometimes|min:5',
+            'alamat' => 'sometimes|min:8'
+        ]);
+
+        $uptd->update($validated);
+
+        return redirect()->back()->withInput([]);
+    }
+
+    public function destroy(Uptd $uptd)
+    {
+        $uptd->delete();
+
+        return redirect()->back();
     }
 }

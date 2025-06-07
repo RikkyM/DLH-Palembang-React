@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('role');
             $table->string('jabatan');
             $table->string('nip');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('password');
             $table->string('kelamin');
             $table->string('pangkat');

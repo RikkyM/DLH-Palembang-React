@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
+use App\Http\Controllers\Pendaftar\DashboardController as PendaftarDashboardController;
 use App\Http\Controllers\SuperAdmin\UptdController;
+use App\Http\Controllers\SuperAdmin\UserController;
+use App\Http\Controllers\SuperAdmin\WajibRetribusiController;
 use App\Models\Kategori;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
@@ -13,21 +16,38 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', '/sirep/login');
 
 Route::prefix('sirep')->group(function () {
-    Route::get('/login', [AuthController::class, 'index'])->name('login');
-    Route::post('/login', [AuthController::class, 'loginProcess'])->name('login.process');
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AuthController::class, 'index'])->name('login');
+        Route::post('/login', [AuthController::class, 'loginProcess'])->name('login.process');
+    });
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::name('super-admin.')->group(function() {
-        Route::controller(SuperAdminDashboardController::class)->group(function () {
-            Route::get('/dashboard', 'index')->name('dashboard');
-        });
-    
-        Route::prefix('settings')->group(function () {
-            Route::controller(UptdController::class)->group(function () {
-                Route::get('/uptd', 'index')->name('uptd');
-                Route::post('/uptd', 'store')->name('uptd.store');
-                Route::put('/uptd/{uptd}', 'update')->name('uptd.update');
+    Route::middleware('auth')->group(function () {
+        Route::prefix('super-admin')->name('super-admin.')->group(function () {
+            Route::get('/dashboard', [SuperAdminDashboardController::class, 'index'])->name('dashboard');
+            Route::prefix('laporan')->group(function () {
+                Route::controller(WajibRetribusiController::class)->group(function () {
+                    Route::get('/wajib-retribusi', 'index')->name('wajib-retribusi');
+                    Route::get('/wajib-retribusi/export', 'export')->name('wajib-retribusi.export');
+                });
             });
+            Route::prefix('settings')->group(function () {
+                Route::controller(UptdController::class)->group(function () {
+                    Route::get('/uptd', 'index')->name('uptd');
+                    Route::post('/uptd', 'store')->name('uptd.store');
+                    Route::put('/uptd/{uptd}', 'update')->name('uptd.update');
+                    Route::delete('/uptd/{uptd}', 'destroy')->name('uptd.destroy');
+                });
+                Route::resource('/User', UserController::class)->names([
+                    'index' => 'user',
+                    'store' => 'user.store',
+                ]);
+            });
+        });
+
+        Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
+            Route::get('/dashboard', [PendaftarDashboardController::class, 'index'])->name('dashboard');
         });
     });
 });

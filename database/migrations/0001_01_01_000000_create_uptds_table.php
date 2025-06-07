@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('namaUptd');
             $table->text('alamat');
-            $table->string('kodeKecamatan', 8);
+            $table->string('kodeKecamatan', 8)->nullable();
             $table->timestamps();
 
             $table->foreign('kodeKecamatan')->references('kodeKecamatan')->on('kecamatan')->onUpdate('cascade')->onDelete('cascade');

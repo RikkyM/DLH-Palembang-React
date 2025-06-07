@@ -10,6 +10,15 @@ const Dialog = ({ isOpen, onClose, children }) => {
         return () => document.removeEventListener("keydown", handleEsc);
     }, [onClose]);
 
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+            return () => {
+                document.body.style.overflow = "unset";
+            };
+        }
+    }, [isOpen]);
+
     return (
         <div
             onClick={onClose}

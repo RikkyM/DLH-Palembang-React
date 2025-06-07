@@ -1,5 +1,7 @@
 <?php
 
+use Maatwebsite\Excel\ExcelServiceProvider;
+
 return [
 
     /*
