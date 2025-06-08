@@ -40,21 +40,41 @@ const Login = () => {
     return (
         <AuthLayout title="Objek Retribusi DLH Kota Palembang">
             <section className="flex flex-col gap-4 max-w-xs w-full">
-                <img
+                {/* <img
                     src="/img/logo.png"
                     alt="logo"
                     className="max-w-56 mx-auto block md:hidden"
-                />
+                /> */}
+                <div className="flex items-center justify-between md:hidden">
+                    <img
+                        src="/img/logo_palembang.png"
+                        alt="logo"
+                        className="max-w-16 "
+                    />
+                    {/* cut gambar */}
+                    <img
+                        src="/img/dlh_logo.png"
+                        alt="logo"
+                        className="max-w-32 "
+                    />
+                    <img
+                        src="/img/KLHK_2024.png"
+                        alt="logo"
+                        className="max-w-16 "
+                    />
+                </div>
                 <div className="text-center space-y-0.5">
                     <h3 className="text-xl font-semibold md:text-3xl md:font-medium">
                         Selamat Datang
                     </h3>
                     <p className="text-xs">
-                        Enter your NIP and Password to access your account
+                        {/* Enter your NIP and Password to access your account */}
+                        Masukkan username dan password
                     </p>
                 </div>
                 <form onSubmit={submit} className="flex flex-col gap-5 text-sm">
                     <div className="flex flex-col gap-2">
+                    {/* nip ganti ke username */}
                         <label className="font-medium" htmlFor="nip">
                             NIP
                         </label>

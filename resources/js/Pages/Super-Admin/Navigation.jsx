@@ -11,14 +11,33 @@ const SuperAdminNavigation = () => {
         return generatedRoute.includes(url);
     };
 
-    const laporanItems = [
+    const dataInputs = [
+        {
+            label: "Pemohon",
+            // route: "super-admin.wajib-retribusi",
+        },
+        {
+            label: "Wajib Retribusi",
+            route: "super-admin.wajib-retribusi",
+        },
         {
             label: "SKRD",
             // route: "super-admin.dashboard",
         },
+    ];
+
+    const pembayaranItems = [
         {
-            label: "Data Wajib Retribusi",
-            route: "super-admin.wajib-retribusi",
+            label: "Invoice",
+            // route: "super-admin.laporan.piutang-retribusi",
+        },
+        {
+            label: "Input Setoran",
+            // route: "super-admin.laporan.piutang-retribusi",
+        },
+        {
+            label: "Data Setoran",
+            // route: "super-admin.laporan.piutang-retribusi",
         },
         {
             label: "Penerimaan Retribusi",
@@ -26,6 +45,29 @@ const SuperAdminNavigation = () => {
         },
         {
             label: "Piutang Retribusi",
+            // route: "super-admin.laporan.piutang-retribusi",
+        },
+    ];
+
+    const laporanItems = [
+        {
+            label: "Rekap Penanggung Jawab",
+            // route: "super-admin.laporan.piutang-retribusi",
+        },
+        {
+            label: "Rekap Wajib Retribusi",
+            // route: "super-admin.laporan.penerimaan-retribusi",
+        },
+        {
+            label: "Rekap SKRD",
+            // route: "super-admin.laporan.piutang-retribusi",
+        },
+        {
+            label: "Rekap Penerimaan Retribusi",
+            // route: "super-admin.laporan.piutang-retribusi",
+        },
+        {
+            label: "Rekap Piutang Retribusi",
             // route: "super-admin.laporan.piutang-retribusi",
         },
     ];
@@ -66,6 +108,18 @@ const SuperAdminNavigation = () => {
                 >
                     Dashboard
                 </Link>
+
+                <AccordionItem
+                    title="Data Input"
+                    items={dataInputs}
+                    isRouteActive={isRouteActive}
+                />
+
+                <AccordionItem
+                    title="Pembayaran"
+                    items={pembayaranItems}
+                    isRouteActive={isRouteActive}
+                />
 
                 <AccordionItem
                     title="Laporan"

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
-import { ChevronLeft, ChevronRight, Filter, Search } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 
 const Index = ({
@@ -46,8 +46,6 @@ const Index = ({
         value: petugas.id.toString(),
         label: petugas.namaLengkap,
     }));
-
-    console.log(petugasList);
 
     useEffect(() => {
         const handleFilterOutside = (e) => {
@@ -208,8 +206,91 @@ const Index = ({
     return (
         <Layout title="LAPORAN WAJIB RETRIBUSI">
             <section className="p-3">
-                <div className="flex flex-col gap-3 md:gap-0 md:flex-row md:items-center justify-between w-full mb-3 bg-white p-2 rounded">
-                    <div className="flex flex-col md:flex-row items-center gap-2 w-full md:w-auto">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center justify-between w-full mb-3 p-2 rounded bg-white shadow">
+                    <div className="flex flex-col sm:flex-row md:items-center gap-2 w-full md:w-auto">
+                        <div className="flex items-center gap-2 w-full sm:w-max">
+                            <label
+                                htmlFor="showData"
+                                className="px-2 py-1.5 shadow border rounded text-sm bg-white flex items-center gap-1.5"
+                            >
+                                <select
+                                    name="showData"
+                                    id="showData"
+                                    className="outline-none appearance-none bg-transparent"
+                                >
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="250">250</option>
+                                </select>
+                                <ChevronDown size={24} />
+                            </label>
+                            <div className="relative flex gap-2 w-full sm:w-max">
+                                <button
+                                    type="button"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded shadow border w-full sm:w-max"
+                                    onMouseDown={(e) => e.stopPropagation()}
+                                    onClick={() =>
+                                        setShowFilters((prev) => !prev)
+                                    }
+                                >
+                                    <span>Filter</span>
+                                    <Filter size={20} />
+                                </button>
+                                <div
+                                    ref={filterRef}
+                                    className={`absolute top-full left-1/2 -translate-x-1/2 grid grid-cols-1 w-max bg-white gap-2 p-3 shadow border border-neutral-300 rounded transition-all ${
+                                        showFilters
+                                            ? "opacity-100 pointer-events-auto mt-3"
+                                            : "opacity-0 mt-0 pointer-events-none"
+                                    }`}
+                                >
+                                    <SearchableSelect
+                                        id="kategoriList"
+                                        options={kategoriList}
+                                        value={kategori}
+                                        onChange={(val) => {
+                                            setKategori(val);
+                                            setSubKategori("");
+                                        }}
+                                        placeholder="Pilih Kategori"
+                                    />
+                                    <SearchableSelect
+                                        id="subkategorilist"
+                                        options={subKategoriList}
+                                        value={subKategori}
+                                        onChange={(val) => setSubKategori(val)}
+                                        placeholder="Pilih Sub Kategori"
+                                        disabled={!kategori}
+                                    />
+                                    <SearchableSelect
+                                        id="kecamatanlist"
+                                        options={kecamatanList}
+                                        value={kecamatan}
+                                        onChange={(val) => {
+                                            setKecamatan(val);
+                                            setKelurahan("");
+                                        }}
+                                        placeholder="Pilih Kecamatan"
+                                    />
+                                    <SearchableSelect
+                                        id="kelurahanlist"
+                                        options={kelurahanList}
+                                        value={kelurahan}
+                                        onChange={(val) => setKelurahan(val)}
+                                        placeholder="Pilih Kelurahan"
+                                        disabled={!kecamatan}
+                                    />
+                                    <SearchableSelect
+                                        id="petugaslist"
+                                        options={petugasList}
+                                        value={petugas}
+                                        onChange={(val) => setPetugas(val)}
+                                        placeholder="Pilih Petugas Pendaftar"
+                                    />
+                                </div>
+                            </div>
+                        </div>
                         <label
                             htmlFor="search"
                             className="flex items-center gap-1.5 bg-white p-2 w-full md:max-w-80 text-sm rounded shadow border"
@@ -224,104 +305,51 @@ const Index = ({
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </label>
-                        <div className="relative w-full">
-                            <button
-                                type="button"
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded shadow border w-full"
-                                onMouseDown={(e) => e.stopPropagation()}
-                                onClick={() => setShowFilters((prev) => !prev)}
-                            >
-                                <span>Filter</span>
-                                <Filter size={20} />
-                            </button>
-                            <div
-                                ref={filterRef}
-                                className={`absolute top-full left-1/2 -translate-x-1/2 grid grid-cols-1 w-max bg-white gap-2 p-3 shadow border border-neutral-300 rounded transition-all ${
-                                    showFilters
-                                        ? "opacity-100 pointer-events-auto mt-3"
-                                        : "opacity-0 mt-0 pointer-events-none"
-                                }`}
-                            >
-                                <SearchableSelect
-                                    id="kategoriList"
-                                    options={kategoriList}
-                                    value={kategori}
-                                    onChange={(val) => {
-                                        setKategori(val);
-                                        setSubKategori("");
-                                    }}
-                                    placeholder="Pilih Kategori"
-                                />
-                                <SearchableSelect
-                                    id="subkategorilist"
-                                    options={subKategoriList}
-                                    value={subKategori}
-                                    onChange={(val) => setSubKategori(val)}
-                                    placeholder="Pilih Sub Kategori"
-                                    disabled={!kategori}
-                                />
-                                <SearchableSelect
-                                    id="kecamatanlist"
-                                    options={kecamatanList}
-                                    value={kecamatan}
-                                    onChange={(val) => {
-                                        setKecamatan(val);
-                                        setKelurahan("");
-                                    }}
-                                    placeholder="Pilih Kecamatan"
-                                />
-                                <SearchableSelect
-                                    id="kelurahanlist"
-                                    options={kelurahanList}
-                                    value={kelurahan}
-                                    onChange={(val) => setKelurahan(val)}
-                                    placeholder="Pilih Kelurahan"
-                                    disabled={!kecamatan}
-                                />
-                                <SearchableSelect
-                                    id="petugaslist"
-                                    options={petugasList}
-                                    value={petugas}
-                                    onChange={(val) => setPetugas(val)}
-                                    placeholder="Pilih Petugas Pendaftar"
-                                />
-                            </div>
-                        </div>
                     </div>
-                    <button
-                        onClick={() => {
-                            const params = new URLSearchParams();
+                    <div className="flex items-center justify-end md:justify-start gap-1.5">
+                        <button className="bg-green-500 px-3 py-1.5 rounded text-sm text-white font-medium">
+                            Tambah
+                        </button>
+                        <button className="bg-red-600 px-3 py-1.5 rounded text-sm text-white font-medium">
+                            PDF
+                        </button>
+                        <button
+                            onClick={() => {
+                                const params = new URLSearchParams();
 
-                            if (search) params.append("search", search);
-                            if (kategori) params.append("kategori", kategori);
-                            if (subKategori)
-                                params.append("sub-kategori", subKategori);
-                            if (kecamatan)
-                                params.append("kecamatan", kecamatan);
-                            if (kelurahan)
-                                params.append("kelurahan", kelurahan);
-                            if (petugas) params.append("petugas", petugas);
+                                if (search) params.append("search", search);
+                                if (kategori)
+                                    params.append("kategori", kategori);
+                                if (subKategori)
+                                    params.append("sub-kategori", subKategori);
+                                if (kecamatan)
+                                    params.append("kecamatan", kecamatan);
+                                if (kelurahan)
+                                    params.append("kelurahan", kelurahan);
+                                if (petugas) params.append("petugas", petugas);
 
-                            window.open(
-                                route("super-admin.wajib-retribusi.export") +
-                                    "?" +
-                                    params.toString(),
-                                "_blank"
-                            );
-                        }}
-                        className="px-3 py-2 bg-teal-400 transition duration-300 hover:bg-teal-500 rounded text-white text-sm font-medium "
-                    >
-                        Download Laporan
-                    </button>
+                                window.open(
+                                    route(
+                                        "super-admin.wajib-retribusi.export"
+                                    ) +
+                                        "?" +
+                                        params.toString(),
+                                    "_blank"
+                                );
+                            }}
+                            className="px-3 py-1.5 bg-green-700 transition duration-300 rounded text-white text-sm font-medium "
+                        >
+                            Excel
+                        </button>
+                    </div>
                 </div>
-                <div className="overflow-x-auto bg-white rounded">
+                <div className="overflow-x-auto bg-white rounded shadow">
                     <table className="p-3 min-w-full divide-y divide-gray-300">
                         <thead>
                             <tr className="*:font-medium *:text-sm *:p-2 *:uppercase *:whitespace-nowrap">
                                 <th className="text-center">no</th>
                                 <th className="text-left">no pendaftaran</th>
-                                <th className="text-left">no wr</th>
-                                <th className="text-left">pemilik</th>
+                                <th className="text-left">penanggung jawab</th>
                                 <th className="text-left">
                                     nama objek retribusi
                                 </th>
@@ -333,6 +361,7 @@ const Index = ({
                                 <th className="text-left">uptd</th>
                                 <th className="text-left">nama petugas</th>
                                 <th className="text-left">status</th>
+                                <th className="text-right">aksi</th>
                             </tr>
                         </thead>
                         <tbody className="text-xs md:text-sm divide-y divide-neutral-300">
@@ -352,7 +381,7 @@ const Index = ({
                                                 index +
                                                 1}
                                         </td>
-                                        <td>{data.noPendaftaran}</td>
+                                        {/* <td>{data.noPendaftaran}</td> */}
                                         <td>{data.noWajibRetribusi}</td>
                                         <td className="">
                                             {data.pemilik.namaPemilik}
@@ -370,10 +399,23 @@ const Index = ({
                                         <td>{data.uptd.namaUptd}</td>
                                         <td>{data.user.namaLengkap}</td>
                                         <td>
-                                            <span className="bg-teal-400 px-3 py-2 rounded  font-medium text-white cursor-pointer select-none hover:bg-teal-500 transition duration-300">
+                                            <span className="px-3 py-2 rounded  font-medium text-teal-600 select-none ">
                                                 {data.status == "Approved" &&
                                                     "Diterima"}
                                             </span>
+                                        </td>
+                                        <td>
+                                            <div className="flex gap-2 *:rounded *:font-medium *:text-sm *:text-white">
+                                                <button className="bg-blue-400 px-3 py-1.5">
+                                                    Edit
+                                                </button>
+                                                <button className="bg-yellow-400 px-3 py-1.5 whitespace-nowrap">
+                                                    Cetak Form
+                                                </button>
+                                                <button className="bg-orange-400 px-3 py-1.5 whitespace-nowrap">
+                                                    Cetak SKRD
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
