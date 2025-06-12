@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Kecamatan extends Model
 {
     protected $table = 'kecamatan';
-
+    protected $primaryKey = "kodeKecamatan";
     public $incrementing = false;
     protected $keyType = 'string';
 

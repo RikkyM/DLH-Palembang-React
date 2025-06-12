@@ -13,28 +13,45 @@ class AuthService
     public function processLogin($credentials, $userIp)
     {
         $rateLimitKey = $this->getRateLimitKey($userIp);
-
         $this->checkTooManyAttempts($rateLimitKey);
 
-        if (Auth::attempt($credentials)) {
+        // Coba login dengan NIP atau username
+        $loginSuccess = $this->attemptLogin($credentials['login'], $credentials['password']);
+
+        if ($loginSuccess) {
             $this->handleSuccess($rateLimitKey, $userIp);
             return $this->getRedirectUrl();
         } else {
             $this->handleFailed($rateLimitKey, $userIp);
             throw ValidationException::withMessages([
-                'message' => 'NIP atau Password salah.'
+                'message' => 'NIP/Username atau Password salah.'
             ]);
         }
     }
 
-    private function handleSuccess($key)
+    private function attemptLogin($loginField, $password)
+    {
+        // Coba login dengan NIP terlebih dahulu
+        if (Auth::attempt(['nip' => $loginField, 'password' => $password])) {
+            return true;
+        }
+
+        // Jika gagal, coba login dengan username
+        if (Auth::attempt(['username' => $loginField, 'password' => $password])) {
+            return true;
+        }
+
+        // Jika kedua cara gagal, return false
+        return false;
+    }
+
+    private function handleSuccess($key, $userIp)
     {
         RateLimiter::clear($key);
-
         session()->regenerate();
     }
 
-    private function handleFailed($key)
+    private function handleFailed($key, $userIp)
     {
         RateLimiter::hit($key);
     }
@@ -43,7 +60,6 @@ class AuthService
     {
         if (RateLimiter::tooManyAttempts($key, self::RATE_LIMIT_MAX_ATTEMPTS)) {
             $seconds = RateLimiter::availableIn($key);
-
             throw ValidationException::withMessages([
                 'message' => "Terlalu banyak percobaan login. Coba lagi dalam {$seconds} detik."
             ]);

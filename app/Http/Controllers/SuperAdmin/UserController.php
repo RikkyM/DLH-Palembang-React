@@ -19,12 +19,15 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search');
+        $sortBy = $request->get('sort', 'id');
+        $sortDir = $request->get('direction', 'asc');
 
         $users = User::query()
             ->when($search && trim($search) !== '', function ($query) use ($search) {
                 $query->where('namaLengkap', 'like', "%{$search}%")
                     ->orWhere('nip', 'like', "%{$search}%");
             })
+            ->orderBy($sortBy, $sortDir)
             ->paginate(10)
             ->withQueryString();
 
@@ -43,6 +46,8 @@ class UserController extends Controller
             'uptd' => $uptdOptions,
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,
+                'sort' => $sortBy,
+                'direction' => $sortDir
             ]
         ]);
     }
@@ -90,23 +95,56 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // 
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
+    public function edit(string $id) {}
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'namaLengkap' => 'sometimes|nullable|string|max:50',
+            'jabatan' => 'sometimes|nullable|string|max:100',
+            'nip' => 'sometimes|nullable|numeric',
+            'username' => 'sometimes|nullable',
+            'email' => 'sometimes|nullable|email',
+            'lokasi' => 'sometimes|nullable|string|max:255',
+            'kelamin' => 'sometimes|nullable|in:Laki-laki,Perempuan',
+            'uptdId' => 'sometimes|nullable|exists:uptd,id',
+            'pangkat' => 'sometimes|nullable|string|max:100',
+            'golongan' => 'sometimes|nullable|string|max:100',
+            'deskripsi' => 'sometimes|nullable|string|max:255',
+            'role' => 'sometimes|nullable|string|in:ROLE_SEKDIN,ROLE_PENDAFTAR,ROLE_KUPTD,ROLE_KATIM,ROLE_KASUBAG_TU_UPDT,ROLE_KADIN,ROLE_KABID,ROLE_BENDAHARA',
+            'password' => 'sometimes|nullable|string|min:5|confirmed'
+        ], (new UserRequest())->messages());
+
+
+        try {
+            $user = User::findOrFail($id);
+
+            $updateData = [];
+            foreach ($validated as $key => $value) {
+                if ($key !== 'password') {
+                    $updateData[$key] = $value;
+                }
+            }
+
+            if (!empty($validated['password'])) {
+                $updateData['password'] = Hash::make($validated['password']);
+            }
+
+            $user->update($updateData);
+
+            return redirect()->back()->with('success', 'Data pengguna berhasil diperbarui.');
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data');
+        }
     }
 
     /**

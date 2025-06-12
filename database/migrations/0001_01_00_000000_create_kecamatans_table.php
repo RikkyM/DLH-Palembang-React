@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('kecamatan', function (Blueprint $table) {
             $table->string('kodeKecamatan', 8)->primary();
-            $table->string('namaKecamatan');
-            $table->string('slug')->unique();
+            $table->string('namaKecamatan')->unique();
+            $table->string('slug');
             $table->timestamps();
         });
     }

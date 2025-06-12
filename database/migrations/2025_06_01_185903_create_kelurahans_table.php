@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('kodeKelurahan', 8)->primary();
             $table->string('kodeKecamatan', 8);
             $table->string('namaKelurahan');
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->timestamps();
 
             $table->foreign('kodeKecamatan')->references('kodeKecamatan')->on('kecamatan')->onUpdate('cascade')->onDelete('cascade');

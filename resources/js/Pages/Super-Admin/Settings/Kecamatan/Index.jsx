@@ -1,16 +1,12 @@
-import {
-    PencilLine,
-    Search,
-    Trash,
-} from "lucide-react";
+import { PencilLine, Search, Trash } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useState } from "react";
 import { router } from "@inertiajs/react";
-import DialogDelete from "./DialogDelete";
+import SmartPagination from "@/Components/SmartPagination";
+
 import { useProvider } from "@/Context/GlobalContext";
-import DialogEdit from "./DialogEdit";
-import DialogCreate from "./DialogCreate";
-import SmartPagination from "../../../../Components/SmartPagination";
+import DialogForm from "./DialogForm";
+import DialogDelete from "./DialogDelete";
 
 const Index = ({ datas, filters }) => {
     const { modalState, openModal, closeModal } = useProvider();
@@ -22,7 +18,7 @@ const Index = ({ datas, filters }) => {
 
             if (search && search.trim() !== "") params.search = search;
 
-            router.get(route("super-admin.uptd"), params, {
+            router.get(route("super-admin.kecamatan"), params, {
                 preserveState: true,
                 replace: true,
                 only: ["datas"],
@@ -33,7 +29,7 @@ const Index = ({ datas, filters }) => {
     }, [search]);
 
     return (
-        <Layout title="UPTD">
+        <Layout title="Kecamatan">
             <section className="p-3">
                 <div className="flex flex-col gap-3 md:gap-0 md:flex-row items-center justify-between w-full mb-3 bg-white p-2 rounded">
                     <label
@@ -45,7 +41,7 @@ const Index = ({ datas, filters }) => {
                             autoComplete="off"
                             type="search"
                             id="search"
-                            placeholder="Cari nama uptd..."
+                            placeholder="Cari nama kecamatan..."
                             className="outline-none flex-1"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -57,7 +53,7 @@ const Index = ({ datas, filters }) => {
                         }}
                         className="flex justify-center items-center gap-1.5 text-sm bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-2 text-white w-full md:w-auto rounded outline-none"
                     >
-                        <span>Tambah Uptd</span>
+                        <span>Tambah Kecamatan</span>
                     </button>
                 </div>
 
@@ -66,8 +62,8 @@ const Index = ({ datas, filters }) => {
                         <thead>
                             <tr className="*:font-medium *:text-sm *:p-2">
                                 <th className="text-center">No</th>
-                                <th className="text-left">Nama Uptd</th>
-                                <th className="text-left">Alamat</th>
+                                <th className="text-left">Kode Kecamatan</th>
+                                <th className="text-left">Nama Kecamatan</th>
                                 <th className="text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -88,8 +84,8 @@ const Index = ({ datas, filters }) => {
                                                 index +
                                                 1}
                                         </td>
-                                        <td>{data.namaUptd}</td>
-                                        <td>{data.alamat}</td>
+                                        <td>{data.kodeKecamatan}</td>
+                                        <td>{data.namaKecamatan}</td>
                                         <td className="space-x-1 md:space-x-2 text-right">
                                             <button
                                                 type="button"
@@ -120,7 +116,7 @@ const Index = ({ datas, filters }) => {
                                     >
                                         {search
                                             ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
-                                            : "Belum ada data UPTD"}
+                                            : "Belum ada data kecamatan"}
                                     </td>
                                 </tr>
                             )}
@@ -131,22 +127,19 @@ const Index = ({ datas, filters }) => {
                 <SmartPagination datas={datas} filters={filters} />
             </section>
 
-            {/* modal */}
-            <DialogCreate
-                isOpen={modalState.type === "create"}
+            <DialogForm
+                isOpen={
+                    modalState.type === "create" || modalState.type === "edit"
+                }
                 onClose={closeModal}
-            />
-
-            <DialogEdit
-                isOpen={modalState.type === "edit"}
-                onClose={closeModal}
-                uptd={modalState.data}
+                mode={modalState.type}
+                kecamatan={modalState.data}
             />
 
             <DialogDelete
                 isOpen={modalState.type === "delete"}
                 onClose={closeModal}
-                uptd={modalState.data}
+                kecamatan={modalState.data}
             />
         </Layout>
     );

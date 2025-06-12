@@ -76,6 +76,7 @@ const SearchableSelect = ({
         <div className="relative w-64" ref={inputRef}>
             <label htmlFor={id} className="relative">
                 <input
+                    autoComplete="off"
                     id={id}
                     type="text"
                     className="w-full border p-2 pr-8 rounded"

@@ -1,21 +1,39 @@
-import { Search, ChevronLeft, ChevronRight, Users } from "lucide-react";
+import { Search, Users, PencilLine } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useState } from "react";
 import { useProvider } from "@/Context/GlobalContext";
 import { router } from "@inertiajs/react";
 import DialogCreate from "./DialogCreate";
+import TableHead from "@/Components/TableHead";
+import SmartPagination from "@/Components/SmartPagination";
 
 const Index = ({ users, uptd, filters }) => {
     const { modalState, openModal, closeModal } = useProvider();
     const [search, setSearch] = useState(filters.search || "");
+    const [sort, setSort] = useState(filters.sort || null);
+    const [direction, setDirection] = useState(filters.direction || null);
+
+    const columns = [
+        { key: "id", label: "No", align: "text-center" },
+        { key: "namaLengkap", label: "Nama Lengkap", align: "text-left" },
+        { key: "username", label: "Username", align: "text-left" },
+        { key: "email", label: "Email", align: "text-left" },
+        { key: "jabatan", label: "Jabatan", align: "text-left" },
+        { key: "kelamin", label: "Kelamin", align: "text-left" },
+        { key: "lokasi", label: "Lokasi", align: "text-left" },
+        { key: "nip", label: "NIP", align: "text-left" },
+        { key: "pangkat", label: "Pangkat", align: "text-left" },
+        { key: "role", label: "Role", align: "text-left" },
+        { key: "historyLogin", label: "History Login", align: "text-right" },
+    ];
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
-            const params = new URLSearchParams();
+            const params = {};
 
-            if (search && search.trim() !== "") {
-                params.append("search", search.trim());
-            }
+            if (search.trim() !== "") params.search = search.trim();
+            if (sort && sort !== filters.sort) params.sort = sort;
+            if (direction && direction !== filters.direction) params.direction = direction;
 
             router.get(route("super-admin.user"), params, {
                 preserveState: true,
@@ -25,124 +43,12 @@ const Index = ({ users, uptd, filters }) => {
         }, 300);
 
         return () => clearTimeout(timeoutId);
-    }, [search]);
+    }, [search, sort, direction]);
 
-    const handlePageChange = (url) => {
-        if (url) {
-            router.visit(url, {
-                preserveState: true,
-                replace: true,
-                only: ["users"],
-            });
-        }
-    };
-
-    const renderSmartPagination = () => {
-        if (!users?.links) return null;
-
-        const currentPage = users.current_page;
-        const lastPage = users.last_page;
-
-        let pagesToShow = [];
-
-        if (lastPage > 0) {
-            pagesToShow.push(1);
-        }
-
-        if (currentPage > 3) {
-            pagesToShow.push("...");
-        }
-
-        for (
-            let i = Math.max(2, currentPage - 1);
-            i <= Math.min(lastPage - 1, currentPage + 1);
-            i++
-        ) {
-            if (!pagesToShow.includes(i)) {
-                pagesToShow.push(i);
-            }
-        }
-
-        if (currentPage < lastPage - 2) {
-            pagesToShow.push("...");
-        }
-
-        if (lastPage > 1) {
-            pagesToShow.push(lastPage);
-        }
-
-        return (
-            <div className="flex items-center gap-1">
-                <button
-                    onClick={() =>
-                        currentPage > 1 && handlePageChange(users.prev_page_url)
-                    }
-                    className={`px-2 py-2 border border-gray-200 rounded-lg bg-white transition-colors duration-200 ${
-                        currentPage <= 1
-                            ? "text-gray-300 cursor-not-allowed"
-                            : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-                    }`}
-                    disabled={currentPage <= 1}
-                >
-                    <ChevronLeft size={16} />
-                </button>
-
-                {pagesToShow.map((page, index) => {
-                    if (page === "...") {
-                        return (
-                            <span
-                                key={`dots-${index}`}
-                                className="px-3 py-2 text-gray-400"
-                            >
-                                ...
-                            </span>
-                        );
-                    }
-
-                    return (
-                        <button
-                            key={page}
-                            onClick={() => {
-                                const targetUrl = `${
-                                    window.location.pathname
-                                }?page=${page}${
-                                    filters.search
-                                        ? `&search=${filters.search}`
-                                        : ""
-                                }`;
-                                router.visit(targetUrl, {
-                                    preserveState: true,
-                                    replace: true,
-                                    only: ["users"],
-                                });
-                            }}
-                            className={`px-3 py-2 text-sm rounded-lg border transition-colors duration-200 ${
-                                page === currentPage
-                                    ? "bg-blue-500 text-white border-blue-500"
-                                    : "bg-white text-gray-700 hover:bg-gray-50 border-gray-200"
-                            }`}
-                        >
-                            {page}
-                        </button>
-                    );
-                })}
-
-                <button
-                    onClick={() =>
-                        currentPage < lastPage &&
-                        handlePageChange(users.next_page_url)
-                    }
-                    className={`px-2 py-2 border border-gray-200 rounded-lg bg-white transition-colors duration-200 ${
-                        currentPage >= lastPage
-                            ? "text-gray-300 cursor-not-allowed"
-                            : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-                    }`}
-                    disabled={currentPage >= lastPage}
-                >
-                    <ChevronRight size={16} />
-                </button>
-            </div>
-        );
+    const allFilters = {
+        search: search || filters.search,
+        sort: sort || filters.sort,
+        direction: direction || filters.direction,
     };
 
     return (
@@ -155,6 +61,7 @@ const Index = ({ users, uptd, filters }) => {
                     >
                         <Search size={20} />
                         <input
+                            autoComplete="off"
                             type="search"
                             id="search"
                             placeholder="Cari nama user..."
@@ -176,23 +83,21 @@ const Index = ({ users, uptd, filters }) => {
                 <div className="overflow-x-auto bg-white rounded">
                     <table className="p-3 min-w-full divide-y divide-gray-300 whitespace-nowrap">
                         <thead>
-                            <tr className="*:font-medium *:text-sm *:p-2 *:uppercase">
-                                <th className="text-center">No</th>
-                                <th className="text-left">Nama Lengkap</th>
-                                <th className="text-left">Jabatan</th>
-                                <th className="text-left">Kelamin</th>
-                                <th className="text-left">Lokasi</th>
-                                <th className="text-left">NIP</th>
-                                <th className="text-left">Pangkat</th>
-                                <th className="text-left">Role</th>
-                                <th className="text-right">History Login</th>
-                            </tr>
+                            <TableHead
+                                columns={columns}
+                                sort={sort}
+                                direction={direction}
+                                onSort={(column, dir) => {
+                                    setSort(column);
+                                    setDirection(dir);
+                                }}
+                            />
                         </thead>
                         <tbody className="text-xs md:text-sm divide-y divide-neutral-300">
                             {!users?.data || users.data.length === 0 ? (
                                 <tr>
                                     <td
-                                        colSpan="9"
+                                        colSpan="12"
                                         className="p-8 text-center text-gray-500"
                                     >
                                         <div className="flex flex-col items-center gap-2">
@@ -221,7 +126,13 @@ const Index = ({ users, uptd, filters }) => {
                                         <td className="text-center">
                                             {users.from + index}
                                         </td>
-                                        <td className="capitalize">{user.namaLengkap}</td>
+                                        <td className="capitalize">
+                                            {user.namaLengkap}
+                                        </td>
+                                        <td className="capitalize">
+                                            {user.username || "-"}
+                                        </td>
+                                        <td>{user.email || "-"}</td>
                                         <td>{user.jabatan || "-"}</td>
                                         <td>{user.kelamin || "-"}</td>
                                         <td>{user.lokasi || "-"}</td>
@@ -246,6 +157,16 @@ const Index = ({ users, uptd, filters }) => {
                                                   )
                                                 : "-"}
                                         </td>
+                                        <td className="text-right">
+                                            <button
+                                                onClick={() => {
+                                                    openModal("edit", user);
+                                                }}
+                                                className="rounded-full outline-none p-1 hover:bg-neutral-300 transition-all duration-300"
+                                            >
+                                                <PencilLine size={20} />
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))
                             )}
@@ -253,36 +174,21 @@ const Index = ({ users, uptd, filters }) => {
                     </table>
                 </div>
 
-                {users?.data?.length > 0 && (
-                    <div className="px-4 py-3 border-t border-gray-200 bg-white">
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                            <div className="text-sm text-gray-700 hidden md:block">
-                                Menampilkan{" "}
-                                <span className="font-medium">
-                                    {users.from || 0}
-                                </span>{" "}
-                                sampai{" "}
-                                <span className="font-medium">
-                                    {users.to || 0}
-                                </span>{" "}
-                                dari{" "}
-                                <span className="font-medium">
-                                    {users.total}
-                                </span>
-                            </div>
-
-                            <div className="mx-auto md:mx-0">
-                                {renderSmartPagination()}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <SmartPagination
+                    datas={users}
+                    filters={allFilters}
+                    routeName="super-admin.user"
+                />
             </section>
 
             <DialogCreate
-                isOpen={modalState.type === "create"}
+                isOpen={
+                    modalState.type === "create" || modalState.type === "edit"
+                }
                 onClose={closeModal}
                 uptdOptions={uptd}
+                user={modalState.data}
+                mode={modalState.type}
             />
         </Layout>
     );

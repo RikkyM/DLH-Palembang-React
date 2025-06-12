@@ -114,7 +114,7 @@ const Sidebar = ({ children }) => {
                             menu ? "scale-100" : "scale-0"
                         }`}
                     >
-                        <div className="p-3 flex items-center gap-3">
+                        <div className="p-3 flex items-center gap-3 w-max">
                             <div className="rounded-full bg-neutral-300 size-9 grid place-content-center overflow-hidden relative">
                                 {/* {user?.namaLengkap.charAt(0).toUpperCase()} */}
 

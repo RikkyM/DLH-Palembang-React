@@ -54,6 +54,7 @@ const DialogCreate = ({ isOpen, onClose }) => {
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label htmlFor="nama">Nama UPTD</label>
                         <input
+                            autoComplete="off"
                             ref={firstInputRef}
                             id="nama"
                             type="text"
@@ -73,6 +74,7 @@ const DialogCreate = ({ isOpen, onClose }) => {
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label htmlFor="alamat">Alamat</label>
                         <input
+                            autoComplete="off"
                             id="alamat"
                             type="text"
                             placeholder="Masukkan alamat UPTD..."

@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
             'nip' => 'required|numeric|unique:users,nip',
             'email' => 'nullable|email|unique:users,email',
             'lokasi' => 'required|string|max:255',
-            'kelamin' => 'required|in:laki-laki,perempuan',
+            'kelamin' => 'nullable|in:Laki-laki,Perempuan',
             'uptdId' => 'required|exists:uptd,id',
             'pangkat' => 'required|string|max:100',
             'golongan' => 'required|string|max:100',

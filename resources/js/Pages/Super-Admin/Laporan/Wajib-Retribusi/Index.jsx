@@ -1,8 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
-import { ChevronDown, ChevronLeft, ChevronRight, Filter, Search } from "lucide-react";
+import {
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
+    FileText,
+    Filter,
+    PencilLine,
+    Search,
+} from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
+import SmartPagination from "@/Components/SmartPagination";
 
 const Index = ({
     datas,
@@ -19,6 +28,7 @@ const Index = ({
     const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
     const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
     const [petugas, setPetugas] = useState(filters.petugas || "");
+    const [perPage, setPerPage] = useState(filters.per_page || 10);
     const [showFilters, setShowFilters] = useState(false);
     const filterRef = useRef(null);
 
@@ -47,6 +57,20 @@ const Index = ({
         label: petugas.namaLengkap,
     }));
 
+    const buildParams = (additionalParams = {}) => {
+        const params = { ...additionalParams };
+
+        if (search && search.trim() !== "") params.search = search;
+        if (kategori) params.kategori = kategori;
+        if (subKategori) params["sub-kategori"] = subKategori;
+        if (kecamatan) params.kecamatan = kecamatan;
+        if (kelurahan) params.kelurahan = kelurahan;
+        if (petugas) params.petugas = petugas;
+        if (perPage) params.per_page = perPage;
+
+        return params;
+    };
+
     useEffect(() => {
         const handleFilterOutside = (e) => {
             if (filterRef.current && !filterRef.current.contains(e.target)) {
@@ -61,14 +85,7 @@ const Index = ({
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
-            const params = {};
-
-            if (search && search.trim() !== "") params.search = search;
-            if (kategori) params.kategori = kategori;
-            if (subKategori) params["sub-kategori"] = subKategori;
-            if (kecamatan) params.kecamatan = kecamatan;
-            if (kelurahan) params.kelurahan = kelurahan;
-            if (petugas) params.petugas = petugas;
+            const params = buildParams();
 
             router.get(route("super-admin.wajib-retribusi"), params, {
                 preserveState: true,
@@ -85,145 +102,50 @@ const Index = ({
         return () => clearTimeout(timeoutId);
     }, [search, kategori, subKategori, kecamatan, kelurahan, petugas]);
 
-    const renderSmartPagination = () => {
-        if (!datas?.links) return null;
+    useEffect(() => {
+        const params = buildParams({ page: 1 });
 
-        const currentPage = datas.current_page;
-        const lastPage = datas.last_page;
+        router.get(route("super-admin.wajib-retribusi"), params, {
+            preserveState: true,
+            replace: true,
+            only: ["datas", "filters"],
+        });
+    }, [perPage]);
 
-        let pagesToShow = [];
-
-        if (lastPage > 0) {
-            pagesToShow.push(1);
-        }
-
-        if (currentPage > 3) {
-            pagesToShow.push("...");
-        }
-
-        for (
-            let i = Math.max(2, currentPage - 1);
-            i <= Math.min(lastPage - 1, currentPage + 1);
-            i++
-        ) {
-            if (!pagesToShow.includes(i)) {
-                pagesToShow.push(i);
-            }
-        }
-
-        if (currentPage < lastPage - 2) {
-            pagesToShow.push("...");
-        }
-
-        if (lastPage > 1) {
-            pagesToShow.push(lastPage);
-        }
-
-        return (
-            <div className="flex items-center gap-1">
-                <button
-                    onClick={() =>
-                        currentPage > 1 && handlePageChange(datas.prev_page_url)
-                    }
-                    className={`px-2 py-2 border border-gray-200 rounded-lg bg-white transition-colors duration-200 ${
-                        currentPage <= 1
-                            ? "text-gray-300 cursor-not-allowed"
-                            : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-                    }`}
-                    disabled={currentPage <= 1}
-                >
-                    <ChevronLeft size={16} />
-                </button>
-
-                {pagesToShow.map((page, index) => {
-                    if (page === "...") {
-                        return (
-                            <span
-                                key={`dots-${index}`}
-                                className="px-3 py-2 text-gray-400"
-                            >
-                                ...
-                            </span>
-                        );
-                    }
-
-                    return (
-                        <button
-                            key={page}
-                            onClick={() => {
-                                const targetUrl = `${
-                                    window.location.pathname
-                                }?page=${page}${
-                                    filters.search
-                                        ? `&search=${filters.search}`
-                                        : ""
-                                }`;
-                                router.visit(targetUrl, {
-                                    preserveState: true,
-                                    replace: true,
-                                    only: ["datas"],
-                                });
-                            }}
-                            className={`px-3 py-2 text-sm rounded-lg border transition-colors duration-200 ${
-                                page === currentPage
-                                    ? "bg-blue-500 text-white border-blue-500"
-                                    : "bg-white text-gray-700 hover:bg-gray-50 border-gray-200"
-                            }`}
-                        >
-                            {page}
-                        </button>
-                    );
-                })}
-
-                <button
-                    onClick={() =>
-                        currentPage < lastPage &&
-                        handlePageChange(datas.next_page_url)
-                    }
-                    className={`px-2 py-2 border border-gray-200 rounded-lg bg-white transition-colors duration-200 ${
-                        currentPage >= lastPage
-                            ? "text-gray-300 cursor-not-allowed"
-                            : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-                    }`}
-                    disabled={currentPage >= lastPage}
-                >
-                    <ChevronRight size={16} />
-                </button>
-            </div>
-        );
-    };
-
-    const handlePageChange = (url) => {
-        if (url) {
-            router.visit(url, {
-                preserveState: true,
-                replace: true,
-                only: ["datas"],
-            });
-        }
+    const handlePerPageChange = (e) => {
+        setPerPage(parseInt(e.target.value));
     };
 
     return (
         <Layout title="LAPORAN WAJIB RETRIBUSI">
             <section className="p-3">
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-center justify-between w-full mb-3 p-2 rounded bg-white shadow">
+                <div
+                    className="flex flex-col gap-3 lg:flex-row lg:items-center justify-between w-full mb-3 p-2 rounded bg-white shadow"
+                    // sticky top-20 bg-red-500
+                >
                     <div className="flex flex-col sm:flex-row md:items-center gap-2 w-full md:w-auto">
                         <div className="flex items-center gap-2 w-full sm:w-max">
                             <label
                                 htmlFor="showData"
-                                className="px-2 py-1.5 shadow border rounded text-sm bg-white flex items-center gap-1.5"
+                                className="text-sm flex items-center gap-1.5 cursor-pointer relative w-16"
                             >
                                 <select
                                     name="showData"
                                     id="showData"
-                                    className="outline-none appearance-none bg-transparent"
+                                    value={perPage}
+                                    onChange={handlePerPageChange}
+                                    className="outline-none appearance-none bg-transparent cursor-pointer w-full px-2 py-1.5 shadow border rounded"
                                 >
+                                    <option value="10">10</option>
                                     <option value="25">25</option>
                                     <option value="50">50</option>
                                     <option value="100">100</option>
                                     <option value="250">250</option>
                                 </select>
-                                <ChevronDown size={24} />
+                                <ChevronDown
+                                    size={20}
+                                    className=" bg-transparent absolute right-1 pointer-events-none"
+                                />
                             </label>
                             <div className="relative flex gap-2 w-full sm:w-max">
                                 <button
@@ -239,7 +161,7 @@ const Index = ({
                                 </button>
                                 <div
                                     ref={filterRef}
-                                    className={`absolute top-full left-1/2 -translate-x-1/2 grid grid-cols-1 w-max bg-white gap-2 p-3 shadow border border-neutral-300 rounded transition-all ${
+                                    className={`absolute top-full left-0  grid grid-cols-1 w-max bg-white gap-2 p-3 shadow border border-neutral-300 rounded transition-all ${
                                         showFilters
                                             ? "opacity-100 pointer-events-auto mt-3"
                                             : "opacity-0 mt-0 pointer-events-none"
@@ -297,6 +219,7 @@ const Index = ({
                         >
                             <Search size={20} />
                             <input
+                                autoComplete="off"
                                 type="search"
                                 id="search"
                                 placeholder="Cari nama..."
@@ -310,7 +233,33 @@ const Index = ({
                         <button className="bg-green-500 px-3 py-1.5 rounded text-sm text-white font-medium">
                             Tambah
                         </button>
-                        <button className="bg-red-600 px-3 py-1.5 rounded text-sm text-white font-medium">
+                        <button
+                            onClick={() => {
+                                const params = new URLSearchParams();
+
+                                if (search) params.append("search", search);
+                                if (kategori)
+                                    params.append("kategori", kategori);
+                                if (subKategori)
+                                    params.append("sub-kategori", subKategori);
+                                if (kecamatan)
+                                    params.append("kecamatan", kecamatan);
+                                if (kelurahan)
+                                    params.append("kelurahan", kelurahan);
+                                if (petugas) params.append("petugas", petugas);
+
+                                // Untuk auto download
+                                window.open(
+                                    route(
+                                        "super-admin.wajib-retribusi.preview-and-download-pdf"
+                                    ) +
+                                        "?" +
+                                        params.toString(),
+                                    "_blank"
+                                );
+                            }}
+                            className="bg-red-500 px-3 py-1.5 rounded text-sm text-white font-medium"
+                        >
                             PDF
                         </button>
                         <button
@@ -381,7 +330,6 @@ const Index = ({
                                                 index +
                                                 1}
                                         </td>
-                                        {/* <td>{data.noPendaftaran}</td> */}
                                         <td>{data.noWajibRetribusi}</td>
                                         <td className="">
                                             {data.pemilik.namaPemilik}
@@ -405,15 +353,16 @@ const Index = ({
                                             </span>
                                         </td>
                                         <td>
-                                            <div className="flex gap-2 *:rounded *:font-medium *:text-sm *:text-white">
-                                                <button className="bg-blue-400 px-3 py-1.5">
+                                            <div className="flex gap-2 *:rounded *:font-medium *:text-sm">
+                                                <button className="flex items-center gap-1.5">
+                                                    <PencilLine size={20} />{" "}
                                                     Edit
                                                 </button>
-                                                <button className="bg-yellow-400 px-3 py-1.5 whitespace-nowrap">
-                                                    Cetak Form
+                                                <button className="whitespace-nowrap flex items-center gap-1.5">
+                                                    <FileText size={20} /> Form
                                                 </button>
-                                                <button className="bg-orange-400 px-3 py-1.5 whitespace-nowrap">
-                                                    Cetak SKRD
+                                                <button className="whitespace-nowrap flex items-center gap-1.5">
+                                                    <FileText size={20} /> SKRD
                                                 </button>
                                             </div>
                                         </td>
@@ -434,30 +383,8 @@ const Index = ({
                         </tbody>
                     </table>
                 </div>
-                {datas?.data?.length > 0 && (
-                    <div className="px-4 py-3 border-t border-gray-200 bg-white">
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                            <div className="text-sm text-gray-700 hidden md:block">
-                                Menampilkan{" "}
-                                <span className="font-medium">
-                                    {datas.from || 0}
-                                </span>{" "}
-                                sampai{" "}
-                                <span className="font-medium">
-                                    {datas.to || 0}
-                                </span>{" "}
-                                dari{" "}
-                                <span className="font-medium">
-                                    {datas.total}
-                                </span>
-                            </div>
 
-                            <div className="mx-auto md:mx-0">
-                                {renderSmartPagination()}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <SmartPagination datas={datas} filters={filters} />
             </section>
         </Layout>
     );

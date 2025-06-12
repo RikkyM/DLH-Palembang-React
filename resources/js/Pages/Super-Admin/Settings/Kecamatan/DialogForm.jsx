@@ -1,46 +1,61 @@
-import { useEffect } from "react";
 import Dialog from "@/Components/Dialog";
-import { useForm } from "@inertiajs/react";
 import { X } from "lucide-react";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
+import { useForm } from "@inertiajs/react";
+import { useEffect } from "react";
 
-const DialogEdit = ({ isOpen, onClose, uptd }) => {
+const DialogForm = ({ isOpen, onClose, kecamatan = null, mode = "create" }) => {
+    const isEditMode = mode === "edit" && kecamatan;
     const firstInputRef = useAutoFocusInput(isOpen, true);
 
     const initialData = {
-        namaUptd: "",
-        alamat: "",
+        namaKecamatan: "",
     };
 
-    const { data, setData, errors, processing, clearErrors, put } =
+    const { data, setData, errors, processing, clearErrors, post, put } =
         useForm(initialData);
 
     useEffect(() => {
-        if (isOpen && uptd) {
-            setData({
-                namaUptd: uptd.namaUptd || "",
-                alamat: uptd.alamat || "",
-            });
-        } else {
-            setData(initialData);
+        if (isOpen) {
+            if (isEditMode) {
+                setData({
+                    namaKecamatan: kecamatan.namaKecamatan || "",
+                });
+            } else {
+                setData(initialData);
+            }
             clearErrors();
         }
-    }, [isOpen, uptd]);
+    }, [isOpen, kecamatan, isEditMode]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        put(route("super-admin.uptd.update", uptd.id), {
-            onSuccess: () => {
-                setData(initialData);
-                onClose();
-            },
-            onError: (e) => {
-                console.error(e);
-            },
-        });
+        if (isEditMode) {
+            put(
+                route("super-admin.kecamatan.update", kecamatan.kodeKecamatan),
+                {
+                    onSuccess: () => {
+                        setData(initialData);
+                        onClose();
+                    },
+                    onError: (e) => {
+                        console.error(e);
+                    },
+                }
+            );
+        } else {
+            post(route("super-admin.kecamatan.store"), {
+                onSuccess: () => {
+                    setData(initialData);
+                    onClose();
+                },
+                onError: (e) => {
+                    console.error(e);
+                },
+            });
+        }
     };
-
     return (
         <Dialog isOpen={isOpen} onClose={onClose}>
             <div
@@ -50,46 +65,34 @@ const DialogEdit = ({ isOpen, onClose, uptd }) => {
                 ${isOpen ? "scale-100" : "scale-95"}`}
             >
                 <div className="flex items-center justify-between p-5">
-                    <h3 className="text-lg font-medium">Edit UPTD</h3>
+                    <h3 className="text-lg font-medium">Form Kecamatan</h3>
                     <button type="button" onClick={onClose}>
                         <X size={20} />
                     </button>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-5 px-5 pb-5">
                     <div className="flex flex-col gap-1.5 text-sm">
-                        <label htmlFor="nama">Nama UPTD</label>
+                        <label
+                            htmlFor="namaKecamatan"
+                            className="after:content-['*'] after:text-red-500"
+                        >
+                            Nama Kecamatan
+                        </label>
                         <input
                             autoComplete="off"
                             ref={firstInputRef}
-                            id="nama"
+                            id="namaKecamatan"
                             type="text"
-                            placeholder="Masukkan nama UPTD..."
-                            className="px-3 py-2 bg-neutral-300 outline-none"
-                            value={data.namaUptd}
+                            placeholder="Masukkan nama kecamatan..."
+                            className="px-3 py-2 bg-gray-200 outline-none rounded"
+                            value={data.namaKecamatan}
                             onChange={(e) =>
-                                setData("namaUptd", e.target.value)
+                                setData("namaKecamatan", e.target.value)
                             }
                         />
-                        {errors.namaUptd && (
+                        {errors.namaKecamatan && (
                             <span className="text-sm text-red-500">
-                                {errors.namaUptd}
-                            </span>
-                        )}
-                    </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
-                        <label htmlFor="alamat">Alamat</label>
-                        <input
-                            autoComplete="off"
-                            id="alamat"
-                            type="text"
-                            placeholder="Masukkan nama UPTD..."
-                            className="px-3 py-2 bg-neutral-300 outline-none"
-                            value={data.alamat}
-                            onChange={(e) => setData("alamat", e.target.value)}
-                        />
-                        {errors.alamat && (
-                            <span className="text-sm text-red-500">
-                                {errors.alamat}
+                                {errors.namaKecamatan}
                             </span>
                         )}
                     </div>
@@ -115,4 +118,4 @@ const DialogEdit = ({ isOpen, onClose, uptd }) => {
     );
 };
 
-export default DialogEdit;
+export default DialogForm;

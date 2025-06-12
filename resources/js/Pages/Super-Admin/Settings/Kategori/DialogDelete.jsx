@@ -2,24 +2,26 @@ import Dialog from "@/Components/Dialog";
 import { useForm } from "@inertiajs/react";
 import { AlertTriangle, X } from "lucide-react";
 
-const DialogDelete = ({ isOpen, onClose, uptd }) => {
+const DialogDelete = ({ isOpen, onClose, kategori }) => {
     const { processing, delete: destroy } = useForm();
 
     const handleDelete = (e) => {
         e.preventDefault();
 
-        if (!uptd?.id) return;
+        if (!kategori?.kodeKategori) return;
 
-        destroy(route("super-admin.uptd.destroy", uptd.id), {
-            onSuccess: () => {
-                onClose();
-            },
-            onError: (e) => {
-                console.error(e);
-            },
-        });
+        destroy(
+            route("super-admin.kategori.destroy", kategori.kodeKategori),
+            {
+                onSuccess: () => {
+                    onClose();
+                },
+                onError: (e) => {
+                    console.error(e);
+                },
+            }
+        );
     };
-
     return (
         <Dialog isOpen={isOpen} onClose={onClose}>
             <div
@@ -43,24 +45,16 @@ const DialogDelete = ({ isOpen, onClose, uptd }) => {
                             Apakah Anda yakin?
                         </h4>
                         <p className="text-sm text-gray-600 mb-4">
-                            Anda akan menghapus UPTD berikut ini:
+                            Anda akan menghapus Kategori berikut ini:
                         </p>
                         <div className="bg-red-50 border border-red-300 rounded p-4 text-left text-sm">
                             <div className="space-y-2">
                                 <div>
                                     <span className="font-medium text-gray-700">
-                                        Nama UPTD:{" "}
+                                        Nama Kategori:{" "}
                                     </span>
                                     <span className="text-gray-900">
-                                        {uptd?.namaUptd}
-                                    </span>
-                                </div>
-                                <div>
-                                    <span className="font-medium text-gray-700">
-                                        Alamat:{" "}
-                                    </span>
-                                    <span className="text-gray-900">
-                                        {uptd?.alamat}
+                                        {kategori?.namaKategori}
                                     </span>
                                 </div>
                             </div>

@@ -38,6 +38,11 @@ class UptdController extends Controller
         $validated = $request->validate([
             'namaUptd' => 'required|min:5',
             'alamat' => 'required|min:8'
+        ], [
+            'namaUptd.required' => 'Nama UPTD wajib diisi.',
+            'namaUptd.min' => 'Nama UPTD minimal 5 karakter',
+            'alamat.required' => 'Alamat wajib diisi.',
+            'alamat.min' => 'Alamat minimal 5 karakter',
         ]);
 
         Uptd::create($validated);
@@ -48,8 +53,8 @@ class UptdController extends Controller
     public function update(Request $request, Uptd $uptd)
     {
         $validated = $request->validate([
-            'namaUptd' => 'sometimes|min:5',
-            'alamat' => 'sometimes|min:8'
+            'namaUptd' => 'sometimes|nullable|min:5',
+            'alamat' => 'sometimes|nullable|min:8'
         ]);
 
         $uptd->update($validated);

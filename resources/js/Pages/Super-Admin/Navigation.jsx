@@ -83,15 +83,19 @@ const SuperAdminNavigation = () => {
         },
         {
             label: "Kecamatan",
+            route: 'super-admin.kecamatan'
         },
         {
             label: "Kelurahan",
+            route: 'super-admin.kelurahan'
         },
         {
             label: "Kategori",
+            route: 'super-admin.kategori'
         },
         {
             label: "Sub Kategori",
+            route: 'super-admin.sub-kategori'
         },
     ];
 

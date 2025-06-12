@@ -11,8 +11,9 @@ const Login = () => {
 
     const user = props[0]?.auth?.user;
 
+    // Ubah field dari 'nip' ke 'login' agar konsisten dengan backend
     const { data, setData, post, processing, errors } = useForm({
-        nip: "",
+        login: "", // Ganti dari 'nip' ke 'login'
         password: "",
         remember: false,
     });
@@ -40,18 +41,12 @@ const Login = () => {
     return (
         <AuthLayout title="Objek Retribusi DLH Kota Palembang">
             <section className="flex flex-col gap-4 max-w-xs w-full">
-                {/* <img
-                    src="/img/logo.png"
-                    alt="logo"
-                    className="max-w-56 mx-auto block md:hidden"
-                /> */}
                 <div className="flex items-center justify-between md:hidden">
                     <img
                         src="/img/logo_palembang.png"
                         alt="logo"
                         className="max-w-16 "
                     />
-                    {/* cut gambar */}
                     <img
                         src="/img/dlh_logo.png"
                         alt="logo"
@@ -68,29 +63,28 @@ const Login = () => {
                         Selamat Datang
                     </h3>
                     <p className="text-xs">
-                        {/* Enter your NIP and Password to access your account */}
-                        Masukkan username dan password
+                        Masukkan NIP/Username dan password
                     </p>
                 </div>
                 <form onSubmit={submit} className="flex flex-col gap-5 text-sm">
                     <div className="flex flex-col gap-2">
-                    {/* nip ganti ke username */}
-                        <label className="font-medium" htmlFor="nip">
-                            NIP
+                        <label className="font-medium" htmlFor="login">
+                            NIP/Username
                         </label>
                         <input
-                            id="nip"
-                            type="number"
-                            value={data.nip}
-                            onChange={(e) => setData("nip", e.target.value)}
+                            id="login" // Ubah id dari 'nip' ke 'login'
+                            name="login" // Tambahkan name attribute
+                            type="text"
+                            value={data.login} // Ubah dari data.nip ke data.login
+                            onChange={(e) => setData("login", e.target.value)} // Ubah field
                             className="px-3 py-2 text-sm outline-none select-none bg-neutral-200 rounded"
-                            placeholder="Masukkan NIP..."
-                            autoComplete="off"
+                            placeholder="Masukkan NIP atau Username..." // Update placeholder
+                            autoComplete="username" // Update autocomplete
                             required
                         />
-                        {errors.nip && (
+                        {errors.login && ( // Ubah dari errors.nip ke errors.login
                             <span className="text-red-500 text-xs">
-                                {errors.nip}
+                                {errors.login}
                             </span>
                         )}
                     </div>
@@ -102,19 +96,25 @@ const Login = () => {
                             <input
                                 type={showPassword ? "text" : "password"}
                                 id="password"
+                                name="password" // Tambahkan name attribute
                                 value={data.password}
                                 onChange={(e) =>
                                     setData("password", e.target.value)
                                 }
                                 className="text-sm outline-none select-none bg-transparent flex-1"
                                 placeholder="Masukkan Password..."
-                                autoComplete="off"
+                                autoComplete="current-password" // Update autocomplete
                                 required
                             />
                             <button
                                 type="button"
                                 onClick={togglePassword}
                                 className="outline-none"
+                                aria-label={
+                                    showPassword
+                                        ? "Sembunyikan password"
+                                        : "Tampilkan password"
+                                }
                             >
                                 {showPassword ? (
                                     <Eye size={20} />
@@ -133,7 +133,7 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={processing}
-                            className="w-full bg-black text-white font-medium p-2 rounded flex items-center justify-center"
+                            className="w-full bg-black text-white font-medium p-2 rounded flex items-center justify-center disabled:opacity-50"
                         >
                             {processing ? (
                                 <LoaderCircle

@@ -3,15 +3,23 @@ import Dialog from "@/Components/Dialog";
 import { useForm } from "@inertiajs/react";
 import { X } from "lucide-react";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
-import DropdownInput from "../../../../Components/DropdownInput";
+import DropdownInput from "@/Components/DropdownInput";
 
-const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
-    const firstInputRef = useAutoFocusInput(isOpen);
+const DialogCreate = ({
+    isOpen,
+    onClose,
+    uptdOptions,
+    user = null,
+    mode = "create",
+}) => {
+    const isEditMode = mode === "edit" && user;
+    const firstInputRef = useAutoFocusInput(isOpen, true);
 
     const initialData = {
         namaLengkap: "",
         jabatan: "",
         nip: "",
+        username: "",
         email: "",
         lokasi: "",
         kelamin: "",
@@ -26,11 +34,11 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
 
     const gender = [
         {
-            value: "laki-laki",
+            value: "Laki-laki",
             label: "Laki-laki",
         },
         {
-            value: "perempuan",
+            value: "Perempuan",
             label: "Perempuan",
         },
     ];
@@ -70,28 +78,59 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
         },
     ];
 
-    const { data, setData, errors, processing, clearErrors, post } =
+    const { data, setData, errors, processing, clearErrors, post, put } =
         useForm(initialData);
 
     useEffect(() => {
         if (isOpen) {
-            setData(initialData);
+            if (isEditMode) {
+                setData({
+                    namaLengkap: user.namaLengkap || "",
+                    username: user.username || "",
+                    jabatan: user.jabatan || "",
+                    nip: user.nip || "",
+                    email: user.email || "",
+                    lokasi: user.lokasi || "",
+                    kelamin: user.kelamin || "",
+                    uptdId: user.uptdId || "",
+                    pangkat: user.pangkat || "",
+                    golongan: user.golongan || "",
+                    deskripsi: user.deskripsi || "",
+                    role: user.role || "",
+                    password: "",
+                    password_confirmation: "",
+                });
+            } else {
+                setData(initialData);
+            }
             clearErrors();
         }
-    }, [isOpen]);
+    }, [isOpen, user, isEditMode]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        post(route("super-admin.user.store"), {
-            onSuccess: () => {
-                setData(initialData);
-                onClose();
-            },
-            onError: (e) => {
-                console.error(e);
-            },
-        });
+        if (isEditMode) {
+            put(route("super-admin.user.update", user.id), {
+                onSuccess: () => {
+                    setData(initialData);
+                    onClose();
+                },
+                onError: (e) => {
+                    console.error(e);
+                },
+            });
+        } else {
+            post(route("super-admin.user.store"), {
+                onSuccess: () => {
+                    setData(initialData);
+                    onClose();
+                },
+                onError: (e) => {
+                    console.error(e);
+                },
+            });
+        }
     };
 
     return (
@@ -103,12 +142,16 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                 ${isOpen ? "scale-100" : "scale-95"}`}
             >
                 <div className="flex items-center justify-between p-5">
-                    <h3 className="text-lg font-medium">Form UPTD</h3>
+                    <h3 className="text-lg font-medium">Form User</h3>
                     <button type="button" onClick={onClose}>
                         <X size={20} />
                     </button>
                 </div>
-                <form onSubmit={handleSubmit} className="space-y-5 px-5 pb-5">
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-5 px-5 pb-5"
+                    data-modal
+                >
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="nama"
@@ -117,6 +160,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             Nama Lengkap
                         </label>
                         <input
+                            autoComplete="off"
                             ref={firstInputRef}
                             id="nama"
                             type="text"
@@ -135,12 +179,37 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                     </div>
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label
+                            htmlFor="username"
+                            className="after:content-['*'] after:text-red-500"
+                        >
+                            Username
+                        </label>
+                        <input
+                            autoComplete="off"
+                            id="username"
+                            type="text"
+                            placeholder="Masukkan username..."
+                            className="px-3 py-2 bg-gray-200 outline-none rounded"
+                            value={data.username}
+                            onChange={(e) =>
+                                setData("username", e.target.value)
+                            }
+                        />
+                        {errors.username && (
+                            <span className="text-sm text-red-500">
+                                {errors.username}
+                            </span>
+                        )}
+                    </div>
+                    <div className="flex flex-col gap-1.5 text-sm">
+                        <label
                             htmlFor="jabatan"
                             className="after:content-['*'] after:text-red-500"
                         >
                             Jabatan
                         </label>
                         <input
+                            autoComplete="off"
                             id="jabatan"
                             type="text"
                             placeholder="Masukkan jabatan..."
@@ -154,7 +223,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1 5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="nip"
                             className="after:content-['*'] after:text-red-500"
@@ -162,6 +231,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             Nomor Induk Pegawai
                         </label>
                         <input
+                            autoComplete="off"
                             id="nip"
                             type="text"
                             placeholder="Masukkan NIP..."
@@ -175,12 +245,8 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1 5 text-sm">
-                        <label
-                            htmlFor="email"
-                        >
-                            Email
-                        </label>
+                    <div className="flex flex-col gap-1.5 text-sm">
+                        <label htmlFor="email">Email</label>
                         <input
                             autoComplete="off"
                             id="email"
@@ -196,7 +262,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1 5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="lokasi"
                             className="after:content-['*'] after:text-red-500"
@@ -204,6 +270,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             Lokasi
                         </label>
                         <input
+                            autoComplete="off"
                             id="lokasi"
                             type="text"
                             placeholder="Masukkan lokasi..."
@@ -241,7 +308,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                         valueKey="value"
                         labelKey="label"
                     />
-                    <div className="flex flex-col gap-1 5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="pangkat"
                             className="after:content-['*'] after:text-red-500"
@@ -249,6 +316,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             Pangkat
                         </label>
                         <input
+                            autoComplete="off"
                             id="pangkat"
                             type="text"
                             placeholder="Masukkan pangkat..."
@@ -262,7 +330,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1 5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="golongan"
                             className="after:content-['*'] after:text-red-500"
@@ -270,6 +338,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             Golongan
                         </label>
                         <input
+                            autoComplete="off"
                             id="golongan"
                             type="text"
                             placeholder="Masukkan golongan..."
@@ -285,7 +354,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1 5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="deskripsi"
                             className="after:content-['*'] after:text-red-500"
@@ -293,6 +362,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             Deskripsi
                         </label>
                         <input
+                            autoComplete="off"
                             id="deskripsi"
                             type="text"
                             placeholder="Contoh: Kepala UPTD Lingkungan Hidup Kecamatan Gandus"
@@ -320,7 +390,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                         valueKey="value"
                         labelKey="label"
                     />
-                    <div className="flex flex-col gap-1 5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="password"
                             className="after:content-['*'] after:text-red-500"
@@ -328,6 +398,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             Password
                         </label>
                         <input
+                            autoComplete="off"
                             id="password"
                             type="password"
                             placeholder="Masukkan password..."
@@ -343,7 +414,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1 5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="password_confirmation"
                             className="after:content-['*'] after:text-red-500"
@@ -351,6 +422,7 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             Konfirmasi Password
                         </label>
                         <input
+                            autoComplete="off"
                             id="password_confirmation"
                             type="password"
                             placeholder="Masukkan konfirmasi password..."
@@ -366,27 +438,6 @@ const DialogCreate = ({ isOpen, onClose, uptdOptions }) => {
                             </span>
                         )}
                     </div>
-                    {/* <div className="flex flex-col gap-1 5 text-sm">
-                        <label
-                            htmlFor="kelamin"
-                            className="after:content-['*'] after:text-red-500"
-                        >
-                            Jenis Kelamin
-                        </label>
-                        <input
-                            id="kelamin"
-                            type="text"
-                            placeholder="Masukkan lokasi..."
-                            className="px-3 py-2 bg-gray-200 outline-none rounded"
-                            value={data.kelamin}
-                            onChange={(e) => setData("kelamin", e.target.value)}
-                        />
-                        {errors.kelamin && (
-                            <span className="text-sm text-red-500">
-                                {errors.kelamin}
-                            </span>
-                        )}
-                    </div> */}
                     <div className="flex flex-col md:flex-row md:justify-end gap-3 md:gap-2 text-sm">
                         <button
                             className="px-3 py-2 font-medium order-1 md:order-2 rounded text-white bg-teal-400 hover:bg-teal-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

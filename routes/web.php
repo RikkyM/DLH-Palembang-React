@@ -3,6 +3,10 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
 use App\Http\Controllers\Pendaftar\DashboardController as PendaftarDashboardController;
+use App\Http\Controllers\SuperAdmin\KategoriController;
+use App\Http\Controllers\SuperAdmin\KecamatanController;
+use App\Http\Controllers\SuperAdmin\KelurahanController;
+use App\Http\Controllers\SuperAdmin\SubKategoriController;
 use App\Http\Controllers\SuperAdmin\UptdController;
 use App\Http\Controllers\SuperAdmin\UserController;
 use App\Http\Controllers\SuperAdmin\WajibRetribusiController;
@@ -29,6 +33,9 @@ Route::prefix('sirep')->group(function () {
             Route::prefix('laporan')->group(function () {
                 Route::controller(WajibRetribusiController::class)->group(function () {
                     Route::get('/wajib-retribusi', 'index')->name('wajib-retribusi');
+                    Route::get('/wajib-retribusi/download-pdf', 'downloadPdf')->name('wajib-retribusi.download-pdf');
+                    Route::get('/wajib-retribusi/preview-pdf', 'previewAndDownloadPdf')->name('wajib-retribusi.preview-and-download-pdf');
+                    Route::get('/wajib-retribusi/export-pdf', 'exportPdf')->name('wajib-retribusi.export-pdf');
                     Route::get('/wajib-retribusi/export', 'export')->name('wajib-retribusi.export');
                 });
             });
@@ -39,9 +46,30 @@ Route::prefix('sirep')->group(function () {
                     Route::put('/uptd/{uptd}', 'update')->name('uptd.update');
                     Route::delete('/uptd/{uptd}', 'destroy')->name('uptd.destroy');
                 });
-                Route::resource('/User', UserController::class)->names([
+                Route::resource('/user', UserController::class)->names([
                     'index' => 'user',
                     'store' => 'user.store',
+                    'update' => 'user.update'
+                ]);
+                Route::resource('/kecamatan', KecamatanController::class)->names([
+                    'index' => 'kecamatan',
+                    'store' => 'kecamatan.store',
+                    'update' => 'kecamatan.update',
+                ]);
+                Route::resource('/kelurahan', KelurahanController::class)->names([
+                    'index' => 'kelurahan',
+                    'store' => 'kelurahan.store',
+                    'update' => 'kelurahan.update',
+                ]);
+                Route::resource('/kategori', KategoriController::class)->names([
+                    'index' => 'kategori',
+                    'store' => 'kategori.store',
+                    'update' => 'kategori.update',
+                ]);
+                Route::resource('/sub-kategori', SubKategoriController::class)->names([
+                    'index' => 'sub-kategori',
+                    'store' => 'sub-kategori.store',
+                    'update' => 'sub-kategori.update',
                 ]);
             });
         });
@@ -57,11 +85,6 @@ Route::prefix('sirep')->group(function () {
 Route::get('/kategori', function () {
     $kategori = Kategori::create(['namaKategori' => 'test kategori', 'slug' => 'test-kategori']);
     return $kategori;
-});
-
-Route::get('/kecamatan', function () {
-    $kecamatan = Kecamatan::create(['namaKecamatan' => 'test kecamatan', 'slug' => 'test-kecamatan']);
-    return $kecamatan;
 });
 
 Route::get('/kelurahan', function () {

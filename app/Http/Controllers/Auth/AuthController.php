@@ -19,22 +19,20 @@ class AuthController extends Controller
     public function loginProcess(Request $request, AuthService $authService)
     {
         $request->validate([
-            'nip' => 'required',
-            'password' => 'required'
+            'login' => 'required',
+            'password' => 'required|min:5'
         ], [
-            'nip.required' => 'NIP wajib diisi.',
-            'nip.numeric' => 'NIP harus berupa angka.',
+            'login.required' => 'NIP atau Username wajib diisi.',
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal 5 karakter'
         ]);
 
         $credentials = [
-            'nip' => $request->nip,
+            'login' => $request->login,
             'password' => $request->password
         ];
 
         $redirectRoute = $authService->processLogin($credentials, $request->ip());
-
         return redirect()->route($redirectRoute);
     }
 
