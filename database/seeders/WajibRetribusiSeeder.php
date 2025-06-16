@@ -720,7 +720,7 @@ class WajibRetribusiSeeder extends Seeder
             [666, '0666', '09.044.2025', '08', '08.01', '09.03', '09', 11, 486, 133, 'BANK PEMBANGUNAN DAERAH SUMATERA SELATAN & BABEL KAS RSMH', 'PERKANTORAN', 'PT', 'JL. JENDERAL SUDIRMAN KECAMATAN KEMUNING   ', '0', '0', 'Palembang', 'Sumatera Selatan', 'MILIK SENDIRI', '-2.965969430828811', '104.75012719586233', 'image_1738212855065.jpeg', '/assets24-wr/file/objek-retribusi/image_1738212855065.jpeg', '{file_1738212855109.jpeg}', '{/assets24-wr/file/objek-retribusi/file_1738212855109.jpeg}', 150000, 1, 1, 'Wajib Retribusi Baru', 'Approved', 't', '[{"userId":133,"role":"ROLE_PENDAFTAR","action":"Submited","actionDate":"2025-01-30T04:54:15.187Z"},{"userId":58,"role":"ROLE_KUPTD","uptdId":11,"action":"Approved","actionDate":"2025-01-30T04:58:27.642Z"}]', '2025-01-30 11:54:15.29+07', '2025-01-30 11:58:56.417+07'],
         ];
 
-        $records = array_map(function($row) use ($fields) {
+        $records = array_map(function ($row) use ($fields) {
             $data = array_combine($fields, $row);
             $data['created_at'] = Carbon::parse($data['created_at'])->utc();
             $data['updated_at'] = Carbon::parse($data['updated_at'])->utc();

@@ -3,8 +3,6 @@ import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
 import {
     ChevronDown,
-    ChevronLeft,
-    ChevronRight,
     FileText,
     Filter,
     PencilLine,
@@ -28,7 +26,11 @@ const Index = ({
     const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
     const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
     const [petugas, setPetugas] = useState(filters.petugas || "");
-    const [perPage, setPerPage] = useState(filters.per_page || 10);
+    const [perPage, setPerPage] = useState(() => {
+        return filters.per_page && filters.per_page !== 10
+            ? filters.per_page
+            : 10;
+    });
     const [showFilters, setShowFilters] = useState(false);
     const filterRef = useRef(null);
 
@@ -66,7 +68,7 @@ const Index = ({
         if (kecamatan) params.kecamatan = kecamatan;
         if (kelurahan) params.kelurahan = kelurahan;
         if (petugas) params.petugas = petugas;
-        if (perPage) params.per_page = perPage;
+        if (perPage && perPage !== 10) params.per_page = perPage;
 
         return params;
     };
@@ -100,17 +102,7 @@ const Index = ({
         }, 300);
 
         return () => clearTimeout(timeoutId);
-    }, [search, kategori, subKategori, kecamatan, kelurahan, petugas]);
-
-    useEffect(() => {
-        const params = buildParams({ page: 1 });
-
-        router.get(route("super-admin.wajib-retribusi"), params, {
-            preserveState: true,
-            replace: true,
-            only: ["datas", "filters"],
-        });
-    }, [perPage]);
+    }, [search, kategori, subKategori, kecamatan, kelurahan, petugas, perPage]);
 
     const handlePerPageChange = (e) => {
         setPerPage(parseInt(e.target.value));
@@ -248,7 +240,6 @@ const Index = ({
                                     params.append("kelurahan", kelurahan);
                                 if (petugas) params.append("petugas", petugas);
 
-                                // Untuk auto download
                                 window.open(
                                     route(
                                         "super-admin.wajib-retribusi.preview-and-download-pdf"

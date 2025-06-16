@@ -22,7 +22,7 @@ const SuperAdminNavigation = () => {
         },
         {
             label: "SKRD",
-            // route: "super-admin.dashboard",
+            route: "super-admin.skrd.index",
         },
     ];
 

@@ -15,6 +15,13 @@ const DialogForm = ({
     const isEditMode = mode === "edit" && subkategori;
     const firstInputRef = useAutoFocusInput(isOpen, true);
 
+    // const rumusOptions = [
+    //     {
+    //         value: "ROLE_SEKDIN",
+    //         label: "SEKDIN",
+    //     },
+    // ];
+
     const initialData = {
         kodeSubKategori: "",
         kodeKategori: null,
@@ -202,7 +209,8 @@ const DialogForm = ({
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
+
+                    {/* <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="rumus"
                             className="after:content-['*'] after:text-red-500"
@@ -213,7 +221,7 @@ const DialogForm = ({
                             autoComplete="off"
                             id="rumus"
                             type="text"
-                            placeholder="Contoh: tes1 * tes2 + tes3"
+                            placeholder="tarif * luasUsaha"
                             className={`px-3 py-2 bg-gray-200 outline-none rounded ${
                                 errors.perhitungan?.rumus
                                     ? "border border-red-500"
@@ -233,7 +241,19 @@ const DialogForm = ({
                                 {errors.perhitungan.rumus}
                             </span>
                         )}
-                    </div>
+                    </div> */}
+
+                    <DropdownInput
+                        id="rumus"
+                        label="Rumus"
+                        placeholder="Pilih Rumus..."
+                        value={data.kodeKategori}
+                        onChange={(value) => setData("kodeKategori", value)}
+                        options={kategori}
+                        error={errors.kodeKecamatan}
+                        valueKey="value"
+                        labelKey="label"
+                    />
 
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label

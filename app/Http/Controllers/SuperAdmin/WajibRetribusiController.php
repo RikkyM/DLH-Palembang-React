@@ -91,7 +91,7 @@ class WajibRetribusiController extends Controller
 
         $petugas = User::select('id', 'namaLengkap')->where('role', 'ROLE_PENDAFTAR')->get();
 
-        return Inertia::render('Super-Admin/Laporan/Wajib-Retribusi/Index', [
+        return Inertia::render('Super-Admin/Data-Input/Wajib-Retribusi/Index', [
             'datas' => $query->paginate($perPage)->withQueryString(),
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,

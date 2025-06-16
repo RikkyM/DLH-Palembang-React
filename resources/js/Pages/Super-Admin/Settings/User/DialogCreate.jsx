@@ -188,13 +188,30 @@ const DialogCreate = ({
                             autoComplete="off"
                             id="username"
                             type="text"
-                            placeholder="Masukkan username..."
-                            className="px-3 py-2 bg-gray-200 outline-none rounded"
-                            value={data.username}
-                            onChange={(e) =>
-                                setData("username", e.target.value)
+                            placeholder={
+                                isEditMode && user?.username
+                                    ? "Username tidak dapat diubah"
+                                    : "Masukkan username..."
                             }
+                            className={`px-3 py-2 outline-none rounded ${
+                                isEditMode && user?.username
+                                    ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                                    : "bg-gray-200"
+                            }`}
+                            value={data.username}
+                            onChange={(e) => {
+                                if (!(isEditMode && user?.username)) {
+                                    setData("username", e.target.value);
+                                }
+                            }}
+                            readOnly={isEditMode && user?.username}
+                            disabled={isEditMode && user?.username}
                         />
+                        {isEditMode && user?.username && (
+                            <span className="text-xs text-gray-500">
+                                Username sudah ada dan tidak dapat diubah
+                            </span>
+                        )}
                         {errors.username && (
                             <span className="text-sm text-red-500">
                                 {errors.username}

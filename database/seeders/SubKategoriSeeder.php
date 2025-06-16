@@ -176,8 +176,8 @@ class SubKategoriSeeder extends Seeder
 
         $records = array_map(function ($row) use ($fields) {
             $data = array_combine($fields, $row);
-            $data['created_at'] = Carbon::now();
-            $data['updated_at'] = Carbon::now();
+            $data['created_at'] = Carbon::parse($data['created_at'])->utc();
+            $data['updated_at'] = Carbon::parse($data['updated_at'])->utc();
             return $data;
         }, $data);
 

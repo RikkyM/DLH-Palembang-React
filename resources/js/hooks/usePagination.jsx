@@ -1,5 +1,4 @@
 import { router } from "@inertiajs/react";
-import React from "react";
 
 export const usePagination = () => {
     const handlePageChange = (url) => {
@@ -45,21 +44,47 @@ export const usePagination = () => {
     };
 
     const buildPageUrl = (page, filters = {}) => {
-        const params = new URLSearchParams();
-        params.set("page", page);
+        // Get current URL parameters
+        const currentParams = new URLSearchParams(window.location.search);
 
+        // Set the new page number
+        currentParams.set("page", page);
+
+        // Add or update filter parameters
         Object.entries(filters).forEach(([key, value]) => {
-            if (value && value.trim() !== "") {
-                params.set(key, value);
+            if (value && value.toString().trim() !== "") {
+                currentParams.set(key, value);
+            } else {
+                // Remove parameter if value is empty
+                currentParams.delete(key);
             }
         });
 
-        return `${window.location.pathname}?${params.toString()}`;
+        return `${window.location.pathname}?${currentParams.toString()}`;
+    };
+
+    // Alternative method using router.get for better Inertia integration
+    const navigateToPage = (page, routeName, filters = {}) => {
+        const params = { ...filters, page };
+
+        // Clean up empty parameters
+        Object.keys(params).forEach((key) => {
+            if (!params[key] || params[key].toString().trim() === "") {
+                delete params[key];
+            }
+        });
+
+        router.get(route(routeName), params, {
+            preserveState: true,
+            replace: true,
+            only: ["datas"],
+        });
     };
 
     return {
         handlePageChange,
         generatePagesToShow,
         buildPageUrl,
+        navigateToPage,
     };
 };

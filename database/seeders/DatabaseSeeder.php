@@ -20,7 +20,9 @@ class DatabaseSeeder extends Seeder
             KategoriSeeder::class,
             SubKategoriSeeder::class,
             PemilikSeeder::class,
-            WajibRetribusiSeeder::class
+            WajibRetribusiSeeder::class,
+            SkrdSeeder::class,
+            PembayaranSeeder::class
         ]);
     }
 }

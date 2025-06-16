@@ -575,10 +575,10 @@ class PemilikSeeder extends Seeder
             [542, '18.02', '18', 'STEVAN HERMAWAN', 'SUPERVISOR', '3329122912990002', 'VETERAN NO. 2', 'JAKARTA', '1999-12-29 07:00:00+07', 'penangananpslb@gmail.com', '-', '2024-12-27 09:31:24.306+07', '2024-12-27 09:31:24.306+07'],
         ];
 
-        $records = array_map(function($row) use ($fields) {
+        $records = array_map(function ($row) use ($fields) {
             $data = array_combine($fields, $row);
-            $data['created_at'] = Carbon::now();
-            $data['updated_at'] = Carbon::now();
+            $data['created_at'] = Carbon::parse($data['created_at'])->utc();
+            $data['updated_at'] = Carbon::parse($data['updated_at'])->utc();
             $data['tanggalLahir'] = Carbon::parse($data['tanggalLahir'])->utc();
             return $data;
         }, $data);

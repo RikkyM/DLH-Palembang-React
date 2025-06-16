@@ -57,14 +57,14 @@ const Sidebar = ({ children }) => {
         <>
             <div
                 onClick={toggleSidebar}
-                className={`fixed inset-0 min-h-dvh bg-black/50 z-10 transition-opacity duration-300 md:hidden ${
+                className={`fixed inset-0 min-h-dvh bg-black/50 z-20 transition-opacity duration-300 md:hidden ${
                     isOpen
                         ? "opacity-100 pointer-events-auto"
                         : "opacity-0 pointer-events-none"
                 }`}
             ></div>
             <aside
-                className={`bg-white fixed flex z-10 flex-col top-0 bottom-0 left-0 max-h-dvh md:relative transition-all duration-300 ease-[cubic-bezier(0.65,0.05,0.36,1)] md:w-64 ${
+                className={`bg-white fixed flex z-20 flex-col top-0 bottom-0 left-0 max-h-dvh md:relative transition-all duration-300 ease-[cubic-bezier(0.65,0.05,0.36,1)] md:w-64 ${
                     isOpen ? "w-64" : "w-0"
                 }`}
             >
