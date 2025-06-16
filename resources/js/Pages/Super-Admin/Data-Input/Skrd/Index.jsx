@@ -6,7 +6,7 @@ import SmartPagination from "@/Components/SmartPagination";
 import { router } from "@inertiajs/react";
 
 const Index = ({
-    datas,
+    skrds: datas,
     filters,
     kategoriOptions,
     subKategoriOptions,
@@ -20,13 +20,15 @@ const Index = ({
     const [showFilters, setShowFilters] = useState(false);
     const filterRef = useRef(null);
 
+    console.log(kategoriOptions, subKategoriOptions);
+
     const kategoriList = kategoriOptions.map((k) => ({
-        value: k.kodeKategori,
+        value: k.namaKategori,
         label: k.namaKategori,
     }));
 
     const subKategoriList = subKategoriOptions.map((s) => ({
-        value: s.kodeSubKategori,
+        value: s.namaSubKategori,
         label: s.namaSubKategori,
     }));
 
@@ -65,7 +67,7 @@ const Index = ({
             router.get(route("super-admin.skrd.index"), params, {
                 preserveState: true,
                 replace: true,
-                only: ["skrd", "subKategoriOptions", "filters"],
+                only: ["skrds", "subKategoriOptions", "filters"],
             });
         }, 300);
 

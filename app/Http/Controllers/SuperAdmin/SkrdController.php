@@ -26,7 +26,7 @@ class SkrdController extends Controller
         $subKategoriId = $request->get('sub-kategori');
         $petugasId = $request->get('petugas');
 
-        $skrd = Skrd::with(['kategori', 'subKategori', 'user:id,namaLengkap', 'pembayaran'])->withsum('pembayaran', 'jumlahBayar');
+        $skrd = Skrd::with(['user:id,namaLengkap', 'pembayaran'])->withsum('pembayaran', 'jumlahBayar');
 
         if ($search && trim($search) !== '') {
             $skrd->whereHas('user', function ($query) use ($search) {
@@ -35,15 +35,11 @@ class SkrdController extends Controller
         }
 
         if ($kategoriId) {
-            $skrd->whereHas('kategori', function ($query) use ($kategoriId) {
-                $query->where('kodeKategori', $kategoriId);
-            });
+            $skrd->where('namaKategori', $kategoriId);
         }
 
         if ($subKategoriId) {
-            $skrd->whereHas('subKategori', function ($query) use ($subKategoriId) {
-                $query->where('kodeSubKategori', $subKategoriId);
-            });
+            $skrd->where('namaSubKategori', $subKategoriId);
         }
 
         if ($petugasId) {
@@ -57,7 +53,7 @@ class SkrdController extends Controller
         $petugas = User::select('id', 'namaLengkap')->where('role', 'ROLE_PENDAFTAR')->get();
 
         return Inertia::render('Super-Admin/Data-Input/Skrd/Index', [
-            'datas' => $skrd->paginate(10)->withQueryString(),
+            'skrds' => $skrd->paginate(10)->withQueryString(),
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,
                 'sort' => $sortBy,
