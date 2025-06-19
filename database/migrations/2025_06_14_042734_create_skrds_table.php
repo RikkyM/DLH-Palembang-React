@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('terbilangTahun');
             $table->string('terbilangBulan');
             $table->string('latitudeObjekRetribusi');
-            $table->string('longtitudeObjekRetribusi');
+            $table->string('longitudeObjekRetribusi');
             $table->string('tahun');
             $table->foreignId('objekRetribusiId')->constrained('wajib_retribusi')->onUpdate('cascade')->onDelete('cascade');
             $table->string('statusSkrd');

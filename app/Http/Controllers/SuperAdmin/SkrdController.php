@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Exports\SkrdExport;
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
 use App\Models\Pembayaran;
 use App\Models\Skrd;
 use App\Models\SubKategori;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SkrdController extends Controller
 {
@@ -26,12 +30,40 @@ class SkrdController extends Controller
         $subKategoriId = $request->get('sub-kategori');
         $petugasId = $request->get('petugas');
 
-        $skrd = Skrd::with(['user:id,namaLengkap', 'pembayaran'])->withsum('pembayaran', 'jumlahBayar');
+        $skrd = Skrd::with(['user:id,namaLengkap,lokasi', 'pembayaran' => function ($q) {
+            $q->orderBy('tanggalBayar');
+        }])->withSum('pembayaran', 'jumlahBayar');
+
+        if ($sortBy === 'user.namaLengkap') {
+            $skrd->addSelect([
+                'skrd.*',
+                'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
+                ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
+                ->whereColumn('skrdId', 'skrd.id')
+            ])
+                ->join('users', 'skrd.petugasPendaftarId', '=', 'users.id')
+                ->orderBy('users.namaLengkap', $sortDir);
+        } else {
+            $skrd->withSum('pembayaran', 'jumlahBayar');
+
+            if ($sortBy === 'sisa_tertagih') {
+                $skrd->orderByRaw("(tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) {$sortDir}");
+            } elseif ($sortBy === 'statusLunas') {
+                $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) = 0 THEN 0 ELSE 1 END {$sortDir}");
+            } else {
+                $skrd->orderBy($sortBy, $sortDir);
+            }
+        }
+
+        if ($sortBy === 'sisa_tertagih') {
+        }
 
         if ($search && trim($search) !== '') {
-            $skrd->whereHas('user', function ($query) use ($search) {
-                $query->where('namaLengkap', 'like', "%{$search}%");
-            })->orWhere('namaObjekRetribusi', 'like', "%{$search}%");
+            $skrd->where(function ($q) use ($search) {
+                $q->whereHas('user', function ($query) use ($search) {
+                    $query->where('namaLengkap', 'like', "%{$search}%");
+                })->orWhere('namaObjekRetribusi', 'like', "%{$search}%");
+            });
         }
 
         if ($kategoriId) {
@@ -43,17 +75,19 @@ class SkrdController extends Controller
         }
 
         if ($petugasId) {
-            $skrd->whereHas('user', function ($query) use ($petugasId) {
-                $query->where('id', $petugasId);
-            });
+            $skrd->where('petugasPendaftarId', $petugasId);
         }
 
         $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
-        $subKategori = $kategoriId ? SubKategori::where('kodeKategori', $kategoriId)->select('kodeSubKategori', 'namaSubKategori')->get() : collect();
-        $petugas = User::select('id', 'namaLengkap')->where('role', 'ROLE_PENDAFTAR')->get();
+        $subKategori = $kategoriId ?
+            SubKategori::whereHas('kategori', function ($query) use ($kategoriId) {
+                $query->where('namaKategori', $kategoriId);
+            })->select('kodeSubKategori', 'namaSubKategori')->get()
+            : collect();
+        $petugas = User::select('id', 'namaLengkap', 'lokasi')->where('role', 'ROLE_PENDAFTAR')->orderBy('namaLengkap')->get();
 
         return Inertia::render('Super-Admin/Data-Input/Skrd/Index', [
-            'skrds' => $skrd->paginate(10)->withQueryString(),
+            'datas' => $skrd->paginate(10)->withQueryString(),
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,
                 'sort' => $sortBy,
@@ -87,9 +121,11 @@ class SkrdController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Skrd $skrd)
     {
-        //
+        return Inertia::render('Super-Admin/Data-Input/Skrd/Show/Index', [
+            'skrd' => Skrd::with(['user', 'pembayaran'])
+        ]);
     }
 
     /**
@@ -115,4 +151,28 @@ class SkrdController extends Controller
     {
         //
     }
+
+    public function downloadSinglePdf($id)
+    {
+        $data = Skrd::with(['user:id,namaLengkap,lokasi', 'pembayaran'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('exports.skrd.skrd-single-pdf', compact('data'))
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath("")
+            ]);
+
+        return $pdf->stream("skrd-{$data->noWajibRetribusi}.pdf");
+    }
+
+    public function downloadSingleExcel($id)
+    {
+        return Excel::download(new SkrdExport($id), 'skrd-' . $id . '.xlsx');
+    }
+
 }

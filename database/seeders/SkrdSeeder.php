@@ -37,7 +37,7 @@ class SkrdSeeder extends Seeder
             "terbilangTahun",
             "terbilangBulan",
             "latitudeObjekRetribusi",
-            "longtitudeObjekRetribusi",
+            "longitudeObjekRetribusi",
             "tahun",
             "objekRetribusiId",
             "statusSkrd",
@@ -677,6 +677,7 @@ class SkrdSeeder extends Seeder
 
         $records = array_map(function($row) use ($fields) {
             $data = array_combine($fields, $row);
+            $data["alamatObjekRetribusi"] = trim($data["alamatObjekRetribusi"]);
             $data['created_at'] = Carbon::parse($data['created_at'])->utc();
             $data['updated_at'] = Carbon::parse($data['updated_at'])->utc();
             return $data;

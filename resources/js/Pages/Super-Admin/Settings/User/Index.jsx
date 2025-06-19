@@ -27,11 +27,6 @@ const Index = ({ users, uptd, filters }) => {
         { key: "historyLogin", label: "History Login", align: "text-right" },
     ];
 
-    const p = [
-        { key: 'id', label: 'No', align: 'text-center' },
-        { key: 'noWajibRetribusi', label: 'No Pendaftaran', align: 'text-left' },
-    ]
-
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             const params = {};

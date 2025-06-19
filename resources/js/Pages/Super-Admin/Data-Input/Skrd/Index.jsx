@@ -1,12 +1,13 @@
-import { Filter, Search } from "lucide-react";
+import { FileText, Filter, PencilLine, Search } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useRef, useState } from "react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
+import TableHead from "@/Components/TableHead";
 import { router } from "@inertiajs/react";
 
 const Index = ({
-    skrds: datas,
+    datas,
     filters,
     kategoriOptions,
     subKategoriOptions,
@@ -16,11 +17,91 @@ const Index = ({
     const [kategori, setKategori] = useState(filters.kategori || "");
     const [subKategori, setSubKategori] = useState(filters.subKategori || "");
     const [petugas, setPetugas] = useState(filters.petugas || "");
+    const [sort, setSort] = useState(filters.sort || null);
+    const [direction, setDirection] = useState(filters.direction || null);
+
+    const allFilters = {
+        search: search || filters.search,
+        sort: sort || filters.sort,
+        direction: direction || filters.direction,
+        kategori: kategori || filters.kategori,
+        subKategori: subKategori || filters.subKategori,
+        petugas: petugas || filters.petugas,
+    };
 
     const [showFilters, setShowFilters] = useState(false);
     const filterRef = useRef(null);
 
-    console.log(kategoriOptions, subKategoriOptions);
+    const columns = [
+        { key: "id", label: "No", align: "text-center" },
+        {
+            key: "noWajibRetribusi",
+            label: "no wajib retribusi",
+            align: "text-left truncate",
+        },
+        {
+            key: "created_at",
+            label: "tanggal skrd",
+            align: "text-left truncate",
+        },
+        {
+            key: "namaObjekRetribusi",
+            label: "nama objek retribusi",
+            align: "text-left truncate",
+        },
+        {
+            key: "alamatObjekRetribusi",
+            label: "alamat objek retribusi",
+            align: "text-left truncate",
+        },
+        {
+            key: "kelurahanObjekRetribusi",
+            label: "kelurahan objek retribusi",
+            align: "text-left truncate",
+        },
+        {
+            key: "kecamatanObjekRetribusi",
+            label: "kecamatan objek retribusi",
+            align: "text-left truncate",
+        },
+        {
+            key: "namaKategori",
+            label: "klasifikasi - objek",
+            align: "text-left truncate",
+        },
+        { key: "namaSubKategori", label: "kelas", align: "text-left truncate" },
+        {
+            key: "deskripsiUsaha",
+            label: "jenis/deskripsi",
+            align: "text-left truncate",
+        },
+        {
+            key: "tagihanPerBulanSkrd",
+            label: "per bulan",
+            align: "text-left truncate",
+        },
+        {
+            key: "tagihanPerTahunSkrd",
+            label: "per tahun",
+            align: "text-left truncate",
+        },
+        {
+            key: "pembayaran_sum_jumlah_bayar",
+            label: "jumlah tertagih",
+            align: "text-left truncate",
+        },
+        {
+            key: "sisa_tertagih",
+            label: "sisa tertagih",
+            align: "text-left truncate",
+        },
+        {
+            key: "user.namaLengkap",
+            label: "nama petugas",
+            align: "text-left truncate",
+        },
+        { key: "statusLunas", label: "status", align: "text-left truncate" },
+    ];
 
     const kategoriList = kategoriOptions.map((k) => ({
         value: k.namaKategori,
@@ -34,7 +115,7 @@ const Index = ({
 
     const petugasList = petugasOptions.map((petugas) => ({
         value: petugas.id.toString(),
-        label: petugas.namaLengkap,
+        label: `${petugas.namaLengkap} ${petugas.lokasi}`,
     }));
 
     const buildParams = (additionalParams = {}) => {
@@ -44,6 +125,20 @@ const Index = ({
         if (kategori) params.kategori = kategori;
         if (subKategori) params["sub-kategori"] = subKategori;
         if (petugas) params.petugas = petugas;
+
+        if (sort && sort !== "id") {
+            params.sort = sort;
+            if (direction && direction.toLowerCase() === "desc") {
+                params.direction = "desc";
+            }
+        } else if (
+            sort === "id" &&
+            direction &&
+            direction.toLowerCase() === "desc"
+        ) {
+            params.sort = sort;
+            params.direction = "desc";
+        }
 
         return params;
     };
@@ -67,17 +162,17 @@ const Index = ({
             router.get(route("super-admin.skrd.index"), params, {
                 preserveState: true,
                 replace: true,
-                only: ["skrds", "subKategoriOptions", "filters"],
+                only: ["datas", "subKategoriOptions", "filters"],
             });
         }, 300);
 
         return () => clearTimeout(timeoutId);
-    }, [search, kategori, subKategori, petugas]);
+    }, [search, kategori, subKategori, petugas, sort, direction]);
 
     return (
         <Layout title="SKRD">
             <section className="p-3">
-                <div className="flex flex-col gap-3 md:gap-0 md:flex-row items-center justify-between w-full mb-3 bg-white p-2 rounded">
+                <div className="flex flex-col gap-3 md:gap-0 md:flex-row md:items-center justify-between w-full mb-3 bg-white p-2 rounded">
                     <div className="relative flex gap-2 w-full sm:w-max">
                         <button
                             type="button"
@@ -150,38 +245,29 @@ const Index = ({
                 <div className="overflow-x-auto bg-white rounded shadow">
                     <table className="p-3 min-w-full divide-y divide-gray-300">
                         <thead>
-                            <tr className="*:font-medium *:text-sm *:p-2 *:uppercase *:whitespace-nowrap">
-                                <th className="text-center">no</th>
-                                <th className="text-left">
-                                    no wajib retribusi
-                                </th>
-                                <th className="text-left">tanggal skrd</th>
-                                <th className="text-left">
-                                    nama objek retribusi
-                                </th>
-                                <th className="text-left">
-                                    alamat objek retribusi
-                                </th>
-                                <th className="text-left">kelurahan</th>
-                                <th className="text-left">kecamatan</th>
-                                <th className="text-left">
-                                    klasifikasi - objek
-                                </th>
-                                <th className="text-left">kelas</th>
-                                <th className="text-left">jenis/deskripsi</th>
-                                <th className="text-left">per bulan</th>
-                                <th className="text-left">pertahun</th>
-                                <th className="text-right">jumlah tertagih</th>
-                                <th className="text-right">sisa tertagih</th>
-                                <th className="text-right">nama petugas</th>
-                                {/* <th className="text-right">aksi</th> */}
-                            </tr>
+                            <TableHead
+                                columns={columns}
+                                sort={sort}
+                                direction={direction}
+                                onSort={(column, dir) => {
+                                    setSort(column);
+                                    setDirection(dir);
+                                }}
+                            />
                         </thead>
                         <tbody className="text-xs md:text-sm divide-y divide-neutral-300">
                             {datas?.data?.length > 0 ? (
                                 datas.data.map((data, index) => (
                                     <tr
                                         key={data.id || index}
+                                        onClick={() =>
+                                            router.get(
+                                                route(
+                                                    "super-admin.skrd.show",
+                                                    data.id
+                                                )
+                                            )
+                                        }
                                         className={`*:p-2 ${
                                             index % 2 === 0
                                                 ? "bg-[#F7FBFE]"
@@ -205,7 +291,9 @@ const Index = ({
                                         <td>{data.kelurahanObjekRetribusi}</td>
                                         <td>{data.kecamatanObjekRetribusi}</td>
                                         <td>{data.namaKategori}</td>
-                                        <td>{data.namaSubKategori}</td>
+                                        <td className="min-w-32">
+                                            {data.namaSubKategori}
+                                        </td>
                                         <td>{data.deskripsiUsaha}</td>
                                         <td>
                                             {new Intl.NumberFormat("id-ID", {
@@ -246,21 +334,57 @@ const Index = ({
                                             )}
                                         </td>
                                         <td>{data.user.namaLengkap}</td>
-                                        {/*
+                                        <td className="text-left">
+                                            {data.tagihanPerTahunSkrd -
+                                                data.pembayaran_sum_jumlah_bayar ===
+                                            0 ? (
+                                                <span className="px-2 py-1 truncate text-green-700 rounded">
+                                                    Lunas
+                                                </span>
+                                            ) : (
+                                                <span className="px-2 py-1 truncate text-red-700 rounded">
+                                                    Belum Lunas
+                                                </span>
+                                            )}
+                                        </td>
                                         <td>
-                                            <div className="flex gap-2 *:rounded *:font-medium *:text-sm">
+                                            <div className="flex flex-wrap gap-2 *:rounded *:font-medium *:text-xs *:sm:text-sm">
                                                 <button className="flex items-center gap-1.5">
                                                     <PencilLine size={20} />{" "}
                                                     Edit
                                                 </button>
-                                                <button className="whitespace-nowrap flex items-center gap-1.5">
-                                                    <FileText size={20} /> Form
+                                                <button
+                                                    className="whitespace-nowrap flex items-center gap-1.5"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        window.open(
+                                                            route(
+                                                                "super-admin.skrd.preview-pdf",
+                                                                { id: data.id }
+                                                            ),
+                                                            "_blank"
+                                                        );
+                                                    }}
+                                                >
+                                                    <FileText size={20} /> PDF
                                                 </button>
-                                                <button className="whitespace-nowrap flex items-center gap-1.5">
-                                                    <FileText size={20} /> SKRD
+                                                <button
+                                                    className="whitespace-nowrap flex items-center gap-1.5"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        window.open(
+                                                            route(
+                                                                "super-admin.skrd.export-excel",
+                                                                { id: data.id }
+                                                            ),
+                                                            "_blank"
+                                                        );
+                                                    }}
+                                                >
+                                                    <FileText size={20} /> Excel
                                                 </button>
                                             </div>
-                                        </td> */}
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
@@ -278,7 +402,7 @@ const Index = ({
                         </tbody>
                     </table>
                 </div>
-                <SmartPagination datas={datas} filters={filters} />
+                <SmartPagination datas={datas} filters={allFilters} />
             </section>
         </Layout>
     );

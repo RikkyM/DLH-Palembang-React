@@ -29,7 +29,7 @@ Route::prefix('sirep')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::middleware('auth')->group(function () {
-        Route::prefix('super-admin')->name('super-admin.')->group(function () {
+        Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-admin.')->group(function () {
             Route::get('/dashboard', [SuperAdminDashboardController::class, 'index'])->name('dashboard');
             Route::prefix('data-input')->group(function () {
                 Route::controller(WajibRetribusiController::class)->group(function () {
@@ -40,6 +40,9 @@ Route::prefix('sirep')->group(function () {
                     Route::get('/wajib-retribusi/export', 'export')->name('wajib-retribusi.export');
                 });
                 Route::resource('/skrd', SkrdController::class);
+                Route::get('/skrd/{id}/preview-pdf', [SkrdController::class, 'downloadSinglePdf'])->name('skrd.preview-pdf');
+                Route::get('/skrd/{id}/export-excel', [SkrdController::class, 'downloadSingleExcel'])->name('skrd.export-excel');
+
             });
             Route::prefix('settings')->group(function () {
                 Route::controller(UptdController::class)->group(function () {
@@ -76,7 +79,7 @@ Route::prefix('sirep')->group(function () {
             });
         });
 
-        Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
+        Route::middleware('role:ROLE_PENDAFTAR')->prefix('pendaftar')->name('pendaftar.')->group(function () {
             Route::get('/dashboard', [PendaftarDashboardController::class, 'index'])->name('dashboard');
         });
     });
