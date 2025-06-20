@@ -17,6 +17,7 @@ const Index = ({
     const [kategori, setKategori] = useState(filters.kategori || "");
     const [subKategori, setSubKategori] = useState(filters.subKategori || "");
     const [petugas, setPetugas] = useState(filters.petugas || "");
+    const [status, setStatus] = useState(filters.status || "");
     const [sort, setSort] = useState(filters.sort || null);
     const [direction, setDirection] = useState(filters.direction || null);
 
@@ -27,6 +28,7 @@ const Index = ({
         kategori: kategori || filters.kategori,
         subKategori: subKategori || filters.subKategori,
         petugas: petugas || filters.petugas,
+        status: status || filters.status,
     };
 
     const [showFilters, setShowFilters] = useState(false);
@@ -118,6 +120,11 @@ const Index = ({
         label: `${petugas.namaLengkap} ${petugas.lokasi}`,
     }));
 
+    const statusList = [
+        { value: "lunas", label: "Lunas" },
+        { value: "belum_lunas", label: "Belum Lunas" },
+    ];
+
     const buildParams = (additionalParams = {}) => {
         const params = { ...additionalParams };
 
@@ -125,6 +132,7 @@ const Index = ({
         if (kategori) params.kategori = kategori;
         if (subKategori) params["sub-kategori"] = subKategori;
         if (petugas) params.petugas = petugas;
+        if (status) params.status = status;
 
         if (sort && sort !== "id") {
             params.sort = sort;
@@ -167,7 +175,7 @@ const Index = ({
         }, 300);
 
         return () => clearTimeout(timeoutId);
-    }, [search, kategori, subKategori, petugas, sort, direction]);
+    }, [search, kategori, subKategori, petugas, sort, direction, status]);
 
     return (
         <Layout title="SKRD">
@@ -215,6 +223,13 @@ const Index = ({
                                 value={petugas}
                                 onChange={(val) => setPetugas(val)}
                                 placeholder="Pilih Petugas Pendaftar"
+                            />
+                            <SearchableSelect
+                                id="statusList"
+                                options={statusList}
+                                value={status}
+                                onChange={(val) => setStatus(val)}
+                                placeholder="Filter berdasarkan status"
                             />
                         </div>
                         <label
@@ -347,20 +362,20 @@ const Index = ({
                                                 </span>
                                             )}
                                         </td>
-                                        <td>
+                                        <td onClick={e => e.stopPropagation()}>
                                             <div className="flex flex-wrap gap-2 *:rounded *:font-medium *:text-xs *:sm:text-sm">
-                                                <button className="flex items-center gap-1.5">
+                                                <button className="flex items-center gap-1.5 outline-none">
                                                     <PencilLine size={20} />{" "}
                                                     Edit
                                                 </button>
                                                 <button
-                                                    className="whitespace-nowrap flex items-center gap-1.5"
+                                                    className="whitespace-nowrap flex items-center gap-1.5 outline-none"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         window.open(
                                                             route(
                                                                 "super-admin.skrd.preview-pdf",
-                                                                { id: data.id }
+                                                                { id: data.id, noWajibRetribusi: data.noWajibRetribusi },
                                                             ),
                                                             "_blank"
                                                         );
@@ -369,13 +384,13 @@ const Index = ({
                                                     <FileText size={20} /> PDF
                                                 </button>
                                                 <button
-                                                    className="whitespace-nowrap flex items-center gap-1.5"
+                                                    className="whitespace-nowrap flex items-center gap-1.5 outline-none"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         window.open(
                                                             route(
                                                                 "super-admin.skrd.export-excel",
-                                                                { id: data.id }
+                                                                { id: data.id },
                                                             ),
                                                             "_blank"
                                                         );
@@ -390,7 +405,7 @@ const Index = ({
                             ) : (
                                 <tr>
                                     <td
-                                        colSpan="13"
+                                        colSpan="17"
                                         className="text-center py-8 text-center text-gray-500"
                                     >
                                         {search

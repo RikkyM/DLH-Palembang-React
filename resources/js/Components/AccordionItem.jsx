@@ -5,10 +5,23 @@ import { ChevronDown } from "lucide-react";
 const AccordionItem = ({ title, items, isRouteActive }) => {
     const { url } = usePage();
 
-    const isRouteActiveIgnoreQuery = (routeName) => {
+    const isRouteActiveIgnoreQuery = (routeName, activeRoute = null) => {
         if (!routeName) return false;
 
         try {
+            // Jika ada activeRoute (wildcard pattern), gunakan itu untuk pengecekan
+            const routeToCheck = activeRoute || routeName;
+
+            // Jika menggunakan wildcard pattern (mengandung *)
+            if (routeToCheck.includes("*")) {
+                const pattern = routeToCheck.replace("*", "");
+                const currentRouteName = route().current();
+
+                // Cek apakah current route dimulai dengan pattern
+                return currentRouteName && currentRouteName.startsWith(pattern);
+            }
+
+            // Untuk route normal tanpa wildcard
             const routeUrl = route(routeName);
             const currentPathname = new URL(url, window.location.origin)
                 .pathname;
@@ -22,7 +35,8 @@ const AccordionItem = ({ title, items, isRouteActive }) => {
     };
 
     const hasActiveItem = items.some(
-        (item) => item.route && isRouteActiveIgnoreQuery(item.route)
+        (item) =>
+            item.route && isRouteActiveIgnoreQuery(item.route, item.activeRoute)
     );
 
     const [isOpen, setIsOpen] = useState(hasActiveItem);
@@ -70,7 +84,10 @@ const AccordionItem = ({ title, items, isRouteActive }) => {
                                     href={item.route ? route(item.route) : "#"}
                                     className={`inline-block w-full p-2 rounded transition-all duration-300 ${
                                         item.route &&
-                                        isRouteActiveIgnoreQuery(item.route)
+                                        isRouteActiveIgnoreQuery(
+                                            item.route,
+                                            item.activeRoute
+                                        )
                                             ? "bg-teal-400 font-medium text-white"
                                             : "hover:bg-neutral-100"
                                     }`}

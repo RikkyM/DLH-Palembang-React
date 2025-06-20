@@ -85,7 +85,6 @@ class UserController extends Controller
 
             return redirect()->back();
         } catch (Exception $e) {
-
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data');
         }
     }

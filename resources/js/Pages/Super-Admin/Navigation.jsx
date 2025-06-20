@@ -1,6 +1,5 @@
 import { Link, usePage } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
-import { useState } from "react";
 import AccordionItem from "@/Components/AccordionItem";
 
 const SuperAdminNavigation = () => {
@@ -14,7 +13,7 @@ const SuperAdminNavigation = () => {
     const dataInputs = [
         {
             label: "Pemohon",
-            // route: "super-admin.wajib-retribusi",
+            route: "super-admin.pemohon.index",
         },
         {
             label: "Wajib Retribusi",
@@ -23,6 +22,7 @@ const SuperAdminNavigation = () => {
         {
             label: "SKRD",
             route: "super-admin.skrd.index",
+            activeRoute: 'super-admin.skrd.*'
         },
     ];
 

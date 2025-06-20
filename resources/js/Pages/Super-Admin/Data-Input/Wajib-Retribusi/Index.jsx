@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
+import { useProvider } from "@/Context/GlobalContext";
+
 import {
     ChevronDown,
     FileText,
@@ -10,6 +12,7 @@ import {
 } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
+import DialogForm from "./DialogForm";
 
 const Index = ({
     datas,
@@ -20,6 +23,7 @@ const Index = ({
     kelurahanOptions,
     petugasOptions,
 }) => {
+        const { modalState, openModal, closeModal } = useProvider();
     const [search, setSearch] = useState(filters.search || "");
     const [kategori, setKategori] = useState(filters.kategori || "");
     const [subKategori, setSubKategori] = useState(filters.subKategori || "");
@@ -222,7 +226,9 @@ const Index = ({
                         </label>
                     </div>
                     <div className="flex items-center justify-end md:justify-start gap-1.5">
-                        <button className="bg-green-500 px-3 py-1.5 rounded text-sm text-white font-medium">
+                        <button onClick={() => {
+                            openModal('create')
+                        }} className="bg-green-500 px-3 py-1.5 rounded text-sm text-white font-medium">
                             Tambah
                         </button>
                         <button
@@ -345,7 +351,9 @@ const Index = ({
                                         </td>
                                         <td>
                                             <div className="flex gap-2 *:rounded *:font-medium *:text-sm">
-                                                <button className="flex items-center gap-1.5">
+                                                <button onClick={() => {
+                                                    openModal('edit', data)
+                                                }} className="flex items-center gap-1.5">
                                                     <PencilLine size={20} />{" "}
                                                     Edit
                                                 </button>
@@ -377,6 +385,15 @@ const Index = ({
 
                 <SmartPagination datas={datas} filters={filters} />
             </section>
+
+            <DialogForm
+                isOpen={
+                    modalState.type === 'create' || modalState.type === 'edit'
+                }
+                onClose={closeModal}
+                wr={modalState.data}
+                mode={modalState.type}
+            />
         </Layout>
     );
 };

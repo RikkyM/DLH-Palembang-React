@@ -38,6 +38,10 @@ return new class extends Migration
 
             $table->timestamps();
 
+            $table->foreign('skrdId')->references('id')->on('skrd')->onUpdate('cascade');
+            $table->foreign('uptdId')->references('id')->on('uptd')->onUpdate('cascade');
+            $table->foreign('petugasPendaftarId')->references('id')->on('users')->onUpdate('cascade');
+
             $table->index('skrdId');
             $table->index('uptdId');
             $table->index('petugasPendaftarId');

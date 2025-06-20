@@ -16,7 +16,18 @@ class Pemilik extends Model
         'nik',
         'alamat',
         'tempatLahir',
+        'tanggalLahir',
         'email',
-        'noHp'
+        'noHP'
     ];
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class, 'kodeKecamatan', 'kodeKecamatan');
+    }
+
+    public function kelurahan()
+    {
+        return $this->belongsTo(Kelurahan::class, 'kodeKelurahan', 'kodeKelurahan');
+    }
 }

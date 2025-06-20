@@ -577,6 +577,9 @@ class PemilikSeeder extends Seeder
 
         $records = array_map(function ($row) use ($fields) {
             $data = array_combine($fields, $row);
+            $data['namaPemilik'] = trim($data['namaPemilik']);
+            $data['alamat'] = trim($data['alamat']);
+            $data['tempatLahir'] = trim($data['tempatLahir']);
             $data['created_at'] = Carbon::parse($data['created_at'])->utc();
             $data['updated_at'] = Carbon::parse($data['updated_at'])->utc();
             $data['tanggalLahir'] = Carbon::parse($data['tanggalLahir'])->utc();

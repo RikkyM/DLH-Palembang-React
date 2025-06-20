@@ -64,7 +64,7 @@
                     (Aneka Retribusi Kebersihan)
                 </h2>
                 <span style="font-size: 17px;">Dasar:</span><br>
-                <div style="padding-left: 30px; font-size: 17px; line-height: 1.4em;">Peraturan Daerah Kota Palembang
+                <div style="padding-left: 40px; font-size: 17px; line-height: 1.4em;">Peraturan Daerah Kota Palembang
                     No. 27 Tahun 2011<br>Surat keputusan kepala DLHK Kota Palembang<br>No : <br>Tanggal/Tahun:
                     <br>Tentang: Surat Ketetapan Retribusi Daerah Tahun 2023<br>(Aneka Retribusi Kebersihan)
                 </div><br>
@@ -100,7 +100,7 @@
         <tbody>
             <tr>
                 <td colspan="3" style="border: 1px solid black; padding: 4px;">Objek Retribusi yang harus
-                    dibayar/bulan: Rp {{ number_format($data->tagihanPerBulanSkrd, 0, ',', '.') }}</td>
+                    dibayar/bulan: {{ $data->tarifPerBulanObjekRetribusi }}</td>
                 <td colspan="2" style="border: 1px solid black; padding: 4px;">
                     Terbilang:<br>
                     {{ $data->terbilangBulan }}
@@ -108,7 +108,7 @@
             </tr>
             <tr>
                 <td colspan="3" style="border: 1px solid black; padding: 4px;">Objek Retribusi yang harus
-                    dibayar/tahun: Rp {{ number_format($data->tagihanPerTahunSkrd, 0, ',', '.') }}</td>
+                    dibayar/tahun: {{ $data->tarifPerTahunObjekRetribusi}}</td>
                 <td colspan="2" style="border: 1px solid black; padding: 4px;">
                     Terbilang:<br>
                     {{ $data->terbilangTahun }}
@@ -122,7 +122,17 @@
             <td style=""></td>
         </tr>
         <tr>
-            <td><img src="https://quickchart.io/map?center=-3.0285,104.7443&zoom=17&width=600&height=400&markers=-3.0285,104.7443" alt="map">
+            <td>
+                <iframe
+                name="maps"
+                src="//maps.google.com/maps?q={{ $data->latitudeObjekRetribusi}},{{$data->longitudeObjekRetribusi}}&z=15&output=embed&z=18"
+                width="450"
+                height="300"
+                style="border: 0"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
             </td>
             <td></td>
             
