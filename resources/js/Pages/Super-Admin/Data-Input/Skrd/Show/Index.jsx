@@ -4,7 +4,7 @@ const Index = ({ data }) => {
     return (
         <Layout title={data.namaObjekRetribusi}>
             <section className="p-3">
-              asdasd
+            
             </section>
         </Layout>
     );

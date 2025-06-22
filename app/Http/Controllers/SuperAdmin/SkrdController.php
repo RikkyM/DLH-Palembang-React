@@ -175,45 +175,45 @@ class SkrdController extends Controller
         ]);
     }
 
+    // public function downloadPdf($id)
+    // {
+    //     $data = Skrd::with(['user:id,namaLengkap,lokasi', 'pembayaran'])->findOrFail($id);
+
+    //     // Render HTML dari Inertia
+    //     $html = Inertia::render('Super-Admin/Data-Input/Skrd/PdfPreview', [
+    //         'data' => $data
+    //     ])->toResponse(request())->getContent();
+
+    //     $pdfPath = storage_path("app/public/skrd-pdf-{$id}.pdf");
+
+    //     Browsershot::html($html)
+    //         ->setNodeBinary('C:\Program Files\nodejs\node.exe') // Ganti sesuai "where node"
+    //         ->setNpmBinary('C:\Program Files\nodejs\npm.cmd')   // Ganti sesuai "where npm"
+    //         ->noSandbox()
+    //         ->format('A4')
+    //         ->savePdf($pdfPath);
+
+    //     return response()->download($pdfPath)->deleteFileAfterSend(true);
+    // }
+
+
     public function downloadPdf($id)
     {
         $data = Skrd::with(['user:id,namaLengkap,lokasi', 'pembayaran'])->findOrFail($id);
 
-        // Render HTML dari Inertia
-        $html = Inertia::render('Super-Admin/Data-Input/Skrd/PdfPreview', [
-            'data' => $data
-        ])->toResponse(request())->getContent();
+        $pdf = Pdf::loadView('exports.skrd.skrd-single-pdf', compact('data'))
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath("")
+            ]);
 
-        $pdfPath = storage_path("app/public/skrd-pdf-{$id}.pdf");
-
-        Browsershot::html($html)
-            ->setNodeBinary('C:\Program Files\nodejs\node.exe') // Ganti sesuai "where node"
-            ->setNpmBinary('C:\Program Files\nodejs\npm.cmd')   // Ganti sesuai "where npm"
-            ->noSandbox()
-            ->format('A4')
-            ->savePdf($pdfPath);
-
-        return response()->download($pdfPath)->deleteFileAfterSend(true);
+        return $pdf->download("skrd-{$data->noWajibRetribusi}.pdf");
     }
-
-
-    // public function downloadSinglePdf($id)
-    // {
-    //     $data = Skrd::with(['user:id,namaLengkap,lokasi', 'pembayaran'])->findOrFail($id);
-
-    //     $pdf = Pdf::loadView('exports.skrd.skrd-single-pdf', compact('data'))
-    //         ->setPaper('a4', 'portrait')
-    //         ->setOptions([
-    //             'dpi' => 150,
-    //             'defaultFont' => 'sans-serif',
-    //             'isHtml5ParserEnabled' => true,
-    //             'isPhpEnabled' => true,
-    //             'isRemoteEnabled' => true,
-    //             'chroot' => realpath("")
-    //         ]);
-
-    //     return $pdf->download("skrd-{$data->noWajibRetribusi}.pdf");
-    // }
 
     public function downloadSingleExcel($id)
     {

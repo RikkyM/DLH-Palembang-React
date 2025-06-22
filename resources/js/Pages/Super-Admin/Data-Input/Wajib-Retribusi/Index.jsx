@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Layout from "../../Layout";
-import { router } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { useProvider } from "@/Context/GlobalContext";
 
 import {
@@ -113,7 +113,7 @@ const Index = ({
     };
 
     return (
-        <Layout title="LAPORAN WAJIB RETRIBUSI">
+        <Layout title="WAJIB RETRIBUSI">
             <section className="p-3">
                 <div
                     className="flex flex-col gap-3 lg:flex-row lg:items-center justify-between w-full mb-3 p-2 rounded bg-white shadow"
@@ -226,11 +226,11 @@ const Index = ({
                         </label>
                     </div>
                     <div className="flex items-center justify-end md:justify-start gap-1.5">
-                        <button onClick={() => {
-                            openModal('create')
+                        <Link href={() => {
+                            router.get(route(''))
                         }} className="bg-green-500 px-3 py-1.5 rounded text-sm text-white font-medium">
                             Tambah
-                        </button>
+                        </Link>
                         <button
                             onClick={() => {
                                 const params = new URLSearchParams();
@@ -344,7 +344,7 @@ const Index = ({
                                         <td>{data.uptd.namaUptd}</td>
                                         <td>{data.user.namaLengkap}</td>
                                         <td>
-                                            <span className="px-3 py-2 rounded  font-medium text-teal-600 select-none ">
+                                            <span className="py-2 rounded  font-medium text-teal-600 select-none ">
                                                 {data.status == "Approved" &&
                                                     "Diterima"}
                                             </span>

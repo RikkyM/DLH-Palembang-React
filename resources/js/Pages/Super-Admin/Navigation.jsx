@@ -16,8 +16,20 @@ const SuperAdminNavigation = () => {
             route: "super-admin.pemohon.index",
         },
         {
-            label: "Wajib Retribusi",
+            label: "Data Wajib Retribusi",
             route: "super-admin.wajib-retribusi",
+        },
+        {
+            label: "Inbox Diterima",
+            // route: "super-admin.wajib-retribusi",
+        },
+        {
+            label: "Inbox Diproses",
+            // route: "super-admin.wajib-retribusi",
+        },
+        {
+            label: "Inbox Ditolak",
+            // route: "super-admin.wajib-retribusi",
         },
         {
             label: "SKRD",

@@ -37,6 +37,11 @@ const Index = ({
     const columns = [
         { key: "id", label: "No", align: "text-center" },
         {
+            key: "noSkrd",
+            label: "no skrd",
+            align: "text-left truncate",
+        },
+        {
             key: "noWajibRetribusi",
             label: "no wajib retribusi",
             align: "text-left truncate",
@@ -295,6 +300,7 @@ const Index = ({
                                                 index +
                                                 1}
                                         </td>
+                                        <td>{data.noSkrd}</td>
                                         <td>{data.noWajibRetribusi}</td>
                                         <td>
                                             {new Date(data.created_at)
@@ -374,8 +380,8 @@ const Index = ({
                                                         e.stopPropagation();
                                                         window.open(
                                                             route(
-                                                                "super-admin.skrd.preview-pdf",
-                                                                { id: data.id, noWajibRetribusi: data.noWajibRetribusi },
+                                                                "super-admin.skrd.download-pdf",
+                                                                { id: data.id},
                                                             ),
                                                             "_blank"
                                                         );
