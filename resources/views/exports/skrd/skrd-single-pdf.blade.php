@@ -4,13 +4,41 @@
 <head>
     <meta charset="UTF-8">
     <style>
+        @font-face {
+            font-family: 'ArialCustom';
+            font-style: normal;
+            font-weight: normal;
+            src: url('{{ public_path('fonts/arial/ARIAL.TTF') }}') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'ArialCustom';
+            font-style: normal;
+            font-weight: bold;
+            src: url('{{ public_path('fonts/arial/ARIALBD.TTF') }}') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'ArialCustom';
+            font-style: italic;
+            font-weight: normal;
+            src: url('{{ public_path('fonts/arial/ARIALI.TTF') }}') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'ArialCustom';
+            font-style: italic;
+            font-weight: bold;
+            src: url('{{ public_path('fonts/arial/ARIALBI.TTF') }}') format('truetype');
+        }
+
         * {
             padding: 0;
             box-sizing: border-box;
+            font-family: 'ArialCustom';
         }
 
         body {
-            font-family: sans-serif;
             font-size: 12px;
         }
 
@@ -80,7 +108,7 @@
     </table>
     <table class="lampiran" style="width: 100%; border-collapse: collapse; border: 1px solid black; font-size: 12px;">
         <thead>
-            <tr>
+            <tr style="font-size: 14px;">
                 <th colspan="3" style="width: 50%; text-align: center; border: 1px solid black; padding: 4px;">
                     Letak Wajib Retribusi
                 </th>
@@ -88,10 +116,9 @@
                     Nama dan Alamat Wajib Retribusi Kebersihan
                 </th>
             </tr>
-
         </thead>
         <tbody>
-            <tr>
+            <tr style="font-size: 14px;">
                 <td colspan="3" style="height: 100px; width: 50%; text-align: left; vertical-align: middle;">
                     Kecamatan: {{ $data->kecamatanObjekRetribusi }}<br />
                     Kelurahan: {{ $data->kelurahanObjekRetribusi }}
@@ -101,7 +128,7 @@
                     Alamat Objek Retribusi: {{ $data->alamatObjekRetribusi }}
                 </td>
             </tr>
-            <tr>
+            <tr style="font-size: 14px;">
                 <td style="width: 16.66%; text-align: center; border: 1px solid black; padding: 4px;">No. Reg</td>
                 <td style="width: 16.66%; text-align: center; border: 1px solid black; padding: 4px;">Objek Retribusi
                 </td>
@@ -109,7 +136,7 @@
                 <td style="width: 25%; text-align: center; border: 1px solid black; padding: 4px;">Tarif / Bulan</td>
                 <td style="width: 25%; text-align: center; border: 1px solid black; padding: 4px;">Tarif / Tahun</th>
             </tr>
-            <tr>
+            <tr style="font-size: 14px;">
                 <td colspan="3" style="border: 1px solid black; padding: 4px; width: 50%;">Objek Retribusi yang harus
                     dibayar/bulan: <br /> {{ $data->tarifPerBulanObjekRetribusi }}</td>
                 <td colspan="2" style="border: 1px solid black; padding: 4px; width: 50%;">
@@ -117,7 +144,7 @@
                     {{ $data->terbilangBulan }}
                 </td>
             </tr>
-            <tr>
+            <tr style="font-size: 14px;">
                 <td colspan="3" style="border: 1px solid black; padding: 4px; width: 50%;">Objek Retribusi yang harus
                     dibayar/tahun: <br /> {{ $data->tarifPerTahunObjekRetribusi }}</td>
                 <td colspan="2" style="border: 1px solid black; padding: 4px; width: 50%;">
@@ -142,12 +169,13 @@
                 </a>
             </td>
             <td style="width: 50%; text-align: center;">
-                <p style="font-size: 14px; margin-bottom: 10px; line-height: 0.8rem;">A/n Kepala Dinas Lingkungan
-                    Hidup<br />dan Kebersihan
-                    Kota Palembang<br />Sekretaris,<br /></p>
-                <img src="/img/qrcode.jpg" alt="QR Code DLH Palembang" width="50" height="50" />
-                <p style="font-size: 14px; line-height: 0.8rem;">Aris Satria Bandarnata. S.STP., M.Si<br />NIP
-                    1674021843992034</p>
+                <p style="font-size: 14px; line-height: 0.8rem; width: 230px; margin: 0 auto;">An. Kepala Dinas
+                    Lingkungan
+                    Hidup<br />Kota Palembang<br /></p>
+                {{-- <img src="/img/qrcode.jpg" alt="QR Code DLH Palembang" width="50" height="50" /><br/> --}}
+                <p
+                    style="font-size: 14px; line-height: 0.8rem; text-align: left; display: inline-block; margin: 0 auto; width: 230px; margin-bottom: 110px;">
+                    Andika Marta Dinata. S.ST., M.T<br />NIP</p>
                 <p style="font-size: 7px; max-width: 350px; text-align: left; line-height: 0.45rem; margin: auto;">-UU
                     ITE No. 11 Tahun 2008 Pasal 5 ayat 1 Informasi Elektronik dan/atau
                     Dokumen Elektronik dan/atau
@@ -164,7 +192,7 @@
         </tr>
     </table>
     <table
-        style="width: 100%; line-height: 0.75rem; text-align: justify; padding: 10px; border: 1px solid black; margin-top: 20px; font-size: 14px;">
+        style="width: 100%; line-height: 0.6rem; text-align: justify; padding: 10px; border: 1px solid black; margin-top: 20px; font-size: 14px;">
         <tr>
             <td style="width: 2%; vertical-align: top">1.</td>
             <td>Pembayaran/penyetoran retribusi kebersihan dapat dibayar / disetor pada petugas penagih
@@ -197,18 +225,18 @@
                 biaya-biaya lainnya sepenuhnya ditanggung oleh wajib retribusi yang bersangkutan</td>
         </tr>
     </table>
-    <div style="border-top: 3px dashed !important; margin-top: 1.5rem; padding-top: 1.5rem;">
-        <table style="border-collapse: collapse; width: 100%; max-width: 800px;line-height: 0.8rem; font-size: 14px;">
+    <div style="border-top: 3px dashed !important; margin-top: 1.4rem; padding-top: 1.4rem;">
+        <table style="border-collapse: collapse; width: 100%; max-width: 800px;line-height: 0.7rem; font-size: 14px;">
             <tr>
                 <td style="width: 25%;">No. SKRD</td>
                 <td style="width: 25%;">: {{ $data->noSkrd }}</td>
-                <td style="width: 25%;">Diterima Tanggal</td>
+                <td style="width: 25%; padding-left: 10px;">Diterima Tanggal</td>
                 <td style="width: 25%;">: -</td>
             </tr>
             <tr>
                 <td>No. Wajib Retribusi</td>
                 <td>: {{ $data->noWajibRetribusi }}</td>
-                <td>Nama Penerima</td>
+                <td style="padding-left: 10px;">Nama Penerima</td>
                 <td>: -</td>
             </tr>
             <tr>
@@ -220,14 +248,20 @@
             <tr>
                 <td>Tarif Ketetapan / Bulan</td>
                 <td>: {{ $data->tarifPerBulanObjekRetribusi }}</td>
-                <td></td>
-                <td></td>
+                <td style="text-align: center;">Penerima</td>
+                <td style="text-align: center;">Penagih</td>
             </tr>
             <tr>
                 <td>Tarif Ketetapan / Tahun</td>
                 <td>: {{ $data->tarifPerTahunObjekRetribusi }}</td>
-                <td style="text-align: center;">Penerima</td>
-                <td style="text-align: center;">Penagih</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Jumlah Bulan</td>
+                <td>: {{ $data->jumlahBulan }} Bulan</td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td style="vertical-align: top;">Alamat</td>
@@ -236,7 +270,8 @@
                         <div style="display: table-row; background: red;">
                             <div style="display: table-cell;">:</div>
                             <div style="display: table-cell; padding-left: 4px;">
-                                {{ $data->alamatObjekRetribusi }}
+                                {{ $data->alamatObjekRetribusi }} KELURAHAN {{ $data->kelurahanObjekRetribusi }}
+                                KECAMATAN {{ $data->kecamatanObjekRetribusi }}
                             </div>
                         </div>
                     </div>
@@ -248,8 +283,8 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td style="text-align: center; padding-top: 60px;">Jhon Doe</td>
-                <td style="text-align: center; padding-top: 60px;">Jhon Doe</td>
+                <td style="text-align: center;">Jhon Doe</td>
+                <td style="text-align: center;">Jhon Doe</td>
             </tr>
         </table>
     </div>

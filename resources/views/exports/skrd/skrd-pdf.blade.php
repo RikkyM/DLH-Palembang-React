@@ -286,14 +286,20 @@
             <thead>
                 <tr>
                     <th class="col-no">No</th>
-                    <th class="col-reg">No Pendaftaran</th>
-                    <th class="col-name">Penanggung Jawab</th>
+                    <th class="col-reg">No SKRD</th>
+                    <th class="col-reg">No Wajib Retribusi</th>
+                    <th class="col-reg">Tanggal SKRD</th>
                     <th class="col-object">Nama Objek Retribusi</th>
                     <th class="col-address">Alamat</th>
                     <th class="col-location">Kelurahan</th>
                     <th class="col-location">Kecamatan</th>
-                    <th class="col-service">Rincian Layanan</th>
-                    <th class="col-detail">Detail Rincian</th>
+                    <th class="col-service">Klasifikasi - Objek</th>
+                    <th class="col-service">Kelas</th>
+                    <th class="col-service">Jenis</th>
+                    <th class="col-service">Per Bulan</th>
+                    <th class="col-service">Per Tahun</th>
+                    <th class="col-service">Jumlah Tertagih</th>
+                    <th class="col-service">Sisa Tertagih</th>
                     <th class="col-uptd">UPTD</th>
                     <th class="col-status">Status</th>
                 </tr>
@@ -302,19 +308,27 @@
                 @forelse($data as $index => $item)
                     <tr>
                         <td class="no-column">{{ $index + 1 }}</td>
+                        <td class="text-center">{{ $item->noSkrd ?? '-' }}</td>
                         <td class="text-center">{{ $item->noWajibRetribusi ?? '-' }}</td>
-                        <td>{{ $item->pemilik->namaPemilik ?? '-' }}</td>
+                        <td class="text-center">{{ $item->created_at ? $item->created_at->format('d-m-Y') : '-' }}</td>
                         <td>{{ $item->namaObjekRetribusi ?? '-' }}</td>
-                        <td>{{ Str::limit($item->alamat ?? '-', 50) }}</td>
-                        <td>{{ $item->kelurahan->namaKelurahan ?? '-' }}</td>
-                        <td>{{ $item->kecamatan->namaKecamatan ?? '-' }}</td>
-                        <td>{{ Str::limit($item->deskripsiUsaha ?? '-', 30) }}</td>
-                        <td>{{ $item->subKategori->namaSubKategori ?? '-' }}</td>
+                        <td>{{ Str::limit($item->alamatObjekRetribusi ?? '-', 50) }}</td>
+                        <td>{{ $item->kelurahanObjekRetribusi ?? '-' }}</td>
+                        <td>{{ $item->kecamatanObjekRetribusi ?? '-' }}</td>
+                        <td>{{ $item->deskripsiUsaha ?? '-' }}</td>
+                        <td>{{ $item->namaSubKategori ?? '-' }}</td>
+                        <td>{{ $item->deskripsiUsaha ?? '-' }}</td>
+                        <td>{{ $item->tarifPerBulanObjekRetribusi ?? '-' }}</td>
+                        <td>{{ $item->tarifPerTahunObjekRetribusi ?? '-' }}</td>
+                        <td style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Rp {{ number_format($item->pembayaran_sum_jumlah_bayar, 0, ',', '.') ?? '-' }}</td>
+                        <td style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Rp {{ number_format($item->tagihanPerTahunSkrd - $item->pembayaran_sum_jumlah_bayar, 0, ',', '.') ?? '-' }}</td>
                         <td>{{ $item->uptd->namaUptd ?? '-' }}</td>
-                        <td class="text-center">
-                            <span class="status-approved">
-                                {{ $item->status == 'Approved' ? 'Diterima' : $item->status }}
-                            </span>
+                        <td class="text-center" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                            @if ($item->tagihanPerTahunSkrd - $item->pembayaran_sum_jumlah_bayar === 0)
+                                <span style="color: green;">Lunas</span>
+                            @elseif ($item->tagihanPerTahunSkrd - $item->pembayaran_sum_jumlah_bayar > 0)
+                                <span style="color: red; ">Belum Lunas</span>
+                            @endif
                         </td>
                     </tr>
                 @empty

@@ -32,20 +32,23 @@ Route::prefix('sirep')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-admin.')->group(function () {
             Route::get('/dashboard', [SuperAdminDashboardController::class, 'index'])->name('dashboard');
+
             Route::prefix('data-input')->group(function () {
+                Route::resource('/pemohon', PemohonController::class);
                 Route::controller(WajibRetribusiController::class)->group(function () {
                     Route::get('/wajib-retribusi', 'index')->name('wajib-retribusi');
                     Route::get('/wajib-retribusi/download-pdf', 'downloadPdf')->name('wajib-retribusi.download-pdf');
-                    Route::get('/wajib-retribusi/preview-pdf', 'previewAndDownloadPdf')->name('wajib-retribusi.preview-and-download-pdf');
                     Route::get('/wajib-retribusi/export-pdf', 'exportPdf')->name('wajib-retribusi.export-pdf');
                     Route::get('/wajib-retribusi/export', 'export')->name('wajib-retribusi.export');
                 });
-                Route::resource('/skrd', SkrdController::class);
-                Route::get('/skrd/{id}/preview-pdf/skrd-{noWajibRetribusi}', [SkrdController::class, 'previewPdf'])->name('skrd.preview-pdf');
-                Route::get('/skrd/{id}/export-excel', [SkrdController::class, 'downloadSingleExcel'])->name('skrd.export-excel');
-                Route::get('/skrd/download-pdf/{id}', [SkrdController::class, 'downloadPdf'])->name('skrd.download-pdf');
-                Route::resource('/pemohon', PemohonController::class);
+                Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
+                Route::get('/download-pdf', [SkrdController::class, 'downloadPdf'])->name('skrd.download-pdf');
+                Route::get('/download-excel', [SkrdController::class, 'downloadExcel'])->name('skrd.download-excel');
+                Route::get('/{id}/download-data-pdf', [SkrdController::class, 'downloadSinglePdf'])->name('skrd.download-data-pdf');
+                Route::get('/{id}/download-data-excel', [SkrdController::class, 'downloadSingleExcel'])->name('skrd.download-data-excel');
+
             });
+
             Route::prefix('settings')->group(function () {
                 Route::controller(UptdController::class)->group(function () {
                     Route::get('/uptd', 'index')->name('uptd');

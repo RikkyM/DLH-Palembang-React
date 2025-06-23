@@ -253,14 +253,34 @@ const Index = ({
                             />
                         </label>
                     </div>
-                    {/* <button
+                    <button
                         onClick={() => {
-                            openModal("create");
+                            const params = new URLSearchParams();
+
+                            if (search) params.append("search", search);
+                            if (kategori) params.append("kategori", kategori);
+                            if (subKategori)
+                                params.append("sub-kategori", subKategori);
+                            if (petugas) params.append("petugas", petugas);
+                            if (status) params.append("status", status);
+
+                            window.open(
+                                route("super-admin.skrd.download-pdf") +
+                                    "?" +
+                                    params.toString(),
+                                "_blank"
+                            );
+
+                            // console.log(
+                            //     route("super-admin.skrd.download-pdf") +
+                            //         "?" +
+                            //         params.toString()
+                            // );
                         }}
-                        className="flex justify-center items-center gap-1.5 text-sm bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-2 text-white w-full md:w-auto rounded outline-none"
+                        className="bg-red-500 px-3 py-1.5 rounded text-sm text-white font-medium"
                     >
-                        <span>Tambah User</span>
-                    </button> */}
+                        PDF
+                    </button>
                 </div>
                 <div className="overflow-x-auto bg-white rounded shadow">
                     <table className="p-3 min-w-full divide-y divide-gray-300">
@@ -368,7 +388,9 @@ const Index = ({
                                                 </span>
                                             )}
                                         </td>
-                                        <td onClick={e => e.stopPropagation()}>
+                                        <td
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
                                             <div className="flex flex-wrap gap-2 *:rounded *:font-medium *:text-xs *:sm:text-sm">
                                                 <button className="flex items-center gap-1.5 outline-none">
                                                     <PencilLine size={20} />{" "}
@@ -380,8 +402,8 @@ const Index = ({
                                                         e.stopPropagation();
                                                         window.open(
                                                             route(
-                                                                "super-admin.skrd.download-pdf",
-                                                                { id: data.id},
+                                                                "super-admin.skrd.download-data-pdf",
+                                                                { id: data.id }
                                                             ),
                                                             "_blank"
                                                         );
@@ -395,8 +417,8 @@ const Index = ({
                                                         e.stopPropagation();
                                                         window.open(
                                                             route(
-                                                                "super-admin.skrd.export-excel",
-                                                                { id: data.id },
+                                                                "super-admin.skrd.download-data-excel",
+                                                                { id: data.id }
                                                             ),
                                                             "_blank"
                                                         );

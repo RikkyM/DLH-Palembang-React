@@ -108,7 +108,7 @@ class WajibRetribusiController extends Controller
         ]);
     }
 
-    public function previewAndDownloadPdf(Request $request)
+    public function downloadPdf(Request $request)
     {
         $query = WajibRetribusi::with([
             'kategori',
@@ -118,7 +118,7 @@ class WajibRetribusiController extends Controller
             'user:id,namaLengkap',
             'pemilik',
             'uptd'
-        ])->where('status', 'Approved');
+        ]);
 
         if ($search = $request->search) {
             $query->where(function ($q) use ($search) {
@@ -165,12 +165,7 @@ class WajibRetribusiController extends Controller
 
         $fileName = 'laporan-wajib-retribusi-' . date('Y-m-d-H-i-s') . '.pdf';
 
-        return $pdf->download(
-            $fileName
-            //  [
-            //     'Attachment' => true
-            // ]
-        );
+        return $pdf->download($fileName);
     }
 
     public function export(Request $request)

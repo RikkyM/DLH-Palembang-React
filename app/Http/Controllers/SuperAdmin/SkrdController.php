@@ -65,11 +65,7 @@ class SkrdController extends Controller
         }
 
         if ($search && trim($search) !== '') {
-            $skrd->where(function ($q) use ($search) {
-                $q->whereHas('user', function ($query) use ($search) {
-                    $query->where('namaLengkap', 'like', "%{$search}%");
-                })->orWhere('namaObjekRetribusi', 'like', "%{$search}%");
-            });
+            $skrd->where('namaObjekRetribusi', 'like', "%{$search}%");
         }
 
         if ($kategoriId) {
@@ -89,7 +85,6 @@ class SkrdController extends Controller
         } elseif ($status === 'belum_lunas') {
             $skrd->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) > 0');
         }
-        
 
         $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
         $subKategori = $kategoriId ?
@@ -166,43 +161,45 @@ class SkrdController extends Controller
         //
     }
 
-    public function previewPdf($id)
+    public function downloadPdf(Request $request)
     {
-        $data = Skrd::with(['user:id,namaLengkap,lokasi', 'pembayaran'])->findOrFail($id);
+        $query = Skrd::query()
+            ->with(['user:id,namaLengkap,lokasi', 'pembayaran', 'uptd'])
+            ->addSelect([
+                'skrd.*',
+                'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
+                    ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
+                    ->whereColumn('skrdId', 'skrd.id')
+            ]);
 
-        return Inertia::render('Super-Admin/Data-Input/Skrd/PdfPreview', [
-            'data' => $data
-        ]);
-    }
+        if ($search = $request->search) {
+            $query->where('namaObjekRetribusi', 'like', "%{$search}%");
+        }
 
-    // public function downloadPdf($id)
-    // {
-    //     $data = Skrd::with(['user:id,namaLengkap,lokasi', 'pembayaran'])->findOrFail($id);
+        if ($kategori = $request->kategori) {
+            $query->where('namaKategori', $kategori);
+        }
 
-    //     // Render HTML dari Inertia
-    //     $html = Inertia::render('Super-Admin/Data-Input/Skrd/PdfPreview', [
-    //         'data' => $data
-    //     ])->toResponse(request())->getContent();
+        if ($subKategori = $request->{'sub-kategori'}) {
+            $query->where('subKategori', $subKategori);
+        }
 
-    //     $pdfPath = storage_path("app/public/skrd-pdf-{$id}.pdf");
+        if ($petugas = $request->petugas) {
+            $query->whereHas('user', fn($q) => $q->where('id', $petugas));
+        }
 
-    //     Browsershot::html($html)
-    //         ->setNodeBinary('C:\Program Files\nodejs\node.exe') // Ganti sesuai "where node"
-    //         ->setNpmBinary('C:\Program Files\nodejs\npm.cmd')   // Ganti sesuai "where npm"
-    //         ->noSandbox()
-    //         ->format('A4')
-    //         ->savePdf($pdfPath);
+        if ($status = $request->status) {
+            if ($status === 'lunas') {
+                $query->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) = 0');
+            } elseif ($status === 'belum_lunas') {
+                $query->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) > 0');
+            }
+        }
 
-    //     return response()->download($pdfPath)->deleteFileAfterSend(true);
-    // }
+        $data = $query->get();
 
-
-    public function downloadPdf($id)
-    {
-        $data = Skrd::with(['user:id,namaLengkap,lokasi', 'pembayaran'])->findOrFail($id);
-
-        $pdf = Pdf::loadView('exports.skrd.skrd-single-pdf', compact('data'))
-            ->setPaper('a4', 'portrait')
+        $pdf = Pdf::loadView('exports.skrd.skrd-pdf', compact('data'))
+            ->setPaper('a4', 'landscape')
             ->setOptions([
                 'dpi' => 150,
                 'defaultFont' => 'sans-serif',
@@ -212,7 +209,27 @@ class SkrdController extends Controller
                 'chroot' => realpath("")
             ]);
 
-        return $pdf->download("skrd-{$data->noWajibRetribusi}.pdf");
+        $fileName = 'laporan-skrd-' . date('Y-m-d-H-i-s') . '.pdf';
+
+        return $pdf->stream($fileName);
+    }
+
+    public function downloadSinglePdf($id)
+    {
+        $data = Skrd::with(['user:id,namaLengkap,lokasi', 'pembayaran'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('exports.skrd.skrd-single-pdf', compact('data'))
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'arial',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath("")
+            ]);
+
+        return $pdf->stream("skrd-{$data->noWajibRetribusi}.pdf");
     }
 
     public function downloadSingleExcel($id)

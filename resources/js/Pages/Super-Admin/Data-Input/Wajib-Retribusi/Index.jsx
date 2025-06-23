@@ -246,13 +246,20 @@ const Index = ({
                                     params.append("kelurahan", kelurahan);
                                 if (petugas) params.append("petugas", petugas);
 
-                                window.open(
+                                // window.open(
+                                //     route(
+                                //         "super-admin.wajib-retribusi.download-pdf"
+                                //     ) +
+                                //         "?" +
+                                //         params.toString(),
+                                //     "_blank"
+                                // );
+                                console.log(
                                     route(
-                                        "super-admin.wajib-retribusi.preview-and-download-pdf"
+                                        "super-admin.wajib-retribusi.download-pdf"
                                     ) +
                                         "?" +
-                                        params.toString(),
-                                    "_blank"
+                                        params.toString()
                                 );
                             }}
                             className="bg-red-500 px-3 py-1.5 rounded text-sm text-white font-medium"

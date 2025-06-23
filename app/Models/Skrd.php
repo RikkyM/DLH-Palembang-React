@@ -48,15 +48,10 @@ class Skrd extends Model
         return $this->belongsTo(User::class, 'petugasPendaftarId', 'id');
     }
 
-    // public function kategori()
-    // {
-    //     return $this->belongsTo(Kategori::class, 'kodeKategori', 'kodeKategori');
-    // }
-
-    // public function subKategori()
-    // {
-    //     return $this->belongsTo(SubKategori::class, 'kodeSubKategori', 'kodeSubKategori');
-    // }
+    public function uptd()
+    {
+        return $this->belongsTo(Uptd::class, 'uptdId', 'id');
+    }
 
     public function pembayaran()
     {
