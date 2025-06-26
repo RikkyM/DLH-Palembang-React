@@ -31,7 +31,7 @@
                 <td>{{ $item->tarifPerbulan }}</td>
                 <td>{{ $item->uptd->namaUptd ?? '-' }}</td>
                 <td>{{ $item->user->namaLengkap ?? '-' }}</td>
-                <td>{{ $item->status }}</td>
+                <td>{{ $item->status == 'Approved' ? 'Diterima' : 'Ditolak' }}</td>
             </tr>
         @endforeach
     </tbody>

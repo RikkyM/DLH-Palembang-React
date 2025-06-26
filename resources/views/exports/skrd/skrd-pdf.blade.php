@@ -315,7 +315,7 @@
                         <td>{{ Str::limit($item->alamatObjekRetribusi ?? '-', 50) }}</td>
                         <td>{{ $item->kelurahanObjekRetribusi ?? '-' }}</td>
                         <td>{{ $item->kecamatanObjekRetribusi ?? '-' }}</td>
-                        <td>{{ $item->deskripsiUsaha ?? '-' }}</td>
+                        <td>{{ $item->namaKategori ?? '-' }}</td>
                         <td>{{ $item->namaSubKategori ?? '-' }}</td>
                         <td>{{ $item->deskripsiUsaha ?? '-' }}</td>
                         <td>{{ $item->tarifPerBulanObjekRetribusi ?? '-' }}</td>

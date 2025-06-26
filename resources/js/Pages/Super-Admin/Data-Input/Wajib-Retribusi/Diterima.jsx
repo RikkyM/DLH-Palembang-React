@@ -1,21 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
-import { Link, router } from "@inertiajs/react";
-import { useProvider } from "@/Context/GlobalContext";
+import { router } from "@inertiajs/react";
 
-import {
-    ChevronDown,
-    FileText,
-    Filter,
-    PencilLine,
-    Search,
-} from "lucide-react";
+import { FileText, Filter, PencilLine, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
-import DialogForm from "./DialogForm";
 
-const Index = ({
+const Diterima = ({
     datas,
     filters,
     pjOptions,
@@ -24,9 +16,7 @@ const Index = ({
     kecamatanOptions,
     kelurahanOptions,
     petugasOptions,
-    statusOptions,
 }) => {
-    const { modalState, openModal, closeModal } = useProvider();
     const [search, setSearch] = useState(filters.search || "");
     const [sort, setSort] = useState(filters.sort || null);
     const [direction, setDirection] = useState(filters.direction || null);
@@ -35,16 +25,8 @@ const Index = ({
     const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
     const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
     const [petugas, setPetugas] = useState(filters.petugas || "");
-    const [status, setStatus] = useState(filters.status || "");
-    const [pj, setpj] = useState(
-        filters.pj || ""
-    );
-    const [perPage, setPerPage] = useState(() => {
-        return filters.per_page && filters.per_page !== 10
-            ? filters.per_page
-            : 10;
-    });
     const [showFilters, setShowFilters] = useState(false);
+    const [pj, setpj] = useState(filters.pj || "");
     const filterRef = useRef(null);
 
     const columns = [
@@ -117,12 +99,6 @@ const Index = ({
         label: petugas.namaLengkap,
     }));
 
-    const statusList =
-        statusOptions?.map((statusOption) => ({
-            value: statusOption.value,
-            label: statusOption.label == "Approved" ? "Disetujui" : "Ditolak",
-        })) || [];
-
     const buildParams = (additionalParams = {}) => {
         const params = { ...additionalParams };
 
@@ -133,8 +109,6 @@ const Index = ({
         if (kecamatan) params.kecamatan = kecamatan;
         if (kelurahan) params.kelurahan = kelurahan;
         if (petugas) params.petugas = petugas;
-        if (perPage && perPage !== 10) params.per_page = perPage;
-        if (status) params.status = status;
         if (sort && sort !== "id") {
             params.sort = sort;
             if (direction && direction.toLowerCase() === "desc") {
@@ -168,7 +142,7 @@ const Index = ({
         const timeoutId = setTimeout(() => {
             const params = buildParams();
 
-            router.get(route("super-admin.wajib-retribusi.index"), params, {
+            router.get(route("super-admin.wajib-retribusi-diterima"), params, {
                 preserveState: true,
                 replace: true,
                 only: [
@@ -190,17 +164,11 @@ const Index = ({
         kecamatan,
         kelurahan,
         petugas,
-        perPage,
-        status,
         pj,
     ]);
 
-    const handlePerPageChange = (e) => {
-        setPerPage(parseInt(e.target.value));
-    };
-
     return (
-        <Layout title="WAJIB RETRIBUSI">
+        <Layout title="WAJIB RETRIBUSI DITERIMA">
             <section className="p-3">
                 <div
                     className="flex flex-col gap-3 lg:flex-row lg:items-center justify-between w-full mb-3 p-2 rounded bg-white shadow"
@@ -208,7 +176,7 @@ const Index = ({
                 >
                     <div className="flex flex-col sm:flex-row md:items-center gap-2 w-full md:w-auto">
                         <div className="flex items-center gap-2 w-full sm:w-max">
-                            <label
+                            {/* <label
                                 htmlFor="showData"
                                 className="text-sm flex items-center gap-1.5 cursor-pointer relative w-16"
                             >
@@ -229,7 +197,7 @@ const Index = ({
                                     size={20}
                                     className=" bg-transparent absolute right-1 pointer-events-none"
                                 />
-                            </label>
+                            </label> */}
                             <div className="relative flex gap-2 w-full sm:w-max">
                                 <button
                                     type="button"
@@ -297,17 +265,8 @@ const Index = ({
                                         id="pjlist"
                                         options={pjList}
                                         value={pj}
-                                        onChange={(val) =>
-                                            setpj(val)
-                                        }
+                                        onChange={(val) => setpj(val)}
                                         placeholder="Pilih Penanggung Jawab"
-                                    />
-                                    <SearchableSelect
-                                        id="statusList"
-                                        options={statusList}
-                                        value={status}
-                                        onChange={(val) => setStatus(val)}
-                                        placeholder="Filter Berdasarkan Status"
                                     />
                                 </div>
                             </div>
@@ -329,17 +288,6 @@ const Index = ({
                         </label>
                     </div>
                     <div className="flex items-center justify-end md:justify-start gap-1.5">
-                        <Link
-                            href={route("super-admin.wajib-retribusi.create")}
-                            className="bg-green-500 px-3 py-1.5 rounded text-sm text-white font-medium"
-                        >
-                            Tambah
-                        </Link>
-                        {/* <button onClick={() => {
-                            openModal('create')
-                        }} className="bg-green-500 px-3 py-1.5 rounded text-sm text-white font-medium">
-                            Tambah
-                        </button> */}
                         <button
                             onClick={() => {
                                 const params = new URLSearchParams();
@@ -354,7 +302,6 @@ const Index = ({
                                 if (kelurahan)
                                     params.append("kelurahan", kelurahan);
                                 if (petugas) params.append("petugas", petugas);
-                                if (status) params.append("status", status);
 
                                 window.open(
                                     route(
@@ -448,11 +395,7 @@ const Index = ({
                                         <td>{data.user.namaLengkap}</td>
                                         <td>
                                             <span
-                                                className={`py-2 rounded font-medium select-none ${
-                                                    data.status == "Approved"
-                                                        ? "text-teal-600"
-                                                        : "text-red-500"
-                                                }`}
+                                                className={`py-2 rounded font-medium select-none text-teal-600`}
                                             >
                                                 {data.status == "Approved"
                                                     ? "Diterima"
@@ -511,17 +454,8 @@ const Index = ({
 
                 <SmartPagination datas={datas} filters={filters} />
             </section>
-
-            <DialogForm
-                isOpen={
-                    modalState.type === "create" || modalState.type === "edit"
-                }
-                onClose={closeModal}
-                wr={modalState.data}
-                mode={modalState.type}
-            />
         </Layout>
     );
 };
 
-export default Index;
+export default Diterima;

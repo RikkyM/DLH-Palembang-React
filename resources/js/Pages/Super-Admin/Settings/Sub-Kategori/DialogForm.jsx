@@ -15,19 +15,13 @@ const DialogForm = ({
     const isEditMode = mode === "edit" && subkategori;
     const firstInputRef = useAutoFocusInput(isOpen, true);
 
-    // const rumusOptions = [
-    //     {
-    //         value: "ROLE_SEKDIN",
-    //         label: "SEKDIN",
-    //     },
-    // ];
-
     const initialData = {
         kodeSubKategori: "",
         kodeKategori: null,
         namaSubKategori: "",
         tarif: "",
-        perhitungan: { rumus: "", variabel: [] },
+        rumus: "",
+        variabel: [],
         satuan: "",
     };
 
@@ -54,15 +48,37 @@ const DialogForm = ({
     useEffect(() => {
         if (isOpen) {
             if (isEditMode) {
-                const getRumus = subkategori.perhitungan
-                    ? JSON.parse(subkategori.perhitungan).rumus
-                    : "";
+                // Handle rumus - check if it's JSON string or direct value
+                let rumusValue = "";
+                let variabelValue = [];
+
+                if (subkategori.rumus) {
+                    rumusValue = subkategori.rumus;
+                    variabelValue = extractVariables(subkategori.rumus);
+                } else if (subkategori.perhitungan) {
+                    // Fallback for old format
+                    const perhitunganData = JSON.parse(subkategori.perhitungan);
+                    rumusValue = perhitunganData.rumus || "";
+                    variabelValue = perhitunganData.variabel || [];
+                }
+
+                if (subkategori.variabel) {
+                    try {
+                        variabelValue = JSON.parse(subkategori.variabel);
+                    } catch (e) {
+                        variabelValue = extractVariables(rumusValue);
+                    }
+                }
+
+                console.log("Rumus:", rumusValue);
+                console.log("Variabel:", variabelValue);
+
                 setData({
-                    kodeSubKategori: subkategori.kodeSubKategori || "",
                     kodeKategori: subkategori.kodeKategori || null,
                     namaSubKategori: subkategori.namaSubKategori || "",
                     tarif: subkategori.tarif || "",
-                    perhitungan: { rumus: getRumus },
+                    rumus: rumusValue,
+                    variabel: variabelValue,
                     satuan: subkategori.satuan || "",
                 });
             } else {
@@ -75,7 +91,7 @@ const DialogForm = ({
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!isValidRumus(data.perhitungan.rumus)) {
+        if (!isValidRumus(data.rumus)) {
             alert(
                 "Format rumus tidak valid. Gunakan format seperti: var1 * var2 + var3"
             );
@@ -84,9 +100,9 @@ const DialogForm = ({
 
         const requestData = {
             ...data,
-            perhitungan: data.perhitungan.rumus.trim()
-                ? JSON.stringify(data.perhitungan)
-                : null,
+            // Send as separate fields
+            rumus: data.rumus.trim() || null,
+            variabel: data.variabel.length > 0 ? data.variabel : null,
         };
 
         if (isEditMode) {
@@ -135,33 +151,6 @@ const DialogForm = ({
                     </button>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-5 px-5 pb-5">
-                    {isEditMode && (
-                        <div className="flex flex-col gap-1.5 text-sm">
-                            <label
-                                htmlFor="kodeSubKategori"
-                                className="after:content-['*'] after:text-red-500"
-                            >
-                                Kode Sub Kategori
-                            </label>
-                            <input
-                                autoComplete="off"
-                                id="kodeSubKategori"
-                                type="text"
-                                placeholder="Masukkan kode sub kategori..."
-                                className="px-3 py-2 bg-gray-200 outline-none rounded"
-                                value={data.kodeSubKategori}
-                                onChange={(e) =>
-                                    setData("kodeSubKategori", e.target.value)
-                                }
-                            />
-                            {errors.kodeSubKategori && (
-                                <span className="text-sm text-red-500">
-                                    {errors.kodeSubKategori}
-                                </span>
-                            )}
-                        </div>
-                    )}
-
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="namaSubKategori"
@@ -187,6 +176,7 @@ const DialogForm = ({
                             </span>
                         )}
                     </div>
+
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label
                             htmlFor="satuan"
@@ -210,12 +200,10 @@ const DialogForm = ({
                         )}
                     </div>
 
-                    {/* <div className="flex flex-col gap-1.5 text-sm">
-                        <label
-                            htmlFor="rumus"
-                            className="after:content-['*'] after:text-red-500"
-                        >
-                            Rumus
+                    <div className="flex flex-col gap-1.5 text-sm">
+                        <label htmlFor="rumus">
+                            Rumus{" "}
+                            <span className="text-gray-500">(opsional)</span>
                         </label>
                         <input
                             autoComplete="off"
@@ -223,37 +211,25 @@ const DialogForm = ({
                             type="text"
                             placeholder="tarif * luasUsaha"
                             className={`px-3 py-2 bg-gray-200 outline-none rounded ${
-                                errors.perhitungan?.rumus
-                                    ? "border border-red-500"
-                                    : ""
+                                errors.rumus ? "border border-red-500" : ""
                             }`}
-                            value={data.perhitungan?.rumus ?? ""}
+                            value={data.rumus ?? ""}
                             onChange={(e) => {
                                 const rumus = e.target.value;
-                                setData("perhitungan", {
+                                const variabel = extractVariables(rumus);
+                                setData({
+                                    ...data,
                                     rumus,
-                                    variabel: extractVariables(rumus),
+                                    variabel,
                                 });
                             }}
                         />
-                        {errors.perhitungan?.rumus && (
+                        {errors.rumus && (
                             <span className="text-sm text-red-500">
-                                {errors.perhitungan.rumus}
+                                {errors.rumus}
                             </span>
                         )}
-                    </div> */}
-
-                    <DropdownInput
-                        id="rumus"
-                        label="Rumus"
-                        placeholder="Pilih Rumus..."
-                        value={data.kodeKategori}
-                        onChange={(value) => setData("kodeKategori", value)}
-                        options={kategori}
-                        error={errors.kodeKecamatan}
-                        valueKey="value"
-                        labelKey="label"
-                    />
+                    </div>
 
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label
@@ -277,6 +253,7 @@ const DialogForm = ({
                             </span>
                         )}
                     </div>
+
                     <DropdownInput
                         id="kodeKategori"
                         label="Kategori"
@@ -284,10 +261,11 @@ const DialogForm = ({
                         value={data.kodeKategori}
                         onChange={(value) => setData("kodeKategori", value)}
                         options={kategori}
-                        error={errors.kodeKecamatan}
+                        error={errors.kodeKategori}
                         valueKey="value"
                         labelKey="label"
                     />
+
                     <div className="flex flex-col md:flex-row md:justify-end gap-3 md:gap-2 text-sm">
                         <button
                             className="px-3 py-2 font-medium order-1 md:order-2 rounded text-white bg-teal-400 hover:bg-teal-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

@@ -28,7 +28,7 @@ const Index = ({ datas, filters, kategori }) => {
     }, [search]);
 
     return (
-        <Layout title="Sub Kategori">
+        <Layout title="SUB KATEGORI">
             <section className="p-3">
                 <div className="flex flex-col gap-3 md:gap-0 md:flex-row items-center justify-between w-full mb-3 bg-white p-2 rounded">
                     <label
@@ -97,18 +97,7 @@ const Index = ({ datas, filters, kategori }) => {
                                             }).format(data.tarif ?? 0)}
                                         </td>
                                         <td>
-                                            {(() => {
-                                                try {
-                                                    const parsed = JSON.parse(
-                                                        data.perhitungan
-                                                    );
-                                                    return parsed.rumus || "-";
-                                                } catch {
-                                                    return (
-                                                        data.perhitungan || "-"
-                                                    );
-                                                }
-                                            })()}
+                                            {data.rumus ?? '-'}
                                         </td>
                                         <td className="space-x-1 md:space-x-2 text-right">
                                             <button

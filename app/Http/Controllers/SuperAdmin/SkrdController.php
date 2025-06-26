@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Exports\SkrdDataExport;
 use App\Exports\SkrdExport;
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
@@ -14,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
-use Spatie\Browsershot\Browsershot;
 
 class SkrdController extends Controller
 {
@@ -214,11 +214,26 @@ class SkrdController extends Controller
         return $pdf->stream($fileName);
     }
 
+    public function downloadExcel(Request $request)
+    {
+        $fileName = 'laporan-skrd-' . date('Y-m-d') . '.xlsx';
+
+        return Excel::download(
+            new SkrdDataExport($request),
+            $fileName
+        );
+    }
+
     public function downloadSinglePdf($id)
     {
-        $data = Skrd::with(['user:id,namaLengkap,lokasi', 'pembayaran'])->findOrFail($id);
+        $data = Skrd::with(['user:id,namaLengkap,lokasi,role', 'pembayaran'])->findOrFail($id);
 
-        $pdf = Pdf::loadView('exports.skrd.skrd-single-pdf', compact('data'))
+        $user = User::firstWhere('role', 'ROLE_KABID');
+
+        $pdf = Pdf::loadView('exports.skrd.skrd-single-pdf', [
+            'data' => $data,
+            'kabid' => $user
+        ])
             ->setPaper('a4', 'portrait')
             ->setOptions([
                 'dpi' => 150,

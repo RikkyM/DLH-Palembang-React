@@ -53,7 +53,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
     };
 
     return (
-        <Layout title="Pemohon">
+        <Layout title="PEMOHON">
             <section className="p-3">
                 <div className="flex flex-col gap-3 md:gap-0 md:flex-row items-center justify-between w-full mb-3 bg-white p-2 rounded">
                     <label
@@ -143,7 +143,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                                             >
                                                 <PencilLine size={20} />
                                             </button>
-                                            <button
+                                            {/* <button
                                                 type="button"
                                                 onClick={() => {
                                                     openModal("delete", data);
@@ -151,14 +151,14 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                                                 className="rounded-full outline-none p-1 hover:bg-neutral-300 transition-all duration-300"
                                             >
                                                 <Trash size={20} />
-                                            </button>
+                                            </button> */}
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
                                     <td
-                                        colSpan="4"
+                                        colSpan="12"
                                         className="text-center py-8 text-center text-gray-500"
                                     >
                                         {search

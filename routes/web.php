@@ -36,10 +36,12 @@ Route::prefix('sirep')->group(function () {
             Route::prefix('data-input')->group(function () {
                 Route::resource('/pemohon', PemohonController::class);
                 Route::controller(WajibRetribusiController::class)->group(function () {
-                    Route::get('/wajib-retribusi', 'index')->name('wajib-retribusi');
+                    Route::get('/wajib-retribusi', 'index')->name('wajib-retribusi.index');
+                    Route::get('/wajib-retribusi/diterima', 'diterima')->name('wajib-retribusi-diterima');
+                    Route::get('/wajib-retribusi/tambah-data-wajib-retribusi', 'create')->name('wajib-retribusi.create');
                     Route::get('/wajib-retribusi/download-pdf', 'downloadPdf')->name('wajib-retribusi.download-pdf');
-                    Route::get('/wajib-retribusi/export-pdf', 'exportPdf')->name('wajib-retribusi.export-pdf');
                     Route::get('/wajib-retribusi/export', 'export')->name('wajib-retribusi.export');
+                    Route::get('/wajib-retribusi/{id}/export-single', 'exportSingle')->name('wajib-retribusi.export-single');
                 });
                 Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
                 Route::get('/download-pdf', [SkrdController::class, 'downloadPdf'])->name('skrd.download-pdf');

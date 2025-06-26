@@ -253,34 +253,54 @@ const Index = ({
                             />
                         </label>
                     </div>
-                    <button
-                        onClick={() => {
-                            const params = new URLSearchParams();
+                    <div className="flex items-center justify-end md:justify-start gap-1.5">
+                        <button
+                            onClick={() => {
+                                const params = new URLSearchParams();
 
-                            if (search) params.append("search", search);
-                            if (kategori) params.append("kategori", kategori);
-                            if (subKategori)
-                                params.append("sub-kategori", subKategori);
-                            if (petugas) params.append("petugas", petugas);
-                            if (status) params.append("status", status);
+                                if (search) params.append("search", search);
+                                if (kategori)
+                                    params.append("kategori", kategori);
+                                if (subKategori)
+                                    params.append("sub-kategori", subKategori);
+                                if (petugas) params.append("petugas", petugas);
+                                if (status) params.append("status", status);
 
-                            window.open(
-                                route("super-admin.skrd.download-pdf") +
-                                    "?" +
-                                    params.toString(),
-                                "_blank"
-                            );
+                                window.open(
+                                    route("super-admin.skrd.download-pdf") +
+                                        "?" +
+                                        params.toString(),
+                                    "_blank"
+                                );
+                            }}
+                            className="bg-red-500 px-3 py-1.5 rounded text-sm text-white font-medium"
+                        >
+                            PDF
+                        </button>
+                        <button
+                            onClick={() => {
+                                const params = new URLSearchParams();
 
-                            // console.log(
-                            //     route("super-admin.skrd.download-pdf") +
-                            //         "?" +
-                            //         params.toString()
-                            // );
-                        }}
-                        className="bg-red-500 px-3 py-1.5 rounded text-sm text-white font-medium"
-                    >
-                        PDF
-                    </button>
+                                if (search) params.append("search", search);
+                                if (kategori)
+                                    params.append("kategori", kategori);
+                                if (subKategori)
+                                    params.append("sub-kategori", subKategori);
+                                if (petugas) params.append("petugas", petugas);
+                                if (status) params.append("status", status);
+
+                                window.open(
+                                    route("super-admin.skrd.download-excel") +
+                                        "?" +
+                                        params.toString(),
+                                    "_blank"
+                                );
+                            }}
+                            className="px-3 py-1.5 bg-green-700 transition duration-300 rounded text-white text-sm font-medium "
+                        >
+                            Excel
+                        </button>
+                    </div>
                 </div>
                 <div className="overflow-x-auto bg-white rounded shadow">
                     <table className="p-3 min-w-full divide-y divide-gray-300">
@@ -392,10 +412,10 @@ const Index = ({
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <div className="flex flex-wrap gap-2 *:rounded *:font-medium *:text-xs *:sm:text-sm">
-                                                <button className="flex items-center gap-1.5 outline-none">
+                                                {/* <button className="flex items-center gap-1.5 outline-none">
                                                     <PencilLine size={20} />{" "}
                                                     Edit
-                                                </button>
+                                                </button> */}
                                                 <button
                                                     className="whitespace-nowrap flex items-center gap-1.5 outline-none"
                                                     onClick={(e) => {

@@ -176,8 +176,24 @@ class SubKategoriSeeder extends Seeder
 
         $records = array_map(function ($row) use ($fields) {
             $data = array_combine($fields, $row);
-            $data['created_at'] = Carbon::parse($data['created_at'])->utc();
-            $data['updated_at'] = Carbon::parse($data['updated_at'])->utc();
+
+            // Parse perhitungan dan pisahkan rumus dan variabel
+            if (!empty($data['perhitungan'])) {
+                $perhitungan = json_decode($data['perhitungan'], true);
+                $data['rumus'] = $perhitungan['rumus'] ?? null;
+                $data['variabel'] = json_encode($perhitungan['variabel'] ?? []);
+            } else {
+                $data['rumus'] = null;
+                $data['variabel'] = null;
+            }
+
+            // Hapus field perhitungan karena sudah dipecah
+            unset($data['perhitungan']);
+
+            // Parse tanggal
+            $data['created_at'] = $data['created_at'] ? Carbon::parse($data['created_at'])->utc() : now()->utc();
+            $data['updated_at'] = $data['updated_at'] ? Carbon::parse($data['updated_at'])->utc() : now()->utc();
+
             return $data;
         }, $data);
 

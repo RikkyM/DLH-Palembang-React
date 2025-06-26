@@ -16,8 +16,13 @@ class SubKategori extends Model
         'namaSubKategori',
         'slug',
         'satuan',
-        'perhitungan',
+        'rumus',
+        'variabel',
         'tarif',
+    ];
+
+    protected $casts = [
+        'variabel' => 'array'
     ];
 
     protected static function booted()

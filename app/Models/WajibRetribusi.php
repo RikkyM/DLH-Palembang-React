@@ -8,6 +8,10 @@ class WajibRetribusi extends Model
 {
     protected $table = 'wajib_retribusi';
 
+    protected $casts = [
+        'historyAction' => 'array'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'petugasPendaftarId', 'id');

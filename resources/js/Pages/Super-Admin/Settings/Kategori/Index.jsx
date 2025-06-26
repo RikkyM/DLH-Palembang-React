@@ -28,7 +28,7 @@ const Index = ({ datas, filters }) => {
     }, [search]);
 
     return (
-        <Layout title="Kategori">
+        <Layout title="KATEGORI">
             <section className="p-3">
                 <div className="flex flex-col gap-3 md:gap-0 md:flex-row items-center justify-between w-full mb-3 bg-white p-2 rounded">
                     <label

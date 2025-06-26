@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('namaSubKategori');
             $table->string('slug');
             $table->integer('tarif')->nullable();
-            $table->json('perhitungan')->nullable();
+            $table->string('rumus')->nullable();
+            $table->json('variabel')->nullable();
             $table->string('satuan');
             $table->timestamps();
 

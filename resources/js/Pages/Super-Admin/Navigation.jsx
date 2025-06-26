@@ -17,11 +17,12 @@ const SuperAdminNavigation = () => {
         },
         {
             label: "Data Wajib Retribusi",
-            route: "super-admin.wajib-retribusi",
+            route: "super-admin.wajib-retribusi.index",
+            activeRoute: "super-admin.wajib-retribusi.*",
         },
         {
             label: "Inbox Diterima",
-            // route: "super-admin.wajib-retribusi",
+            route: "super-admin.wajib-retribusi-diterima",
         },
         {
             label: "Inbox Diproses",
@@ -34,7 +35,7 @@ const SuperAdminNavigation = () => {
         {
             label: "SKRD",
             route: "super-admin.skrd.index",
-            activeRoute: 'super-admin.skrd.*'
+            activeRoute: "super-admin.skrd.*",
         },
     ];
 

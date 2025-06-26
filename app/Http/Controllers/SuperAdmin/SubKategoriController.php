@@ -44,37 +44,6 @@ class SubKategoriController extends Controller
         ]);
     }
 
-    private function parseFormula($formula)
-    {
-        $clean = trim($formula);
-
-        preg_match_all('/[a-zA-Z_][a-zA-Z0-9_]*/', $clean, $matches);
-
-        $variables = array_unique($matches[0]);
-
-        sort($variables);
-
-        return [
-            'rumus' => $clean,
-            'variabel' => array_values($variables)
-        ];
-    }
-
-    private function validateFormula($formula)
-    {
-        // Cek apakah rumus hanya mengandung karakter yang diizinkan
-        if (!preg_match('/^[a-zA-Z0-9_\s\+\-\*\/\(\)\.]+$/', $formula)) {
-            return false;
-        }
-
-        // Cek apakah ada minimal satu variabel
-        if (!preg_match('/[a-zA-Z_][a-zA-Z0-9_]*/', $formula)) {
-            return false;
-        }
-
-        return true;
-    }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -93,14 +62,13 @@ class SubKategoriController extends Controller
             'namaSubKategori' => 'required|string',
             'tarif' => 'required|numeric',
             'satuan' => 'required|string',
-            'perhitungan' => 'sometimes|nullable|array',
-            'perhitungan.rumus' => [
+            'rumus' => [
                 'sometimes',
                 'nullable',
                 'string',
                 'regex:/^[a-zA-Z_]\w*(\s*[\+\-\*\/]\s*[a-zA-Z_]\w*)*$/'
             ],
-            'perhitungan.variabel' => 'sometimes|nullable|array',
+            'variabel' => 'sometimes|nullable|array',
         ], [
             'kodeKategori.required' => 'Kategori wajib dipilih.',
             'namaSubKategori.required' => 'Nama sub-kategori tidak boleh kosong.',
@@ -109,13 +77,16 @@ class SubKategoriController extends Controller
             'tarif.numeric' => 'Tarif harus berupa angka.',
             'satuan.required' => 'Satuan harus diisi.',
             'satuan.string' => 'Satuan harus berupa teks.',
-            'perhitungan.rumus.regex' => 'Format rumus tidak valid. Gunakan huruf dan operator matematika yang benar.',
-            'perhitungan.variabel.array' => 'Variabel harus dalam format array.',
+            'rumus.regex' => 'Format rumus tidak valid. Gunakan huruf dan operator matematika yang benar.',
+            'variabel.array' => 'Variabel harus dalam format array.',
         ]);
 
-        $validated['perhitungan'] = empty($validated['perhitungan']['rumus'])
-            ? null
-            : json_encode($validated['perhitungan']);
+        $validated['rumus'] = empty($validated['rumus']) ? null : $validated['rumus'];
+
+        $validated['variabel'] = empty($validated['variabel'])
+        ? null
+            : $validated['variabel'];
+
         $validated['slug'] = Str::slug($validated['namaSubKategori']);
 
         SubKategori::create($validated);
@@ -144,35 +115,41 @@ class SubKategoriController extends Controller
      */
     public function update(Request $request, SubKategori $subKategori)
     {
-
         $validated = $request->validate([
-            'kodeSubKategori' => 'nullable|unique:sub_kategori,kodeSubKategori,' . $subKategori->kodeSubKategori . ',kodeSubKategori',
             'kodeKategori' => 'nullable',
             'namaSubKategori' => 'nullable|string',
             'tarif' => 'nullable|numeric',
             'satuan' => 'nullable|string',
-            'perhitungan' => 'nullable|array',
-            'perhitungan.rumus' => [
+            'rumus' => [
                 'nullable',
                 'string',
                 'regex:/^[a-zA-Z_]\w*(\s*[\+\-\*\/]\s*[a-zA-Z_]\w*)*$/'
             ],
-            'perhitungan.variabel' => 'nullable|array',
+            'variabel' => 'nullable|array',
         ], [
-            'kodeSubKategori.unique' => 'Kode sub-kategori sudah digunakan.',
-            'kodeKategori.required' => 'Kategori wajib dipilih.',
             'namaSubKategori.required' => 'Nama sub-kategori tidak boleh kosong.',
             'namaSubKategori.string' => 'Nama sub-kategori harus berupa teks.',
             'tarif.required' => 'Tarif harus diisi.',
             'tarif.numeric' => 'Tarif harus berupa angka.',
             'satuan.required' => 'Satuan harus diisi.',
             'satuan.string' => 'Satuan harus berupa teks.',
-            'perhitungan.rumus.regex' => 'Format rumus tidak valid. Gunakan huruf dan operator matematika yang benar.',
-            'perhitungan.variabel.array' => 'Variabel harus dalam format array.',
+            'rumus.regex' => 'Format rumus tidak valid. Gunakan huruf dan operator matematika yang benar.',
+            'variabel.array' => 'Variabel harus dalam format array.',
         ]);
 
-        $validated['perhitungan'] = json_encode($validated['perhitungan'] ?? []);
-        $validated['slug'] = Str::slug($validated['namaSubKategori']);
+        $validated['rumus'] = empty($validated['rumus']) ? null : $validated['rumus'];
+
+        $validated['variabel'] = empty($validated['variabel'])
+        ? null
+            : $validated['variabel'];
+
+        if (isset($validated['namaSubKategori'])) {
+            $validated['slug'] = Str::slug($validated['namaSubKategori']);
+        }
+
+        $validated = array_filter($validated, function ($value) {
+            return $value !== null && $value !== '';
+        });
 
         if (isset($validated['kodeSubKategori']) && $validated['kodeSubKategori'] !== $subKategori->kodeSubKategori) {
             SubKategori::where('kodeSubKategori', $subKategori->kodeSubKategori)->update($validated);

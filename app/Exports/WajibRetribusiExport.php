@@ -36,7 +36,7 @@ class WajibRetribusiExport implements FromView, ShouldAutoSize, WithStyles
             'user:id,namaLengkap',
             'pemilik',
             'uptd'
-        ])->where('status', 'Approved');
+        ]);
 
         if ($search = $this->request->search) {
             $query->where(function ($q) use ($search) {
@@ -67,7 +67,7 @@ class WajibRetribusiExport implements FromView, ShouldAutoSize, WithStyles
 
         $data = $query->get();
 
-        return view('exports.wajib-retribusi', compact('data'));
+        return view('exports.wajib-retribusi.data-excel', compact('data'));
     }
 
     public function styles(Worksheet $sheet)

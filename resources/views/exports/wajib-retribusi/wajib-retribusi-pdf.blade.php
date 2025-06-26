@@ -111,8 +111,6 @@
         }
 
         .status-approved {
-            background-color: #dcfce7;
-            color: #166534;
             padding: 4px 8px;
             border-radius: 12px;
             font-weight: bold;
@@ -312,8 +310,8 @@
                         <td>{{ $item->subKategori->namaSubKategori ?? '-' }}</td>
                         <td>{{ $item->uptd->namaUptd ?? '-' }}</td>
                         <td class="text-center">
-                            <span class="status-approved">
-                                {{ $item->status == 'Approved' ? 'Diterima' : $item->status }}
+                            <span class="status-approved" style="color: {{ $item->status == 'Approved' ? '#166534' : 'red' }}">
+                                {{ $item->status == 'Approved' ? 'Diterima' : 'Ditolak' }}
                             </span>
                         </td>
                     </tr>
