@@ -57,4 +57,9 @@ class Skrd extends Model
     {
         return $this->hasMany(Pembayaran::class, 'skrdId', 'id');
     }
+
+    public function pemilik()
+    {
+        return $this->belongsTo(Pemilik::class, 'pemilikId', 'id');
+    }
 }

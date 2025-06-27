@@ -18,13 +18,13 @@ import DialogForm from "./DialogForm";
 const Index = ({
     datas,
     filters,
-    pjOptions,
-    kategoriOptions,
-    subKategoriOptions,
-    kecamatanOptions,
-    kelurahanOptions,
-    petugasOptions,
-    statusOptions,
+    pjOptions = [],
+    kategoriOptions = [],
+    subKategoriOptions = [],
+    kecamatanOptions = [],
+    kelurahanOptions = [],
+    petugasOptions = [],
+    statusOptions = [],
 }) => {
     const { modalState, openModal, closeModal } = useProvider();
     const [search, setSearch] = useState(filters.search || "");
@@ -36,9 +36,7 @@ const Index = ({
     const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
     const [petugas, setPetugas] = useState(filters.petugas || "");
     const [status, setStatus] = useState(filters.status || "");
-    const [pj, setpj] = useState(
-        filters.pj || ""
-    );
+    const [pj, setpj] = useState(filters.pj || "");
     const [perPage, setPerPage] = useState(() => {
         return filters.per_page && filters.per_page !== 10
             ? filters.per_page
@@ -297,9 +295,7 @@ const Index = ({
                                         id="pjlist"
                                         options={pjList}
                                         value={pj}
-                                        onChange={(val) =>
-                                            setpj(val)
-                                        }
+                                        onChange={(val) => setpj(val)}
                                         placeholder="Pilih Penanggung Jawab"
                                     />
                                     <SearchableSelect

@@ -25,37 +25,37 @@ class WajibRetribusiController extends Controller
         switch ($sortBy) {
             case 'kecamatan':
                 $query->join('kecamatan', 'wajib_retribusi.kodeKecamatan', '=', 'kecamatan.kodeKecamatan')
-                ->orderBy('kecamatan.namaKecamatan', $sortDir)
+                    ->orderBy('kecamatan.namaKecamatan', $sortDir)
                     ->select('wajib_retribusi.*');
                 break;
             case 'kelurahan':
                 $query->join('kelurahan', 'wajib_retribusi.kodeKelurahan', '=', 'kelurahan.kodeKelurahan')
-                ->orderBy('kelurahan.namaKelurahan', $sortDir)
+                    ->orderBy('kelurahan.namaKelurahan', $sortDir)
                     ->select('wajib_retribusi.*');
                 break;
             case 'rincian':
                 $query->join('kategori', 'wajib_retribusi.kodeKategori', '=', 'kategori.kodeKategori')
-                ->orderBy('kategori.namaKategori', $sortDir)
+                    ->orderBy('kategori.namaKategori', $sortDir)
                     ->select('wajib_retribusi.*');
                 break;
             case 'detailRincian':
                 $query->join('sub_kategori', 'wajib_retribusi.kodeSubKategori', '=', 'sub_kategori.kodeSubKategori')
-                ->orderBy('sub_kategori.namaSubKategori', $sortDir)
+                    ->orderBy('sub_kategori.namaSubKategori', $sortDir)
                     ->select('wajib_retribusi.*');
                 break;
             case 'penanggungJawab':
                 $query->join('pemilik', 'wajib_retribusi.pemilikId', '=', 'pemilik.id')
-                ->orderBy('pemilik.namaPemilik', $sortDir)
+                    ->orderBy('pemilik.namaPemilik', $sortDir)
                     ->select('wajib_retribusi.*');
                 break;
             case 'uptd':
                 $query->join('uptd', 'wajib_retribusi.uptdId', '=', 'uptd.id')
-                ->orderBy('uptd.namaUptd', $sortDir)
+                    ->orderBy('uptd.namaUptd', $sortDir)
                     ->select('wajib_retribusi.*');
                 break;
             case 'petugas':
                 $query->join('users', 'wajib_retribusi.petugasPendaftarId', '=', 'users.id')
-                ->orderBy('users.namaLengkap', $sortDir)
+                    ->orderBy('users.namaLengkap', $sortDir)
                     ->select('wajib_retribusi.*');
                 break;
             default:
@@ -67,13 +67,15 @@ class WajibRetribusiController extends Controller
     private function filterData($query, $search, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, $getStatus)
     {
         if ($search && trim($search) !== '') {
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('namaLengkap', 'like', "%{$search}%");
-            })
-            ->orWhereHas('pemilik', function ($q) use ($search) {
-                $q->where('namaPemilik', 'like', "%{$search}%");
-            })
-                ->orWhere('namaObjekRetribusi', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function ($find) use ($search) {
+                    $find->where('namaLengkap', 'like', "%{$search}%");
+                })
+                    ->orWhereHas('pemilik', function ($find) use ($search) {
+                        $find->where('namaPemilik', 'like', "%{$search}%");
+                    })
+                    ->orWhere('namaObjekRetribusi', 'like', "%{$search}%");
+            });
         }
 
         if ($getPenanggungJawab) {
@@ -117,90 +119,7 @@ class WajibRetribusiController extends Controller
         }
     }
 
-    public function index(Request $request)
-    {
-        $search = $request->get('search');
-        $perPage = $request->get('per_page', 10);
-        $sortBy = $request->get('sort', 'id');
-        $sortDir = $request->get('direction', 'asc');
-        $getPenanggungJawab = $request->get('pj');
-        $kategoriId = $request->get('kategori');
-        $subKategoriId = $request->get('sub-kategori');
-        $kecamatanId = $request->get('kecamatan');
-        $kelurahanId = $request->get('kelurahan');
-        $petugasId = $request->get('petugas');
-        $getStatus = $request->get('status');
-
-        $allowedPerPage = [10, 25, 50, 100, 250];
-        if (!in_array((int) $perPage, $allowedPerPage)) {
-            $perPage = 10;
-        }
-
-        $query = WajibRetribusi::with([
-            'kategori',
-            'subKategori',
-            'kelurahan',
-            'kecamatan',
-            'user:id,namaLengkap',
-            'pemilik',
-            'uptd'
-        ]);
-
-        $this->sortTable($query, $sortBy, $sortDir);
-
-        $this->filterData($query, $search, $getPenanggungJawab, $kategoriId, $subKategoriId, $kecamatanId, $kelurahanId, $petugasId, $getStatus);
-
-        $penanggungJawab = Pemilik::select('id', 'namaPemilik')->get();
-
-        $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
-
-        $subKategori = $kategoriId ? SubKategori::where('kodeKategori', $kategoriId)->select('kodeSubKategori', 'namaSubKategori')->get() : collect();
-
-        $kecamatan = Kecamatan::select('kodeKecamatan', 'namaKecamatan')->get();
-
-        $kelurahan = $kecamatanId ? Kelurahan::where('kodeKecamatan', $kecamatanId)->select('kodeKelurahan', 'namaKelurahan')->get() : collect();
-
-        $petugas = User::select('id', 'namaLengkap')->where('role', 'ROLE_PENDAFTAR')->get();
-
-        $status = WajibRetribusi::select('status')
-            ->distinct()
-            ->whereNotNull('status')
-            ->where('status', '!=', '')
-            ->orderBy('status')
-            ->pluck('status')
-            ->map(function ($status) {
-                return [
-                    'value' => $status,
-                    'label' => $status
-                ];
-            });
-
-        return Inertia::render('Super-Admin/Data-Input/Wajib-Retribusi/Index', [
-            'datas' => $query->paginate($perPage)->withQueryString(),
-            'filters' => [
-                'search' => $search && trim($search) !== '' ? $search : null,
-                'sort' => $sortBy,
-                'direction' => $sortDir,
-                'penanggungJawab' => $penanggungJawab,
-                'kategori' => $kategoriId,
-                'subKategori' => $subKategoriId,
-                'kecamatan' => $kecamatanId,
-                'kelurahan' => $kelurahanId,
-                'petugas' => $petugasId,
-                'per_page' => $perPage,
-                'status' => $getStatus && trim($getStatus) !== '' ? $getStatus : null,
-            ],
-            'pjOptions' => $penanggungJawab,
-            'kategoriOptions' => $kategori,
-            'subKategoriOptions' => $subKategori,
-            'kecamatanOptions' => $kecamatan,
-            'kelurahanOptions' => $kelurahan,
-            'petugasOptions' => $petugas,
-            'statusOptions' => $status
-        ]);
-    }
-
-    public function diterima(Request $request)
+    private function renderWajibRetribusi(Request $request, string $status = null, string $view = 'Index')
     {
         $search = $request->get('search');
         $sortBy = $request->get('sort', 'id');
@@ -216,54 +135,48 @@ class WajibRetribusiController extends Controller
         $query = WajibRetribusi::with([
             'kategori',
             'subKategori',
-            'kecamatan',
             'kelurahan',
+            'kecamatan',
             'user:id,namaLengkap',
             'pemilik',
             'uptd'
-        ])->where('status', 'Approved');
+        ]);
+
+        if ($status) {
+            $query->where('status', $status);
+        }
 
         $this->sortTable($query, $sortBy, $sortDir);
-
         $this->filterData($query, $search, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, $getStatus);
 
         $penanggungJawab = Pemilik::select('id', 'namaPemilik')->get();
-
         $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
-
         $subKategori = $getKategori ? SubKategori::where('kodeKategori', $getKategori)->select('kodeSubKategori', 'namaSubKategori')->get() : collect();
-
         $kecamatan = Kecamatan::select('kodeKecamatan', 'namaKecamatan')->get();
-
         $kelurahan = $getKecamatan ? Kelurahan::where('kodeKecamatan', $getKecamatan)->select('kodeKelurahan', 'namaKelurahan')->get() : collect();
-
         $petugas = User::select('id', 'namaLengkap')->where('role', 'ROLE_PENDAFTAR')->get();
 
-        $status = WajibRetribusi::select('status')
-            ->distinct()
+        $statusOptions = WajibRetribusi::select('status')
+        ->distinct()
             ->whereNotNull('status')
             ->where('status', '!=', '')
             ->orderBy('status')
             ->pluck('status')
-            ->map(function ($status) {
-                return [
-                    'value' => $status,
-                    'label' => $status
-                ];
-            });
+            ->map(fn($s) => ['value' => $s, 'label' => $s]);
 
-        return Inertia::render('Super-Admin/Data-Input/Wajib-Retribusi/Diterima', [
-            'datas' => $query->paginate(10)->withQueryString(),
+        return Inertia::render("Super-Admin/Data-Input/Wajib-Retribusi/{$view}", [
+            'datas' => $query->paginate($request->get('per_page', 10))->withQueryString(),
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,
                 'sort' => $sortBy,
                 'direction' => $sortDir,
-                'penanggungJawab' => $penanggungJawab,
+                'penanggungJawab' => $getPenanggungJawab,
                 'kategori' => $getKategori,
                 'subKategori' => $getSubKategori,
                 'kecamatan' => $getKecamatan,
                 'kelurahan' => $getKelurahan,
                 'petugas' => $getPetugas,
+                'per_page' => (int) $request->get('per_page', 10),
                 'status' => $getStatus && trim($getStatus) !== '' ? $getStatus : null,
             ],
             'pjOptions' => $penanggungJawab,
@@ -272,8 +185,28 @@ class WajibRetribusiController extends Controller
             'kecamatanOptions' => $kecamatan,
             'kelurahanOptions' => $kelurahan,
             'petugasOptions' => $petugas,
-            'statusOptions' => $status
+            'statusOptions' => $statusOptions
         ]);
+    }
+
+    public function index(Request $request)
+    {
+        return $this->renderWajibRetribusi($request, null, 'Index');
+    }
+
+    public function diterima(Request $request)
+    {
+        return $this->renderWajibRetribusi($request, 'Approved', 'Diterima');
+    }
+
+    public function diproses(Request $request)
+    {
+        return $this->renderWajibRetribusi($request, 'Processed', 'Diproses');
+    }
+
+    public function ditolak(Request $request)
+    {
+        return $this->renderWajibRetribusi($request, 'Rejected', 'Ditolak');
     }
 
     public function create()
@@ -321,7 +254,7 @@ class WajibRetribusiController extends Controller
                 ];
             });
 
-        $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori')
+        $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'rumus', 'variabel')
             ->orderBy('namaSubKategori')
             ->get()
             ->groupBy('kodeKategori')
@@ -329,7 +262,9 @@ class WajibRetribusiController extends Controller
                 return $groupedSubKategori->map(function ($subKategori) {
                     return [
                         'value' => $subKategori->kodeSubKategori,
-                        'label' => $subKategori->namaSubKategori
+                        'label' => $subKategori->namaSubKategori,
+                        'rumus' => $subKategori->rumus,
+                        'variabel' => $subKategori->variabel
                     ];
                 })->values();
             });
@@ -341,6 +276,11 @@ class WajibRetribusiController extends Controller
             'kategoriOptions' => $kategoriOptions,
             'subKategoriOptions' => $subKategoriOptions
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        dd($request->all());
     }
 
     public function edit($id) {}

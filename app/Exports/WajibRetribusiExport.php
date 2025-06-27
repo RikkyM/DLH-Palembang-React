@@ -65,6 +65,10 @@ class WajibRetribusiExport implements FromView, ShouldAutoSize, WithStyles
             $query->whereHas('user', fn($q) => $q->where('id', $petugas));
         }
 
+        if ($status = $this->request->status) {
+            $query->where('status', $status);
+        }
+
         $data = $query->get();
 
         return view('exports.wajib-retribusi.data-excel', compact('data'));

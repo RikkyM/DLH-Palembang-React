@@ -170,34 +170,9 @@ const Diterima = ({
     return (
         <Layout title="WAJIB RETRIBUSI DITERIMA">
             <section className="p-3">
-                <div
-                    className="flex flex-col gap-3 lg:flex-row lg:items-center justify-between w-full mb-3 p-2 rounded bg-white shadow"
-                    // sticky top-20 bg-red-500
-                >
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center justify-between w-full mb-3 p-2 rounded bg-white shadow">
                     <div className="flex flex-col sm:flex-row md:items-center gap-2 w-full md:w-auto">
                         <div className="flex items-center gap-2 w-full sm:w-max">
-                            {/* <label
-                                htmlFor="showData"
-                                className="text-sm flex items-center gap-1.5 cursor-pointer relative w-16"
-                            >
-                                <select
-                                    name="showData"
-                                    id="showData"
-                                    value={perPage}
-                                    onChange={handlePerPageChange}
-                                    className="outline-none appearance-none bg-transparent cursor-pointer w-full px-2 py-1.5 shadow border rounded"
-                                >
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                    <option value="250">250</option>
-                                </select>
-                                <ChevronDown
-                                    size={20}
-                                    className=" bg-transparent absolute right-1 pointer-events-none"
-                                />
-                            </label> */}
                             <div className="relative flex gap-2 w-full sm:w-max">
                                 <button
                                     type="button"
@@ -303,6 +278,8 @@ const Diterima = ({
                                     params.append("kelurahan", kelurahan);
                                 if (petugas) params.append("petugas", petugas);
 
+                                params.append("status", "Approved");
+
                                 window.open(
                                     route(
                                         "super-admin.wajib-retribusi.download-pdf"
@@ -330,6 +307,8 @@ const Diterima = ({
                                 if (kelurahan)
                                     params.append("kelurahan", kelurahan);
                                 if (petugas) params.append("petugas", petugas);
+
+                                params.append("status", "Approved");
 
                                 window.open(
                                     route(
@@ -397,22 +376,12 @@ const Diterima = ({
                                             <span
                                                 className={`py-2 rounded font-medium select-none text-teal-600`}
                                             >
-                                                {data.status == "Approved"
-                                                    ? "Diterima"
-                                                    : "Ditolak"}
+                                                {data.status == "Approved" &&
+                                                    "Diterima"}
                                             </span>
                                         </td>
                                         <td>
                                             <div className="flex gap-2 *:rounded *:font-medium *:text-sm">
-                                                <button
-                                                    onClick={() => {
-                                                        openModal("edit", data);
-                                                    }}
-                                                    className="flex items-center gap-1.5"
-                                                >
-                                                    <PencilLine size={20} />{" "}
-                                                    Edit
-                                                </button>
                                                 <button className="whitespace-nowrap flex items-center gap-1.5">
                                                     <FileText size={20} /> Form
                                                 </button>

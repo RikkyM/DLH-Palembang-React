@@ -9,9 +9,9 @@ import { router } from "@inertiajs/react";
 const Index = ({
     datas,
     filters,
-    kategoriOptions,
-    subKategoriOptions,
-    petugasOptions,
+    kategoriOptions = [],
+    subKategoriOptions = [],
+    petugasOptions = [],
 }) => {
     const [search, setSearch] = useState(filters.search || "");
     const [kategori, setKategori] = useState(filters.kategori || "");

@@ -11,7 +11,9 @@ use App\Models\Skrd;
 use App\Models\SubKategori;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -132,8 +134,19 @@ class SkrdController extends Controller
      */
     public function show(Skrd $skrd)
     {
+        Carbon::setLocale('id');
+
+        $bulan = collect(range(1, 12))
+            ->map(function ($i) {
+                return strtoupper(Carbon::create()->month($i)->translatedFormat('M'));
+            });
+
+        // $p = $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd']);
+        // dd($p->pembayaran->pluck('pembayaranBulan'));
+
         return Inertia::render('Super-Admin/Data-Input/Skrd/Show/Index', [
-            'data' => $skrd->load(['user', 'pembayaran'])
+            'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd']),
+            'bulan' => $bulan
         ]);
     }
 
@@ -211,7 +224,7 @@ class SkrdController extends Controller
 
         $fileName = 'laporan-skrd-' . date('Y-m-d-H-i-s') . '.pdf';
 
-        return $pdf->stream($fileName);
+        return $pdf->download($fileName);
     }
 
     public function downloadExcel(Request $request)
@@ -244,7 +257,7 @@ class SkrdController extends Controller
                 'chroot' => realpath("")
             ]);
 
-        return $pdf->stream("skrd-{$data->noWajibRetribusi}.pdf");
+        return $pdf->download("skrd-{$data->noWajibRetribusi}.pdf");
     }
 
     public function downloadSingleExcel($id)

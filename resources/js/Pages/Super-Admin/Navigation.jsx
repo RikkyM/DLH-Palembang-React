@@ -26,11 +26,11 @@ const SuperAdminNavigation = () => {
         },
         {
             label: "Inbox Diproses",
-            // route: "super-admin.wajib-retribusi",
+            route: "super-admin.wajib-retribusi-diproses",
         },
         {
             label: "Inbox Ditolak",
-            // route: "super-admin.wajib-retribusi",
+            route: "super-admin.wajib-retribusi-ditolak",
         },
         {
             label: "SKRD",

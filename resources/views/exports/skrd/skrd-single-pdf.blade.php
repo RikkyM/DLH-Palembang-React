@@ -169,16 +169,18 @@
                 </a>
             </td>
             <td style="width: 50%; text-align: center;">
-                <p style="font-size: 14px; line-height: 0.8rem; width: max-content; margin: 0 auto 110px;">An. Kepala Dinas
+                <p style="font-size: 14px; line-height: 0.8rem; width: max-content; margin: 0 auto 110px;">An. Kepala
+                    Dinas
                     Lingkungan
                     Hidup<br />Kota Palembang<br />
-                Kepala Bidang Pengelolaan Sampan dan Limbah B3</p>
+                    Kepala Bidang Pengelolaan Sampan dan Limbah B3</p>
                 {{-- <img src="/img/qrcode.jpg" alt="QR Code DLH Palembang" width="50" height="50" /><br/> --}}
                 <p
                     style="font-size: 14px; line-height: 0.8rem; text-align: left; display: inline-block; margin: 0 auto; width: 230px;">
                     {{-- Andika Marta Dinata. S.ST., M.T --}}
                     {{ $kabid->namaLengkap }}
-                    <br />NIP</p>
+                    <br />NIP
+                </p>
                 {{-- <p style="font-size: 7px; max-width: 350px; text-align: left; line-height: 0.45rem; margin: auto;">-UU
                     ITE No. 11 Tahun 2008 Pasal 5 ayat 1 Informasi Elektronik dan/atau
                     Dokumen Elektronik dan/atau
@@ -231,37 +233,46 @@
     <div style="border-top: 3px dashed !important; margin-top: 1.4rem; padding-top: 1.4rem;">
         <table style="border-collapse: collapse; width: 100%; max-width: 800px;line-height: 0.7rem; font-size: 14px;">
             <tr>
-                <td style="width: 25%;">No. SKRD</td>
+                <td style="width: 25%; vertical-align: top;">No. SKRD</td>
                 <td style="width: 25%;">: {{ $data->noSkrd }}</td>
                 <td style="width: 25%; padding-left: 10px;">Diterima Tanggal</td>
                 <td style="width: 25%;">: -</td>
             </tr>
             <tr>
-                <td>No. Wajib Retribusi</td>
+                <td style="vertical-align: top;">No. Wajib Retribusi</td>
                 <td>: {{ $data->noWajibRetribusi }}</td>
                 <td style="padding-left: 10px;">Nama Penerima</td>
                 <td>: -</td>
             </tr>
             <tr>
-                <td>Nama Wajib Retribusi</td>
-                <td>: {{ $data->namaObjekRetribusi }}</td>
+                <td style="vertical-align: top;">Nama Wajib Retribusi</td>
+                <td style="padding-right: 20px;">
+                    <div style="display: table;">
+                        <div style="display: table-row; background: red;">
+                            <div style="display: table-cell;">:</div>
+                            <div style="display: table-cell; padding-left: 4px;">
+                                {{ $data->namaObjekRetribusi }}
+                            </div>
+                        </div>
+                    </div>
+                </td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
-                <td>Tarif Ketetapan / Bulan</td>
+                <td style="vertical-align: top;">Tarif Ketetapan / Bulan</td>
                 <td>: {{ $data->tarifPerBulanObjekRetribusi }}</td>
                 <td style="text-align: center;">Penerima</td>
                 <td style="text-align: center;">Penagih</td>
             </tr>
             <tr>
-                <td>Tarif Ketetapan / Tahun</td>
+                <td style="vertical-align: top;">Tarif Ketetapan / Tahun</td>
                 <td>: {{ $data->tarifPerTahunObjekRetribusi }}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
-                <td>Jumlah Bulan</td>
+                <td style="vertical-align: top;">Jumlah Bulan</td>
                 <td>: {{ $data->jumlahBulan }} Bulan</td>
                 <td></td>
                 <td></td>
