@@ -83,7 +83,7 @@ const Sidebar = ({ children }) => {
                 </section>
 
                 {/* footer */}
-                <section className="overflow-hidden">
+                <section className="overflow-hidden md:hidden">
                     <div className="p-3 w-64 min-w-64">
                         <button
                             ref={buttonRef}
@@ -92,9 +92,6 @@ const Sidebar = ({ children }) => {
                         >
                             <div className="flex items-center gap-3 flex-1">
                                 <div className="bg-gray-300 size-10 rounded-full grid place-content-center font-medium relative overflow-hidden font-medium">
-                                    {/* {user?.namaLengkap
-                                        ?.charAt(0)
-                                        ?.toUpperCase() || "U"} */}
                                     <img
                                         src="/img/1.jpg"
                                         alt="gambar"
@@ -116,8 +113,6 @@ const Sidebar = ({ children }) => {
                     >
                         <div className="p-3 flex items-center gap-3 w-max">
                             <div className="rounded-full bg-neutral-300 size-9 grid place-content-center overflow-hidden relative">
-                                {/* {user?.namaLengkap.charAt(0).toUpperCase()} */}
-
                                 <img
                                     src="/img/1.jpg"
                                     alt="gambar"

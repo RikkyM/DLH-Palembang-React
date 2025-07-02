@@ -16,7 +16,7 @@ const Diproses = ({
     subKategoriOptions,
     kecamatanOptions,
     kelurahanOptions,
-    petugasOptions,
+    petugasOptions = [],
 }) => {
     const [search, setSearch] = useState(filters.search || "");
     const [sort, setSort] = useState(filters.sort || null);
@@ -70,22 +70,22 @@ const Diproses = ({
         { key: "status", label: "status", align: "text-left truncate" },
     ];
 
-    const kategoriList = kategoriOptions.map((k) => ({
+    const kategoriList = kategoriOptions?.map((k) => ({
         value: k.kodeKategori,
         label: k.namaKategori,
     }));
 
-    const pjList = pjOptions.map((k) => ({
+    const pjList = pjOptions?.map((k) => ({
         value: k.id.toString(),
         label: k.namaPemilik,
     }));
 
-    const subKategoriList = subKategoriOptions.map((s) => ({
+    const subKategoriList = subKategoriOptions?.map((s) => ({
         value: s.kodeSubKategori,
         label: s.namaSubKategori,
     }));
 
-    const kecamatanList = kecamatanOptions.map((kec) => ({
+    const kecamatanList = kecamatanOptions?.map((kec) => ({
         value: kec.kodeKecamatan,
         label: kec.namaKecamatan,
     }));
@@ -327,7 +327,8 @@ const Diproses = ({
                     </div>
                 </div>
                 <div className="overflow-x-auto bg-white rounded shadow">
-                    <Table  
+                    <Table
+                        search={search}
                         datas={datas}
                         columns={columns}
                         sort={sort}

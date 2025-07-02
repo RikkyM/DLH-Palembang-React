@@ -15,6 +15,29 @@ export default defineConfig({
             "@": "/resources/js",
         },
     },
+    build: {
+        chunkSizeWarningLimit: 1000, // Ubah batas warning jadi 1000 kB
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes("node_modules")) {
+                        if (
+                            id.includes("react") &&
+                            !id.includes("lucide-react")
+                        ) {
+                            return "react-vendors";
+                        }
+
+                        if (id.includes("lucide-react")) {
+                            return "lucide";
+                        }
+
+                        return "vendor";
+                    }
+                },
+            },
+        },
+    },
     // server: {
     //     host: "0.0.0.0",
     //     port: 5173,

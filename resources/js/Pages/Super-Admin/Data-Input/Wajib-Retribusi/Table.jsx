@@ -1,7 +1,7 @@
 import TableHead from "@/Components/TableHead";
 import { FileText } from "lucide-react";
 
-const Table = ({ datas, columns, sort, direction}) => {
+const Table = ({ datas, search, columns, sort, setSort, direction, setDirection }) => {
     return (
         <table className="p-3 min-w-full divide-y divide-gray-300">
             <thead>

@@ -32,7 +32,7 @@ const SearchableSelect = ({
         }
     }, [open]);
 
-    const selectedOption = options.find((opt) => opt.value === value);
+    const selectedOption = options?.find((opt) => opt.value === value);
     const filteredOptions =
         query.trim() === ""
             ? options

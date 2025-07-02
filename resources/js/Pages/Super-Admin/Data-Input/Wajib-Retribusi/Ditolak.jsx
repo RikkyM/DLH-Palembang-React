@@ -11,12 +11,12 @@ import Table from "./Table";
 const Ditolak = ({
     datas,
     filters,
-    pjOptions,
-    kategoriOptions,
-    subKategoriOptions,
-    kecamatanOptions,
-    kelurahanOptions,
-    petugasOptions,
+    pjOptions = [],
+    kategoriOptions = [],
+    subKategoriOptions = [],
+    kecamatanOptions = [],
+    kelurahanOptions = [],
+    petugasOptions = [],
 }) => {
     const [search, setSearch] = useState(filters.search || "");
     const [sort, setSort] = useState(filters.sort || null);

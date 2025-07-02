@@ -11,12 +11,12 @@ import Table from "./Table";
 const Diterima = ({
     datas,
     filters,
-    pjOptions,
-    kategoriOptions,
-    subKategoriOptions,
-    kecamatanOptions,
-    kelurahanOptions,
-    petugasOptions,
+    pjOptions = [],
+    kategoriOptions = [],
+    subKategoriOptions = [],
+    kecamatanOptions = [],
+    kelurahanOptions = [],
+    petugasOptions = [],
 }) => {
     const [search, setSearch] = useState(filters.search || "");
     const [sort, setSort] = useState(filters.sort || null);
@@ -331,7 +331,9 @@ const Diterima = ({
                         datas={datas}
                         columns={columns}
                         sort={sort}
+                        setSort={setSort}
                         direction={direction}
+                        setDirection={setDirection}
                     />
                 </div>
 
