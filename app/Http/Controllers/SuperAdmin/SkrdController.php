@@ -45,25 +45,12 @@ class SkrdController extends Controller
                 ->whereColumn('skrdId', 'skrd.id')
         ]);
 
-        if ($sortBy === 'user.namaLengkap') {
-            $skrd->addSelect([
-                'skrd.*',
-                'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
-                    ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
-                    ->whereColumn('skrdId', 'skrd.id')
-            ])
-                ->join('users', 'skrd.petugasPendaftarId', '=', 'users.id')
-                ->orderBy('users.namaLengkap', $sortDir);
+        if ($sortBy === 'sisa_tertagih') {
+            $skrd->orderByRaw("(tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) {$sortDir}");
+        } elseif ($sortBy === 'statusLunas') {
+            $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) = 0 THEN 0 ELSE 1 END {$sortDir}");
         } else {
-
-
-            if ($sortBy === 'sisa_tertagih') {
-                $skrd->orderByRaw("(tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) {$sortDir}");
-            } elseif ($sortBy === 'statusLunas') {
-                $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) = 0 THEN 0 ELSE 1 END {$sortDir}");
-            } else {
-                $skrd->orderBy($sortBy, $sortDir);
-            }
+            $skrd->orderBy($sortBy, $sortDir);
         }
 
         if ($search && trim($search) !== '') {
@@ -79,7 +66,7 @@ class SkrdController extends Controller
         }
 
         if ($petugasId) {
-            $skrd->where('petugasPendaftarId', $petugasId);
+            $skrd->where('namaPendaftar', $petugasId);
         }
 
         if ($status === 'lunas') {

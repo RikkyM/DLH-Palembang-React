@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('noSkrd')->nullable()->unique();
             $table->bigInteger('nomorOnly')->nullable();
             $table->foreignId('uptdId')->constrained('uptd')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('petugasPendaftarId')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('namaPendaftar');
             $table->string('noWajibRetribusi');
             $table->string('namaObjekRetribusi');
             $table->foreignId('pemilikId')->constrained('pemilik')->onUpdate('cascade')->onDelete('cascade');

@@ -10,10 +10,15 @@ use App\Models\Kecamatan;
 use App\Models\Kelurahan;
 use App\Models\Pemilik;
 use App\Models\SubKategori;
+use App\Models\Uptd;
 use App\Models\User;
 use App\Models\WajibRetribusi;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -280,7 +285,109 @@ class WajibRetribusiController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        $validated = $request->validate([
+            'namaObjekRetribusi' => 'required|string',
+            'pemilikId' => 'required',
+            'alamatObjekRetribusi' => 'required|string',
+            'rt' => 'required',
+            'rw' => 'required',
+            'kodeKecamatan' => 'required',
+            'kodeKelurahan' => 'required',
+            'bentukUsaha' => 'required',
+            'deskripsi' => 'required',
+            'kodeKategori' => 'required',
+            'kodeSubKategori' => 'required',
+            'statusTempat' => 'required',
+            'jBangunan' => 'required',
+            'jLantai' => 'required',
+            'linkMap' => 'required|url',
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'fotoBangunan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'fotoBerkas' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'variabelValues' => 'required|array',
+        ]);
+
+        $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
+
+        $tarif = $sub->tarif;
+        $rumus = $sub->rumus ?? '';
+
+        foreach ($validated['variabelValues'] as $key => $value) {
+            $rumus = preg_replace('/\b' . preg_quote($key) . '\b/', $value, $rumus);
+        }
+
+        try {
+            $nilaiRumus = 0;
+            eval("\$nilaiRumus = $rumus;");
+            $tarifPerbulan = $tarif * $nilaiRumus;
+        } catch (\Throwable $e) {
+            return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $fileFotoBangunan = $request->file('fotoBangunan');
+            $fileFotoBerkas = $request->file('fotoBerkas');
+
+            $fotoBangunan = Str::uuid() . '.' . $fileFotoBangunan->getClientOriginalExtension();
+            $fotoBerkas = Str::uuid() . '.' . $fileFotoBerkas->getClientOriginalExtension();
+
+            $pathFotoBangunan = $fileFotoBangunan->storeAs('foto/bangunan', $fotoBangunan, 'public');
+            $pathFotoBerkas = $fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'public');
+
+            $uptd = Uptd::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
+
+            $dataToSave = [
+                'kodeKategori' => $request->kodeKategori,
+                'kodeSubKategori' => $request->kodeSubKategori,
+                'kodeKelurahan' => $request->kodeKelurahan,
+                'kodeKecamatan' => $request->kodeKecamatan,
+                'uptdId' => $uptd->id,
+                'pemilikId' => $request->pemilikId,
+                'petugasPendaftarId' => Auth::user()->id,
+                'namaObjekRetribusi' => $request->namaObjekRetribusi,
+                'deskripsiUsaha' => $request->deskripsi,
+                'bentukBadanUsaha' => $request->bentukUsaha,
+                'alamat' => $request->alamatObjekRetribusi,
+                'rt' => $request->rt,
+                'rw' => $request->rw,
+                'kota' => 'Palembang',
+                'provinsi' => 'Sumatera Selatan',
+                'statusTempat' => $request->statusTempat,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'image' => $pathFotoBangunan,
+                'url_image' => json_encode(Storage::url($pathFotoBangunan)),
+                'file' => $pathFotoBerkas,
+                'url_file' => json_encode(Storage::url($pathFotoBerkas)),
+                'tarifPerbulan' => $tarifPerbulan,
+                'jumlahBangunan' => $request->jBangunan,
+                'jumlahLantai' => $request->jLantai,
+                'maksud' => "Wajib Retribusi Baru",
+                'status' => "Processed",
+                'createdThisYear' => now()->year == now()->year ? 't' : 'f',
+                'historyAction' => [
+                    [
+                        'role' => Auth::user()->role,
+                        'action' => 'Submited',
+                        'userId' => Auth::id(),
+                        'actionDate' => now()->toIso8601String()
+                    ]
+                ]
+            ];
+
+            // dd($dataToSave);
+
+            WajibRetribusi::create($dataToSave);
+
+            DB::commit();
+            return redirect()->route('super-admin.wajib-retribusi.index')->with('success', 'Data berhasil disimpan.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data.']);
+        }
     }
 
     public function edit($id) {}

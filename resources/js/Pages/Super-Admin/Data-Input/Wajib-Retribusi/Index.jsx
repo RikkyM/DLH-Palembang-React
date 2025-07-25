@@ -331,11 +331,6 @@ const Index = ({
                         >
                             Tambah
                         </Link>
-                        {/* <button onClick={() => {
-                            openModal('create')
-                        }} className="bg-green-500 px-3 py-1.5 rounded text-sm text-white font-medium">
-                            Tambah
-                        </button> */}
                         <button
                             onClick={() => {
                                 const params = new URLSearchParams();
@@ -426,7 +421,7 @@ const Index = ({
                                                 1}
                                         </td>
                                         <td>{data.noPendaftaran}</td>
-                                        <td>{data.noWajibRetribusi}</td>
+                                        <td>{data.noWajibRetribusi ?? "-"}</td>
                                         <td className="">
                                             {data.pemilik.namaPemilik}
                                         </td>
@@ -447,17 +442,23 @@ const Index = ({
                                                 className={`py-2 rounded font-medium select-none ${
                                                     data.status == "Approved"
                                                         ? "text-teal-600"
+                                                        : data.status ==
+                                                          "Processed"
+                                                        ? "text-amber-500"
                                                         : "text-red-500"
                                                 }`}
                                             >
-                                                {data.status == "Approved"
-                                                    ? "Diterima"
-                                                    : "Ditolak"}
+                                                {data.status == "Approved" &&
+                                                    "Diterima"}
+                                                {data.status == "Processed" &&
+                                                    "Diproses"}
+                                                {data.status == "Rejected" &&
+                                                    "Ditolak"}
                                             </span>
                                         </td>
                                         <td>
                                             <div className="flex gap-2 *:rounded *:font-medium *:text-sm">
-                                                <button
+                                                {/* <button
                                                     onClick={() => {
                                                         openModal("edit", data);
                                                     }}
@@ -465,7 +466,16 @@ const Index = ({
                                                 >
                                                     <PencilLine size={20} />{" "}
                                                     Edit
-                                                </button>
+                                                </button> */}
+                                                <Link
+                                                    href={route(
+                                                        "super-admin.wajib-retribusi.create"
+                                                    )}
+                                                    className="flex items-center gap-1.5"
+                                                >
+                                                    <PencilLine size={20} />{" "}
+                                                    Edit
+                                                </Link>
                                                 <button className="whitespace-nowrap flex items-center gap-1.5">
                                                     <FileText size={20} /> Form
                                                 </button>

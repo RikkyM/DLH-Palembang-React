@@ -250,7 +250,7 @@ const DropdownInput = ({
                 )}
             </div>
 
-            {error && <span className="text-sm text-red-500">{error}</span>}
+            {error && <span className="text-xs text-red-500">{error}</span>}
         </div>
     );
 };

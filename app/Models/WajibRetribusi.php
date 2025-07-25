@@ -8,6 +8,39 @@ class WajibRetribusi extends Model
 {
     protected $table = 'wajib_retribusi';
 
+    protected $fillable = [
+        'noPendaftaran',
+        'kodeKategori',
+        'kodeSubKategori',
+        'kodeKelurahan',
+        'kodeKecamatan',
+        'uptdId',
+        'pemilikId',
+        'petugasPendaftarId',
+        'namaObjekRetribusi',
+        'deskripsiUsaha',
+        'bentukBadanUsaha',
+        'alamat',
+        'rt',
+        'rw',
+        'kota',
+        'provinsi',
+        'statusTempat',
+        'latitude',
+        'longitude',
+        'image',
+        'url_image',
+        'file',
+        'url_file',
+        'tarifPerbulan',
+        'jumlahBangunan',
+        'jumlahLantai',
+        'maksud',
+        'status',
+        'createdThisYear',
+        'historyAction',
+    ];
+
     protected $casts = [
         'historyAction' => 'array'
     ];
@@ -45,5 +78,23 @@ class WajibRetribusi extends Model
     public function kecamatan()
     {
         return $this->belongsTo(Kecamatan::class, 'kodeKecamatan', 'kodeKecamatan');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $last = self::orderBy('id', 'desc')->first();
+
+            $lastNumber = 0;
+            if ($last && preg_match('/^\d+$/', $last->noPendaftaran)) {
+                $lastNumber = intval($last->noPendaftaran);
+            }
+
+            $nextNumber = $lastNumber + 1;
+
+            $model->noPendaftaran = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        });
     }
 }

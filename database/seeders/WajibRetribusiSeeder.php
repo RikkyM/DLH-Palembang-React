@@ -719,9 +719,14 @@ class WajibRetribusiSeeder extends Seeder
             [665, '0665', '18.066.2024', '08', '08.01', '18.02', '18', 20, 542, 239, 'ASURANSI ASTRA', 'PERKANTORAN', 'PT', 'VETERAN NO 2', '14', '04', 'Palembang', 'Sumatera Selatan', 'MILIK SENDIRI', '-2.9755030032712613', '104.76402157018696', 'image_1735266828465.jpeg', '/assets24-wr/file/objek-retribusi/image_1735266828465.jpeg', '{file_1735266828466.JPEG}', '{/assets24-wr/file/objek-retribusi/file_1735266828466.JPEG}', 403000, 1, 2, 'Wajib Retribusi Baru', 'Approved', 't', '[{"userId":239,"role":"ROLE_PENDAFTAR","action":"Submited","actionDate":"2024-12-27T02:33:48.470Z"},{"userId":66,"role":"ROLE_KUPTD","uptdId":20,"action":"Approved","actionDate":"2024-12-27T02:34:11.201Z"}]', '2024-12-27 09:33:48.51+07', '2024-12-27 09:34:51.781+07'],
             [666, '0666', '09.044.2025', '08', '08.01', '09.03', '09', 11, 486, 133, 'BANK PEMBANGUNAN DAERAH SUMATERA SELATAN & BABEL KAS RSMH', 'PERKANTORAN', 'PT', 'JL. JENDERAL SUDIRMAN KECAMATAN KEMUNING   ', '0', '0', 'Palembang', 'Sumatera Selatan', 'MILIK SENDIRI', '-2.965969430828811', '104.75012719586233', 'image_1738212855065.jpeg', '/assets24-wr/file/objek-retribusi/image_1738212855065.jpeg', '{file_1738212855109.jpeg}', '{/assets24-wr/file/objek-retribusi/file_1738212855109.jpeg}', 150000, 1, 1, 'Wajib Retribusi Baru', 'Approved', 't', '[{"userId":133,"role":"ROLE_PENDAFTAR","action":"Submited","actionDate":"2025-01-30T04:54:15.187Z"},{"userId":58,"role":"ROLE_KUPTD","uptdId":11,"action":"Approved","actionDate":"2025-01-30T04:58:27.642Z"}]', '2025-01-30 11:54:15.29+07', '2025-01-30 11:58:56.417+07'],
         ];
+        
 
         $records = array_map(function ($row) use ($fields) {
             $data = array_combine($fields, $row);
+
+            $data['file'] = trim($data['file'], '{}');
+            $data['url_image'] = json_encode([trim($data['url_image'], '{}')]);
+            $data['url_file'] = json_encode([trim($data['url_file'], '{}')]);
             $data['created_at'] = Carbon::parse($data['created_at'])->utc();
             $data['updated_at'] = Carbon::parse($data['updated_at'])->utc();
             return $data;

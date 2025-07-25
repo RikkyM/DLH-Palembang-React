@@ -84,10 +84,12 @@ class SubKategoriController extends Controller
         $validated['rumus'] = empty($validated['rumus']) ? null : $validated['rumus'];
 
         $validated['variabel'] = empty($validated['variabel'])
-        ? null
+            ? null
             : $validated['variabel'];
 
         $validated['slug'] = Str::slug($validated['namaSubKategori']);
+
+        dd($validated);
 
         SubKategori::create($validated);
 
@@ -140,7 +142,7 @@ class SubKategoriController extends Controller
         $validated['rumus'] = empty($validated['rumus']) ? null : $validated['rumus'];
 
         $validated['variabel'] = empty($validated['variabel'])
-        ? null
+            ? null
             : $validated['variabel'];
 
         if (isset($validated['namaSubKategori'])) {

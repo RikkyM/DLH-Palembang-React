@@ -3,7 +3,7 @@ import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
 import { router } from "@inertiajs/react";
 
-import { FileText, Filter, PencilLine, Search } from "lucide-react";
+import { Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
 import Table from "./Table";
@@ -331,7 +331,9 @@ const Ditolak = ({
                         datas={datas}
                         columns={columns}
                         sort={sort}
+                        setSort={setSort}
                         direction={direction}
+                        setDirection={setDirection}
                     />
                 </div>
 

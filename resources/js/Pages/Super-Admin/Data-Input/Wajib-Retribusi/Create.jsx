@@ -31,12 +31,14 @@ const Create = ({
         rw: "",
         kodeKecamatan: "",
         kodeKelurahan: "",
+        bentukUsaha: "",
         deskripsi: "",
         kodeKategori: "",
         kodeSubKategori: "",
         statusTempat: "",
         jBangunan: "",
         jLantai: "",
+        linkMap: "",
         latitude: null,
         longitude: null,
         fotoBangunan: null,
@@ -45,12 +47,12 @@ const Create = ({
     };
 
     const handleVariabelChange = (variabelName, value) => {
-        setData(prevData => ({
+        setData((prevData) => ({
             ...prevData,
             variabelValues: {
                 ...prevData.variabelValues,
-                [variabelName]: value
-            }
+                [variabelName]: value,
+            },
         }));
     };
 
@@ -64,6 +66,16 @@ const Create = ({
     const statusTempat = [
         { value: "MILIK SENDIRI", label: "MILIK SENDIRI" },
         { value: "SEWA", label: "SEWA" },
+    ];
+
+    const bentukUsaha = [
+        { value: "Perorangan", label: "Perorangan" },
+        { value: "CV", label: "CV" },
+        { value: "PT", label: "PT" },
+        { value: "Koperasi", label: "Koperasi" },
+        { value: "BUMN", label: "BUMN" },
+        { value: "Instansi Pemerintah", label: "Instansi Pemerintah" },
+        { value: "FIRMA", label: "FIRMA" },
     ];
 
     const handleLocationChange = useCallback(
@@ -154,11 +166,12 @@ const Create = ({
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         post(route("super-admin.wajib-retribusi.store"), {
             onSuccess: () => {
                 setData(initialData);
                 onClose();
+                console.log('asdad')
             },
             onError: (e) => {
                 console.error(e);
@@ -194,6 +207,11 @@ const Create = ({
                                 )
                             }
                         />
+                        {errors.namaObjekRetribusi && (
+                            <span className="text-red-500 text-xs">
+                                {errors.namaObjekRetribusi}
+                            </span>
+                        )}
                     </div>
                     <DropdownInput
                         id="pemohon"
@@ -231,6 +249,11 @@ const Create = ({
                                 )
                             }
                         />
+                        {errors.alamatObjekRetribusi && (
+                            <span className="text-red-500 text-xs">
+                                {errors.alamatObjekRetribusi}
+                            </span>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label
@@ -241,7 +264,7 @@ const Create = ({
                         </label>
                         <input
                             className="px-3 py-2 bg-gray-200 outline-none"
-                            type="text"
+                            type="number"
                             id="rt"
                             autoComplete="off"
                             placeholder="RT"
@@ -250,6 +273,11 @@ const Create = ({
                                 handleInputChange("rt", e.target.value)
                             }
                         />
+                        {errors.rt && (
+                            <span className="text-red-500 text-xs">
+                                {errors.rt}
+                            </span>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label
@@ -260,7 +288,7 @@ const Create = ({
                         </label>
                         <input
                             className="px-3 py-2 bg-gray-200 outline-none"
-                            type="text"
+                            type="number"
                             id="rw"
                             autoComplete="off"
                             placeholder="RW"
@@ -269,6 +297,11 @@ const Create = ({
                                 handleInputChange("rw", e.target.value)
                             }
                         />
+                        {errors.rw && (
+                            <span className="text-red-500 text-xs">
+                                {errors.rw}
+                            </span>
+                        )}
                     </div>
                     <DropdownInput
                         id="kecamatan"
@@ -299,6 +332,21 @@ const Create = ({
                         labelKey="label"
                         disabled={!data.kodeKecamatan}
                     />
+                    <DropdownInput
+                        id="bentukUsaha"
+                        label="Bentuk Badan Usaha"
+                        placeholder="Pilih Bentuk Badan Usaha"
+                        value={data.bentukUsaha}
+                        onChange={(value) =>
+                            handleInputChange("bentukUsaha", value)
+                        }
+                        options={bentukUsaha}
+                        error={errors.bentukUsaha}
+                        required={true}
+                        valueKey="value"
+                        labelKey="label"
+                        className="col-span-2"
+                    />
                     <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
                         <label
                             htmlFor="deskripsi"
@@ -317,6 +365,11 @@ const Create = ({
                                 handleInputChange("deskripsi", e.target.value)
                             }
                         />
+                        {errors.deskripsi && (
+                            <span className="text-red-500 text-xs">
+                                {errors.deskripsi}
+                            </span>
+                        )}
                     </div>
                     <DropdownInput
                         id="kategori"
@@ -346,69 +399,88 @@ const Create = ({
                     {(() => {
                         const selectedSubKategori = getSelectedSubKategori();
 
+                        let variabelArray = [];
+
                         if (
-                            !selectedSubKategori ||
-                            !selectedSubKategori.variabel
-                        ) {
-                            return null;
-                        }
-
-                        const variabelArray = Array.isArray(
+                            selectedSubKategori &&
                             selectedSubKategori.variabel
-                        )
-                            ? selectedSubKategori.variabel
-                            : JSON.parse(selectedSubKategori.variabel || "[]");
-
-                        if (variabelArray.length === 0) {
-                            return null;
+                        ) {
+                            variabelArray = Array.isArray(
+                                selectedSubKategori.variabel
+                            )
+                                ? selectedSubKategori.variabel
+                                : JSON.parse(
+                                      selectedSubKategori.variabel || "[]"
+                                  );
                         }
+
+                        const inputFields = [
+                            "bulan",
+                            "unit",
+                            "m2",
+                            "giat",
+                            "hari",
+                            "meter",
+                        ];
 
                         return (
                             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {variabelArray.map((variabel, index) => (
-                                    <div
-                                        key={`${selectedSubKategori.value}-${variabel}-${index}`}
-                                        className="flex flex-col gap-1.5 text-sm"
-                                    >
-                                        <label
-                                            htmlFor={`variabel-${variabel}`}
-                                            className="capitalize after:content-['*'] after:text-red-500"
+                                {inputFields.map((field, index) => {
+                                    const isEnabled =
+                                        variabelArray.includes(field);
+                                    return (
+                                        <div
+                                            key={`variabel-${field}-${index}`}
+                                            className="flex flex-col gap-1.5 text-sm"
                                         >
-                                            {variabel}
-                                        </label>
-                                        <input
-                                            className="px-3 py-2 bg-gray-200 outline-none"
-                                            type="number"
-                                            id={`variabel-${variabel}`}
-                                            autoComplete="off"
-                                            placeholder={`Masukkan nilai ${variabel}...`}
-                                            value={
-                                                data.variabelValues[variabel] ||
-                                                ""
-                                            }
-                                            onChange={(e) =>
-                                                handleVariabelChange(
-                                                    variabel,
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                        {errors[
-                                            `variabelValues.${variabel}`
-                                        ] && (
-                                            <span className="text-red-500 text-xs">
-                                                {
-                                                    errors[
-                                                        `variabelValues.${variabel}`
-                                                    ]
+                                            <label
+                                                htmlFor={`variabel-${field}`}
+                                                className="capitalize after:content-['*'] after:text-red-500"
+                                            >
+                                                {field}
+                                            </label>
+                                            <input
+                                                className={`px-3 py-2 outline-none ${
+                                                    isEnabled
+                                                        ? "bg-gray-200"
+                                                        : "bg-gray-100 cursor-not-allowed"
+                                                }`}
+                                                type="number"
+                                                id={`variabel-${field}`}
+                                                autoComplete="off"
+                                                placeholder={`Masukkan nilai ${field}...`}
+                                                value={
+                                                    data.variabelValues[
+                                                        field
+                                                    ] || ""
                                                 }
-                                            </span>
-                                        )}
-                                    </div>
-                                ))}
+                                                onChange={(e) =>
+                                                    handleVariabelChange(
+                                                        field,
+                                                        e.target.value
+                                                    )
+                                                }
+                                                required
+                                                disabled={!isEnabled}
+                                            />
+                                            {errors[
+                                                `variabelValues.${field}`
+                                            ] && (
+                                                <span className="text-red-500 text-xs">
+                                                    {
+                                                        errors[
+                                                            `variabelValues.${field}`
+                                                        ]
+                                                    }
+                                                </span>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         );
                     })()}
+
                     <DropdownInput
                         id="statusTempat"
                         label="Status Tempat"
@@ -442,6 +514,11 @@ const Create = ({
                                 handleInputChange("jBangunan", e.target.value)
                             }
                         />
+                        {errors.jBangunan && (
+                            <span className="text-red-500 text-xs">
+                                {errors.jBangunan}
+                            </span>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
                         <label
@@ -461,6 +538,11 @@ const Create = ({
                                 handleInputChange("jLantai", e.target.value)
                             }
                         />
+                        {errors.jLantai && (
+                            <span className="text-red-500 text-xs">
+                                {errors.jLantai}
+                            </span>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label
@@ -470,14 +552,21 @@ const Create = ({
                             Latitude
                         </label>
                         <input
-                            className="px-3 py-2 bg-gray-200 outline-none bg-transparent cursor-auto"
-                            type="text"
+                            className="px-3 py-2 bg-gray-200 outline-none"
+                            type="number"
                             id="latitude"
                             autoComplete="off"
-                            placeholder="Klik pada peta untuk mengisi..."
+                            placeholder="Latitude..."
                             value={data.latitude || ""}
-                            readOnly
+                            onChange={(e) =>
+                                handleInputChange("latitude", e.target.value)
+                            }
                         />
+                        {errors.latitude && (
+                            <span className="text-red-500 text-xs">
+                                {errors.latitude}
+                            </span>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label
@@ -487,14 +576,45 @@ const Create = ({
                             Longitude
                         </label>
                         <input
-                            className="px-3 py-2 bg-gray-200 outline-none bg-transparent cursor-auto"
-                            type="text"
+                            className="px-3 py-2 bg-gray-200 outline-none"
+                            type="number"
                             id="longitude"
                             autoComplete="off"
-                            placeholder="Klik pada peta untuk mengisi..."
+                            placeholder="Longitude..."
                             value={data.longitude || ""}
-                            readOnly
+                            onChange={(e) =>
+                                handleInputChange("longitude", e.target.value)
+                            }
                         />
+                        {errors.longitude && (
+                            <span className="text-red-500 text-xs">
+                                {errors.longitude}
+                            </span>
+                        )}
+                    </div>
+                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
+                        <label
+                            htmlFor="linkMap"
+                            className="after:content-['*'] after:text-red-500"
+                        >
+                            Link Map
+                        </label>
+                        <input
+                            className="px-3 py-2 bg-gray-200 outline-none"
+                            type="url"
+                            id="linkMap"
+                            autoComplete="off"
+                            placeholder="Link Map..."
+                            value={data.linkMap}
+                            onChange={(e) =>
+                                handleInputChange("linkMap", e.target.value)
+                            }
+                        />
+                        {errors.linkMap && (
+                            <span className="text-red-500 text-xs">
+                                {errors.linkMap}
+                            </span>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
                         <MapPicker
@@ -520,6 +640,7 @@ const Create = ({
                                     e.target.files[0]
                                 )
                             }
+                            required
                         />
                         {errors.fotoBangunan && (
                             <span className="text-red-500 text-xs">
@@ -547,6 +668,7 @@ const Create = ({
                                     e.target.files[0]
                                 )
                             }
+                            required
                         />
                         {errors.fotoBerkas && (
                             <span className="text-red-500 text-xs">

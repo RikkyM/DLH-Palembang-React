@@ -34,9 +34,9 @@ return new class extends Migration
             $table->string('latitude');
             $table->string('longitude');
             $table->string('image');
-            $table->string('url_image');
+            $table->json('url_image');
             $table->string('file');
-            $table->string('url_file');
+            $table->json('url_file');
             $table->integer('tarifPerbulan');
             $table->integer('jumlahBangunan');
             $table->integer('jumlahLantai');

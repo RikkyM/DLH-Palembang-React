@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -675,11 +676,20 @@ class SkrdSeeder extends Seeder
             [404, '393/SPKRD/DLH/2024', 393, 9, 141, '07.019.2024', 'PT. GRAMEDIA ASRI MEDIA', 338, 'PLAZA', 'SUKARAMI', 'SUKARAMI', 'JALAN KOL.H.BURLIAN NO.48 KM 07 PALEMBANG', 'Mall/Plaza', 'Luas Usaha (m²) x Rp. 2.000,-', 9, 3000000, 27000000, 'Rp 3.000.000,00', 'Rp 27.000.000,00', ' dua puluh tujuh juta ', ' tiga juta ', '-2.939659397036588', '104.72262599557438', '2024', 420, 'Approved Kadin', '[{"userId":57,"role":"ROLE_KUPTD","action":"Submited","actionDate":"2024-05-15T04:24:16.308Z"},{"userId":77,"role":"ROLE_KATIM","uptdId":1,"action":"Approved Katim","actionDate":"2024-05-15T04:25:10.186Z"},{"userId":75,"role":"ROLE_KABID","uptdId":1,"action":"Approved Kabid","actionDate":"2024-05-15T04:26:00.925Z"},{"userId":71,"role":"ROLE_SEKDIN","uptdId":1,"action":"Approved Sekdin","actionDate":"2024-05-15T04:26:13.148Z"},{"userId":70,"role":"ROLE_KADIN","uptdId":1,"action":"Approved Kadin","actionDate":"2024-05-17T02:26:02.993Z"}]', '393-5-4-2024.pdf', '/assets24-wr/skrd/393-5-4-2024.pdf', 'image_1715746974806.jpeg', '/assets24-wr/file/objek-retribusi/image_1715746974806.jpeg', '2024-05-15 11:24:16.598+07', '2024-05-17 09:26:02.994+07', NULL],
         ];
 
-        $records = array_map(function($row) use ($fields) {
+        $userNames = DB::table('users')->pluck('namaLengkap', 'id');
+
+        $records = array_map(function($row) use ($fields, $userNames) {
             $data = array_combine($fields, $row);
+
+            $petugasId = $data['petugasPendaftarId'];
+            $data['namaPendaftar'] = $userNames[$petugasId] ?? null;
+
+            unset($data['petugasPendaftarId']);
+            
             $data["alamatObjekRetribusi"] = trim($data["alamatObjekRetribusi"]);
             $data['created_at'] = Carbon::parse($data['created_at'])->utc();
             $data['updated_at'] = Carbon::parse($data['updated_at'])->utc();
+
             return $data;
         }, $data);
 

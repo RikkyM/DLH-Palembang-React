@@ -103,7 +103,7 @@ const Index = ({
             align: "text-left truncate",
         },
         {
-            key: "user.namaLengkap",
+            key: "namaPendaftar",
             label: "nama petugas",
             align: "text-left truncate",
         },
@@ -120,10 +120,14 @@ const Index = ({
         label: s.namaSubKategori,
     }));
 
-    const petugasList = petugasOptions.map((petugas) => ({
-        value: petugas.id.toString(),
-        label: `${petugas.namaLengkap} ${petugas.lokasi}`,
-    }));
+    const petugasList = Array.from(
+        new Map(
+            petugasOptions.map((petugas) => [
+                petugas.namaLengkap,
+                { value: petugas.namaLengkap, label: petugas.namaLengkap },
+            ])
+        ).values()
+    );
 
     const statusList = [
         { value: "lunas", label: "Lunas" },
@@ -394,7 +398,7 @@ const Index = ({
                                                     data.pembayaran_sum_jumlah_bayar
                                             )}
                                         </td>
-                                        <td>{data.user.namaLengkap}</td>
+                                        <td>{data.namaPendaftar}</td>
                                         <td className="text-left">
                                             {data.tagihanPerTahunSkrd -
                                                 data.pembayaran_sum_jumlah_bayar ===
