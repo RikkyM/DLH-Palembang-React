@@ -5,12 +5,13 @@ import { useForm } from "@inertiajs/react";
 import "leaflet/dist/leaflet.css";
 import { useCallback, useState } from "react";
 
-const Create = ({
+const Edit = ({
     pemohonOptions = [],
     kecamatanOptions = [],
     kelurahanOptions = [],
     kategoriOptions = [],
     subKategoriOptions = [],
+    retribusi,
 }) => {
     const [mapReset, setMapReset] = useState(0);
 
@@ -24,25 +25,25 @@ const Create = ({
     };
 
     const initialData = {
-        namaObjekRetribusi: "",
-        pemilikId: "",
-        alamatObjekRetribusi: "",
-        rt: "",
-        rw: "",
-        kodeKecamatan: "",
-        kodeKelurahan: "",
-        bentukUsaha: "",
-        deskripsi: "",
-        kodeKategori: "",
-        kodeSubKategori: "",
-        statusTempat: "",
-        jBangunan: "",
-        jLantai: "",
-        linkMap: "",
-        latitude: null,
-        longitude: null,
-        fotoBangunan: null,
-        fotoBerkas: null,
+        namaObjekRetribusi: retribusi.namaObjekRetribusi || "",
+        pemilikId: retribusi.pemilikId || "",
+        alamatObjekRetribusi: retribusi.alamat || "",
+        rt: retribusi.rt || "",
+        rw: retribusi.rw || "",
+        kodeKecamatan: retribusi.kodeKecamatan || "",
+        kodeKelurahan: retribusi.kodeKelurahan || "",
+        bentukUsaha: retribusi.bentukBadanUsaha || "",
+        deskripsi: retribusi.deskripsiUsaha || "",
+        kodeKategori: retribusi.kodeKategori || "",
+        kodeSubKategori: retribusi.kodeSubKategori || "",
+        statusTempat: retribusi.statusTempat || "",
+        jBangunan: retribusi.jumlahBangunan || "",
+        jLantai: retribusi.jumlahLantai || "",
+        linkMap: retribusi?.linkMap || "",
+        latitude: retribusi.latitude || null,
+        longitude: retribusi.longitude || null,
+        fotoBangunan: retribusi.fotoBangunan || null,
+        fotoBerkas: retribusi.fotoBerkas || null,
         variabelValues: {},
     };
 
@@ -56,7 +57,7 @@ const Create = ({
         }));
     };
 
-    const { data, setData, errors, processing, clearErrors, post } =
+    const { data, setData, errors, processing, clearErrors, put } =
         useForm(initialData);
 
     const filteredKelurahanOptions = kelurahanOptions[data.kodeKecamatan] || [];
@@ -159,17 +160,24 @@ const Create = ({
         setMapReset((prev) => prev + 1);
     };
 
+    console.log(retribusi.noPendaftaran)
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        post(route("super-admin.wajib-retribusi.store"), {
-            onSuccess: () => {
-                setData(initialData);
-            },
-            onError: (e) => {
-                console.error(e);
-            },
-        });
+        put(
+            route("super-admin.wajib-retribusi.update", {
+                retribusi: retribusi.noPendaftaran,
+            }),
+            {
+                onSuccess: () => {
+                    setData(initialData);
+                },
+                onError: (e) => {
+                    console.error(e);
+                },
+            }
+        );
     };
 
     return (
@@ -633,18 +641,15 @@ const Create = ({
                                     e.target.files[0]
                                 )
                             }
-                            required
                         />
                         {errors.fotoBangunan && (
                             <span className="text-red-500 text-xs">
                                 {errors.fotoBangunan}
                             </span>
                         )}
-                        {data.fotoBangunan && (
-                            <span className="text-green-600 text-xs">
-                                File dipilih: {data.fotoBangunan.name}
-                            </span>
-                        )}
+                        <span className="text-green-600 text-xs">
+                            File Gambar: {retribusi.image}
+                        </span>
                     </div>
                     <div className="flex flex-col gap-1.5 text-sm">
                         <label htmlFor="fotoBerkas">
@@ -661,18 +666,15 @@ const Create = ({
                                     e.target.files[0]
                                 )
                             }
-                            required
                         />
                         {errors.fotoBerkas && (
                             <span className="text-red-500 text-xs">
                                 {errors.fotoBerkas}
                             </span>
                         )}
-                        {data.fotoBerkas && (
-                            <span className="text-green-600 text-xs">
-                                File dipilih: {data.fotoBerkas.name}
-                            </span>
-                        )}
+                        <span className="text-green-600 text-xs">
+                            File dipilih: {retribusi.file}
+                        </span>
                     </div>
                     <div className="flex flex-col md:flex-row md:justify-end md:col-span-2 gap-1.5 md:gap-4 text-sm">
                         <button
@@ -696,4 +698,4 @@ const Create = ({
     );
 };
 
-export default Create;
+export default Edit;

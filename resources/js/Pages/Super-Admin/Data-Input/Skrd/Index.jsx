@@ -5,10 +5,12 @@ import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
 import TableHead from "@/Components/TableHead";
 import { router } from "@inertiajs/react";
+import React from "react";
 
 const Index = ({
     datas,
     filters,
+    bulan,
     kategoriOptions = [],
     subKategoriOptions = [],
     petugasOptions = [],
@@ -317,7 +319,18 @@ const Index = ({
                                     setSort(column);
                                     setDirection(dir);
                                 }}
-                            />
+                            >
+                                {bulan.map((bulan, i) => (
+                                    <React.Fragment key={i}>
+                                        <th className="select-none cursor-pointer">
+                                            {bulan}
+                                        </th>
+                                        <th className="select-none cursor-pointer truncate">
+                                            Tanggal Bayar
+                                        </th>
+                                    </React.Fragment>
+                                ))}
+                            </TableHead>
                         </thead>
                         <tbody className="text-xs md:text-sm divide-y divide-neutral-300">
                             {datas?.data?.length > 0 ? (
@@ -412,6 +425,33 @@ const Index = ({
                                                 </span>
                                             )}
                                         </td>
+                                        {bulan.map((_, i) => {
+                                            const pembayaranUntukBulan =
+                                                data.pembayaran.find((item) =>
+                                                    item.pembayaranBulan.includes(
+                                                        i + 1
+                                                    )
+                                                );
+
+                                            return (
+                                                <React.Fragment key={i}>
+                                                    <td className="text-center">
+                                                        {pembayaranUntukBulan
+                                                            ? i + 1
+                                                            : "-"}
+                                                    </td>
+                                                    <td className="text-center">
+                                                        {pembayaranUntukBulan
+                                                            ? new Date(
+                                                                  pembayaranUntukBulan.tanggalBayar
+                                                              ).toLocaleDateString(
+                                                                  "id-ID"
+                                                              )
+                                                            : "-"}
+                                                    </td>
+                                                </React.Fragment>
+                                            );
+                                        })}
                                         <td
                                             onClick={(e) => e.stopPropagation()}
                                         >

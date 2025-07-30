@@ -39,10 +39,12 @@ Route::prefix('sirep')->group(function () {
                     Route::get('/wajib-retribusi/diproses', 'diproses')->name('wajib-retribusi-diproses');
                     Route::get('/wajib-retribusi/ditolak', 'ditolak')->name('wajib-retribusi-ditolak');
                     Route::get('/wajib-retribusi/tambah-data-wajib-retribusi', 'create')->name('wajib-retribusi.create');
+                    Route::post('/wajib-retribusi/store', 'store')->name('wajib-retribusi.store');
+                    Route::get('/wajib-retribusi/edit-data-wajib-retribusi/{retribusi}', 'edit')->name('wajib-retribusi.edit');
+                    Route::put('/wajib-retribusi/update/{retribusi}', 'update')->name('wajib-retribusi.update');
                     Route::get('/wajib-retribusi/download-pdf', 'downloadPdf')->name('wajib-retribusi.download-pdf');
                     Route::get('/wajib-retribusi/export', 'export')->name('wajib-retribusi.export');
                     Route::get('/wajib-retribusi/{id}/export-single', 'exportSingle')->name('wajib-retribusi.export-single');
-                    Route::post('/wajib-retribusi/store', 'store')->name('wajib-retribusi.store');
                 });
                 Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
                 Route::get('/download-pdf', [SkrdController::class, 'downloadPdf'])->name('skrd.download-pdf');

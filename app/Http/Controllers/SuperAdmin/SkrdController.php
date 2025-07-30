@@ -7,6 +7,7 @@ use App\Exports\SkrdExport;
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
 use App\Models\Pembayaran;
+use App\Models\Pemilik;
 use App\Models\Skrd;
 use App\Models\SubKategori;
 use App\Models\User;
@@ -20,6 +21,17 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class SkrdController extends Controller
 {
+
+    private function getBulan()
+    {
+        Carbon::setLocale('id');
+
+        return collect(range(1, 12))
+            ->map(function ($i) {
+                return strtoupper(Carbon::create()->month($i)->translatedFormat('M'));
+            });
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -96,7 +108,8 @@ class SkrdController extends Controller
             ],
             'kategoriOptions' => $kategori,
             'subKategoriOptions' => $subKategori,
-            'petugasOptions' => $petugas
+            'petugasOptions' => $petugas,
+            'bulan' => $this->getBulan()
         ]);
     }
 
@@ -121,19 +134,11 @@ class SkrdController extends Controller
      */
     public function show(Skrd $skrd)
     {
-        Carbon::setLocale('id');
 
-        $bulan = collect(range(1, 12))
-            ->map(function ($i) {
-                return strtoupper(Carbon::create()->month($i)->translatedFormat('M'));
-            });
-
-        // $p = $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd']);
-        // dd($p->pembayaran->pluck('pembayaranBulan'));
 
         return Inertia::render('Super-Admin/Data-Input/Skrd/Show/Index', [
             'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd']),
-            'bulan' => $bulan
+            'bulan' => $this->getBulan()
         ]);
     }
 
@@ -226,7 +231,7 @@ class SkrdController extends Controller
 
     public function downloadSinglePdf($id)
     {
-        $data = Skrd::with(['user:id,namaLengkap,lokasi,role', 'pembayaran'])->findOrFail($id);
+        $data = Skrd::with(['user:id,namaLengkap,lokasi,role', 'pembayaran', 'pemilik'])->findOrFail($id);
 
         $user = User::firstWhere('role', 'ROLE_KABID');
 
@@ -244,7 +249,7 @@ class SkrdController extends Controller
                 'chroot' => realpath("")
             ]);
 
-        return $pdf->download("skrd-{$data->noWajibRetribusi}.pdf");
+        return $pdf->stream("skrd-{$data->noWajibRetribusi}.pdf");
     }
 
     public function downloadSingleExcel($id)

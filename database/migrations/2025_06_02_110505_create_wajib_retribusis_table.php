@@ -37,6 +37,7 @@ return new class extends Migration
             $table->json('url_image');
             $table->string('file');
             $table->json('url_file');
+            $table->string('linkMap')->nullable();
             $table->integer('tarifPerbulan');
             $table->integer('jumlahBangunan');
             $table->integer('jumlahLantai');

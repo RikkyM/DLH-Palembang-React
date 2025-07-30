@@ -297,8 +297,8 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td style="text-align: center;">Jhon Doe</td>
-                <td style="text-align: center;">Jhon Doe</td>
+                <td style="text-align: center;">{{ $data->pemilik->namaPemilik }}</td>
+                <td style="text-align: center;">{{ $data->namaPendaftar }}</td>
             </tr>
         </table>
     </div>

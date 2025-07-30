@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 
-const TableHead = ({ columns, sort, direction, onSort, textAlign }) => {
+const TableHead = ({ columns, sort, direction, onSort, children = null, textAlign = null }) => {
     const handleSort = (column) => {
         const newDirection =
             sort === column && direction === "asc" ? "desc" : "asc";
@@ -29,6 +29,7 @@ const TableHead = ({ columns, sort, direction, onSort, textAlign }) => {
                     </span>
                 </th>
             ))}
+            {children}
             <th className="text-right">Aksi</th>
         </tr>
     );

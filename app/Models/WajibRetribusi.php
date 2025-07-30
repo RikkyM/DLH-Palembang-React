@@ -32,6 +32,7 @@ class WajibRetribusi extends Model
         'url_image',
         'file',
         'url_file',
+        'linkMap',
         'tarifPerbulan',
         'jumlahBangunan',
         'jumlahLantai',
@@ -42,6 +43,8 @@ class WajibRetribusi extends Model
     ];
 
     protected $casts = [
+        'url_image' => 'array',
+        'url_file' => 'array',
         'historyAction' => 'array'
     ];
 

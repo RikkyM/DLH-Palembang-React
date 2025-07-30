@@ -1,5 +1,5 @@
 import TableHead from "@/Components/TableHead";
-import { FileText } from "lucide-react";
+import { FileText, Send } from "lucide-react";
 
 const Table = ({ datas, search, columns, sort, setSort, direction, setDirection }) => {
     return (
@@ -30,7 +30,7 @@ const Table = ({ datas, search, columns, sort, setSort, direction, setDirection 
                                     1}
                             </td>
                             <td>{data.noPendaftaran}</td>
-                            <td>{data.noWajibRetribusi ?? '-'}</td>
+                            <td>{data.noWajibRetribusi ?? "-"}</td>
                             <td>{data.pemilik.namaPemilik}</td>
                             <td>{data.namaObjekRetribusi}</td>
                             <td className="truncate max-w-sm">{data.alamat}</td>
@@ -78,6 +78,11 @@ const Table = ({ datas, search, columns, sort, setSort, direction, setDirection 
                                     >
                                         <FileText size={20} /> Excel
                                     </button>
+                                    {data.status === "Approved" && (
+                                        <button className="whitespace-nowrap flex items-center gap-1.5">
+                                            <Send size={20} /> Kirim
+                                        </button>
+                                    )}
                                 </div>
                             </td>
                         </tr>

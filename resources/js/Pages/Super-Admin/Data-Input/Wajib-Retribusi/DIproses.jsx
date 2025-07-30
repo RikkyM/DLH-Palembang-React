@@ -332,7 +332,9 @@ const Diproses = ({
                         datas={datas}
                         columns={columns}
                         sort={sort}
+                        setSort={setSort}
                         direction={direction}
+                        setDirection={setDirection}
                     />
                 </div>
 

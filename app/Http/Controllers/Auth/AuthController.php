@@ -18,6 +18,7 @@ class AuthController extends Controller
 
     public function loginProcess(Request $request, AuthService $authService)
     {
+        dd($request->login);
         $request->validate([
             'login' => 'required',
             'password' => 'required|min:5'

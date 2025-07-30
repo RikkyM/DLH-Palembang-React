@@ -6,6 +6,7 @@ import { useProvider } from "@/Context/GlobalContext";
 
 import {
     ChevronDown,
+    Download,
     FileText,
     Filter,
     PencilLine,
@@ -199,16 +200,13 @@ const Index = ({
 
     return (
         <Layout title="WAJIB RETRIBUSI">
-            <section className="p-3">
-                <div
-                    className="flex flex-col gap-3 lg:flex-row lg:items-center justify-between w-full mb-3 p-2 rounded bg-white shadow"
-                    // sticky top-20 bg-red-500
-                >
+            <section className="p-3 overflow-hidden min-h-screen">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center justify-between w-full mb-3 p-2 rounded bg-white shadow">
                     <div className="flex flex-col sm:flex-row md:items-center gap-2 w-full md:w-auto">
                         <div className="flex items-center gap-2 w-full sm:w-max">
                             <label
                                 htmlFor="showData"
-                                className="text-sm flex items-center gap-1.5 cursor-pointer relative w-16"
+                                className="text-sm flex items-center gap-1.5 cursor-pointer relative min-w-14 max-w-16 w-full"
                             >
                                 <select
                                     name="showData"
@@ -228,6 +226,26 @@ const Index = ({
                                     className=" bg-transparent absolute right-1 pointer-events-none"
                                 />
                             </label>
+                            <button
+                                onClick={() => {
+                                    const params = new URLSearchParams();
+
+                                    if (perPage)
+                                        params.append("per_page", perPage);
+
+                                    window.open(
+                                        route(
+                                            "super-admin.wajib-retribusi.download-pdf"
+                                        ) +
+                                            "?" +
+                                            params.toString(),
+                                        "_blank"
+                                    );
+                                }}
+                                className="py-1.5 rounded text-sm font-medium"
+                            >
+                                <Download size={20} />
+                            </button>
                             <div className="relative flex gap-2 w-full sm:w-max">
                                 <button
                                     type="button"
@@ -242,7 +260,7 @@ const Index = ({
                                 </button>
                                 <div
                                     ref={filterRef}
-                                    className={`absolute top-full left-0  grid grid-cols-1 w-max bg-white gap-2 p-3 shadow border border-neutral-300 rounded transition-all ${
+                                    className={`absolute top-full left-0 grid grid-cols-1 w-max bg-white gap-2 p-3 shadow border border-neutral-300 rounded transition-all ${
                                         showFilters
                                             ? "opacity-100 pointer-events-auto mt-3"
                                             : "opacity-0 mt-0 pointer-events-none"
@@ -312,19 +330,19 @@ const Index = ({
                             htmlFor="search"
                             className="flex items-center gap-1.5 bg-white p-2 w-full md:max-w-80 text-sm rounded shadow border"
                         >
-                            <Search size={20} />
+                            <Search className="min-w-5 max-w-20" />
                             <input
                                 autoComplete="off"
                                 type="search"
                                 id="search"
                                 placeholder="Cari nama..."
-                                className="outline-none flex-1"
+                                className="outline-none flex-1 w-full"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </label>
                     </div>
-                    <div className="flex items-center justify-end md:justify-start gap-1.5">
+                    <div className="flex items-center justify-end md:justify-start gap-1.5 flex-wrap">
                         <Link
                             href={route("super-admin.wajib-retribusi.create")}
                             className="bg-green-500 px-3 py-1.5 rounded text-sm text-white font-medium"
@@ -403,7 +421,7 @@ const Index = ({
                                 }}
                             />
                         </thead>
-                        <tbody className="text-xs md:text-sm divide-y divide-neutral-300">
+                        <tbody className="text-xs md:text-sm ">
                             {datas?.data?.length > 0 ? (
                                 datas.data.map((data, index) => (
                                     <tr
@@ -458,18 +476,10 @@ const Index = ({
                                         </td>
                                         <td>
                                             <div className="flex gap-2 *:rounded *:font-medium *:text-sm">
-                                                {/* <button
-                                                    onClick={() => {
-                                                        openModal("edit", data);
-                                                    }}
-                                                    className="flex items-center gap-1.5"
-                                                >
-                                                    <PencilLine size={20} />{" "}
-                                                    Edit
-                                                </button> */}
                                                 <Link
                                                     href={route(
-                                                        "super-admin.wajib-retribusi.create"
+                                                        "super-admin.wajib-retribusi.edit",
+                                                        { retribusi: data.noPendaftaran }
                                                     )}
                                                     className="flex items-center gap-1.5"
                                                 >

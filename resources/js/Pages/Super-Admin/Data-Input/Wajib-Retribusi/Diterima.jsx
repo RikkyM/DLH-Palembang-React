@@ -328,6 +328,7 @@ const Diterima = ({
                 </div>
                 <div className="overflow-x-auto bg-white rounded shadow">
                     <Table
+                        search={search}
                         datas={datas}
                         columns={columns}
                         sort={sort}

@@ -12,6 +12,7 @@ class AuthService
 
     public function processLogin($credentials, $userIp)
     {
+        dd($credentials);
         $rateLimitKey = $this->getRateLimitKey($userIp);
         $this->checkTooManyAttempts($rateLimitKey);
 

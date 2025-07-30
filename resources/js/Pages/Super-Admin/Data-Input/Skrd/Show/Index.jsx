@@ -111,7 +111,28 @@ const Index = ({ data, bulan }) => {
                         <p>Per Tahun :</p>
                         <p>{data.tarifPerTahunObjekRetribusi}</p>
                     </div>
-                    <div className="grid grid-cols-2 col-span-2 text-sm overflow-x-auto mt-5">
+                    <div className="grid grid-cols-1 w-max gap-2 text-sm">
+                        <h2 className="font-bold">Pembayaran Tahun {new Date(data.created_at).getFullYear()}:</h2>
+                        {bulan.map((bulan, i) => {
+                            const pembayaranBulan = data.pembayaran.find(
+                                (item) => item.pembayaranBulan.includes(i + 1)
+                            );
+                            return (
+                                <div key={i} className="grid grid-cols-3">
+                                    <span>{bulan} </span>
+                                    <span>:</span>
+                                    <span>
+                                        {pembayaranBulan
+                                            ? new Date(
+                                                  pembayaranBulan.tanggalBayar
+                                              ).toLocaleDateString("id-ID")
+                                            : "-"}
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {/* <div className="grid grid-cols-2 col-span-2 text-sm overflow-x-auto mt-5">
                         <table className="w-full col-span-2 divide-y divide-gray-300">
                             <thead>
                                 <tr>
@@ -139,10 +160,12 @@ const Index = ({ data, bulan }) => {
 
                                         return (
                                             <React.Fragment key={bulanIndex}>
-                                                <td className="text-center py-2">{pembayaranUntukBulan ? bulanIndex + 1 : "-" }</td>
-                                                <td
-                                                    className="text-center"
-                                                >
+                                                <td className="text-center py-2">
+                                                    {pembayaranUntukBulan
+                                                        ? bulanIndex + 1
+                                                        : "-"}
+                                                </td>
+                                                <td className="text-center">
                                                     {pembayaranUntukBulan
                                                         ? new Date(
                                                               pembayaranUntukBulan.tanggalBayar
@@ -157,7 +180,7 @@ const Index = ({ data, bulan }) => {
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> */}
                 </div>
             </section>
         </Layout>
