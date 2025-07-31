@@ -179,7 +179,7 @@ const Create = ({
                     onSubmit={handleSubmit}
                     className="grid grid-cols-1 md:grid-cols-2 gap-5"
                 >
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2">
                         <label
                             htmlFor="namaObjekRetribusi"
                             className="after:content-['*'] after:text-red-500"
@@ -219,9 +219,9 @@ const Create = ({
                         required={true}
                         valueKey="value"
                         labelKey="label"
-                        className="md:col-span-2"
+                        className="col-span-2"
                     />
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2">
                         <label
                             htmlFor="alamatObjekRetribusi"
                             className="after:content-['*'] after:text-red-500"
@@ -248,7 +248,7 @@ const Create = ({
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2 md:col-span-1">
                         <label
                             htmlFor="rt"
                             className="after:content-['*'] after:text-red-500"
@@ -272,7 +272,7 @@ const Create = ({
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2 md:col-span-1">
                         <label
                             htmlFor="rw"
                             className="after:content-['*'] after:text-red-500"
@@ -309,6 +309,7 @@ const Create = ({
                         required={true}
                         valueKey="value"
                         labelKey="label"
+                        className="col-span-2 md:col-span-1"
                     />
                     <DropdownInput
                         id="kelurahan"
@@ -324,6 +325,7 @@ const Create = ({
                         valueKey="value"
                         labelKey="label"
                         disabled={!data.kodeKecamatan}
+                        className="col-span-2 md:col-span-1"
                     />
                     <DropdownInput
                         id="bentukUsaha"
@@ -340,7 +342,7 @@ const Create = ({
                         labelKey="label"
                         className="col-span-2"
                     />
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2">
                         <label
                             htmlFor="deskripsi"
                             className="after:content-['*'] after:text-red-500"
@@ -375,6 +377,7 @@ const Create = ({
                         required={true}
                         valueKey="value"
                         labelKey="label"
+                        className="col-span-2 md:col-span-1"
                     />
                     <DropdownInput
                         id="subkategori"
@@ -388,6 +391,7 @@ const Create = ({
                         valueKey="value"
                         labelKey="label"
                         disabled={!data.kodeKategori}
+                        className="col-span-2 md:col-span-1"
                     />
                     {(() => {
                         const selectedSubKategori = getSelectedSubKategori();
@@ -417,7 +421,7 @@ const Create = ({
                         ];
 
                         return (
-                            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {inputFields.map((field, index) => {
                                     const isEnabled =
                                         variabelArray.includes(field);
@@ -487,9 +491,9 @@ const Create = ({
                         required={true}
                         valueKey="value"
                         labelKey="label"
-                        className="md:col-span-2"
+                        className="col-span-2"
                     />
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2">
                         <label
                             htmlFor="jBangunan"
                             className="after:content-['*'] after:text-red-500"
@@ -513,7 +517,7 @@ const Create = ({
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2">
                         <label
                             htmlFor="jLantai"
                             className="after:content-['*'] after:text-red-500"
@@ -537,7 +541,7 @@ const Create = ({
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2 md:col-span-1">
                         <label
                             htmlFor="latitude"
                             className="after:content-['*'] after:text-red-500"
@@ -561,7 +565,7 @@ const Create = ({
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2 md:col-span-1">
                         <label
                             htmlFor="longitude"
                             className="after:content-['*'] after:text-red-500"
@@ -585,7 +589,7 @@ const Create = ({
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2">
                         <label
                             htmlFor="linkMap"
                             className="after:content-['*'] after:text-red-500"
@@ -609,7 +613,7 @@ const Create = ({
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2">
                         <MapPicker
                             latitude={data.latitude || ""}
                             longitude={data.longitude || ""}
@@ -618,7 +622,7 @@ const Create = ({
                             resetTrigger={mapReset}
                         />
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2 md:col-span-1">
                         <label htmlFor="fotoBangunan">
                             Upload Foto Bangunan
                         </label>
@@ -646,7 +650,7 @@ const Create = ({
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
+                    <div className="flex flex-col gap-1.5 text-sm col-span-2 md:col-span-1">
                         <label htmlFor="fotoBerkas">
                             Upload Foto Berkas Persyaratan
                         </label>
@@ -674,7 +678,7 @@ const Create = ({
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col md:flex-row md:justify-end md:col-span-2 gap-1.5 md:gap-4 text-sm">
+                    <div className="flex flex-col md:flex-row md:justify-end col-span-2 gap-1.5 md:gap-4 text-sm">
                         <button
                             type="button"
                             onClick={handleClearForm}

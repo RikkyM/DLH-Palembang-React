@@ -18,7 +18,6 @@ class AuthController extends Controller
 
     public function loginProcess(Request $request, AuthService $authService)
     {
-        dd($request->login);
         $request->validate([
             'login' => 'required',
             'password' => 'required|min:5'
@@ -33,13 +32,6 @@ class AuthController extends Controller
             'password' => $request->password
         ];
 
-        $redirectRoute = $authService->processLogin($credentials, $request->ip());
-        return redirect()->route($redirectRoute);
-    }
-
-    public function logout(Request $request)
-    {
-
         $user = Auth::user();
 
         if ($user) {
@@ -47,6 +39,13 @@ class AuthController extends Controller
                 'historyLogin' => Carbon::now()
             ]);
         }
+
+        $redirectRoute = $authService->processLogin($credentials, $request->ip());
+        return redirect()->route($redirectRoute);
+    }
+
+    public function logout(Request $request)
+    {
 
         Auth::logout();
 

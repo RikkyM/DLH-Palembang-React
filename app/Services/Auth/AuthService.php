@@ -2,6 +2,7 @@
 
 namespace App\Services\Auth;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -12,15 +13,24 @@ class AuthService
 
     public function processLogin($credentials, $userIp)
     {
-        dd($credentials);
         $rateLimitKey = $this->getRateLimitKey($userIp);
         $this->checkTooManyAttempts($rateLimitKey);
 
-        // Coba login dengan NIP atau username
         $loginSuccess = $this->attemptLogin($credentials['login'], $credentials['password']);
 
         if ($loginSuccess) {
             $this->handleSuccess($rateLimitKey, $userIp);
+
+            $user = Auth::user();
+
+            if ($user) {
+                $user->historyLogin = array_merge($user->historyLogin ?? [], [
+                    Carbon::now()
+                ]);
+
+                $user->save();
+            }
+
             return $this->getRedirectUrl();
         } else {
             $this->handleFailed($rateLimitKey, $userIp);

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
 import { Link, router } from "@inertiajs/react";
@@ -86,41 +86,67 @@ const Index = ({
         { key: "status", label: "status", align: "text-left truncate" },
     ];
 
-    const kategoriList = kategoriOptions.map((k) => ({
-        value: k.kodeKategori,
-        label: k.namaKategori,
-    }));
+    const kategoriList = useMemo(
+        () =>
+            kategoriOptions.map((k) => ({
+                value: k.kodeKategori,
+                label: k.namaKategori,
+            })),
+        [kategoriOptions]
+    );
 
-    const pjList = pjOptions.map((k) => ({
-        value: k.id.toString(),
-        label: k.namaPemilik,
-    }));
+    const pjList = useMemo(
+        () =>
+            pjOptions.map((k) => ({
+                value: k.id.toString(),
+                label: k.namaPemilik,
+            })),
+        [pjOptions]
+    );
 
-    const subKategoriList = subKategoriOptions.map((s) => ({
-        value: s.kodeSubKategori,
-        label: s.namaSubKategori,
-    }));
+    const subKategoriList = useMemo(
+        () =>
+            subKategoriOptions.map((s) => ({
+                value: s.kodeSubKategori,
+                label: s.namaSubKategori,
+            })),
+        [subKategoriOptions]
+    );
 
-    const kecamatanList = kecamatanOptions.map((kec) => ({
-        value: kec.kodeKecamatan,
-        label: kec.namaKecamatan,
-    }));
+    const kecamatanList = useMemo(
+        () =>
+            kecamatanOptions.map((kec) => ({
+                value: kec.kodeKecamatan,
+                label: kec.namaKecamatan,
+            }))[kecamatanOptions]
+    );
 
-    const kelurahanList = kelurahanOptions.map((kel) => ({
-        value: kel.kodeKelurahan,
-        label: kel.namaKelurahan,
-    }));
+    const kelurahanList = useMemo(
+        () =>
+            kelurahanOptions.map((kel) => ({
+                value: kel.kodeKelurahan,
+                label: kel.namaKelurahan,
+            })),
+        [kelurahanOptions]
+    );
 
-    const petugasList = petugasOptions.map((petugas) => ({
-        value: petugas.id.toString(),
-        label: petugas.namaLengkap,
-    }));
+    const petugasList = useMemo(
+        () =>
+            petugasOptions.map((petugas) => ({
+                value: petugas.id.toString(),
+                label: petugas.namaLengkap,
+            }))[petugasOptions]
+    );
 
-    const statusList =
-        statusOptions?.map((statusOption) => ({
-            value: statusOption.value,
-            label: statusOption.label == "Approved" ? "Disetujui" : "Ditolak",
-        })) || [];
+    const statusList = useMemo(
+        () =>
+            statusOptions?.map((statusOption) => ({
+                value: statusOption.value,
+                label:
+                    statusOption.label == "Approved" ? "Disetujui" : "Ditolak",
+            })),
+        [statusOptions]
+    );
 
     const buildParams = (additionalParams = {}) => {
         const params = { ...additionalParams };
@@ -266,63 +292,75 @@ const Index = ({
                                             : "opacity-0 mt-0 pointer-events-none"
                                     }`}
                                 >
-                                    <SearchableSelect
-                                        id="kategoriList"
-                                        options={kategoriList}
-                                        value={kategori}
-                                        onChange={(val) => {
-                                            setKategori(val);
-                                            setSubKategori("");
-                                        }}
-                                        placeholder="Pilih Kategori"
-                                    />
-                                    <SearchableSelect
-                                        id="subkategorilist"
-                                        options={subKategoriList}
-                                        value={subKategori}
-                                        onChange={(val) => setSubKategori(val)}
-                                        placeholder="Pilih Sub Kategori"
-                                        disabled={!kategori}
-                                    />
-                                    <SearchableSelect
-                                        id="kecamatanlist"
-                                        options={kecamatanList}
-                                        value={kecamatan}
-                                        onChange={(val) => {
-                                            setKecamatan(val);
-                                            setKelurahan("");
-                                        }}
-                                        placeholder="Pilih Kecamatan"
-                                    />
-                                    <SearchableSelect
-                                        id="kelurahanlist"
-                                        options={kelurahanList}
-                                        value={kelurahan}
-                                        onChange={(val) => setKelurahan(val)}
-                                        placeholder="Pilih Kelurahan"
-                                        disabled={!kecamatan}
-                                    />
-                                    <SearchableSelect
-                                        id="petugaslist"
-                                        options={petugasList}
-                                        value={petugas}
-                                        onChange={(val) => setPetugas(val)}
-                                        placeholder="Pilih Petugas Pendaftar"
-                                    />
-                                    <SearchableSelect
-                                        id="pjlist"
-                                        options={pjList}
-                                        value={pj}
-                                        onChange={(val) => setpj(val)}
-                                        placeholder="Pilih Penanggung Jawab"
-                                    />
-                                    <SearchableSelect
-                                        id="statusList"
-                                        options={statusList}
-                                        value={status}
-                                        onChange={(val) => setStatus(val)}
-                                        placeholder="Filter Berdasarkan Status"
-                                    />
+                                    {showFilters && (
+                                        <div>
+                                            <SearchableSelect
+                                                id="kategoriList"
+                                                options={kategoriList}
+                                                value={kategori}
+                                                onChange={(val) => {
+                                                    setKategori(val);
+                                                    setSubKategori("");
+                                                }}
+                                                placeholder="Pilih Kategori"
+                                            />
+                                            <SearchableSelect
+                                                id="subkategorilist"
+                                                options={subKategoriList}
+                                                value={subKategori}
+                                                onChange={(val) =>
+                                                    setSubKategori(val)
+                                                }
+                                                placeholder="Pilih Sub Kategori"
+                                                disabled={!kategori}
+                                            />
+                                            <SearchableSelect
+                                                id="kecamatanlist"
+                                                options={kecamatanList}
+                                                value={kecamatan}
+                                                onChange={(val) => {
+                                                    setKecamatan(val);
+                                                    setKelurahan("");
+                                                }}
+                                                placeholder="Pilih Kecamatan"
+                                            />
+                                            <SearchableSelect
+                                                id="kelurahanlist"
+                                                options={kelurahanList}
+                                                value={kelurahan}
+                                                onChange={(val) =>
+                                                    setKelurahan(val)
+                                                }
+                                                placeholder="Pilih Kelurahan"
+                                                disabled={!kecamatan}
+                                            />
+                                            <SearchableSelect
+                                                id="petugaslist"
+                                                options={petugasList}
+                                                value={petugas}
+                                                onChange={(val) =>
+                                                    setPetugas(val)
+                                                }
+                                                placeholder="Pilih Petugas Pendaftar"
+                                            />
+                                            <SearchableSelect
+                                                id="pjlist"
+                                                options={pjList}
+                                                value={pj}
+                                                onChange={(val) => setpj(val)}
+                                                placeholder="Pilih Penanggung Jawab"
+                                            />
+                                            <SearchableSelect
+                                                id="statusList"
+                                                options={statusList}
+                                                value={status}
+                                                onChange={(val) =>
+                                                    setStatus(val)
+                                                }
+                                                placeholder="Filter Berdasarkan Status"
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -479,7 +517,10 @@ const Index = ({
                                                 <Link
                                                     href={route(
                                                         "super-admin.wajib-retribusi.edit",
-                                                        { retribusi: data.noPendaftaran }
+                                                        {
+                                                            retribusi:
+                                                                data.noPendaftaran,
+                                                        }
                                                     )}
                                                     className="flex items-center gap-1.5"
                                                 >

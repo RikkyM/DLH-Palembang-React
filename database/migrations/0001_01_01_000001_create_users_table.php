@@ -26,7 +26,7 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->string('lokasi');
             $table->foreignId('uptdId')->constrained('uptd')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('historyLogin')->nullable();
+            $table->json('historyLogin')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

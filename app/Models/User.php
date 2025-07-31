@@ -34,8 +34,9 @@ class User extends Authenticatable
         'historyLogin'
     ];
 
-    protected $cast = [
-        'uptdId' => 'integer'
+    protected $casts = [
+    'uptdId' => 'integer',
+        'historyLogin' => 'array'
     ];
 
     /**

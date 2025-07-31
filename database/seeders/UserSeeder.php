@@ -120,9 +120,10 @@ class UserSeeder extends Seeder
             }
 
             if ($data['historyLogin'] && $data['historyLogin'] !== '-') {
-                $data['historyLogin'] = Carbon::parse($data['historyLogin'])->utc();
+                $data['historyLogin'] =
+                    json_encode([Carbon::parse($data['historyLogin'])->utc()]);
             } else {
-                $data['historyLogin'] = null;
+                $data['historyLogin'] = json_encode([]);
             }
 
             return $data;

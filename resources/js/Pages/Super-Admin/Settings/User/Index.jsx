@@ -140,22 +140,19 @@ const Index = ({ users, uptd, filters }) => {
                                         <td>{user.pangkat || "-"}</td>
                                         <td>{user.role || "-"}</td>
                                         <td className="text-right">
-                                            {user.historyLogin
-                                                ? new Date(
-                                                      user.historyLogin
-                                                  ).toLocaleDateString(
-                                                      "id-ID",
-                                                      {
-                                                          weekday: "short",
-                                                          month: "short",
-                                                          day: "numeric",
-                                                          year: "numeric",
-                                                          hour: "numeric",
-                                                          minute: "2-digit",
-                                                          hour12: true,
-                                                      }
-                                                  )
-                                                : "-"}
+                                            {Array.isArray(user.historyLogin) && user.historyLogin.length > 0 ? (
+                                                new Date(
+                                                    user.historyLogin[user.historyLogin.length - 1]
+                                                ).toLocaleDateString('id-ID', {
+                                                    weekday: 'short',
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: '2-digit',
+                                                    hour12: true
+                                                })
+                                            ) : '-'}
                                         </td>
                                         <td className="text-right">
                                             <button

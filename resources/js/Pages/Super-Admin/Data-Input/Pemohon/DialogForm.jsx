@@ -34,7 +34,7 @@ const DialogForm = ({
 
     useEffect(() => {
         if (isOpen) {
-            if (isEditMode) {
+            if (isEditMode && pemohon?.id !== data.id) {
                 setData({
                     nik: pemohon.nik || "",
                     namaPemilik: pemohon.namaPemilik || "",
@@ -47,12 +47,14 @@ const DialogForm = ({
                     email: pemohon.email || "",
                     jabatan: pemohon.jabatan || "",
                 });
+            } else if (!isEditMode) {
+                setData(initialData);
             } else {
                 setData(initialData);
             }
             clearErrors();
         }
-    }, [isOpen, pemohon, isEditMode]);
+    }, [isOpen, pemohon?.id]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -75,7 +77,6 @@ const DialogForm = ({
                 },
                 onError: (e) => {
                     console.error(e);
-                    console.log(e);
                 },
             });
         }
@@ -115,7 +116,9 @@ const DialogForm = ({
                             autoComplete="off"
                             ref={firstInputRef}
                             id="nik"
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             placeholder="Masukkan NIK..."
                             className="px-3 py-2 bg-gray-200 outline-none rounded"
                             value={data.nik}
@@ -205,11 +208,9 @@ const DialogForm = ({
                             Tanggal Lahir
                         </label>
                         <input
-                            autoComplete="off"
                             id="tanggalLahir"
                             type="date"
-                            placeholder="Masukkan tempat lahir..."
-                            className="px-3 py-2 bg-gray-200 outline-none rounded"
+                            className="px-3 py-2 bg-gray-200 outline-none rounded w-full appearance-none"
                             value={data.tanggalLahir}
                             onChange={(e) =>
                                 setData("tanggalLahir", e.target.value)
