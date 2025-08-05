@@ -70,11 +70,25 @@ const Sidebar = ({ children }) => {
             >
                 {/* head */}
                 <section className="overflow-hidden">
-                    <img
+                    {/* <img
                         src="/img/logo.png"
                         alt="logo"
                         className="w-64 min-w-64 p-7"
-                    />
+                    /> */}
+
+                    <picture>
+                        <source srcSet="/img/logo.webp" type="image/webp" />
+                        <img
+                            src="/img/logo.webp"
+                            alt="Logo DLH"
+                            fetchPriority="high"
+                            width="256"
+                            height="80"
+                            decoding="async"
+                            className="w-64 min-w-64 p-7"
+                            fetchpriority="high"
+                        />
+                    </picture>
                 </section>
 
                 {/* body */}
@@ -93,7 +107,7 @@ const Sidebar = ({ children }) => {
                             <div className="flex items-center gap-3 flex-1">
                                 <div className="bg-gray-300 size-10 rounded-full grid place-content-center font-medium relative overflow-hidden font-medium">
                                     <img
-                                        src="/img/1.jpg"
+                                        src="/img/KLHK_2024.webp"
                                         alt="gambar"
                                         className="absolute object-cover object-center h-full w-full"
                                     />
@@ -114,7 +128,7 @@ const Sidebar = ({ children }) => {
                         <div className="p-3 flex items-center gap-3 w-max">
                             <div className="rounded-full bg-neutral-300 size-9 grid place-content-center overflow-hidden relative">
                                 <img
-                                    src="/img/1.jpg"
+                                    src="/img/KLHK_2024.webp"
                                     alt="gambar"
                                     className="absolute object-cover object-center h-full w-full"
                                 />

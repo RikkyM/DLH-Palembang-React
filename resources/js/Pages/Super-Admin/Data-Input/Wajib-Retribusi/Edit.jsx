@@ -1,9 +1,14 @@
 import DropdownInput from "@/Components/DropdownInput";
-import MapPicker from "@/Components/MapPicker";
 import Layout from "../../Layout";
 import { useForm } from "@inertiajs/react";
 import "leaflet/dist/leaflet.css";
-import { useCallback, useState } from "react";
+import { lazy, useCallback, useState } from "react";
+import FormInput from "@/Components/FormInput";
+import Label from "@/Components/Label";
+import Input from "@/Components/Input";
+import MapPicker from "@/Components/MapPicker";
+
+// const MapPicker = lazy(() => import("@/Components/MapPicker"));
 
 const Edit = ({
     pemohonOptions = [],
@@ -160,8 +165,6 @@ const Edit = ({
         setMapReset((prev) => prev + 1);
     };
 
-    console.log(retribusi.noPendaftaran)
-
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -187,18 +190,16 @@ const Edit = ({
                     onSubmit={handleSubmit}
                     className="grid grid-cols-1 md:grid-cols-2 gap-5"
                 >
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
-                        <label
+                    <FormInput className="col-span-2">
+                        <Label
                             htmlFor="namaObjekRetribusi"
                             className="after:content-['*'] after:text-red-500"
                         >
                             Nama Objek Retribusi
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                             className="px-3 py-2 bg-gray-200 outline-none"
-                            type="text"
                             id="namaObjekRetribusi"
-                            autoComplete="off"
                             placeholder="Nama Objek Retribusi..."
                             value={data.namaObjekRetribusi}
                             onChange={(e) =>
@@ -213,7 +214,7 @@ const Edit = ({
                                 {errors.namaObjekRetribusi}
                             </span>
                         )}
-                    </div>
+                    </FormInput>
                     <DropdownInput
                         id="pemohon"
                         label="Pilih Pemohon"
@@ -227,20 +228,17 @@ const Edit = ({
                         required={true}
                         valueKey="value"
                         labelKey="label"
-                        className="md:col-span-2"
+                        className="col-span-2"
                     />
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
-                        <label
+                    <FormInput className="col-span-2">
+                        <Label
                             htmlFor="alamatObjekRetribusi"
                             className="after:content-['*'] after:text-red-500"
                         >
                             Alamat Objek Retribusi
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
-                            type="text"
+                        </Label>
+                        <Input
                             id="alamatObjekRetribusi"
-                            autoComplete="off"
                             placeholder="contoh: Jalan Srikandi Nomor 16/ Lorong Asahan Nomor 38"
                             value={data.alamatObjekRetribusi}
                             onChange={(e) =>
@@ -255,19 +253,17 @@ const Edit = ({
                                 {errors.alamatObjekRetribusi}
                             </span>
                         )}
-                    </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
-                        <label
+                    </FormInput>
+                    <FormInput className="col-span-2 md:col-span-1">
+                        <Label
                             htmlFor="rt"
                             className="after:content-['*'] after:text-red-500"
                         >
                             RT
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
+                        </Label>
+                        <Input
                             type="number"
                             id="rt"
-                            autoComplete="off"
                             placeholder="RT"
                             value={data.rt}
                             onChange={(e) =>
@@ -279,19 +275,17 @@ const Edit = ({
                                 {errors.rt}
                             </span>
                         )}
-                    </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
-                        <label
+                    </FormInput>
+                    <FormInput className="col-span-2 md:col-span-1">
+                        <Label
                             htmlFor="rw"
                             className="after:content-['*'] after:text-red-500"
                         >
                             RW
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
+                        </Label>
+                        <Input
                             type="number"
                             id="rw"
-                            autoComplete="off"
                             placeholder="RW"
                             value={data.rw}
                             onChange={(e) =>
@@ -303,7 +297,7 @@ const Edit = ({
                                 {errors.rw}
                             </span>
                         )}
-                    </div>
+                    </FormInput>
                     <DropdownInput
                         id="kecamatan"
                         label="Pilih Kecamatan"
@@ -317,6 +311,7 @@ const Edit = ({
                         required={true}
                         valueKey="value"
                         labelKey="label"
+                        className="col-span-2"
                     />
                     <DropdownInput
                         id="kelurahan"
@@ -332,6 +327,7 @@ const Edit = ({
                         valueKey="value"
                         labelKey="label"
                         disabled={!data.kodeKecamatan}
+                        className="col-span-2"
                     />
                     <DropdownInput
                         id="bentukUsaha"
@@ -348,18 +344,15 @@ const Edit = ({
                         labelKey="label"
                         className="col-span-2"
                     />
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
-                        <label
+                    <FormInput className="col-span-2">
+                        <Label
                             htmlFor="deskripsi"
                             className="after:content-['*'] after:text-red-500"
                         >
                             Deskripsi Usaha
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
-                            type="text"
+                        </Label>
+                        <Input
                             id="deskripsi"
-                            autoComplete="off"
                             placeholder="Deskripsi Usaha..."
                             value={data.deskripsi}
                             onChange={(e) =>
@@ -371,7 +364,7 @@ const Edit = ({
                                 {errors.deskripsi}
                             </span>
                         )}
-                    </div>
+                    </FormInput>
                     <DropdownInput
                         id="kategori"
                         label="Pilih Kategori"
@@ -383,6 +376,7 @@ const Edit = ({
                         required={true}
                         valueKey="value"
                         labelKey="label"
+                        className="col-span-2 md:col-span-1"
                     />
                     <DropdownInput
                         id="subkategori"
@@ -396,6 +390,7 @@ const Edit = ({
                         valueKey="value"
                         labelKey="label"
                         disabled={!data.kodeKategori}
+                        className="col-span-2 md:col-span-1"
                     />
                     {(() => {
                         const selectedSubKategori = getSelectedSubKategori();
@@ -495,20 +490,12 @@ const Edit = ({
                         required={true}
                         valueKey="value"
                         labelKey="label"
-                        className="md:col-span-2"
+                        className="col-span-2"
                     />
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
-                        <label
-                            htmlFor="jBangunan"
-                            className="after:content-['*'] after:text-red-500"
-                        >
-                            Jumlah Bangunan
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
-                            type="number"
+                    <FormInput className="col-span-2">
+                        <Label htmlFor="jBangunan">Jumlah Bangunan</Label>
+                        <Input
                             id="jBangunan"
-                            autoComplete="off"
                             placeholder="Jumlah Bangunan..."
                             value={data.jBangunan}
                             onChange={(e) =>
@@ -520,19 +507,18 @@ const Edit = ({
                                 {errors.jBangunan}
                             </span>
                         )}
-                    </div>
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
-                        <label
+                    </FormInput>
+
+                    <FormInput className="col-span-2">
+                        <Label
                             htmlFor="jLantai"
                             className="after:content-['*'] after:text-red-500"
                         >
                             Jumlah Lantai
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
+                        </Label>
+                        <Input
                             type="number"
                             id="jLantai"
-                            autoComplete="off"
                             placeholder="Jumlah Lantai..."
                             value={data.jLantai}
                             onChange={(e) =>
@@ -544,19 +530,18 @@ const Edit = ({
                                 {errors.jLantai}
                             </span>
                         )}
-                    </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
-                        <label
+                    </FormInput>
+
+                    <FormInput className="col-span-2 md:col-span-1">
+                        <Label
                             htmlFor="latitude"
                             className="after:content-['*'] after:text-red-500"
                         >
                             Latitude
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
+                        </Label>
+                        <Input
                             type="number"
                             id="latitude"
-                            autoComplete="off"
                             placeholder="Latitude..."
                             value={data.latitude || ""}
                             onChange={(e) =>
@@ -568,19 +553,18 @@ const Edit = ({
                                 {errors.latitude}
                             </span>
                         )}
-                    </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
-                        <label
+                    </FormInput>
+
+                    <FormInput className="col-span-2 md:col-span-1">
+                        <Label
                             htmlFor="longitude"
                             className="after:content-['*'] after:text-red-500"
                         >
                             Longitude
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
+                        </Label>
+                        <Input
                             type="number"
                             id="longitude"
-                            autoComplete="off"
                             placeholder="Longitude..."
                             value={data.longitude || ""}
                             onChange={(e) =>
@@ -592,19 +576,18 @@ const Edit = ({
                                 {errors.longitude}
                             </span>
                         )}
-                    </div>
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
-                        <label
+                    </FormInput>
+
+                    <FormInput className="col-span-2">
+                        <Label
                             htmlFor="linkMap"
                             className="after:content-['*'] after:text-red-500"
                         >
                             Link Map
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
+                        </Label>
+                        <Input
                             type="url"
                             id="linkMap"
-                            autoComplete="off"
                             placeholder="Link Map..."
                             value={data.linkMap}
                             onChange={(e) =>
@@ -616,8 +599,9 @@ const Edit = ({
                                 {errors.linkMap}
                             </span>
                         )}
-                    </div>
-                    <div className="flex flex-col gap-1.5 text-sm md:col-span-2">
+                    </FormInput>
+
+                    <FormInput className="col-span-2">
                         <MapPicker
                             latitude={data.latitude || ""}
                             longitude={data.longitude || ""}
@@ -625,13 +609,13 @@ const Edit = ({
                             height="400px"
                             resetTrigger={mapReset}
                         />
-                    </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
-                        <label htmlFor="fotoBangunan">
+                    </FormInput>
+
+                    <FormInput className="col-span-2">
+                        <Label htmlFor="fotoBangunan">
                             Upload Foto Bangunan
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
+                        </Label>
+                        <Input
                             type="file"
                             id="fotoBangunan"
                             accept="image/*"
@@ -650,13 +634,13 @@ const Edit = ({
                         <span className="text-green-600 text-xs">
                             File Gambar: {retribusi.image}
                         </span>
-                    </div>
-                    <div className="flex flex-col gap-1.5 text-sm">
-                        <label htmlFor="fotoBerkas">
+                    </FormInput>
+
+                    <FormInput className="col-span-2">
+                        <Label htmlFor="fotoBerkas">
                             Upload Foto Berkas Persyaratan
-                        </label>
-                        <input
-                            className="px-3 py-2 bg-gray-200 outline-none"
+                        </Label>
+                        <Input
                             type="file"
                             accept="image/*"
                             id="fotoBerkas"
@@ -675,7 +659,8 @@ const Edit = ({
                         <span className="text-green-600 text-xs">
                             File dipilih: {retribusi.file}
                         </span>
-                    </div>
+                    </FormInput>
+
                     <div className="flex flex-col md:flex-row md:justify-end md:col-span-2 gap-1.5 md:gap-4 text-sm">
                         <button
                             type="button"

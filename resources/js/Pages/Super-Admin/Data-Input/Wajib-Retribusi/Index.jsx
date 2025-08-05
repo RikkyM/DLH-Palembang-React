@@ -299,69 +299,63 @@ const Index = ({
                                             : "opacity-0 mt-0 pointer-events-none"
                                     }`}
                                 >
-                                    <div>
-                                        <SearchableSelect
-                                            id="kategoriList"
-                                            options={kategoriList}
-                                            value={kategori}
-                                            onChange={(val) => {
-                                                setKategori(val);
-                                                setSubKategori("");
-                                            }}
-                                            placeholder="Pilih Kategori"
-                                        />
-                                        <SearchableSelect
-                                            id="subkategorilist"
-                                            options={subKategoriList}
-                                            value={subKategori}
-                                            onChange={(val) =>
-                                                setSubKategori(val)
-                                            }
-                                            placeholder="Pilih Sub Kategori"
-                                            disabled={!kategori}
-                                        />
-                                        <SearchableSelect
-                                            id="kecamatanlist"
-                                            options={kecamatanList}
-                                            value={kecamatan}
-                                            onChange={(val) => {
-                                                setKecamatan(val);
-                                                setKelurahan("");
-                                            }}
-                                            placeholder="Pilih Kecamatan"
-                                        />
-                                        <SearchableSelect
-                                            id="kelurahanlist"
-                                            options={kelurahanList}
-                                            value={kelurahan}
-                                            onChange={(val) =>
-                                                setKelurahan(val)
-                                            }
-                                            placeholder="Pilih Kelurahan"
-                                            disabled={!kecamatan}
-                                        />
-                                        <SearchableSelect
-                                            id="petugaslist"
-                                            options={petugasList}
-                                            value={petugas}
-                                            onChange={(val) => setPetugas(val)}
-                                            placeholder="Pilih Petugas Pendaftar"
-                                        />
-                                        <SearchableSelect
-                                            id="pjlist"
-                                            options={pjList}
-                                            value={pj}
-                                            onChange={(val) => setpj(val)}
-                                            placeholder="Pilih Penanggung Jawab"
-                                        />
-                                        <SearchableSelect
-                                            id="statusList"
-                                            options={statusList}
-                                            value={status}
-                                            onChange={(val) => setStatus(val)}
-                                            placeholder="Filter Berdasarkan Status"
-                                        />
-                                    </div>
+                                    <SearchableSelect
+                                        id="kategoriList"
+                                        options={kategoriList}
+                                        value={kategori}
+                                        onChange={(val) => {
+                                            setKategori(val);
+                                            setSubKategori("");
+                                        }}
+                                        placeholder="Pilih Kategori"
+                                    />
+                                    <SearchableSelect
+                                        id="subkategorilist"
+                                        options={subKategoriList}
+                                        value={subKategori}
+                                        onChange={(val) => setSubKategori(val)}
+                                        placeholder="Pilih Sub Kategori"
+                                        disabled={!kategori}
+                                    />
+                                    <SearchableSelect
+                                        id="kecamatanlist"
+                                        options={kecamatanList}
+                                        value={kecamatan}
+                                        onChange={(val) => {
+                                            setKecamatan(val);
+                                            setKelurahan("");
+                                        }}
+                                        placeholder="Pilih Kecamatan"
+                                    />
+                                    <SearchableSelect
+                                        id="kelurahanlist"
+                                        options={kelurahanList}
+                                        value={kelurahan}
+                                        onChange={(val) => setKelurahan(val)}
+                                        placeholder="Pilih Kelurahan"
+                                        disabled={!kecamatan}
+                                    />
+                                    <SearchableSelect
+                                        id="petugaslist"
+                                        options={petugasList}
+                                        value={petugas}
+                                        onChange={(val) => setPetugas(val)}
+                                        placeholder="Pilih Petugas Pendaftar"
+                                    />
+                                    <SearchableSelect
+                                        id="pjlist"
+                                        options={pjList}
+                                        value={pj}
+                                        onChange={(val) => setpj(val)}
+                                        placeholder="Pilih Penanggung Jawab"
+                                    />
+                                    <SearchableSelect
+                                        id="statusList"
+                                        options={statusList}
+                                        value={status}
+                                        onChange={(val) => setStatus(val)}
+                                        placeholder="Filter Berdasarkan Status"
+                                    />
                                 </div>
                             </div>
                         </div>

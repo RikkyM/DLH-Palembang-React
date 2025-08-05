@@ -255,4 +255,4 @@ const DropdownInput = ({
     );
 };
 
-export default DropdownInput;
+export default React.memo(DropdownInput);

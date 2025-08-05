@@ -359,7 +359,7 @@ const Index = ({
                         <tbody className="text-xs md:text-sm divide-y divide-neutral-300">
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={8}>
+                                    <td colSpan={12}>
                                         <div className="flex justify-center items-center gap-2 text-sm text-gray-500 mb-2 px-2 h-16">
                                             <svg
                                                 className="w-4 h-4 animate-spin"
