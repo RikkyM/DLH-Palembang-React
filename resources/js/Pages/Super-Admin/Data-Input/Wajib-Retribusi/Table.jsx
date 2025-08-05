@@ -1,7 +1,7 @@
 import TableHead from "@/Components/TableHead";
 import { FileText, Send } from "lucide-react";
 
-const Table = ({ datas, search, columns, sort, setSort, direction, setDirection }) => {
+const Table = ({ datas, search, columns, sort, setSort, direction, setDirection, isLoading }) => {
     return (
         <table className="p-3 min-w-full divide-y divide-gray-300">
             <thead>
@@ -16,7 +16,34 @@ const Table = ({ datas, search, columns, sort, setSort, direction, setDirection 
                 />
             </thead>
             <tbody className="text-xs md:text-sm dividfe-y divide-neutral-300">
-                {datas?.data?.length > 0 ? (
+                {isLoading ? (
+                    <tr>
+                        <td colSpan={14}>
+                            <div className="flex justify-center items-center gap-2 text-sm text-gray-500 mb-2 px-2 h-16">
+                                <svg
+                                    className="w-4 h-4 animate-spin"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    />
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v8z"
+                                    />
+                                </svg>
+                                Memuat data...
+                            </div>
+                        </td>
+                    </tr>
+                ) : datas?.data?.length > 0 ? (
                     datas.data.map((data, index) => (
                         <tr
                             key={data.id || index}

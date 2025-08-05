@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
 import { router } from "@inertiajs/react";
@@ -28,6 +28,7 @@ const Ditolak = ({
     const [petugas, setPetugas] = useState(filters.petugas || "");
     const [showFilters, setShowFilters] = useState(false);
     const [pj, setpj] = useState(filters.pj || "");
+    const [isLoading, setIsLoading] = useState(false);
     const filterRef = useRef(null);
 
     const columns = [
@@ -70,35 +71,59 @@ const Ditolak = ({
         { key: "status", label: "status", align: "text-left truncate" },
     ];
 
-    const kategoriList = kategoriOptions.map((k) => ({
-        value: k.kodeKategori,
-        label: k.namaKategori,
-    }));
+    const kategoriList = useMemo(
+        () =>
+            kategoriOptions.map((k) => ({
+                value: k.kodeKategori,
+                label: k.namaKategori,
+            })),
+        [kategoriOptions]
+    );
 
-    const pjList = pjOptions.map((k) => ({
-        value: k.id.toString(),
-        label: k.namaPemilik,
-    }));
+    const pjList = useMemo(
+        () =>
+            pjOptions.map((k) => ({
+                value: k.id.toString(),
+                label: k.namaPemilik,
+            })),
+        [pjOptions]
+    );
 
-    const subKategoriList = subKategoriOptions.map((s) => ({
-        value: s.kodeSubKategori,
-        label: s.namaSubKategori,
-    }));
+    const subKategoriList = useMemo(
+        () =>
+            subKategoriOptions.map((s) => ({
+                value: s.kodeSubKategori,
+                label: s.namaSubKategori,
+            })),
+        [subKategoriOptions]
+    );
 
-    const kecamatanList = kecamatanOptions.map((kec) => ({
-        value: kec.kodeKecamatan,
-        label: kec.namaKecamatan,
-    }));
+    const kecamatanList = useMemo(
+        () =>
+            kecamatanOptions.map((kec) => ({
+                value: kec.kodeKecamatan,
+                label: kec.namaKecamatan,
+            })),
+        [kecamatanOptions]
+    );
 
-    const kelurahanList = kelurahanOptions.map((kel) => ({
-        value: kel.kodeKelurahan,
-        label: kel.namaKelurahan,
-    }));
+    const kelurahanList = useMemo(
+        () =>
+            kelurahanOptions.map((kel) => ({
+                value: kel.kodeKelurahan,
+                label: kel.namaKelurahan,
+            })),
+        [kelurahanOptions]
+    );
 
-    const petugasList = petugasOptions.map((petugas) => ({
-        value: petugas.id.toString(),
-        label: petugas.namaLengkap,
-    }));
+    const petugasList = useMemo(
+        () =>
+            petugasOptions.map((petugas) => ({
+                value: petugas.id.toString(),
+                label: petugas.namaLengkap,
+            })),
+        [petugasOptions]
+    );
 
     const buildParams = (additionalParams = {}) => {
         const params = { ...additionalParams };
@@ -140,6 +165,7 @@ const Ditolak = ({
     }, []);
 
     useEffect(() => {
+        setIsLoading(true);
         const timeoutId = setTimeout(() => {
             const params = buildParams();
 
@@ -152,10 +178,13 @@ const Ditolak = ({
                     "kelurahanOptions",
                     "filters",
                 ],
+                onFinish: () => setIsLoading(false),
             });
-        }, 300);
+        }, 500);
 
-        return () => clearTimeout(timeoutId);
+        return () => {
+            clearTimeout(timeoutId);
+        };
     }, [
         search,
         sort,
@@ -334,10 +363,13 @@ const Ditolak = ({
                         setSort={setSort}
                         direction={direction}
                         setDirection={setDirection}
+                        isLoading={isLoading}
                     />
                 </div>
 
-                <SmartPagination datas={datas} filters={filters} />
+                {!isLoading && (
+                    <SmartPagination datas={datas} filters={filters} />
+                )}
             </section>
         </Layout>
     );

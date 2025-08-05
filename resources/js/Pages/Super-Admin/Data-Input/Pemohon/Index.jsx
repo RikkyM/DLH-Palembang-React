@@ -12,6 +12,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
     const [search, setSearch] = useState(filters.search || "");
     const [sort, setSort] = useState(filters.sort || "");
     const [direction, setDirection] = useState(filters.direction || "asc");
+    const [isLoading, setIsLoading] = useState(false);
 
     const columns = [
         { key: "id", label: "No", align: "text-left" },
@@ -28,6 +29,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
     ];
 
     useEffect(() => {
+        setIsLoading(true);
         const timeoutId = setTimeout(() => {
             const params = {};
 
@@ -40,10 +42,14 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                 preserveState: true,
                 replace: true,
                 only: ["datas"],
+                onFinish: () => setIsLoading(false),
             });
         }, 300);
 
-        return () => clearTimeout(timeoutId);
+        return () => {
+            clearTimeout(timeoutId);
+            setIsLoading(false);
+        };
     }, [search, sort, direction]);
 
     const allFilters = {
@@ -75,7 +81,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                         onClick={() => {
                             openModal("create");
                         }}
-                        className="flex justify-center items-center gap-1.5 text-sm bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-2 text-white w-full md:w-auto rounded outline-none"
+                        className="flex justify-center items-center gap-1.5 text-sm bg-green-500 px-3 py-2 text-white w-full md:w-auto rounded outline-none"
                     >
                         <span>Tambah Pemohon</span>
                     </button>
@@ -95,7 +101,34 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                             />
                         </thead>
                         <tbody className="text-xs md:text-sm divide-y divide-neutral-300">
-                            {datas?.data?.length > 0 ? (
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={12}>
+                                        <div className="flex justify-center items-center gap-2 text-sm text-gray-500 mb-2 px-2 h-16">
+                                            <svg
+                                                className="w-4 h-4 animate-spin"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                />
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v8z"
+                                                />
+                                            </svg>
+                                            Memuat data...
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : datas?.data?.length > 0 ? (
                                 datas.data.map((data, index) => (
                                     <tr
                                         key={data.id || index}
@@ -171,7 +204,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                     </table>
                 </div>
 
-                <SmartPagination datas={datas} filters={allFilters} />
+                {!isLoading && (
+                    <SmartPagination datas={datas} filters={allFilters} />
+                )}
             </section>
             <DialogForm
                 isOpen={

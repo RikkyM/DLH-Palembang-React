@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 
 const SearchableSelect = ({
@@ -133,4 +133,4 @@ const SearchableSelect = ({
     );
 };
 
-export default SearchableSelect;
+export default React.memo(SearchableSelect);

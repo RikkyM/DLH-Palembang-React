@@ -1,6 +1,7 @@
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
 import { GlobalProvider } from "./Context/GlobalContext";
+import '../css/app.css';
 
 createInertiaApp({
     progress: false,

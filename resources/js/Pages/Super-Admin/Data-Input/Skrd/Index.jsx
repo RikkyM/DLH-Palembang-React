@@ -1,6 +1,6 @@
 import { FileText, Filter, PencilLine, Search } from "lucide-react";
 import Layout from "../../Layout";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
 import TableHead from "@/Components/TableHead";
@@ -22,6 +22,7 @@ const Index = ({
     const [status, setStatus] = useState(filters.status || "");
     const [sort, setSort] = useState(filters.sort || null);
     const [direction, setDirection] = useState(filters.direction || null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const allFilters = {
         search: search || filters.search,
@@ -112,23 +113,38 @@ const Index = ({
         { key: "statusLunas", label: "status", align: "text-left truncate" },
     ];
 
-    const kategoriList = kategoriOptions.map((k) => ({
-        value: k.namaKategori,
-        label: k.namaKategori,
-    }));
+    const kategoriList = useMemo(
+        () =>
+            kategoriOptions.map((k) => ({
+                value: k.namaKategori,
+                label: k.namaKategori,
+            })),
+        [kategoriOptions]
+    );
 
-    const subKategoriList = subKategoriOptions.map((s) => ({
-        value: s.namaSubKategori,
-        label: s.namaSubKategori,
-    }));
+    const subKategoriList = useMemo(
+        () =>
+            subKategoriOptions.map((s) => ({
+                value: s.namaSubKategori,
+                label: s.namaSubKategori,
+            })),
+        [subKategoriOptions]
+    );
 
-    const petugasList = Array.from(
-        new Map(
-            petugasOptions.map((petugas) => [
-                petugas.namaLengkap,
-                { value: petugas.namaLengkap, label: petugas.namaLengkap },
-            ])
-        ).values()
+    const petugasList = useMemo(
+        () =>
+            Array.from(
+                new Map(
+                    petugasOptions.map((petugas) => [
+                        petugas.namaLengkap,
+                        {
+                            value: petugas.namaLengkap,
+                            label: petugas.namaLengkap,
+                        },
+                    ])
+                ).values()
+            ),
+        [petugasOptions]
     );
 
     const statusList = [
@@ -175,6 +191,7 @@ const Index = ({
     }, []);
 
     useEffect(() => {
+        setIsLoading(true);
         const timeoutId = setTimeout(() => {
             const params = buildParams();
 
@@ -182,10 +199,13 @@ const Index = ({
                 preserveState: true,
                 replace: true,
                 only: ["datas", "subKategoriOptions", "filters"],
+                onFinish: () => setIsLoading(false),
             });
-        }, 300);
+        }, 500);
 
-        return () => clearTimeout(timeoutId);
+        return () => {
+            clearTimeout(timeoutId);
+        };
     }, [search, kategori, subKategori, petugas, sort, direction, status]);
 
     return (
@@ -308,7 +328,11 @@ const Index = ({
                         </button>
                     </div>
                 </div>
-                <div className="overflow-x-auto bg-white rounded shadow">
+                <div
+                    className={`bg-white rounded shadow ${
+                        isLoading ? "overflow-x-hidden" : "overflow-x-auto"
+                    }`}
+                >
                     <table className="p-3 min-w-full divide-y divide-gray-300">
                         <thead>
                             <TableHead
@@ -333,7 +357,34 @@ const Index = ({
                             </TableHead>
                         </thead>
                         <tbody className="text-xs md:text-sm divide-y divide-neutral-300">
-                            {datas?.data?.length > 0 ? (
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={8}>
+                                        <div className="flex justify-center items-center gap-2 text-sm text-gray-500 mb-2 px-2 h-16">
+                                            <svg
+                                                className="w-4 h-4 animate-spin"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                />
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v8z"
+                                                />
+                                            </svg>
+                                            Memuat data...
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : datas?.data?.length > 0 ? (
                                 datas.data.map((data, index) => (
                                     <tr
                                         key={data.id || index}
@@ -509,7 +560,10 @@ const Index = ({
                         </tbody>
                     </table>
                 </div>
-                <SmartPagination datas={datas} filters={allFilters} />
+
+                {!isLoading && (
+                    <SmartPagination datas={datas} filters={allFilters} />
+                )}
             </section>
         </Layout>
     );

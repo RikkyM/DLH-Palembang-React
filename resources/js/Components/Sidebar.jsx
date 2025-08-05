@@ -64,8 +64,8 @@ const Sidebar = ({ children }) => {
                 }`}
             ></div>
             <aside
-                className={`bg-white fixed flex z-20 flex-col top-0 bottom-0 left-0 max-h-dvh md:relative transition-all duration-300 ease-[cubic-bezier(0.65,0.05,0.36,1)] md:w-64 ${
-                    isOpen ? "w-64" : "w-0"
+                className={`bg-white fixed flex z-20 flex-col top-0 bottom-0 left-0 max-h-dvh md:relative transition-all duration-300 ease-[cubic-bezier(0.65,0.05,0.36,1)] md:w-72 ${
+                    isOpen ? "w-72" : "w-0"
                 }`}
             >
                 {/* head */}

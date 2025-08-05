@@ -3,10 +3,12 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
 use App\Http\Controllers\Pendaftar\DashboardController as PendaftarDashboardController;
+use App\Http\Controllers\SuperAdmin\InvoiceController;
 use App\Http\Controllers\SuperAdmin\KategoriController;
 use App\Http\Controllers\SuperAdmin\KecamatanController;
 use App\Http\Controllers\SuperAdmin\KelurahanController;
 use App\Http\Controllers\SuperAdmin\PemohonController;
+use App\Http\Controllers\SuperAdmin\PenerimaanRetribusiController;
 use App\Http\Controllers\SuperAdmin\SkrdController;
 use App\Http\Controllers\SuperAdmin\SubKategoriController;
 use App\Http\Controllers\SuperAdmin\UptdController;
@@ -51,7 +53,11 @@ Route::prefix('sirep')->group(function () {
                 Route::get('/download-excel', [SkrdController::class, 'downloadExcel'])->name('skrd.download-excel');
                 Route::get('/{id}/download-data-pdf', [SkrdController::class, 'downloadSinglePdf'])->name('skrd.download-data-pdf');
                 Route::get('/{id}/download-data-excel', [SkrdController::class, 'downloadSingleExcel'])->name('skrd.download-data-excel');
+            });
 
+            Route::prefix('pembayaran')->group(function () {
+                Route::resource('/invoice', InvoiceController::class)->only(['index', 'show', 'store', 'update']);
+                Route::resource('/penerimaan-retribusi', PenerimaanRetribusiController::class);
             });
 
             Route::prefix('settings')->group(function () {

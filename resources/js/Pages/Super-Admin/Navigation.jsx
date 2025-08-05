@@ -42,7 +42,7 @@ const SuperAdminNavigation = () => {
     const pembayaranItems = [
         {
             label: "Invoice",
-            // route: "super-admin.laporan.piutang-retribusi",
+            route: "super-admin.invoice.index",
         },
         {
             label: "Input Setoran",
@@ -54,7 +54,7 @@ const SuperAdminNavigation = () => {
         },
         {
             label: "Penerimaan Retribusi",
-            // route: "super-admin.laporan.penerimaan-retribusi",
+            route: "super-admin.penerimaan-retribusi.index",
         },
         {
             label: "Piutang Retribusi",

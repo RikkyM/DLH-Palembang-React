@@ -27,7 +27,7 @@ const Index = ({
     petugasOptions = [],
     statusOptions = [],
 }) => {
-    const { modalState, openModal, closeModal } = useProvider();
+    const { modalState, closeModal } = useProvider();
     const [search, setSearch] = useState(filters.search || "");
     const [sort, setSort] = useState(filters.sort || null);
     const [direction, setDirection] = useState(filters.direction || null);
@@ -44,6 +44,7 @@ const Index = ({
             : 10;
     });
     const [showFilters, setShowFilters] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const filterRef = useRef(null);
 
     const columns = [
@@ -118,7 +119,8 @@ const Index = ({
             kecamatanOptions.map((kec) => ({
                 value: kec.kodeKecamatan,
                 label: kec.namaKecamatan,
-            }))[kecamatanOptions]
+            })),
+        [kecamatanOptions]
     );
 
     const kelurahanList = useMemo(
@@ -135,7 +137,8 @@ const Index = ({
             petugasOptions.map((petugas) => ({
                 value: petugas.id.toString(),
                 label: petugas.namaLengkap,
-            }))[petugasOptions]
+            })),
+        [petugasOptions]
     );
 
     const statusList = useMemo(
@@ -190,6 +193,7 @@ const Index = ({
     }, []);
 
     useEffect(() => {
+        setIsLoading(true);
         const timeoutId = setTimeout(() => {
             const params = buildParams();
 
@@ -202,10 +206,13 @@ const Index = ({
                     "kelurahanOptions",
                     "filters",
                 ],
+                onFinish: () => setIsLoading(false),
             });
-        }, 300);
+        }, 500);
 
-        return () => clearTimeout(timeoutId);
+        return () => {
+            clearTimeout(timeoutId);
+        };
     }, [
         search,
         sort,
@@ -292,75 +299,69 @@ const Index = ({
                                             : "opacity-0 mt-0 pointer-events-none"
                                     }`}
                                 >
-                                    {showFilters && (
-                                        <div>
-                                            <SearchableSelect
-                                                id="kategoriList"
-                                                options={kategoriList}
-                                                value={kategori}
-                                                onChange={(val) => {
-                                                    setKategori(val);
-                                                    setSubKategori("");
-                                                }}
-                                                placeholder="Pilih Kategori"
-                                            />
-                                            <SearchableSelect
-                                                id="subkategorilist"
-                                                options={subKategoriList}
-                                                value={subKategori}
-                                                onChange={(val) =>
-                                                    setSubKategori(val)
-                                                }
-                                                placeholder="Pilih Sub Kategori"
-                                                disabled={!kategori}
-                                            />
-                                            <SearchableSelect
-                                                id="kecamatanlist"
-                                                options={kecamatanList}
-                                                value={kecamatan}
-                                                onChange={(val) => {
-                                                    setKecamatan(val);
-                                                    setKelurahan("");
-                                                }}
-                                                placeholder="Pilih Kecamatan"
-                                            />
-                                            <SearchableSelect
-                                                id="kelurahanlist"
-                                                options={kelurahanList}
-                                                value={kelurahan}
-                                                onChange={(val) =>
-                                                    setKelurahan(val)
-                                                }
-                                                placeholder="Pilih Kelurahan"
-                                                disabled={!kecamatan}
-                                            />
-                                            <SearchableSelect
-                                                id="petugaslist"
-                                                options={petugasList}
-                                                value={petugas}
-                                                onChange={(val) =>
-                                                    setPetugas(val)
-                                                }
-                                                placeholder="Pilih Petugas Pendaftar"
-                                            />
-                                            <SearchableSelect
-                                                id="pjlist"
-                                                options={pjList}
-                                                value={pj}
-                                                onChange={(val) => setpj(val)}
-                                                placeholder="Pilih Penanggung Jawab"
-                                            />
-                                            <SearchableSelect
-                                                id="statusList"
-                                                options={statusList}
-                                                value={status}
-                                                onChange={(val) =>
-                                                    setStatus(val)
-                                                }
-                                                placeholder="Filter Berdasarkan Status"
-                                            />
-                                        </div>
-                                    )}
+                                    <div>
+                                        <SearchableSelect
+                                            id="kategoriList"
+                                            options={kategoriList}
+                                            value={kategori}
+                                            onChange={(val) => {
+                                                setKategori(val);
+                                                setSubKategori("");
+                                            }}
+                                            placeholder="Pilih Kategori"
+                                        />
+                                        <SearchableSelect
+                                            id="subkategorilist"
+                                            options={subKategoriList}
+                                            value={subKategori}
+                                            onChange={(val) =>
+                                                setSubKategori(val)
+                                            }
+                                            placeholder="Pilih Sub Kategori"
+                                            disabled={!kategori}
+                                        />
+                                        <SearchableSelect
+                                            id="kecamatanlist"
+                                            options={kecamatanList}
+                                            value={kecamatan}
+                                            onChange={(val) => {
+                                                setKecamatan(val);
+                                                setKelurahan("");
+                                            }}
+                                            placeholder="Pilih Kecamatan"
+                                        />
+                                        <SearchableSelect
+                                            id="kelurahanlist"
+                                            options={kelurahanList}
+                                            value={kelurahan}
+                                            onChange={(val) =>
+                                                setKelurahan(val)
+                                            }
+                                            placeholder="Pilih Kelurahan"
+                                            disabled={!kecamatan}
+                                        />
+                                        <SearchableSelect
+                                            id="petugaslist"
+                                            options={petugasList}
+                                            value={petugas}
+                                            onChange={(val) => setPetugas(val)}
+                                            placeholder="Pilih Petugas Pendaftar"
+                                        />
+                                        <SearchableSelect
+                                            id="pjlist"
+                                            options={pjList}
+                                            value={pj}
+                                            onChange={(val) => setpj(val)}
+                                            placeholder="Pilih Penanggung Jawab"
+                                        />
+                                        <SearchableSelect
+                                            id="statusList"
+                                            options={statusList}
+                                            value={status}
+                                            onChange={(val) => setStatus(val)}
+                                            placeholder="Filter Berdasarkan Status"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -440,7 +441,7 @@ const Index = ({
                                     "_blank"
                                 );
                             }}
-                            className="px-3 py-1.5 bg-green-700 transition duration-300 rounded text-white text-sm font-medium "
+                            className="px-3 py-1.5 bg-green-700 rounded text-white text-sm font-medium "
                         >
                             Excel
                         </button>
@@ -460,7 +461,34 @@ const Index = ({
                             />
                         </thead>
                         <tbody className="text-xs md:text-sm ">
-                            {datas?.data?.length > 0 ? (
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={14}>
+                                        <div className="flex justify-center items-center gap-2 text-sm text-gray-500 mb-2 px-2 h-16">
+                                            <svg
+                                                className="w-4 h-4 animate-spin"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                />
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v8z"
+                                                />
+                                            </svg>
+                                            Memuat data...
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : datas?.data?.length > 0 ? (
                                 datas.data.map((data, index) => (
                                     <tr
                                         key={data.id || index}
@@ -566,7 +594,9 @@ const Index = ({
                     </table>
                 </div>
 
-                <SmartPagination datas={datas} filters={filters} />
+                {!isLoading && (
+                    <SmartPagination datas={datas} filters={filters} />
+                )}
             </section>
 
             <DialogForm
