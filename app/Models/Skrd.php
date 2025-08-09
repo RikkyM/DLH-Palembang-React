@@ -62,4 +62,9 @@ class Skrd extends Model
     {
         return $this->belongsTo(Pemilik::class, 'pemilikId', 'id');
     }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class, 'noSkrd', 'noSkrd');
+    }
 }

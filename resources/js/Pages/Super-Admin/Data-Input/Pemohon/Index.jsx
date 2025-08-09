@@ -44,7 +44,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                 only: ["datas"],
                 onFinish: () => setIsLoading(false),
             });
-        }, 300);
+        }, 500);
 
         return () => {
             clearTimeout(timeoutId);

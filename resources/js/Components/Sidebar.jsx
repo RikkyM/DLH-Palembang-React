@@ -86,7 +86,6 @@ const Sidebar = ({ children }) => {
                             height="80"
                             decoding="async"
                             className="w-64 min-w-64 p-7"
-                            fetchpriority="high"
                         />
                     </picture>
                 </section>

@@ -14,17 +14,17 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('noSkrd');
+            $table->string('no_invoice')->unique();
             $table->integer('jumlah_bulan');
             $table->string('satuan');
             $table->string('nama_bank');
             $table->string('atas_nama');
             $table->string('no_rekening');
-            $table->integer('sub_total');
             $table->integer('total_retribusi');
             $table->string('terbilang');
             $table->timestamps();
 
-            $table->foreign('noSkrd')->references('noSkrd')->on('skrd')->onUpdate('cascade');
+            $table->foreign('noSkrd')->references('noSkrd')->on('skrd');
             $table->index('noSkrd');
         });
     }
