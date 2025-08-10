@@ -57,6 +57,7 @@ Route::prefix('sirep')->group(function () {
 
             Route::prefix('pembayaran')->group(function () {
                 Route::resource('/invoice', InvoiceController::class)->only(['index', 'show', 'store', 'update']);
+                Route::get('/invoice/pdf/{filename}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
                 Route::get('/preview-invoice', [InvoiceController::class, 'previewPdf'])->name('invoice.preview');
                 Route::resource('/penerimaan-retribusi', PenerimaanRetribusiController::class);
             });

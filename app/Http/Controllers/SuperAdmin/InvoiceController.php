@@ -8,8 +8,10 @@ use App\Models\Invoice;
 use App\Models\Skrd;
 use App\Models\WajibRetribusi;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -79,6 +81,7 @@ class InvoiceController extends Controller
     public function store(InvoiceRequest $request)
     {
         $request->validated();
+        // dd($request->all());
 
         $skrd = Skrd::where('noSkrd', $request->noSkrd)->firstOrFail();
         $tarifRetribusi = $skrd->tagihanPerBulanSkrd;
@@ -94,19 +97,24 @@ class InvoiceController extends Controller
                 'atas_nama' => $request->pengirim,
                 'no_rekening' => $request->noRekening,
                 'total_retribusi' => $request->jumlahBulan * $tarifRetribusi,
-                'terbilang' => trim(terbilang($request->jumlahBulan * $tarifRetribusi))
+                'terbilang' => trim(terbilang($request->jumlahBulan * $tarifRetribusi)),
+                'tanggal_terbit' => $request->tanggalTerbit,
+                'jatuh_tempo' => $request->jatuhTempo
             ]);
 
-            $pdf = Pdf::loadView('exports.invoices.invoice', ['invoice' => $invoice, 'skrd' => $skrd]);
+            $pdf = Pdf::loadView('exports.invoices.invoice', ['invoice' => $invoice, 'skrd' => $skrd])->setPaper('a4');
 
-            $filename = 'invoice-' . $invoice->id . '.pdf';
+            $filename = str_replace('/', '-', $invoice->no_invoice) . '.pdf';
 
             Storage::put('invoices/' . $filename, $pdf->output());
+
+            $invoice->update([
+                'file' => $filename
+            ]);
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
             return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data.']);
         }
     }
@@ -143,6 +151,20 @@ class InvoiceController extends Controller
         //
     }
 
+    public function openFile($filename)
+    {
+        $path = storage_path('app/private/invoices/' . $filename);
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return Response::file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
+        ]);
+    }
+
     public function previewPdf(Request $request)
     {
         $skrd = Skrd::where('noSkrd', $request->noSkrd)->firstOrFail();
@@ -157,10 +179,12 @@ class InvoiceController extends Controller
             'atas_nama' => $request->pengirim,
             'no_rekening' => $request->noRekening,
             'total_retribusi' => $request->jumlahBulan * $tarifRetribusi,
-            'terbilang' => trim(terbilang($request->jumlahBulan * $tarifRetribusi))
+            'terbilang' => trim(terbilang($request->jumlahBulan * $tarifRetribusi)),
+            'tanggalTerbit' => now(),
+            'jatuhTempo' => now()
         ];
 
-        $pdf = Pdf::loadView('exports.invoices.invoice', ['invoice' => $invoice, 'skrd' => $skrd])->setPaper([0, 0, 595.35, 467.775], 'portrait');
+        $pdf = Pdf::loadView('exports.invoices.invoice', ['invoice' => $invoice, 'skrd' => $skrd])->setPaper('a4');
 
         return $pdf->stream('preview.pdf');
     }

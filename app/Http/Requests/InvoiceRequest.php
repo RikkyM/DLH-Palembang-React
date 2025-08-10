@@ -28,7 +28,9 @@ class InvoiceRequest extends FormRequest
                 'satuan' => 'nullable',
                 'namaBank' => 'nullable',
                 'pengirim' => 'nullable',
-                'noRekening' => 'nullable|numeric'
+                'noRekening' => 'nullable|numeric',
+                'tanggalTerbit' => 'nullable|date',
+                'jatuhTempo' => 'nullable|date|after_or_equal:tanggalTerbit',
             ];
         }
 
@@ -39,6 +41,8 @@ class InvoiceRequest extends FormRequest
             'namaBank'     => 'required',
             'pengirim'     => 'required',
             'noRekening'   => 'required|numeric',
+            'tanggalTerbit' => 'required|date',
+            'jatuhTempo' => 'required|date|after_or_equal:tanggalTerbit',
         ];
     }
 
@@ -54,6 +58,11 @@ class InvoiceRequest extends FormRequest
             'pengirim.required'     => 'Nama pengirim wajib diisi.',
             'noRekening.required'   => 'Nomor rekening wajib diisi.',
             'noRekening.numeric'    => 'Nomor rekening harus berupa angka.',
+            'tanggalTerbit.required' => 'Tanggal terbit wajib diisi.',
+            'tanggalTerbit.date'     => 'Tanggal terbit harus berupa tanggal yang valid.',
+            'jatuhTempo.required'    => 'Tanggal jatuh tempo wajib diisi.',
+            'jatuhTempo.date'        => 'Tanggal jatuh tempo harus berupa tanggal yang valid.',
+            'jatuhTempo.after_or_equal' => 'Tanggal jatuh tempo tidak boleh sebelum tanggal terbit.',
         ];
     }
 }

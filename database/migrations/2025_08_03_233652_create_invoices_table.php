@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('no_rekening');
             $table->integer('total_retribusi');
             $table->string('terbilang');
+            $table->string('file')->nullable();
+            $table->date('tanggal_terbit');
+            $table->date('jatuh_tempo');
             $table->timestamps();
 
             $table->foreign('noSkrd')->references('noSkrd')->on('skrd');

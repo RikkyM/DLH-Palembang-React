@@ -14,7 +14,10 @@ class Invoice extends Model
         'atas_nama',
         'no_rekening',
         'total_retribusi',
-        'terbilang'
+        'terbilang',
+        'file',
+        'tanggal_terbit',
+        'jatuh_tempo'
     ];
 
     public function skrd()

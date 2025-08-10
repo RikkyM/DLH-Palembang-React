@@ -37,28 +37,29 @@
             <td>{{ $invoice->noSkrd }}</td>
             <td>Tanggal</td>
             <td>:</td>
-            <td>1 Januari 2025</td>
+            <td>{{ \Carbon\Carbon::parse($invoice->tanggal_terbit)->translatedFormat('d F Y') }}</td>
         </tr>
         <tr>
             <td style="padding: 3px 0;">No. Wajib Retribusi</td>
-            <td>:</td>
-            <td>{{ $skrd->noWajibRetribusi }}</td>
+            <td style="vertical-align: top;">:</td>
+            <td style="vertical-align: top;">{{ $skrd->noWajibRetribusi }}</td>
             <td style="vertical-align: top; white-space: nowrap;">Jatuh Tempo</td>
             <td style="vertical-align: top;">:</td>
-            <td style="vertical-align: top; white-space: nowrap;">31 Desember 2025</td>
+            <td style="vertical-align: top; white-space: nowrap;">{{ \Carbon\Carbon::parse($invoice->jatuh_tempo)->translatedFormat('d F Y') }}
+            </td>
         </tr>
         <tr>
-            <td style="vertical-align: top; padding: 3px 0;">Nama Wajib Retribusi</td>
+            <td style="vertical-align: top; padding: 3px 0; width: 150px;">Nama Wajib Retribusi</td>
             <td style="vertical-align: top; padding: 3px 0;">:</td>
-            <td style="vertical-align: top; padding: 3px 0;">{{ $skrd->namaObjekRetribusi }}</td>
+            <td style="vertical-align: top; padding: 3px 0;" colspan="4">{{ $skrd->namaObjekRetribusi }} </td>
         </tr>
         <tr>
             <td style="vertical-align: top; padding: 3px 0;">Alamat Layanan</td>
             <td style="vertical-align: top; padding: 3px 0;">:</td>
-            <td style="vertical-align: top; padding: 3px 0;">{{ $skrd->alamatObjekRetribusi }}</td>
+            <td style="vertical-align: top; padding: 3px 0;" colspan="4">{{ $skrd->alamatObjekRetribusi }}</td>
         </tr>
     </table>
-    <table style="width: 100%; padding: 5px 35px; border-collapse: collapse;">
+    <table style="width: 100%; padding: 20px 35px; border-collapse: collapse;">
         <thead style="font-size: .85rem;">
             <tr class="border-black">
                 <th class="border-black" style="padding: 20px 10px; background: ##BEE5A7;">No.</th>
@@ -77,8 +78,10 @@
                 <td class="border-black" style="text-align: center; padding: 10px;">{{ $skrd->namaKategori }}</td>
                 <td class="border-black" style="text-align: center; padding: 10px;">{{ $invoice->jumlah_bulan }}</td>
                 <td class="border-black" style="text-align: center; padding: 10px;">{{ $invoice->satuan }}</td>
-                <td class="border-black" style="text-align: center; padding: 10px; white-space: nowrap;">Rp. {{ number_format($skrd->tagihanPerBulanSkrd, 0, ',', '.') }},-</td>
-                <td class="border-black" style="text-align: center; padding: 10px; white-space: nowrap;">Rp. {{ number_format($invoice->total_retribusi, 0, ',', '.') }},-</td>
+                <td class="border-black" style="text-align: center; padding: 10px; white-space: nowrap;">Rp.
+                    {{ number_format($skrd->tagihanPerBulanSkrd, 0, ',', '.') }},-</td>
+                <td class="border-black" style="text-align: center; padding: 10px; white-space: nowrap;">Rp.
+                    {{ number_format($invoice->total_retribusi, 0, ',', '.') }},-</td>
             </tr>
             <tr>
                 <td class="border-black" style="text-align: center; padding: 10px;"></td>
@@ -87,13 +90,68 @@
                 <td class="border-black" style="text-align: center; padding: 10px;"></td>
                 <td class="border-black" style="text-align: center; padding: 10px;"></td>
                 <td class="border-black" style="text-align: center; padding: 10px;">Total Retribusi</td>
-                <td class="border-black" style="text-align: center; padding: 10px; white-space: nowrap;">Rp. {{ number_format($invoice->total_retribusi, 0, ',', '.') }},-</td>
+                <td class="border-black" style="text-align: center; padding: 10px; white-space: nowrap;">Rp.
+                    {{ number_format($invoice->total_retribusi, 0, ',', '.') }},-</td>
             </tr>
             <tr>
-                <td class="border-black" style="text-align: left; padding: 10px; text-transform: capitalize; font-weight: bold;" colspan="7">Terbilang: {{ $invoice->terbilang }}</td>
+                <td class="border-black"
+                    style="text-align: left; padding: 10px; text-transform: capitalize; font-weight: bold;"
+                    colspan="7">Terbilang: {{ $invoice->terbilang }} Rupiah</td>
             </tr>
         </tbody>
     </table>
+    <table style="border-collapse: collapse; width: 100%; padding: 5px 40px; line-height: 16px;">
+        <tr>
+            <td style="vertical-align: top; width: 23%; font-size: .7rem;">Nama Bank</td>
+            <td style="vertical-align: top; width: 5%; font-size: .7rem;">:</td>
+            <td style="vertical-align: top; font-size: .7rem;">{{ $invoice->nama_bank }}</td>
+            <td style="width: 31%;"></td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; width: 23%; font-size: .7rem;">Atas Nama</td>
+            <td style="vertical-align: top; width: 5%; font-size: .7rem;">:</td>
+            <td style="vertical-align: top; font-size: .7rem;">{{ $invoice->atas_nama }}</td>
+            <td style="width: 31%;"></td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; width: 23%; font-size: .7rem;">No. Rekening</td>
+            <td style="vertical-align: top; width: 5%; font-size: .7rem;">:</td>
+            <td style="vertical-align: top; font-size: .7rem;">{{ $invoice->no_rekening }}</td>
+            <td style="width: 31%; font-size: .85rem;">Mengetahui,</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="width: 31%; font-size: .85rem;">Katim Penanganan Sampah</td>
+        </tr>
+    </table>
+    <div style="padding: 5px 40px; font-size: .7rem; box-sizing: border-box;">
+        <p style="margin: 0; padding: 2px 4px;">Keterangan:</p>
+        <table style="border-collapse: collapse; width: 100%;">
+            <tr>
+                <td valign="top" style="width: 20px;">1.</td>
+                <td style="width: 54%; text-wrap: pretty; line-height: 15px;">Setelah melakukan pembayaran melalui
+                    transfer bank, mohon untuk mengirimkan
+                    bukti transfer ke DLH
+                    Kota Palembang, melalui Petugas Penagih Retribusi / UPTD/ Bidang PSLB3</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="width: 31%; font-size: .85rem;">Jessie Zarastami, SE., M. Si</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="width: 31%; font-size: .85rem;">Nip. 198704262010012008</td>
+            </tr>
+        </table>
+    </div>
     {{-- <h2>Invoice</h2>
     <p>No SKRD: {{ $invoice->noSkrd }}</p>
     <p>Jumlah Bulan: {{ $invoice->jumlah_bulan }}</p>

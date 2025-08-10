@@ -3,15 +3,15 @@ import SuperAdminNavigation from "./Navigation";
 import Header from "@/Components/Header";
 
 const Layout = ({ title, children }) => {
-    return (
-        <MainLayout>
-            <SuperAdminNavigation/>
-            <section className="flex-1 overflow-auto max-h-dvh">
-                <Header title={title} />
-                {children}
-            </section>
-        </MainLayout>
-    );
+  return (
+    <MainLayout>
+      <SuperAdminNavigation />
+      <section className="max-h-dvh flex-1 overflow-auto">
+        <Header title={title} />
+        {children}
+      </section>
+    </MainLayout>
+  );
 };
 
 export default Layout;
