@@ -59,6 +59,8 @@ const DialogForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    clearErrors();
+
     if (isEditMode) {
       put(route("super-admin.pemohon.update", pemohon.id), {
         onSuccess: () => {
@@ -118,9 +120,14 @@ const DialogForm = ({
               inputMode="numeric"
               pattern="[0-9]*"
               placeholder="Masukkan NIK..."
-              className="rounded bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.nik && "border border-red-500"}`}
               value={data.nik}
-              onChange={(e) => setData("nik", e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value.length <= 16) {
+                  setData("nik", value);
+                }
+              }}
             />
             {errors.nik && (
               <span className="text-sm text-red-500">{errors.nik}</span>
@@ -138,7 +145,7 @@ const DialogForm = ({
               id="namaPemohon"
               type="text"
               placeholder="Masukkan nama pemohon..."
-              className="rounded bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.namaPemilik && "border border-red-500"}`}
               value={data.namaPemilik}
               onChange={(e) => setData("namaPemilik", e.target.value)}
             />
@@ -158,7 +165,7 @@ const DialogForm = ({
               id="alamat"
               type="text"
               placeholder="Masukkan nama pemohon..."
-              className="rounded bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.alamat && "border border-red-500"}`}
               value={data.alamat}
               onChange={(e) => setData("alamat", e.target.value)}
             />
@@ -178,7 +185,7 @@ const DialogForm = ({
               id="tempatLahir"
               type="text"
               placeholder="Masukkan tempat lahir..."
-              className="rounded bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.tempatLahir && "border border-red-500"}`}
               value={data.tempatLahir}
               onChange={(e) => setData("tempatLahir", e.target.value)}
             />
@@ -196,7 +203,7 @@ const DialogForm = ({
             <input
               id="tanggalLahir"
               type="date"
-              className="w-full appearance-none rounded bg-gray-200 px-3 py-2 outline-none"
+              className={`w-full appearance-none rounded bg-gray-200 px-3 py-2 outline-none ${errors.tanggalLahir && "border border-red-500"}`}
               value={data.tanggalLahir}
               onChange={(e) => setData("tanggalLahir", e.target.value)}
             />
@@ -241,11 +248,16 @@ const DialogForm = ({
             <input
               autoComplete="off"
               id="noHP"
-              type="number"
+              type="text"
               placeholder="Masukkan nomor hp..."
-              className="rounded bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.noHP && "border border-red-500"}`}
               value={data.noHP}
-              onChange={(e) => setData("noHP", e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value.length <= 15) {
+                  setData("noHP", value);
+                }
+              }}
             />
             {errors.noHP && (
               <span className="text-sm text-red-500">{errors.noHP}</span>
@@ -263,7 +275,7 @@ const DialogForm = ({
               id="email"
               type="email"
               placeholder="Masukkan email..."
-              className="rounded bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.email && "border border-red-500"}`}
               value={data.email}
               onChange={(e) => setData("email", e.target.value)}
             />
@@ -283,7 +295,7 @@ const DialogForm = ({
               id="jabatan"
               type="text"
               placeholder="Masukkan jabatan..."
-              className="rounded bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.jabatan && "border border-red-500"}`}
               value={data.jabatan}
               onChange={(e) => setData("jabatan", e.target.value)}
             />

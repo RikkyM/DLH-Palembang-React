@@ -274,12 +274,12 @@ const Index = ({
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => setShowFilters((prev) => !prev)}
                 >
-                  <span>Filter</span>
                   <Filter size={20} />
+                  <span>Filter</span>
                 </button>
                 <div
                   ref={filterRef}
-                  className={`absolute left-0 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
+                  className={`absolute right-0 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
                     showFilters
                       ? "pointer-events-auto mt-3 opacity-100"
                       : "pointer-events-none mt-0 opacity-0"
@@ -416,125 +416,130 @@ const Index = ({
           </div>
         </div>
         <div className="overflow-x-auto rounded bg-white shadow">
-          <table className="min-w-full divide-y divide-gray-300 p-3">
-            <thead>
-              <TableHead
-                columns={columns}
-                sort={sort}
-                direction={direction}
-                onSort={(column, dir) => {
-                  setSort(column);
-                  setDirection(dir);
-                }}
-              />
-            </thead>
-            <tbody className="text-xs md:text-sm">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={14}>
-                    <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
-                      <svg
-                        className="h-4 w-4 animate-spin"
-                        fill="none"
-                        viewBox="0 0 24 24"
+          {isLoading ? (
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+              <svg
+                className="h-4 w-4 animate-spin"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                />
+              </svg>
+              Memuat data...
+            </div>
+          ) : (
+            <>
+              <table className="min-w-full divide-y divide-gray-300 p-3">
+                <thead>
+                  <TableHead
+                    columns={columns}
+                    sort={sort}
+                    direction={direction}
+                    onSort={(column, dir) => {
+                      setSort(column);
+                      setDirection(dir);
+                    }}
+                  />
+                </thead>
+                <tbody className="text-xs md:text-sm">
+                  {datas?.data?.length > 0 ? (
+                    datas.data.map((data, index) => (
+                      <tr
+                        key={data.id || index}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
                       >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8z"
-                        />
-                      </svg>
-                      Memuat data...
-                    </div>
-                  </td>
-                </tr>
-              ) : datas?.data?.length > 0 ? (
-                datas.data.map((data, index) => (
-                  <tr
-                    key={data.id || index}
-                    className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
-                  >
-                    <td className="text-center">
-                      {(datas.current_page - 1) * datas.per_page + index + 1}
-                    </td>
-                    <td>{data.noPendaftaran}</td>
-                    <td>{data.noWajibRetribusi ?? "-"}</td>
-                    <td className="">{data.pemilik.namaPemilik}</td>
-                    <td>{data.namaObjekRetribusi}</td>
-                    <td className="max-w-sm truncate">{data.alamat}</td>
-                    <td>{data.kelurahan.namaKelurahan}</td>
-                    <td>{data.kecamatan.namaKecamatan}</td>
-                    <td>{data.kategori.namaKategori}</td>
-                    <td>{data.sub_kategori.namaSubKategori}</td>
-                    <td>{data.uptd.namaUptd}</td>
-                    <td>{data.user.namaLengkap}</td>
-                    <td>
-                      <span
-                        className={`select-none rounded py-2 font-medium ${
-                          data.status == "Approved"
-                            ? "text-teal-600"
-                            : data.status == "Processed"
-                              ? "text-amber-500"
-                              : "text-red-500"
-                        }`}
-                      >
-                        {data.status == "Approved" && "Diterima"}
-                        {data.status == "Processed" && "Diproses"}
-                        {data.status == "Rejected" && "Ditolak"}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
-                        <Link
-                          href={route("super-admin.wajib-retribusi.edit", {
-                            retribusi: data.noPendaftaran,
-                          })}
-                          className="flex items-center gap-1.5"
-                        >
-                          <PencilLine size={20} /> Edit
-                        </Link>
-                        <button className="flex items-center gap-1.5 whitespace-nowrap">
-                          <FileText size={20} /> Form
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
+                        <td className="text-center">
+                          {(datas.current_page - 1) * datas.per_page +
+                            index +
+                            1}
+                        </td>
+                        <td>{data.noPendaftaran}</td>
+                        <td>{data.noWajibRetribusi ?? "-"}</td>
+                        <td className="">{data.pemilik.namaPemilik}</td>
+                        <td>{data.namaObjekRetribusi}</td>
+                        <td className="max-w-sm truncate">{data.alamat}</td>
+                        <td>{data.kelurahan.namaKelurahan}</td>
+                        <td>{data.kecamatan.namaKecamatan}</td>
+                        <td>{data.kategori.namaKategori}</td>
+                        <td>{data.sub_kategori.namaSubKategori}</td>
+                        <td>{data.uptd.namaUptd}</td>
+                        <td>{data.user.namaLengkap}</td>
+                        <td>
+                          <span
+                            className={`select-none rounded py-2 font-medium ${
+                              data.status == "Approved"
+                                ? "text-teal-600"
+                                : data.status == "Processed"
+                                  ? "text-amber-500"
+                                  : "text-red-500"
+                            }`}
+                          >
+                            {data.status == "Approved" && "Diterima"}
+                            {data.status == "Processed" && "Diproses"}
+                            {data.status == "Rejected" && "Ditolak"}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
+                            <Link
+                              href={route("super-admin.wajib-retribusi.edit", {
+                                retribusi: data.noPendaftaran,
+                              })}
+                              className="flex items-center gap-1.5"
+                            >
+                              <PencilLine size={20} /> Edit
+                            </Link>
+                            <button className="flex items-center gap-1.5 whitespace-nowrap">
+                              <FileText size={20} /> Form
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
 
-                            window.open(
-                              route(
-                                "super-admin.wajib-retribusi.export-single",
-                                { id: data.id },
-                              ),
-                              "_blank",
-                            );
-                          }}
-                          className="flex items-center gap-1.5 whitespace-nowrap"
-                        >
-                          <FileText size={20} /> Excel
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="13" className="py-8 text-center text-gray-500">
-                    {search
-                      ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
-                      : "Belum ada data wajib retribusi"}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                                window.open(
+                                  route(
+                                    "super-admin.wajib-retribusi.export-single",
+                                    { id: data.id },
+                                  ),
+                                  "_blank",
+                                );
+                              }}
+                              className="flex items-center gap-1.5 whitespace-nowrap"
+                            >
+                              <FileText size={20} /> Excel
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="13"
+                        className="py-8 text-center text-gray-500"
+                      >
+                        {search
+                          ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
+                          : "Belum ada data wajib retribusi"}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </>
+          )}
         </div>
 
         {!isLoading && <SmartPagination datas={datas} filters={filters} />}

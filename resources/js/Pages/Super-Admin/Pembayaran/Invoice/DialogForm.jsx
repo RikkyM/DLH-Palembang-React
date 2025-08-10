@@ -52,10 +52,14 @@ const DialogForm = ({
 
       let months =
         (end.getFullYear() - start.getFullYear()) * 12 +
-        (end.getMonth() - start.getMonth()) +
-        1;
+        (end.getMonth() - start.getMonth());
+
+      if (end.getDate() < start.getDate()) {
+        months -= 1;
+      }
 
       if (months < 0) months = 0;
+      // months += 1;
 
       setData("jumlahBulan", months);
     } else {
@@ -146,6 +150,7 @@ const DialogForm = ({
               type="date"
               value={data.tanggalTerbit}
               onChange={(e) => setData("tanggalTerbit", e.target.value)}
+              className="w-full appearance-none"
             />
             {errors.tanggalTerbit && (
               <span className="text-sm text-red-500">
@@ -160,6 +165,7 @@ const DialogForm = ({
               type="date"
               value={data.jatuhTempo}
               onChange={(e) => setData("jatuhTempo", e.target.value)}
+              className="w-full appearance-none"
             />
             {errors.jatuhTempo && (
               <span className="text-sm text-red-500">{errors.jatuhTempo}</span>
@@ -231,8 +237,12 @@ const DialogForm = ({
             <Input
               id="noRekening"
               value={data.noRekening}
-              type="number"
-              onChange={(e) => setData("noRekening", e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value.length <= 15) {
+                  setData("noRekening", value);
+                }
+              }}
               placeholder="Masukkan nomor rekening..."
             />
             {errors.noRekening && (

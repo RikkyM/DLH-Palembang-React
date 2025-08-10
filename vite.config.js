@@ -36,15 +36,15 @@ export default defineConfig({
     },
   },
   // server: {
-  //     host: "0.0.0.0",
+  //   host: "0.0.0.0",
+  //   port: 5173,
+  //   hmr: {
+  //     host: "192.168.18.13",
+  //     // host: "192.168.18.75",
   //     port: 5173,
-  //     hmr: {
-  //         host: "192.168.18.13",
-  //         // host: "192.168.18.75",
-  //         port: 5173,
-  //     },
-  //     watch: {
-  //         usePolling: true,
-  //     },
+  //   },
+  //   watch: {
+  //     usePolling: true,
+  //   },
   // },
 });

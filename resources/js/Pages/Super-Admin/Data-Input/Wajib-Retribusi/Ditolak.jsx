@@ -204,8 +204,8 @@ const Ditolak = ({
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => setShowFilters((prev) => !prev)}
                 >
-                  <span>Filter</span>
                   <Filter size={20} />
+                  <span>Filter</span>
                 </button>
                 <div
                   ref={filterRef}
@@ -336,15 +336,42 @@ const Ditolak = ({
           </div>
         </div>
         <div className="overflow-x-auto rounded bg-white shadow">
-          <Table
-            datas={datas}
-            columns={columns}
-            sort={sort}
-            setSort={setSort}
-            direction={direction}
-            setDirection={setDirection}
-            isLoading={isLoading}
-          />
+          {isLoading ? (
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+              <svg
+                className="h-4 w-4 animate-spin"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                />
+              </svg>
+              Memuat data...
+            </div>
+          ) : (
+            <>
+              <Table
+                datas={datas}
+                columns={columns}
+                sort={sort}
+                setSort={setSort}
+                direction={direction}
+                setDirection={setDirection}
+                isLoading={isLoading}
+              />
+            </>
+          )}
         </div>
 
         {!isLoading && <SmartPagination datas={datas} filters={filters} />}

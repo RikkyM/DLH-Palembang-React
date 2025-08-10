@@ -86,6 +86,8 @@ class InvoiceController extends Controller
         $skrd = Skrd::where('noSkrd', $request->noSkrd)->firstOrFail();
         $tarifRetribusi = $skrd->tagihanPerBulanSkrd;
 
+        $total = $request->jumlahBulan > 0 ? $request->jumlahBulan * $tarifRetribusi : $tarifRetribusi;
+
         DB::beginTransaction();
         try {
 
@@ -96,8 +98,8 @@ class InvoiceController extends Controller
                 'nama_bank' => $request->namaBank,
                 'atas_nama' => $request->pengirim,
                 'no_rekening' => $request->noRekening,
-                'total_retribusi' => $request->jumlahBulan * $tarifRetribusi,
-                'terbilang' => trim(terbilang($request->jumlahBulan * $tarifRetribusi)),
+                'total_retribusi' => $total,
+                'terbilang' => trim(terbilang($total)),
                 'tanggal_terbit' => $request->tanggalTerbit,
                 'jatuh_tempo' => $request->jatuhTempo
             ]);

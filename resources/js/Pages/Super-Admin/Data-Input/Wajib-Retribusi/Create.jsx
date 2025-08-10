@@ -185,7 +185,7 @@ const Create = ({
               Nama Objek Retribusi
             </label>
             <input
-              className="bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.namaObjekRetribusi && "border border-red-500"}`}
               type="text"
               id="namaObjekRetribusi"
               autoComplete="off"
@@ -222,7 +222,7 @@ const Create = ({
               Alamat Objek Retribusi
             </label>
             <input
-              className="bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.alamatObjekRetribusi && "border border-red-500"}`}
               type="text"
               id="alamatObjekRetribusi"
               autoComplete="off"
@@ -246,7 +246,7 @@ const Create = ({
               RT
             </label>
             <input
-              className="bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.rt && "border border-red-500"}`}
               type="number"
               id="rt"
               autoComplete="off"
@@ -266,7 +266,7 @@ const Create = ({
               RW
             </label>
             <input
-              className="bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.rw && "border border-red-500"}`}
               type="number"
               id="rw"
               autoComplete="off"
@@ -326,7 +326,7 @@ const Create = ({
               Deskripsi Usaha
             </label>
             <input
-              className="bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.deskripsi && "border border-red-500"}`}
               type="text"
               id="deskripsi"
               autoComplete="off"
@@ -450,7 +450,7 @@ const Create = ({
               Jumlah Bangunan
             </label>
             <input
-              className="bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.jBangunan && "border border-red-500"}`}
               type="number"
               id="jBangunan"
               autoComplete="off"
@@ -470,7 +470,7 @@ const Create = ({
               Jumlah Lantai
             </label>
             <input
-              className="bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.jLantai && "border border-red-500"}`}
               type="number"
               id="jLantai"
               autoComplete="off"
@@ -490,7 +490,7 @@ const Create = ({
               Latitude
             </label>
             <input
-              className="bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.latitude && "border border-red-500"}`}
               type="number"
               id="latitude"
               autoComplete="off"
@@ -510,7 +510,7 @@ const Create = ({
               Longitude
             </label>
             <input
-              className="bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.longitude && "border border-red-500"}`}
               type="number"
               id="longitude"
               autoComplete="off"
@@ -530,7 +530,7 @@ const Create = ({
               Link Map
             </label>
             <input
-              className="bg-gray-200 px-3 py-2 outline-none"
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.linkMap && "border border-red-500"}`}
               type="url"
               id="linkMap"
               autoComplete="off"

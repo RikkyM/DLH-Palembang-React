@@ -1,0 +1,82 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class WajibRetribusiRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'namaObjekRetribusi' => 'required|string',
+            'pemilikId' => 'required',
+            'alamatObjekRetribusi' => 'required|string',
+            'rt' => 'required',
+            'rw' => 'required',
+            'kodeKecamatan' => 'required',
+            'kodeKelurahan' => 'required',
+            'bentukUsaha' => 'required',
+            'deskripsi' => 'required',
+            'kodeKategori' => 'required',
+            'kodeSubKategori' => 'required',
+            'statusTempat' => 'required',
+            'jBangunan' => 'required',
+            'jLantai' => 'required',
+            'linkMap' => 'required|url',
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'fotoBangunan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'fotoBerkas' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'variabelValues' => 'sometimes|array',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'namaObjekRetribusi.required' => 'Nama objek retribusi wajib diisi.',
+            'namaObjekRetribusi.string' => 'Nama objek retribusi harus berupa teks.',
+            'pemilikId.required' => 'Pemilik objek retribusi wajib dipilih.',
+            'alamatObjekRetribusi.required' => 'Alamat objek retribusi wajib diisi.',
+            'alamatObjekRetribusi.string' => 'Alamat objek retribusi harus berupa teks.',
+            'rt.required' => 'RT wajib diisi.',
+            'rw.required' => 'RW wajib diisi.',
+            'kodeKecamatan.required' => 'Kecamatan wajib dipilih.',
+            'kodeKelurahan.required' => 'Kelurahan wajib dipilih.',
+            'bentukUsaha.required' => 'Bentuk usaha wajib dipilih.',
+            'deskripsi.required' => 'Deskripsi objek retribusi wajib diisi.',
+            'kodeKategori.required' => 'Kategori objek retribusi wajib dipilih.',
+            'kodeSubKategori.required' => 'Sub kategori objek retribusi wajib dipilih.',
+            'statusTempat.required' => 'Status tempat wajib dipilih.',
+            'jBangunan.required' => 'Jumlah bangunan wajib diisi.',
+            'jLantai.required' => 'Jumlah lantai wajib diisi.',
+            'linkMap.required' => 'Link peta lokasi wajib diisi.',
+            'linkMap.url' => 'Link peta lokasi harus berupa URL yang valid.',
+            'latitude.required' => 'Latitude koordinat lokasi wajib diisi.',
+            'longitude.required' => 'Longitude koordinat lokasi wajib diisi.',
+            'fotoBangunan.required' => 'Foto bangunan wajib diunggah.',
+            'fotoBangunan.file' => 'Foto bangunan harus berupa file.',
+            'fotoBangunan.mimes' => 'Foto bangunan harus berformat PDF, JPG, JPEG, atau PNG.',
+            'fotoBangunan.max' => 'Ukuran foto bangunan maksimal 5MB.',
+            'fotoBerkas.required' => 'Foto berkas wajib diunggah.',
+            'fotoBerkas.file' => 'Foto berkas harus berupa file.',
+            'fotoBerkas.mimes' => 'Foto berkas harus berformat PDF, JPG, JPEG, atau PNG.',
+            'fotoBerkas.max' => 'Ukuran foto berkas maksimal 5MB.',
+            'variabelValues.array' => 'Variabel values harus berupa array.',
+        ];
+    }
+}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Exports\WajibRetribusiExport;
 use App\Exports\WajibRetribusiSingleExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\WajibRetribusiRequest;
 use App\Models\Kategori;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
@@ -308,30 +309,9 @@ class WajibRetribusiController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(WajibRetribusiRequest $request)
     {
-        $validated = $request->validate([
-            'namaObjekRetribusi' => 'required|string',
-            'pemilikId' => 'required',
-            'alamatObjekRetribusi' => 'required|string',
-            'rt' => 'required',
-            'rw' => 'required',
-            'kodeKecamatan' => 'required',
-            'kodeKelurahan' => 'required',
-            'bentukUsaha' => 'required',
-            'deskripsi' => 'required',
-            'kodeKategori' => 'required',
-            'kodeSubKategori' => 'required',
-            'statusTempat' => 'required',
-            'jBangunan' => 'required',
-            'jLantai' => 'required',
-            'linkMap' => 'required|url',
-            'latitude' => 'required',
-            'longitude' => 'required',
-            'fotoBangunan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'fotoBerkas' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'variabelValues' => 'sometimes|array',
-        ]);
+        $validated = $request->validate();
 
         $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
 

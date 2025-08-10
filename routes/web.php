@@ -34,7 +34,7 @@ Route::prefix('sirep')->group(function () {
             Route::get('/dashboard', [SuperAdminDashboardController::class, 'index'])->name('dashboard');
 
             Route::prefix('data-input')->group(function () {
-                Route::resource('/pemohon', PemohonController::class);
+                Route::resource('/pemohon', PemohonController::class)->only(['index', 'store', 'update']);
                 Route::controller(WajibRetribusiController::class)->group(function () {
                     Route::get('/wajib-retribusi', 'index')->name('wajib-retribusi.index');
                     Route::get('/wajib-retribusi/diterima', 'diterima')->name('wajib-retribusi-diterima');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PemohonRequest;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
 use App\Models\Pemilik;
@@ -69,7 +70,7 @@ class PemohonController extends Controller
                         'value' => $kelurahan->kodeKelurahan,
                         'label' => $kelurahan->namaKelurahan
                     ];
-                })->values(); // reset key index
+                })->values();
             });
 
         $pemohon = $query->paginate(10)->withQueryString();
@@ -97,57 +98,10 @@ class PemohonController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PemohonRequest $request)
     {
-        $validated = $request->validate([
-            'nik' => 'required|digits:16',
-            'namaPemilik' => 'required|string|min:5',
-            'alamat' => 'required|string|min:5|max:255',
-            'tempatLahir' => 'required|string|min:3',
-            'tanggalLahir' => 'required|date',
-            'kodeKecamatan' => 'required|exists:kecamatan,kodeKecamatan',
-            'kodeKelurahan' => 'required|exists:kelurahan,kodeKelurahan',
-            'noHP' => 'required|digits_between:12,14',
-            'email' => 'required|email|min:5',
-            'jabatan' => 'required|string|min:3',
-        ], [
-            'nik.required' => 'NIK wajib diisi.',
-            'nik.digits' => 'NIK harus terdiri dari 16 digit angka.',
-            'namaPemilik.required' => 'Nama pemilik wajib diisi.',
-            'namaPemilik.min' => 'Nama pemilik minimal terdiri dari 5 karakter.',
-            'alamat.required' => 'Alamat wajib diisi.',
-            'alamat.min' => 'Alamat minimal 5 karakter.',
-            'alamat.max' => 'Alamat maksimal 255 karakter.',
-            'tempatLahir.required' => 'Tempat lahir wajib diisi.',
-            'tempatLahir.min' => 'Tempat lahir minimal 3 karakter.',
-            'tanggalLahir.required' => 'Tanggal lahir wajib diisi.',
-            'tanggalLahir.date' => 'Format tanggal lahir tidak valid.',
-            'kodeKecamatan.required' => 'Kecamatan wajib dipilih.',
-            'kodeKecamatan.exists' => 'Kecamatan yang dipilih tidak valid.',
-            'kodeKelurahan.required' => 'Kelurahan wajib dipilih.',
-            'kodeKelurahan.exists' => 'Kelurahan yang dipilih tidak valid.',
-            'noHP.required' => 'Nomor HP wajib diisi.',
-            'noHP.digits_between' => 'Nomor HP harus terdiri dari 12 sampai 14 digit angka.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.min' => 'Email minimal 5 karakter.',
-            'jabatan.required' => 'Jabatan wajib diisi.',
-            'jabatan.min' => 'Jabatan minimal 3 karakter.',
-        ]);
-
         try {
-            $p = Pemilik::create([
-                'nik' => trim($validated['nik']),
-                'namaPemilik' => trim($validated['namaPemilik']),
-                'alamat' => trim($validated['alamat']),
-                'tempatLahir' => trim($validated['tempatLahir']),
-                'tanggalLahir' => $validated['tanggalLahir'],
-                'kodeKecamatan' => $validated['kodeKecamatan'],
-                'kodeKelurahan' => $validated['kodeKelurahan'],
-                'noHP' => $validated['noHP'],
-                'email' => trim($validated['email']),
-                'jabatan' => trim($validated['jabatan']),
-            ]);
+            Pemilik::create($request->validated());
 
             return back();
         } catch (Exception $e) {
@@ -174,59 +128,12 @@ class PemohonController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PemohonRequest $request, int $id)
     {
-        $validated = $request->validate([
-            'nik' => 'nullable|digits:16',
-            'namaPemilik' => 'nullable|string|min:5',
-            'alamat' => 'nullable|string|min:5|max:255',
-            'tempatLahir' => 'nullable|string|min:3',
-            'tanggalLahir' => 'nullable|date',
-            'kodeKecamatan' => 'nullable|exists:kecamatan,kodeKecamatan',
-            'kodeKelurahan' => 'nullable|exists:kelurahan,kodeKelurahan',
-            'noHP' => 'nullable|digits_between:12,14',
-            'email' => 'nullable|email|min:5',
-            'jabatan' => 'nullable|string|min:3',
-        ], [
-            'nik.required' => 'NIK wajib diisi.',
-            'nik.digits' => 'NIK harus terdiri dari 16 digit angka.',
-            'namaPemilik.required' => 'Nama pemilik wajib diisi.',
-            'namaPemilik.min' => 'Nama pemilik minimal terdiri dari 5 karakter.',
-            'alamat.required' => 'Alamat wajib diisi.',
-            'alamat.min' => 'Alamat minimal 5 karakter.',
-            'alamat.max' => 'Alamat maksimal 255 karakter.',
-            'tempatLahir.required' => 'Tempat lahir wajib diisi.',
-            'tempatLahir.min' => 'Tempat lahir minimal 3 karakter.',
-            'tanggalLahir.required' => 'Tanggal lahir wajib diisi.',
-            'tanggalLahir.date' => 'Format tanggal lahir tidak valid.',
-            'kodeKecamatan.required' => 'Kecamatan wajib dipilih.',
-            'kodeKecamatan.exists' => 'Kecamatan yang dipilih tidak valid.',
-            'kodeKelurahan.required' => 'Kelurahan wajib dipilih.',
-            'kodeKelurahan.exists' => 'Kelurahan yang dipilih tidak valid.',
-            'noHP.required' => 'Nomor HP wajib diisi.',
-            'noHP.digits_between' => 'Nomor HP harus terdiri dari 12 sampai 14 digit angka.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.min' => 'Email minimal 5 karakter.',
-            'jabatan.required' => 'Jabatan wajib diisi.',
-            'jabatan.min' => 'Jabatan minimal 3 karakter.',
-        ]);
-
         try {
-            $pemilik = Pemilik::findOrFail($id);
+            $pemohon = Pemilik::findOrFail($id);
 
-            $pemilik->update([
-                'nik' => trim($validated['nik']) ?? $pemilik->nik,
-                'namaPemilik' => $validated['namaPemilik'] ?? $pemilik->namaPemilik,
-                'alamat' => $validated['alamat'] ?? $pemilik->alamat,
-                'tempatLahir' => $validated['tempatLahir'] ?? $pemilik->tempatLahir,
-                'tanggalLahir' => $validated['tanggalLahir'] ?? $pemilik->tanggalLahir,
-                'kodeKecamatan' => $validated['kodeKecamatan'] ?? $pemilik->kodeKecamatan,
-                'kodeKelurahan' => $validated['kodeKelurahan'] ?? $pemilik->kodeKelurahan,
-                'noHP' => $validated['noHP'] ?? $pemilik->noHP,
-                'email' => $validated['email'] ?? $pemilik->email,
-                'jabatan' => $validated['jabatan'] ?? $pemilik->jabatan,
-            ]);
+            $request->handle($pemohon);
 
             return redirect()->back()->with('success', 'Data pemohon berhasil diperbarui.');
         } catch (Exception $e) {
