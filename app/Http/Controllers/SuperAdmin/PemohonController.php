@@ -101,7 +101,8 @@ class PemohonController extends Controller
     public function store(PemohonRequest $request)
     {
         try {
-            Pemilik::create($request->validated());
+            // Pemilik::create($request->validated());
+            $request->handle();
 
             return back();
         } catch (Exception $e) {
@@ -128,12 +129,10 @@ class PemohonController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PemohonRequest $request, int $id)
+    public function update(PemohonRequest $request, int $data)
     {
         try {
-            $pemohon = Pemilik::findOrFail($id);
-
-            $request->handle($pemohon);
+            $request->handle($data);
 
             return redirect()->back()->with('success', 'Data pemohon berhasil diperbarui.');
         } catch (Exception $e) {

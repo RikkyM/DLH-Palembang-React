@@ -30,7 +30,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
     {
       key: "alamatObjekRetribusi",
       label: "alamat layanan",
-      align: "text-left",
+      align: "text-left truncate",
     },
     {
       key: "jumlah_bulan",

@@ -78,7 +78,7 @@
     <table class="header">
         <tr>
             <td class="left">
-                <img src="{{ public_path('/img/logo_palembang.png') }}" alt="logo"
+                <img src="{{ public_path('/img/logo_palembang.webp') }}" alt="logo"
                     style="max-width: 130px; margin: 0 auto;">
                 <br>
                 <span style="font-weight: bold; font-size: 20px;">

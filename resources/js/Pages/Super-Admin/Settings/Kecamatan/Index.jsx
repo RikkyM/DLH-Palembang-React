@@ -20,7 +20,7 @@ const Index = ({ datas, filters }) => {
 
       if (search && search.trim() !== "") params.search = search;
 
-      router.get(route("super-admin.kecamatan"), params, {
+      router.get(route("super-admin.kecamatan.index"), params, {
         preserveState: true,
         replace: true,
         only: ["datas"],

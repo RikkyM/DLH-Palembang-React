@@ -2,7 +2,7 @@ import Dialog from "@/Components/Dialog";
 import { X } from "lucide-react";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import { useForm } from "@inertiajs/react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import DropdownInput from "@/Components/DropdownInput";
 
 const DialogForm = ({
@@ -10,8 +10,8 @@ const DialogForm = ({
   onClose,
   pemohon = null,
   mode = "create",
-  kecamatanOptions,
-  kelurahanOptions,
+  kecamatanOptions = [],
+  kelurahanOptions = [],
 }) => {
   const isEditMode = mode === "edit" && pemohon;
   const firstInputRef = useAutoFocusInput(isOpen, true);

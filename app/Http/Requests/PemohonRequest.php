@@ -82,13 +82,14 @@ class PemohonRequest extends FormRequest
         ];
     }
 
-    public function handle(?Pemilik $pemohon = null): Pemilik
+    public function handle(?int $data = null): Pemilik
     {
         $validated = $this->validated();
 
-        if ($pemohon) {
+        if ($data) {
+            $pemohon = Pemilik::findOrFail($data);
             $pemohon->update($validated);
-            return $pemohon->fresh() ?? $pemohon;
+            return $pemohon;
         }
 
         return Pemilik::create($validated);

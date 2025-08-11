@@ -234,36 +234,11 @@
 </head>
 
 <body>
-    {{-- <div class="header">
-        <h1>Laporan Wajib Retribusi</h1>
-        <h2>Pemerintah Kota/Kabupaten</h2>
-        <div class="info">
-            Tanggal Cetak: {{ date('d F Y H:i:s') }} |
-            Total Data: {{ count($data) }} records
-        </div>
-    </div> --}}
-
-    {{-- <div class="header">
-        <div class="left-logo">
-            <img src="{{ public_path('/img/logo_palembang.png') }}" alt="Pemerintah" height="50">
-        </div>
-    
-        <div class="center-text">
-            <p><strong>Dinas Lingkungan Hidup Kota Palembang</strong></p>
-            <p>Jl. Sukarela No. 129 A KM 7, Kel. Sukarami, Kec. Sukarami</p>
-            <p>Telp. (0711) – 415130, http://dlh.palembang.go.id</p>
-        </div>
-    
-        <div class="right-logo">
-            <img src="{{ public_path('/img/Logo_EVP.png') }}" alt="Bangga Melayani Bangsa" height="45">
-        </div>
-    </div> --}}
-
     <table>
         <tr style="border: none;">
             <td style="text-align: right; border: none;">
-                <img src="{{ public_path('/img/logo_palembang.png') }}" alt="Pemerintah" height="50">
-                <img src="{{ public_path('/img/logo.png') }}" alt="Pemerintah" height="45">
+                <img src="{{ public_path('/img/logo_palembang.webp') }}" alt="Pemerintah" height="50">
+                <img src="{{ public_path('/img/logo.webp') }}" alt="Pemerintah" height="45">
             </td>
             <td style="text-align: center; width: 300px; border: none;">
                 <div class="center-text">
@@ -273,7 +248,7 @@
                 </div>
             </td>
             <td style="border: none;">
-                <img src="{{ public_path('/img/Logo_EVP.png') }}" alt="Bangga Melayani Bangsa" height="45">
+                <img src="{{ public_path('/img/Logo_EVP.webp') }}" alt="Bangga Melayani Bangsa" height="45">
             </td>
         </tr>
     </table>

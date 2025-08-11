@@ -9,8 +9,8 @@ class Pemilik extends Model
     protected $table = 'pemilik';
 
     protected $fillable = [
-        'kodeKelurahan',
         'kodeKecamatan',
+        'kodeKelurahan',
         'namaPemilik',
         'jabatan',
         'nik',

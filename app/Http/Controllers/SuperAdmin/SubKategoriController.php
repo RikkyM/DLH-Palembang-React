@@ -89,8 +89,6 @@ class SubKategoriController extends Controller
 
         $validated['slug'] = Str::slug($validated['namaSubKategori']);
 
-        dd($validated);
-
         SubKategori::create($validated);
 
         return redirect()->back()->withInput([]);

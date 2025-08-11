@@ -38,7 +38,7 @@ const Index = ({ users, uptd, filters }) => {
       if (direction && direction !== filters.direction)
         params.direction = direction;
 
-      router.get(route("super-admin.user"), params, {
+      router.get(route("super-admin.user.index"), params, {
         preserveState: true,
         replace: true,
         only: ["users"],
@@ -195,7 +195,7 @@ const Index = ({ users, uptd, filters }) => {
           <SmartPagination
             datas={users}
             filters={allFilters}
-            routeName="super-admin.user"
+            routeName="super-admin.user.index"
           />
         )}
       </section>

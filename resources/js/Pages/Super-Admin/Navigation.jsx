@@ -88,27 +88,27 @@ const SuperAdminNavigation = () => {
   const settingItems = [
     {
       label: "Uptd",
-      route: "super-admin.uptd",
+      route: "super-admin.uptd.index",
     },
     {
       label: "User / Pegawai",
-      route: "super-admin.user",
+      route: "super-admin.user.index",
     },
     {
       label: "Kecamatan",
-      route: "super-admin.kecamatan",
+      route: "super-admin.kecamatan.index",
     },
     {
       label: "Kelurahan",
-      route: "super-admin.kelurahan",
+      route: "super-admin.kelurahan.index",
     },
     {
       label: "Kategori",
-      route: "super-admin.kategori",
+      route: "super-admin.kategori.index",
     },
     {
       label: "Sub Kategori",
-      route: "super-admin.sub-kategori",
+      route: "super-admin.sub-kategori.index",
     },
   ];
 

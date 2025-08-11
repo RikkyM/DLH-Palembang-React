@@ -19,7 +19,7 @@ const Index = ({ datas, kecamatan, filters }) => {
 
       if (search && search.trim() !== "") params.search = search;
 
-      router.get(route("super-admin.kelurahan"), params, {
+      router.get(route("super-admin.kelurahan.index"), params, {
         preserveState: true,
         replace: true,
         only: ["datas"],

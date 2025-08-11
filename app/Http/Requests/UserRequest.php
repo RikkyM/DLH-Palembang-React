@@ -22,6 +22,7 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'username' => 'required',
             'namaLengkap' => 'required|string|max:50',
             'jabatan' => 'required|string|max:100',
             'nip' => 'required|numeric|unique:users,nip',

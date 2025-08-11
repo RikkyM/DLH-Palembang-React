@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('pemilik', function (Blueprint $table) {
             $table->id();
-            $table->string('kodeKelurahan', 8);
             $table->string('kodeKecamatan', 8);
+            $table->string('kodeKelurahan', 8);
             $table->string('namaPemilik');
             $table->string('jabatan');
             $table->string('nik')->unique();
-            $table->text('alamat');
+            $table->string('alamat');
             $table->string('tempatLahir');
             $table->date('tanggalLahir');
             $table->string('email');

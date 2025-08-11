@@ -19,7 +19,7 @@ const Index = ({ datas, filters, kategori }) => {
 
       if (search && search.trim() !== "") params.search = search;
 
-      router.get(route("super-admin.sub-kategori"), params, {
+      router.get(route("super-admin.sub-kategori.index"), params, {
         preserveState: true,
         replace: true,
         only: ["datas"],

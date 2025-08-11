@@ -69,6 +69,7 @@ class UserController extends Controller
             $validated = $request->validated();
 
             User::create([
+                'username' => $validated['username'],
                 'namaLengkap' => $validated['namaLengkap'],
                 'jabatan' => $validated['jabatan'],
                 'nip' => $validated['nip'],
@@ -108,19 +109,19 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
-            'namaLengkap' => 'sometimes|nullable|string|max:50',
-            'jabatan' => 'sometimes|nullable|string|max:100',
-            'nip' => 'sometimes|nullable|numeric',
-            'username' => 'sometimes|nullable',
-            'email' => 'sometimes|nullable|email',
-            'lokasi' => 'sometimes|nullable|string|max:255',
-            'kelamin' => 'sometimes|nullable|in:Laki-laki,Perempuan',
-            'uptdId' => 'sometimes|nullable|exists:uptd,id',
-            'pangkat' => 'sometimes|nullable|string|max:100',
-            'golongan' => 'sometimes|nullable|string|max:100',
-            'deskripsi' => 'sometimes|nullable|string|max:255',
-            'role' => 'sometimes|nullable|string|in:ROLE_SEKDIN,ROLE_PENDAFTAR,ROLE_KUPTD,ROLE_KATIM,ROLE_KASUBAG_TU_UPDT,ROLE_KADIN,ROLE_KABID,ROLE_BENDAHARA',
-            'password' => 'sometimes|nullable|string|min:5|confirmed'
+            'namaLengkap' => 'nullable|string|max:50',
+            'jabatan' => 'nullable|string|max:100',
+            'nip' => 'nullable|numeric',
+            'username' => 'nullable',
+            'email' => 'nullable|email',
+            'lokasi' => 'nullable|string|max:255',
+            'kelamin' => 'nullable|in:Laki-laki,Perempuan',
+            'uptdId' => 'nullable|exists:uptd,id',
+            'pangkat' => 'nullable|string|max:100',
+            'golongan' => 'nullable|string|max:100',
+            'deskripsi' => 'nullable|string|max:255',
+            'role' => 'nullable|string|in:ROLE_SEKDIN,ROLE_PENDAFTAR,ROLE_KUPTD,ROLE_KATIM,ROLE_KASUBAG_TU_UPDT,ROLE_KADIN,ROLE_KABID,ROLE_BENDAHARA',
+            'password' => 'nullable|string|min:5|confirmed'
         ], (new UserRequest())->messages());
 
 
