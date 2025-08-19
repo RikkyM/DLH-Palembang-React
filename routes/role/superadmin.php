@@ -27,7 +27,8 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
             Route::get('/wajib-retribusi/tambah-data-wajib-retribusi', 'create')->name('wajib-retribusi.create');
             Route::post('/wajib-retribusi/store', 'store')->name('wajib-retribusi.store');
             Route::get('/wajib-retribusi/edit-data-wajib-retribusi/{retribusi}', 'edit')->name('wajib-retribusi.edit');
-            Route::put('/wajib-retribusi/update/{retribusi}', 'update')->name('wajib-retribusi.update');
+            Route::put('/wajib-retribusi/update/{id}', 'update')->name('wajib-retribusi.update');
+            Route::put('/wajib-retribusi/{id}/send-diterima', 'sendDiterima')->name('wajib-retribusi.send-diterima');
             Route::get('/wajib-retribusi/download-pdf', 'downloadPdf')->name('wajib-retribusi.download-pdf');
             Route::get('/wajib-retribusi/export', 'export')->name('wajib-retribusi.export');
             Route::get('/wajib-retribusi/{id}/export-single', 'exportSingle')->name('wajib-retribusi.export-single');
@@ -52,8 +53,12 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::resource('/uptd', UptdController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/user', UserController::class)->only(['index', 'store', 'update']);
         Route::resource('/kecamatan', KecamatanController::class)->only(['index', 'store', 'update', 'destroy']);
-        Route::resource('/kelurahan', KelurahanController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('/kelurahan', KelurahanController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/kategori', KategoriController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/sub-kategori', SubKategoriController::class)->only(['index', 'store', 'update', 'destroy']);
     });
+
+
+    Route::get('excel', [SubKategoriController::class, 'importExcelIndex'])->name('excelIndex');
+    Route::post('excel', [SubKategoriController::class, 'importExcel'])->name('excel');
 });

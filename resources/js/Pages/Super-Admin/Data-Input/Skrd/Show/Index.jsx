@@ -1,4 +1,3 @@
-import React from "react";
 import Layout from "../../../Layout";
 
 const Index = ({ data, bulan }) => {

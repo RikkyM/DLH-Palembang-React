@@ -6,11 +6,12 @@ const TableHead = ({
   direction,
   onSort,
   children = null,
+  user = null,
   textAlign = "text-left",
 }) => {
   const handleSort = (column) => {
     const newDirection =
-      sort === column && direction === "asc" ? "desc" : "asc";
+      sort === column && direction === "desc" ? "asc" : "desc";
     onSort(column, newDirection);
   };
 
@@ -26,7 +27,7 @@ const TableHead = ({
             {col.label}
             {sort === col.key && (
               <span className="ml-1">
-                {direction === "asc" ? (
+                {direction === "desc" ? (
                   <ArrowUp size={20} />
                 ) : (
                   <ArrowDown size={20} />

@@ -1,5 +1,6 @@
 import TableHead from "@/Components/TableHead";
-import { FileText, Send } from "lucide-react";
+import { Link } from "@inertiajs/react";
+import { FileText, Pencil, PencilLine, Send } from "lucide-react";
 
 const Table = ({
   datas,
@@ -10,6 +11,7 @@ const Table = ({
   direction,
   setDirection,
   isLoading,
+  handleSendDiterima,
 }) => {
   return (
     <table className="min-w-full divide-y divide-gray-300 p-3">
@@ -91,10 +93,20 @@ const Table = ({
               </td>
               <td>
                 <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
-                  <button className="flex items-center gap-1.5 whitespace-nowrap">
-                    <FileText size={20} /> Form
-                  </button>
                   <button
+                    className="flex items-center gap-1.5 whitespace-nowrap"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(
+                        route("wajib-retribusi.draft-pdf", { id: data.id }),
+                        "_blank",
+                      );
+                    }}
+                  >
+                    {/* <FileText size={20} /> Draft untuk di proses */}
+                    <FileText size={20} /> Draft SKRD
+                  </button>
+                  {/* <button
                     onClick={(e) => {
                       e.stopPropagation();
 
@@ -108,11 +120,34 @@ const Table = ({
                     className="flex items-center gap-1.5 whitespace-nowrap"
                   >
                     <FileText size={20} /> Excel
-                  </button>
+                  </button> */}
                   {data.status === "Approved" && (
-                    <button className="flex items-center gap-1.5 whitespace-nowrap">
-                      <Send size={20} /> Kirim
-                    </button>
+                    <>
+                      <Link
+                        href={route("super-admin.wajib-retribusi.edit", {
+                          retribusi: data.noPendaftaran,
+                        })}
+                        className="flex items-center gap-1.5"
+                      >
+                        <PencilLine size={20} /> Edit
+                      </Link>
+                      <button
+                        onClick={(e) => handleSendDiterima(e, data.id)}
+                        className="flex items-center gap-1.5 whitespace-nowrap"
+                      >
+                        <Send size={20} /> Kirim
+                      </button>
+                    </>
+                  )}
+                  {data.status === "Rejected" && (
+                    <>
+                      <button className="flex items-center gap-1.5 whitespace-nowrap">
+                        <Pencil size={20} /> Edit
+                      </button>
+                      <button className="flex items-center gap-1.5 whitespace-nowrap">
+                        <Send size={20} /> Kirim
+                      </button>
+                    </>
                   )}
                 </div>
               </td>

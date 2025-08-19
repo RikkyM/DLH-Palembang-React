@@ -1,4 +1,4 @@
-import { FileText, Filter, PencilLine, Search } from "lucide-react";
+import { FileText, Filter, Search } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -218,8 +218,8 @@ const Index = ({
               onMouseDown={(e) => e.stopPropagation()}
               onClick={() => setShowFilters((prev) => !prev)}
             >
-              <span>Filter</span>
               <Filter size={20} />
+              <span>Filter</span>
             </button>
             <div
               ref={filterRef}
@@ -323,200 +323,218 @@ const Index = ({
             </button>
           </div>
         </div>
-        <div
-          className={`rounded bg-white shadow ${
-            isLoading ? "overflow-x-hidden" : "overflow-x-auto"
-          }`}
-        >
-          <table className="min-w-full divide-y divide-gray-300 p-3">
-            <thead>
-              <TableHead
-                columns={columns}
-                sort={sort}
-                direction={direction}
-                onSort={(column, dir) => {
-                  setSort(column);
-                  setDirection(dir);
-                }}
+        <div className={`rounded bg-white shadow`}>
+          {isLoading ? (
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+              <svg
+                className="h-4 w-4 animate-spin"
+                fill="none"
+                viewBox="0 0 24 24"
               >
-                {bulan.map((bulan, i) => (
-                  <React.Fragment key={i}>
-                    <th className="cursor-pointer select-none">{bulan}</th>
-                    <th className="cursor-pointer select-none truncate">
-                      Tanggal Bayar
-                    </th>
-                  </React.Fragment>
-                ))}
-              </TableHead>
-            </thead>
-            <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={12}>
-                    <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
-                      <svg
-                        className="h-4 w-4 animate-spin"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8z"
-                        />
-                      </svg>
-                      Memuat data...
-                    </div>
-                  </td>
-                </tr>
-              ) : datas?.data?.length > 0 ? (
-                datas.data.map((data, index) => (
-                  <tr
-                    key={data.id || index}
-                    onClick={() =>
-                      router.get(route("super-admin.skrd.show", data.id))
-                    }
-                    className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                />
+              </svg>
+              Memuat data...
+            </div>
+          ) : (
+            <>
+              <table className="min-w-full divide-y divide-gray-300 p-3">
+                <thead>
+                  <TableHead
+                    columns={columns}
+                    sort={sort}
+                    direction={direction}
+                    onSort={(column, dir) => {
+                      setSort(column);
+                      setDirection(dir);
+                    }}
                   >
-                    <td className="text-center">
-                      {(datas.current_page - 1) * datas.per_page + index + 1}
-                    </td>
-                    <td>{data.noSkrd}</td>
-                    <td>{data.noWajibRetribusi}</td>
-                    <td>
-                      {new Date(data.created_at)
-                        .toLocaleDateString("en-GB")
-                        .replace(/\//g, "-")}
-                    </td>
-                    <td>{data.namaObjekRetribusi}</td>
-                    <td>{data.alamatObjekRetribusi}</td>
-                    <td>{data.kelurahanObjekRetribusi}</td>
-                    <td>{data.kecamatanObjekRetribusi}</td>
-                    <td>{data.namaKategori}</td>
-                    <td className="min-w-32">{data.namaSubKategori}</td>
-                    <td>{data.deskripsiUsaha}</td>
-                    <td>
-                      {new Intl.NumberFormat("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                        minimumFractionDigits: 0,
-                      }).format(data.tagihanPerBulanSkrd ?? 0)}
-                    </td>
-                    <td>
-                      {new Intl.NumberFormat("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                        minimumFractionDigits: 0,
-                      }).format(data.tagihanPerTahunSkrd ?? 0)}
-                    </td>
-                    <td>
-                      {new Intl.NumberFormat("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                        minimumFractionDigits: 0,
-                      }).format(data.pembayaran_sum_jumlah_bayar ?? 0)}
-                    </td>
-                    <td>
-                      {new Intl.NumberFormat("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                        minimumFractionDigits: 0,
-                      }).format(
-                        data.tagihanPerTahunSkrd -
-                          data.pembayaran_sum_jumlah_bayar,
-                      )}
-                    </td>
-                    <td>{data.namaPendaftar}</td>
-                    <td className="text-left">
-                      {data.tagihanPerTahunSkrd -
-                        data.pembayaran_sum_jumlah_bayar ===
-                      0 ? (
-                        <span className="truncate rounded px-2 py-1 text-green-700">
-                          Lunas
-                        </span>
-                      ) : (
-                        <span className="truncate rounded px-2 py-1 text-red-700">
-                          Belum Lunas
-                        </span>
-                      )}
-                    </td>
-                    {bulan.map((_, i) => {
-                      const pembayaranUntukBulan = data.pembayaran.find(
-                        (item) => item.pembayaranBulan.includes(i + 1),
-                      );
+                    {bulan.map((bulan, i) => (
+                      <React.Fragment key={i}>
+                        <th className="cursor-pointer select-none">{bulan}</th>
+                        <th className="cursor-pointer select-none truncate">
+                          Tanggal Bayar
+                        </th>
+                      </React.Fragment>
+                    ))}
+                  </TableHead>
+                </thead>
+                <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
+                  {datas?.data?.length > 0 ? (
+                    datas.data.map((data, index) => (
+                      <tr
+                        key={data.id || index}
+                        onClick={() =>
+                          router.get(route("super-admin.skrd.show", data.id))
+                        }
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                      >
+                        <td className="text-center">
+                          {(datas.current_page - 1) * datas.per_page +
+                            index +
+                            1}
+                        </td>
+                        <td>{data.noSkrd}</td>
+                        <td>{data.noWajibRetribusi}</td>
+                        <td>
+                          {new Date(data.created_at)
+                            .toLocaleDateString("en-GB")
+                            .replace(/\//g, "-")}
+                        </td>
+                        <td>{data.namaObjekRetribusi}</td>
+                        <td>{data.alamatObjekRetribusi}</td>
+                        <td>{data.kelurahanObjekRetribusi}</td>
+                        <td>{data.kecamatanObjekRetribusi}</td>
+                        <td>{data.namaKategori}</td>
+                        <td className="min-w-32">{data.namaSubKategori}</td>
+                        <td>{data.deskripsiUsaha}</td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data.tagihanPerBulanSkrd ?? 0)}
+                        </td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data.tagihanPerTahunSkrd ?? 0)}
+                        </td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data.pembayaran_sum_jumlah_bayar ?? 0)}
+                        </td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(
+                            data.tagihanPerTahunSkrd -
+                              data.pembayaran_sum_jumlah_bayar,
+                          )}
+                        </td>
+                        <td>{data.namaPendaftar}</td>
+                        <td className="text-left">
+                          {data.tagihanPerTahunSkrd -
+                            data.pembayaran_sum_jumlah_bayar ===
+                          0 ? (
+                            <span className="truncate rounded px-2 py-1 text-green-700">
+                              Lunas
+                            </span>
+                          ) : (
+                            <span className="truncate rounded px-2 py-1 text-red-700">
+                              Belum Lunas
+                            </span>
+                          )}
+                        </td>
+                        {bulan.map((_, i) => {
+                          const pembayaranUntukBulan = data.pembayaran.find(
+                            (item) => item.pembayaranBulan.includes(i + 1),
+                          );
 
-                      return (
-                        <React.Fragment key={i}>
-                          <td className="text-center">
-                            {pembayaranUntukBulan ? i + 1 : "-"}
-                          </td>
-                          <td className="text-center">
-                            {pembayaranUntukBulan
-                              ? new Date(
-                                  pembayaranUntukBulan.tanggalBayar,
-                                ).toLocaleDateString("id-ID")
-                              : "-"}
-                          </td>
-                        </React.Fragment>
-                      );
-                    })}
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <div className="flex flex-wrap gap-2 *:rounded *:text-xs *:font-medium *:sm:text-sm">
-                        {/* <button className="flex items-center gap-1.5 outline-none">
+                          return (
+                            <React.Fragment key={i}>
+                              <td className="text-center">
+                                {pembayaranUntukBulan ? i + 1 : "-"}
+                              </td>
+                              <td className="text-center">
+                                {pembayaranUntukBulan
+                                  ? new Date(
+                                      pembayaranUntukBulan.tanggalBayar,
+                                    ).toLocaleDateString("id-ID")
+                                  : "-"}
+                              </td>
+                            </React.Fragment>
+                          );
+                        })}
+                        <td onClick={(e) => e.stopPropagation()}>
+                          <div className="flex flex-wrap gap-2 *:rounded *:text-xs *:font-medium *:sm:text-sm">
+                            {/* <button className="flex items-center gap-1.5 outline-none">
                                                     <PencilLine size={20} />{" "}
                                                     Edit
                                                 </button> */}
-                        <button
-                          className="flex items-center gap-1.5 whitespace-nowrap outline-none"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(
-                              route("super-admin.skrd.download-data-pdf", {
-                                id: data.id,
-                              }),
-                              "_blank",
-                            );
-                          }}
-                        >
-                          <FileText size={20} /> PDF
-                        </button>
-                        <button
-                          className="flex items-center gap-1.5 whitespace-nowrap outline-none"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(
-                              route("super-admin.skrd.download-data-excel", {
-                                id: data.id,
-                              }),
-                              "_blank",
-                            );
-                          }}
-                        >
-                          <FileText size={20} /> Excel
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="17" className="py-8 text-center text-gray-500">
-                    {search
-                      ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
-                      : "Belum ada data wajib retribusi"}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                            <button
+                              className="flex items-center gap-1.5 whitespace-nowrap outline-none"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(
+                                  route("super-admin.skrd.download-data-pdf", {
+                                    id: data.id,
+                                  }),
+                                  "_blank",
+                                );
+                              }}
+                            >
+                              <FileText size={20} /> SKRD
+                            </button>
+                            <button
+                              className="flex items-center gap-1.5 whitespace-nowrap outline-none"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(
+                                  route(
+                                    "super-admin.skrd.download-data-excel",
+                                    {
+                                      id: data.id,
+                                    },
+                                  ),
+                                  "_blank",
+                                );
+                              }}
+                            >
+                              <FileText size={20} /> Excel
+                            </button>
+                            <button
+                              className="flex items-center gap-1.5 whitespace-nowrap outline-none"
+                              // onClick={(e) => {
+                              //   e.stopPropagation();
+                              //   window.open(
+                              //     route("super-admin.skrd.download-data-excel", {
+                              //       id: data.id,
+                              //     }),
+                              //     "_blank",
+                              //   );
+                              // }}
+                            >
+                              <FileText size={20} /> Detail
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="17"
+                        className="py-8 text-center text-gray-500"
+                      >
+                        {search
+                          ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
+                          : "Belum ada data wajib retribusi"}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </>
+          )}
         </div>
 
         {!isLoading && <SmartPagination datas={datas} filters={allFilters} />}

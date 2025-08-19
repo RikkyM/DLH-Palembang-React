@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
-import TableHead from "@/Components/TableHead";
 import { router } from "@inertiajs/react";
 
 import { Filter, Search } from "lucide-react";

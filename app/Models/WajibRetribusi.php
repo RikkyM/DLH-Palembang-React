@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class WajibRetribusi extends Model
@@ -37,7 +38,9 @@ class WajibRetribusi extends Model
         'jumlahBangunan',
         'jumlahLantai',
         'maksud',
+        'keterangan',
         'status',
+        'current_role',
         'createdThisYear',
         'historyAction',
     ];
@@ -47,6 +50,41 @@ class WajibRetribusi extends Model
         'url_file' => 'array',
         'historyAction' => 'array'
     ];
+
+    /**
+     * Mutator untuk namaObjekRetribusi
+     */
+    protected function namaObjekRetribusi(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => strtoupper($value)
+        );
+    }
+
+    /**
+     * Mutator untuk deskripsiUsaha
+     */
+    protected function deskripsiUsaha(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => strtoupper($value)
+        );
+    }
+
+    /**
+     * Mutator untuk alamat
+     */
+    protected function alamat(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => strtoupper($value)
+        );
+    }
+
+    public function skrd()
+    {
+        return $this->belongsTo(Skrd::class, 'noWajibRetribusi', 'noWajibRetribusi');
+    }
 
     public function user()
     {

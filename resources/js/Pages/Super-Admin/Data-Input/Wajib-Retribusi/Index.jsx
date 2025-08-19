@@ -2,19 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
 import { Link, router } from "@inertiajs/react";
-import { useProvider } from "@/Context/GlobalContext";
 
-import {
-  ChevronDown,
-  Download,
-  FileText,
-  Filter,
-  PencilLine,
-  Search,
-} from "lucide-react";
+import { ChevronDown, Download, FileText, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
-import DialogForm from "./DialogForm";
 
 const Index = ({
   datas,
@@ -26,8 +17,8 @@ const Index = ({
   kelurahanOptions = [],
   petugasOptions = [],
   statusOptions = [],
+  tahunOptions = [],
 }) => {
-  const { modalState, closeModal } = useProvider();
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
@@ -41,6 +32,7 @@ const Index = ({
   const [perPage, setPerPage] = useState(() => {
     return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
   });
+  const [tahun, setTahun] = useState(filters.tahun || "");
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
@@ -148,6 +140,15 @@ const Index = ({
     [statusOptions],
   );
 
+  const tahunList = useMemo(
+    () =>
+      tahunOptions.map((t) => ({
+        value: t.value.toString(),
+        label: t.label.toString(),
+      })),
+    [tahunOptions],
+  );
+
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
 
@@ -160,6 +161,7 @@ const Index = ({
     if (petugas) params.petugas = petugas;
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (status) params.status = status;
+    if (tahun) params.tahun = tahun;
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "desc") {
@@ -216,6 +218,7 @@ const Index = ({
     perPage,
     status,
     pj,
+    tahun,
   ]);
 
   const handlePerPageChange = (e) => {
@@ -257,7 +260,7 @@ const Index = ({
                   if (perPage) params.append("per_page", perPage);
 
                   window.open(
-                    route("super-admin.wajib-retribusi.download-pdf") +
+                    route("wajib-retribusi.download-pdf") +
                       "?" +
                       params.toString(),
                     "_blank",
@@ -342,6 +345,13 @@ const Index = ({
                     onChange={(val) => setStatus(val)}
                     placeholder="Filter Berdasarkan Status"
                   />
+                  <SearchableSelect
+                    id="tahunList"
+                    options={tahunList}
+                    value={tahun}
+                    onChange={(val) => setTahun(val)}
+                    placeholder="Pilih Tahun"
+                  />
                 </div>
               </div>
             </div>
@@ -379,9 +389,10 @@ const Index = ({
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (petugas) params.append("petugas", petugas);
                 if (status) params.append("status", status);
+                if (tahun) params.append("tahun", tahun);
 
                 window.open(
-                  route("super-admin.wajib-retribusi.download-pdf") +
+                  route("wajib-retribusi.download-pdf") +
                     "?" +
                     params.toString(),
                   "_blank",
@@ -403,9 +414,7 @@ const Index = ({
                 if (petugas) params.append("petugas", petugas);
 
                 window.open(
-                  route("super-admin.wajib-retribusi.export") +
-                    "?" +
-                    params.toString(),
+                  route("wajib-retribusi.export") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -493,18 +502,18 @@ const Index = ({
                         </td>
                         <td>
                           <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
-                            <Link
+                            {/* <Link
                               href={route("super-admin.wajib-retribusi.edit", {
                                 retribusi: data.noPendaftaran,
                               })}
                               className="flex items-center gap-1.5"
                             >
                               <PencilLine size={20} /> Edit
-                            </Link>
+                            </Link> */}
                             <button className="flex items-center gap-1.5 whitespace-nowrap">
                               <FileText size={20} /> Form
                             </button>
-                            <button
+                            {/* <button
                               onClick={(e) => {
                                 e.stopPropagation();
 
@@ -519,7 +528,7 @@ const Index = ({
                               className="flex items-center gap-1.5 whitespace-nowrap"
                             >
                               <FileText size={20} /> Excel
-                            </button>
+                            </button> */}
                           </div>
                         </td>
                       </tr>
@@ -544,13 +553,6 @@ const Index = ({
 
         {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
-
-      <DialogForm
-        isOpen={modalState.type === "create" || modalState.type === "edit"}
-        onClose={closeModal}
-        wr={modalState.data}
-        mode={modalState.type}
-      />
     </Layout>
   );
 };

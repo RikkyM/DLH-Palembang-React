@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
-// import TableHead from "@/Components/TableHead";
 import { router } from "@inertiajs/react";
 
-import { FileText, Filter, PencilLine, Search } from "lucide-react";
+import { Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
 import Table from "./Table";
@@ -137,16 +136,16 @@ const Diterima = ({
     if (petugas) params.petugas = petugas;
     if (sort && sort !== "id") {
       params.sort = sort;
-      if (direction && direction.toLowerCase() === "desc") {
-        params.direction = "desc";
+      if (direction && direction.toLowerCase() === "asc") {
+        params.direction = "asc";
       }
     } else if (
       sort === "id" &&
       direction &&
-      direction.toLowerCase() === "desc"
+      direction.toLowerCase() === "asc"
     ) {
       params.sort = sort;
-      params.direction = "desc";
+      params.direction = "asc";
     }
 
     return params;
@@ -190,6 +189,24 @@ const Diterima = ({
     petugas,
     pj,
   ]);
+
+  const handleSendDiterima = (e, id) => {
+    e.preventDefault();
+
+    router.put(
+      route("super-admin.wajib-retribusi.send-diterima", id),
+      {},
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          console.log("test");
+        },
+        onError: (errors) => {
+          console.error("Terjadi kesalahan ketika mengirim");
+        },
+      },
+    );
+  };
 
   return (
     <Layout title="WAJIB RETRIBUSI DITERIMA">
@@ -299,7 +316,7 @@ const Diterima = ({
                 params.append("status", "Approved");
 
                 window.open(
-                  route("super-admin.wajib-retribusi.download-pdf") +
+                  route("wajib-retribusi.download-pdf") +
                     "?" +
                     params.toString(),
                   "_blank",
@@ -323,7 +340,7 @@ const Diterima = ({
                 params.append("status", "Approved");
 
                 window.open(
-                  route("super-admin.wajib-retribusi.export") +
+                  route("wajib-retribusi.export") +
                     "?" +
                     params.toString(),
                   "_blank",
@@ -370,6 +387,7 @@ const Diterima = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
+                handleSendDiterima={handleSendDiterima}
               />
             </>
           )}

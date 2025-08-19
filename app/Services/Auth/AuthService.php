@@ -9,7 +9,7 @@ use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
-    private const RATE_LIMIT_MAX_ATTEMPTS = 4;
+    private const RATE_LIMIT_MAX_ATTEMPTS = 20;
 
     public function processLogin($credentials, $userIp)
     {
@@ -42,17 +42,14 @@ class AuthService
 
     private function attemptLogin($loginField, $password)
     {
-        // Coba login dengan NIP terlebih dahulu
         if (Auth::attempt(['nip' => $loginField, 'password' => $password])) {
             return true;
         }
 
-        // Jika gagal, coba login dengan username
         if (Auth::attempt(['username' => $loginField, 'password' => $password])) {
             return true;
         }
 
-        // Jika kedua cara gagal, return false
         return false;
     }
 

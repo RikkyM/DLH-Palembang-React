@@ -21,7 +21,8 @@ class WajibRetribusiRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $isEdit = $this->isMethod('put') || $this->isMethod('patch');
+        $rules = [
             'namaObjekRetribusi' => 'required|string',
             'pemilikId' => 'required',
             'alamatObjekRetribusi' => 'required|string',
@@ -36,13 +37,40 @@ class WajibRetribusiRequest extends FormRequest
             'statusTempat' => 'required',
             'jBangunan' => 'required',
             'jLantai' => 'required',
-            'linkMap' => 'required|url',
+            'linkMap' => 'nullable|url',
             'latitude' => 'required',
             'longitude' => 'required',
-            'fotoBangunan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'fotoBerkas' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'jenisTarif' => 'required|in:tarif,tarif2',
+            // 'fotoBangunan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            // 'fotoBerkas' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'fotoBangunan' => [
+                $isEdit ? 'nullable' : 'required',
+                'file',
+                'mimes:pdf,jpg,jpeg,png',
+                'max:5120'
+            ],
+            'fotoBerkas' => [
+                $isEdit ? 'nullable' : 'required',
+                'file',
+                'mimes:pdf,jpg,jpeg,png',
+                'max:5120'
+            ],
             'variabelValues' => 'sometimes|array',
+            'tarifRetribusi' => 'required|numeric|min:1',
+            'totalRetribusi' => 'required|numeric|min:1'
         ];
+
+        if ($this->isMethod('post')) {
+            $rules['fotoBangunan'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
+            $rules['fotoBerkas'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
+        }
+
+        if ($this->isMethod('put') || $this->isMethod('patch')) {
+            $rules['fotoBangunan'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
+            $rules['fotoBerkas'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
+        }
+
+        return $rules;
     }
 
     public function messages(): array
@@ -77,6 +105,12 @@ class WajibRetribusiRequest extends FormRequest
             'fotoBerkas.mimes' => 'Foto berkas harus berformat PDF, JPG, JPEG, atau PNG.',
             'fotoBerkas.max' => 'Ukuran foto berkas maksimal 5MB.',
             'variabelValues.array' => 'Variabel values harus berupa array.',
+            'tarifRetribusi.required' => 'Tarif retribusi wajib diisi.',
+            'tarifRetribusi.numeric' => 'Tarif retribusi harus angka.',
+            'tarifRetribusi.min' => 'Tarif retribusi tidak boleh 0',
+            'totalRetribusi.required' => 'Total retribusi wajib diisi.',
+            'totalRetribusi.numeric' => 'Total retribusi harus angka.',
+            'totalRetribusi.min' => 'Total retribusi tidak boleh 0'
         ];
     }
 }

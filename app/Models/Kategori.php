@@ -32,4 +32,9 @@ class Kategori extends Model
             $kategori->kodeKategori = str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
         });
     }
+
+    public function subKategori()
+    {
+        return $this->hasMany(SubKategori::class, 'kodeKategori', 'kodeKategori');
+    }
 }

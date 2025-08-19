@@ -174,25 +174,11 @@
                     Lingkungan
                     Hidup<br />Kota Palembang<br />
                     Kepala Bidang Pengelolaan Sampan dan Limbah B3</p>
-                {{-- <img src="/img/qrcode.jpg" alt="QR Code DLH Palembang" width="50" height="50" /><br/> --}}
                 <p
                     style="font-size: 14px; line-height: 0.8rem; text-align: left; display: inline-block; margin: 0 auto; width: 230px;">
-                    {{-- Andika Marta Dinata. S.ST., M.T --}}
                     {{ $kabid->namaLengkap }}
                     <br />NIP
                 </p>
-                {{-- <p style="font-size: 7px; max-width: 350px; text-align: left; line-height: 0.45rem; margin: auto;">-UU
-                    ITE No. 11 Tahun 2008 Pasal 5 ayat 1 Informasi Elektronik dan/atau
-                    Dokumen Elektronik dan/atau
-                    hasil
-                    cetaknya merupakan alat bukti hukum yang sah. - Dokumen ini telah ditandatangani secara elektronik
-                    menggunakan
-                    sertifikat elektronik yang diterbitkan BSrE. - Surat ini dapat dibuktikan keasliannya dengan cara
-                    memindai QRCode
-                    yang terdapat pada lembar ini dengan menggunakan aplikasi Sidemang atau VeryDS, dapat diunduh
-                    melalui
-                    Playstore/Appstore.
-                </p> --}}
             </td>
         </tr>
     </table>

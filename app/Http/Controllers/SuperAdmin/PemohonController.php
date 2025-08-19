@@ -20,7 +20,7 @@ class PemohonController extends Controller
     {
         $search = $request->get('search');
         $sortBy = $request->get('sort', 'id');
-        $sortDir = $request->get('direction', 'asc');
+        $sortDir = $request->get('direction', 'desc');
 
         $query = Pemilik::with(['kecamatan', 'kelurahan']);
 
@@ -101,7 +101,6 @@ class PemohonController extends Controller
     public function store(PemohonRequest $request)
     {
         try {
-            // Pemilik::create($request->validated());
             $request->handle();
 
             return back();

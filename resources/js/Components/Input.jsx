@@ -7,12 +7,20 @@ const Input = ({
   className = "",
   ...rest
 }) => {
+  const commonProps = {
+    id,
+    type,
+    className: `rounded bg-gray-200 px-3 py-2 outline-none ${className}`,
+    ...rest,
+  };
+
+  if (type === "file") {
+    return <input {...commonProps} onChange={onChange} />;
+  }
+
   return (
     <input
-      id={id}
-      type={type}
-      autoComplete="off"
-      className={`rounded bg-gray-200 px-3 py-2 outline-none ${className}`}
+      {...commonProps}
       {...(value !== undefined ? { value, onChange } : { defaultValue })}
       {...rest}
     />

@@ -15,8 +15,9 @@ return new class extends Migration
             $table->string('kodeSubKategori', 8)->primary();
             $table->string('kodeKategori', 8);
             $table->string('namaSubKategori');
-            $table->string('slug');
+            $table->string('slug')->nullable();
             $table->integer('tarif')->nullable();
+            $table->integer('tarif2')->nullable();
             $table->string('rumus')->nullable();
             $table->json('variabel')->nullable();
             $table->string('satuan');

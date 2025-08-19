@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import { useEffect, useState } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
 import L from "leaflet";
 
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -14,6 +20,16 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+const RecenterMap = ({ lat, lng }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (!isNaN(lat) && !isNaN(lng)) {
+      map.setView([lat, lng], map.getZoom());
+    }
+  }, [lat, lng, map]);
+  return null;
+};
+
 const LocationMarker = ({ position, setPosition }) => {
   useMapEvents({
     click(e) {
@@ -21,7 +37,7 @@ const LocationMarker = ({ position, setPosition }) => {
     },
   });
 
-  return position === null ? null : <Marker position={position}></Marker>;
+  return position ? <Marker position={position}></Marker> : null;
 };
 
 const MapPicker = ({
@@ -40,8 +56,11 @@ const MapPicker = ({
   }, [resetTrigger]);
 
   useEffect(() => {
-    if (latitude && longitude) {
-      setPosition([parseFloat(latitude), parseFloat(longitude)]);
+    const lat = parseFloat(latitude);
+    const lng = parseFloat(longitude);
+
+    if (!isNaN(lat) && !isNaN(lng)) {
+      setPosition([lat, lng]);
     } else if (!latitude && !longitude) {
       setPosition(null);
     }
@@ -49,9 +68,12 @@ const MapPicker = ({
 
   useEffect(() => {
     if (position) {
-      onLocationChange(position[0], position[1]);
+      const [lat, lng] = position;
+      if (lat !== parseFloat(latitude) || lng !== parseFloat(longitude)) {
+        onLocationChange(lat, lng);
+      }
     }
-  }, [position, onLocationChange]);
+  }, [position]);
 
   const defaultCenter = [-2.976, 104.7754];
   const center = position || defaultCenter;
@@ -72,6 +94,7 @@ const MapPicker = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <LocationMarker position={position} setPosition={setPosition} />
+        {position && <RecenterMap lat={position[0]} lng={position[1]} />}
       </MapContainer>
     </div>
   );

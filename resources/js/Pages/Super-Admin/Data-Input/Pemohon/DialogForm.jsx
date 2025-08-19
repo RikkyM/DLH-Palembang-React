@@ -266,7 +266,6 @@ const DialogForm = ({
           <div className="flex flex-col gap-1.5 text-sm">
             <label
               htmlFor="email"
-              className="after:text-red-500 after:content-['*']"
             >
               Email
             </label>

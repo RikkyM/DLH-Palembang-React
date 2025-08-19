@@ -3,7 +3,7 @@ import MapPicker from "@/Components/MapPicker";
 import Layout from "../../Layout";
 import { useForm } from "@inertiajs/react";
 import "leaflet/dist/leaflet.css";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const Create = ({
   pemohonOptions = [],
@@ -42,6 +42,8 @@ const Create = ({
     fotoBangunan: null,
     fotoBerkas: null,
     variabelValues: {},
+    tarifRetribusi: 0,
+    jenisTarif: "tarif",
   };
 
   const handleVariabelChange = (variabelName, value) => {
@@ -102,12 +104,27 @@ const Create = ({
     }
   };
 
+  const handleJenisTarifChange = (value) => {
+    setData("jenisTarif", value);
+
+    const selectedSub = (subKategoriOptions[data.kodeKategori] || []).find(
+      (sub) => sub.value === data.kodeSubKategori,
+    );
+
+    if (selectedSub) {
+      const tarifValue =
+        value === "tarif2" ? selectedSub.tarif2 : selectedSub.tarif;
+      setData("tarifRetribusi", tarifValue || 0);
+    }
+  };
+
   const handleKategoriChange = (value) => {
     setData((prevData) => ({
       ...prevData,
       kodeKategori: value,
       kodeSubKategori: "",
       variabelValues: {},
+      tarifRetribusi: 0,
     }));
 
     if (errors.kodeKategori) {
@@ -124,11 +141,37 @@ const Create = ({
     });
   };
 
+  const hasTarif2 = () => {
+    const selectedSub = getSelectedSubKategori();
+    return (
+      selectedSub && selectedSub.tarif2 != null && selectedSub.tarif2 !== ""
+    );
+  };
+
   const handleSubKategoriChange = (value) => {
+    const selectedSub = (subKategoriOptions[data.kodeKategori] || []).find(
+      (sub) => sub.value === value,
+    );
+
+    let jenisTarif = data.jenisTarif;
+
+    if (
+      jenisTarif === "tarif2" &&
+      (!selectedSub?.tarif2 || selectedSub.tarif2 === "")
+    ) {
+      jenisTarif = "tarif";
+    }
+
     setData((prevData) => ({
       ...prevData,
       kodeSubKategori: value,
-      variabelValues: {},
+      variabelValues: { bulan: 1 },
+      jenisTarif: jenisTarif,
+      tarifRetribusi: selectedSub
+        ? jenisTarif === "tarif2"
+          ? selectedSub.tarif2
+          : selectedSub.tarif
+        : "",
     }));
 
     if (errors.kodeSubKategori) {
@@ -157,10 +200,78 @@ const Create = ({
     setMapReset((prev) => prev + 1);
   };
 
+  const calculateTotal = () => {
+    const selectedSub = getSelectedSubKategori();
+    if (!selectedSub) return 0;
+
+    const tarif = parseInt(data.tarifRetribusi || 0);
+
+    const variabelArray = Array.isArray(selectedSub.variabel)
+      ? selectedSub.variabel
+      : JSON.parse(selectedSub.variabel || "[]");
+
+    if (selectedSub.rumus) {
+      let formula = selectedSub.rumus;
+
+      variabelArray.forEach((field) => {
+        const value = parseInt(data.variabelValues?.[field] || 0);
+        formula = formula.replaceAll(field, value || 0);
+      });
+
+      try {
+        let result = Function(`"use strict"; return (${formula})`)();
+
+        // selalu kalikan bulan kalau ada
+        const bulan = parseInt(data.variabelValues?.bulan || 0);
+        if (bulan > 0) result *= bulan;
+
+        return (result || 0) * tarif;
+      } catch (error) {
+        console.error("Error evaluate formula:", error);
+        return 0;
+      }
+    }
+
+
+    let total = tarif;
+
+    variabelArray.forEach((field) => {
+      const value = parseInt(data.variabelValues?.[field] || 0);
+      if (value > 0) total *= value;
+    });
+
+    const bulan = parseInt(data.variabelValues?.bulan || 0);
+    if (bulan > 0) total *= bulan;
+
+    return total || 0;
+  };
+
+useEffect(() => {
+  const total = calculateTotal();
+
+  if (data.totalRetribusi !== total) {
+    setData("totalRetribusi", total);
+  }
+}, [
+  data.variabelValues,
+  data.tarifRetribusi,
+  data.jenisTarif,
+  data.kodeSubKategori,
+]);
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    clearErrors();
+
+    const total = calculateTotal();
+
     post(route("super-admin.wajib-retribusi.store"), {
+      data: {
+        ...data,
+        totalRetribusi: total
+      },
       onSuccess: () => {
         setData(initialData);
       },
@@ -252,7 +363,12 @@ const Create = ({
               autoComplete="off"
               placeholder="RT"
               value={data.rt}
-              onChange={(e) => handleInputChange("rt", e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value.length <= 3) {
+                  setData("rt", value);
+                }
+              }}
             />
             {errors.rt && (
               <span className="text-xs text-red-500">{errors.rt}</span>
@@ -272,7 +388,12 @@ const Create = ({
               autoComplete="off"
               placeholder="RW"
               value={data.rw}
-              onChange={(e) => handleInputChange("rw", e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value.length <= 3) {
+                  setData("rw", value);
+                }
+              }}
             />
             {errors.rw && (
               <span className="text-xs text-red-500">{errors.rw}</span>
@@ -339,6 +460,22 @@ const Create = ({
             )}
           </div>
           <DropdownInput
+            id="jenisTarif"
+            label="Pilih Layanan"
+            placeholder="Silahkan Pilih Layanan..."
+            value={data.jenisTarif}
+            onChange={handleJenisTarifChange}
+            options={[
+              { value: "tarif", label: "Tarif 1" },
+              { value: "tarif2", label: "Tarif 2" },
+            ]}
+            error={errors.jenisTarif}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2"
+          />
+          <DropdownInput
             id="kategori"
             label="Pilih Kategori"
             placeholder="Silahkan Pilih Kategori..."
@@ -365,6 +502,60 @@ const Create = ({
             disabled={!data.kodeKategori}
             className="col-span-2 md:col-span-1"
           />
+          <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
+            <label
+              htmlFor="bulan"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Bulan
+            </label>
+            <input
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.bulan && "border border-red-500"}`}
+              type="number"
+              min={1}
+              max={99}
+              id="bulan"
+              autoComplete="off"
+              placeholder="Jumlah Bulan..."
+              value={data.variabelValues.bulan || ""}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value >= 0 && value.length <= 2) {
+                  handleVariabelChange("bulan", value);
+                }
+              }}
+            />
+            {errors.bulan && (
+              <span className="text-xs text-red-500">{errors.bulan}</span>
+            )}
+          </div>
+          <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
+            <label htmlFor="tarifRetribusi">Tarif Retribusi</label>
+            <input
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.bulan && "border border-red-500"}`}
+              type="text"
+              id="tarifRetribusi"
+              autoComplete="off"
+              tabIndex={-1}
+              // placeholder="Jumlah Bulan..."
+              value={
+                new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                  // minimumFractionDigits: 0
+                }).format(data.tarifRetribusi) || 0
+              }
+              // onChange={(e) =>
+              //   setData("tarifRetribusi", e.target.value.replace(/\D/g, ""))
+              // }
+              readOnly={true}
+            />
+            {errors.tarifRetribusi && (
+              <span className="text-xs text-red-500">
+                {errors.tarifRetribusi}
+              </span>
+            )}
+          </div>
           {(() => {
             const selectedSubKategori = getSelectedSubKategori();
 
@@ -376,14 +567,18 @@ const Create = ({
                 : JSON.parse(selectedSubKategori.variabel || "[]");
             }
 
-            const inputFields = [
+            {
+              /* const inputFields = [
               "bulan",
               "unit",
               "m2",
               "giat",
               "hari",
               "meter",
-            ];
+            ]; */
+            }
+
+            const inputFields = ["unit", "m2", "giat", "hari", "meter"];
 
             return (
               <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -425,6 +620,25 @@ const Create = ({
                     </div>
                   );
                 })}
+                <div className="col-span-1 flex flex-col gap-1.5 text-sm">
+                  <label htmlFor="total">Total Retribusi</label>
+                  <input
+                    className="rounded bg-gray-200 px-3 py-2 outline-none"
+                    type="text"
+                    id="total"
+                    tabIndex={-1}
+                    value={new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(calculateTotal())}
+                    readOnly
+                  />
+                  {errors.totalRetribusi && (
+                    <span className="text-xs text-red-500">
+                      {errors.totalRetribusi}
+                    </span>
+                  )}
+                </div>
               </div>
             );
           })()}
@@ -442,7 +656,7 @@ const Create = ({
             labelKey="label"
             className="col-span-2"
           />
-          <div className="col-span-2 flex flex-col gap-1.5 text-sm">
+          <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
             <label
               htmlFor="jBangunan"
               className="after:text-red-500 after:content-['*']"
@@ -456,13 +670,15 @@ const Create = ({
               autoComplete="off"
               placeholder="Jumlah Bangunan..."
               value={data.jBangunan}
-              onChange={(e) => handleInputChange("jBangunan", e.target.value)}
+              onChange={(e) =>
+                setData("jBangunan", e.target.value.replace(/\D/g, ""))
+              }
             />
             {errors.jBangunan && (
               <span className="text-xs text-red-500">{errors.jBangunan}</span>
             )}
           </div>
-          <div className="col-span-2 flex flex-col gap-1.5 text-sm">
+          <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
             <label
               htmlFor="jLantai"
               className="after:text-red-500 after:content-['*']"
@@ -471,12 +687,14 @@ const Create = ({
             </label>
             <input
               className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.jLantai && "border border-red-500"}`}
-              type="number"
+              type="text"
               id="jLantai"
               autoComplete="off"
               placeholder="Jumlah Lantai..."
               value={data.jLantai}
-              onChange={(e) => handleInputChange("jLantai", e.target.value)}
+              onChange={(e) =>
+                setData("jLantai", e.target.value.replace(/\D/g, ""))
+              }
             />
             {errors.jLantai && (
               <span className="text-xs text-red-500">{errors.jLantai}</span>
@@ -491,12 +709,28 @@ const Create = ({
             </label>
             <input
               className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.latitude && "border border-red-500"}`}
-              type="number"
+              type="text"
               id="latitude"
               autoComplete="off"
               placeholder="Latitude..."
               value={data.latitude || ""}
-              onChange={(e) => handleInputChange("latitude", e.target.value)}
+              onChange={(e) => {
+                let value = e.target.value.replace(/[^0-9\.\-]/g, "");
+
+                const parts = value.split(".");
+
+                if (parts.length > 2) {
+                  value = parts[0] + "." + parts.slice(1).join("");
+                }
+
+                value = value.replace(/(?!^)-/g, "");
+
+                if (value.includes("-") && value.indexOf("-") > 0) {
+                  value = value.replace("-", "");
+                }
+
+                setData("latitude", value);
+              }}
             />
             {errors.latitude && (
               <span className="text-xs text-red-500">{errors.latitude}</span>
@@ -511,24 +745,35 @@ const Create = ({
             </label>
             <input
               className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.longitude && "border border-red-500"}`}
-              type="number"
+              type="text"
               id="longitude"
               autoComplete="off"
               placeholder="Longitude..."
               value={data.longitude || ""}
-              onChange={(e) => handleInputChange("longitude", e.target.value)}
+              onChange={(e) => {
+                let value = e.target.value;
+
+                value = value.replace(/[^0-9\.\-]/g, "");
+
+                const parts = value.split(".");
+                if (parts.length > 2) {
+                  value = parts[0] + "." + parts.slice(1).join("");
+                }
+
+                value = value.replace(/(?!^)-/g, "");
+                if (value.includes("-") && value.indexOf("-") > 0) {
+                  value = value.replace("-", "");
+                }
+
+                setData("longitude", value);
+              }}
             />
             {errors.longitude && (
               <span className="text-xs text-red-500">{errors.longitude}</span>
             )}
           </div>
           <div className="col-span-2 flex flex-col gap-1.5 text-sm">
-            <label
-              htmlFor="linkMap"
-              className="after:text-red-500 after:content-['*']"
-            >
-              Link Map
-            </label>
+            <label htmlFor="linkMap">Link Map</label>
             <input
               className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.linkMap && "border border-red-500"}`}
               type="url"
@@ -542,7 +787,7 @@ const Create = ({
               <span className="text-xs text-red-500">{errors.linkMap}</span>
             )}
           </div>
-          <div className="col-span-2 flex flex-col gap-1.5 text-sm">
+          <div className="z-0 col-span-2 flex flex-col gap-1.5 text-sm">
             <MapPicker
               latitude={data.latitude || ""}
               longitude={data.longitude || ""}

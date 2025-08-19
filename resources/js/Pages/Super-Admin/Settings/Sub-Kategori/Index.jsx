@@ -46,7 +46,7 @@ const Index = ({ datas, filters, kategori }) => {
               autoComplete="off"
               type="search"
               id="search"
-              placeholder="Cari nama kelurahan..."
+              placeholder="Cari nama sub kategori..."
               className="flex-1 outline-none"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -70,7 +70,8 @@ const Index = ({ datas, filters, kategori }) => {
                 <th className="text-left">Kategori</th>
                 <th className="text-left">Kode Sub Kategori</th>
                 <th className="text-left">Nama Sub Kategori</th>
-                <th className="text-left">Tarif</th>
+                <th className="text-left">Tarif 1</th>
+                <th className="text-left">Tarif 2</th>
                 <th className="text-left">Perhitungan</th>
                 <th className="text-right">Aksi</th>
               </tr>
@@ -121,6 +122,13 @@ const Index = ({ datas, filters, kategori }) => {
                         currency: "IDR",
                         minimumFractionDigits: 0,
                       }).format(data.tarif ?? 0)}
+                    </td>
+                    <td>
+                      {data.tarif2 ? new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        minimumFractionDigits: 0,
+                      }).format(data.tarif2) : "-"}
                     </td>
                     <td>{data.rumus ?? "-"}</td>
                     <td className="space-x-1 text-right md:space-x-2">

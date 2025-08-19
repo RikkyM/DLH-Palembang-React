@@ -1,9 +1,8 @@
 import { Link, usePage } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
-import { useState } from "react";
 import AccordionItem from "@/Components/AccordionItem";
 
-const SuperAdminNavigation = () => {
+const PendaftarNavigation = () => {
   const { url } = usePage();
 
   const isRouteActive = (routeName) => {
@@ -13,52 +12,62 @@ const SuperAdminNavigation = () => {
 
   const laporanItems = [
     {
-      label: "SKRD",
-      // route: "super-admin.dashboard",
+      label: "Pemohon",
+      route: "pendaftar.pemohon.index",
     },
     {
       label: "Data Wajib Retribusi",
-      // route: "super-admin.laporan.data-wajib-retribusi",
+      route: "pendaftar.wajib-retribusi.index",
+      activeRoute: "pendaftar.wajib-retribusi.*",
     },
     {
-      label: "Penerimaan Retribusi",
-      // route: "super-admin.laporan.penerimaan-retribusi",
+      label: "Inbox Diterima",
+      route: "pendaftar.wajib-retribusi-diterima",
     },
     {
-      label: "Piutang Retribusi",
-      // route: "super-admin.laporan.piutang-retribusi",
+      label: "Inbox Diproses",
+      route: "pendaftar.wajib-retribusi-diproses",
+    },
+    {
+      label: "Inbox Ditolak",
+      route: "pendaftar.wajib-retribusi-ditolak",
+    },
+    {
+      label: "Inbox Selesai (SKRD)",
+      route: "pendaftar.skrd.index",
+      activeRoute: "pendaftar.skrd.*",
     },
   ];
 
-  const settingItems = [
-    {
-      label: "Uptd",
-      // route: "super-admin.uptd",
-    },
-    {
-      label: "User / Pegawai",
-      // route: "super-admin.user",
-    },
-    {
-      label: "Kecamatan",
-    },
-    {
-      label: "Kelurahan",
-    },
-    {
-      label: "Kategori",
-    },
-    {
-      label: "Sub Kategori",
-    },
-  ];
+  // const settingItems = [
+  //   {
+  //     label: "Uptd",
+  //     // route: "super-admin.uptd",
+  //   },
+  //   {
+  //     label: "User / Pegawai",
+  //     // route: "super-admin.user",
+  //   },
+  //   {
+  //     label: "Kecamatan",
+  //   },
+  //   {
+  //     label: "Kelurahan",
+  //   },
+  //   {
+  //     label: "Kategori",
+  //   },
+  //   {
+  //     label: "Sub Kategori",
+  //   },
+  // ];
 
   return (
     <Sidebar>
       <div className="space-y-1.5 p-3">
         <Link
           className={`block rounded px-3 py-2 transition-all duration-300 ${
-            isRouteActive("super-admin.dashboard")
+            isRouteActive("pendaftar.dashboard")
               ? "bg-teal-400 font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
           }`}
@@ -68,19 +77,19 @@ const SuperAdminNavigation = () => {
         </Link>
 
         <AccordionItem
-          title="Laporan"
+          title="Data Input"
           items={laporanItems}
           isRouteActive={isRouteActive}
         />
 
-        <AccordionItem
+        {/* <AccordionItem
           title="Settings"
           items={settingItems}
           isRouteActive={isRouteActive}
-        />
+        /> */}
       </div>
     </Sidebar>
   );
 };
 
-export default SuperAdminNavigation;
+export default PendaftarNavigation;

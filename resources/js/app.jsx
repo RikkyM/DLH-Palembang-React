@@ -16,4 +16,6 @@ createInertiaApp({
       </GlobalProvider>,
     );
   },
+}).then(() => {
+  document.getElementById('app').removeAttribute('data-page')
 });

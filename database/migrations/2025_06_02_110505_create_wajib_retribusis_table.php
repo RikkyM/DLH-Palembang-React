@@ -42,7 +42,9 @@ return new class extends Migration
             $table->integer('jumlahBangunan');
             $table->integer('jumlahLantai');
             $table->string('maksud');
+            $table->string('keterangan')->nullable();
             $table->string('status');
+            $table->string('current_role')->nullable();
             $table->string('createdThisYear');
             $table->json('historyAction');
             $table->timestamps();

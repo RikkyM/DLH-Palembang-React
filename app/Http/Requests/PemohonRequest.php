@@ -49,7 +49,7 @@ class PemohonRequest extends FormRequest
             'kodeKecamatan' => 'required|exists:kecamatan,kodeKecamatan',
             'kodeKelurahan' => 'required|exists:kelurahan,kodeKelurahan',
             'noHP' => 'required|digits_between:10,15',
-            'email' => 'required|email|min:5|unique:pemilik,email,' . $pemilikId,
+            'email' => 'nullable|email|min:5|unique:pemilik,email,' . $pemilikId,
             'jabatan' => 'required|string|min:3',
         ];
     }
@@ -59,6 +59,7 @@ class PemohonRequest extends FormRequest
         return [
             'nik.required' => 'NIK wajib diisi.',
             'nik.digits' => 'NIK harus terdiri dari 16 digit angka.',
+            'nik.unique' => 'NIK sudah digunakan',
             'namaPemilik.required' => 'Nama pemilik wajib diisi.',
             'namaPemilik.min' => 'Nama pemilik minimal terdiri dari 5 karakter.',
             'alamat.required' => 'Alamat wajib diisi.',

@@ -20,6 +20,7 @@ const DialogForm = ({
     kodeKategori: null,
     namaSubKategori: "",
     tarif: "",
+    tarif2: "",
     rumus: "",
     variabel: [],
     satuan: "",
@@ -77,6 +78,7 @@ const DialogForm = ({
           kodeKategori: subkategori.kodeKategori || null,
           namaSubKategori: subkategori.namaSubKategori || "",
           tarif: subkategori.tarif || "",
+          tarif2: subkategori.tarif2 || "",
           rumus: rumusValue,
           variabel: variabelValue,
           satuan: subkategori.satuan || "",
@@ -224,19 +226,45 @@ const DialogForm = ({
               htmlFor="tarif"
               className="after:text-red-500 after:content-['*']"
             >
-              Tarif
+              Tarif 1
             </label>
             <input
               autoComplete="off"
               id="tarif"
-              type="number"
+              type="text"
               placeholder="Contoh: 2500"
               className="rounded bg-gray-200 px-3 py-2 outline-none"
               value={data.tarif ?? ""}
-              onChange={(e) => setData("tarif", e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value >= 0) {
+                  setData("tarif", value);
+                }
+              }}
             />
             {errors.tarif && (
               <span className="text-sm text-red-500">{errors.tarif}</span>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1.5 text-sm">
+            <label htmlFor="tarif2">Tarif 2</label>
+            <input
+              autoComplete="off"
+              id="tarif2"
+              type="text"
+              placeholder="Contoh: 2500"
+              className="rounded bg-gray-200 px-3 py-2 outline-none"
+              value={data.tarif2 ?? ""}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value >= 0) {
+                  setData("tarif2", value);
+                }
+              }}
+            />
+            {errors.tarif2 && (
+              <span className="text-sm text-red-500">{errors.tarif2}</span>
             )}
           </div>
 

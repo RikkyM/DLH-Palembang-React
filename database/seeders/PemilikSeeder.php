@@ -580,6 +580,7 @@ class PemilikSeeder extends Seeder
             $data['namaPemilik'] = trim($data['namaPemilik']);
             $data['alamat'] = trim($data['alamat']);
             $data['tempatLahir'] = trim($data['tempatLahir']);
+            $data['email'] = null;
             $data['created_at'] = Carbon::parse($data['created_at'])->utc();
             $data['updated_at'] = Carbon::parse($data['updated_at'])->utc();
             $data['tanggalLahir'] = Carbon::parse($data['tanggalLahir'])->utc();

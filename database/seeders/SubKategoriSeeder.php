@@ -63,7 +63,7 @@ class SubKategoriSeeder extends Seeder
             ['10.06', '10', 'Luas ≥ 2061 m²', 'rumah-makan-restoran-luas-2061-m', 4000000, NULL, 'bulan', NULL, NULL],
             ['11.01', '11', 'Per Gerai/Lapak/Tenant', 'pusat-jajan-serba-ada-per-gerai-lapak-tenant', 40000, NULL, 'bulan', NULL, NULL],
             ['12.01', '12', 'Perorangan', 'katering-perorangan', 300000, NULL, 'bulan', NULL, NULL],
-            ['12.02', '12', 'Badang Hukum', 'katering-badang-hukum', 750000, NULL, 'bulan', NULL, NULL],
+            ['12.02', '12', 'Badan Hukum', 'katering-badang-hukum', 750000, NULL, 'bulan', NULL, NULL],
             ['13.01', '13', 'Rumah Sakit Kelas A', 'sarana-kesehatan-rumah-sakit-kelas-a', 6000000, NULL, 'bulan', NULL, NULL],
             ['13.02', '13', 'Rumah Sakit Kelas B', 'sarana-kesehatan-rumah-sakit-kelas-b', 4000000, NULL, 'bulan', NULL, NULL],
             ['13.03', '13', 'Rumah Sakit Kelas C', 'sarana-kesehatan-rumah-sakit-kelas-c', 3000000, NULL, 'bulan', NULL, NULL],
@@ -109,7 +109,7 @@ class SubKategoriSeeder extends Seeder
             ['21.04', '21', 'Luas 201 m² s.d  400 m² ', 'massage-pantipijat-spa-luas-201-m-s-d-400-m', 1500000, NULL, 'bulan', NULL, NULL],
             ['21.05', '21', 'Luas ≥ 401 m2', 'massage-pantipijat-spa-luas-401-m2', 3000000, NULL, 'bulan', NULL, NULL],
             ['22.01', '22', 'Panti Pijat Tuna Netra', 'panti-pijat-tuna-netra-panti-pijat-tuna-netra', 30000, NULL, 'bulan', NULL, NULL],
-            ['23.01', '23', 'Per Kegiatan Per Hari Rp. 300.000', 'pertemuan-pertunjukan-pameran-konsentrasi-massa-per-kegiatan-per-hari-rp-300-000', 300000, '{"rumus": "giat * hari", "variabel": ["giat", "hari"]}', 'bulan', NULL, NULL],
+            ['23.01', '23', 'Per Kegiatan Per Hari', 'pertemuan-pertunjukan-pameran-konsentrasi-massa-per-kegiatan-per-hari-rp-300-000', 300000, '{"rumus": "giat * hari", "variabel": ["giat", "hari"]}', 'bulan', NULL, NULL],
             ['24.01', '24', 'Gedung/Sarana Olahraga', 'gedung-sarana-olahraga-gedung-sarana-olahraga', 500000, NULL, 'bulan', NULL, NULL],
             ['24.02', '24', 'House Driving Range', 'gedung-sarana-olahraga-house-driving-range', 1000000, NULL, 'bulan', NULL, NULL],
             ['24.03', '24', 'Lapangan Golf', 'gedung-sarana-olahraga-lapangan-golf', 1500000, NULL, 'bulan', NULL, NULL],
@@ -148,14 +148,14 @@ class SubKategoriSeeder extends Seeder
             ['33.01', '33', 'Luas 1 m² s.d 120 m² ', 'perindustrian-luas-1-m-s-d-120-m', 300000, NULL, 'bulan', NULL, NULL],
             ['33.02', '33', 'Luas 121 m² s.d 240 m² ', 'perindustrian-luas-121-m-s-d-240-m', 600000, NULL, 'bulan', NULL, NULL],
             ['33.03', '33', 'Luas 241 m² s.d 500 m² ', 'perindustrian-luas-241-m-s-d-500-m', 1500000, NULL, 'bulan', NULL, NULL],
-            ['33.04', '33', 'Luas 501 m² s.d 1001  m² ', 'perindustrian-luas-501-m-s-d-1001-m', 2500000, NULL, 'bulan', NULL, NULL],
-            ['33.05', '33', 'Luas ≥ 1001 m² x Rp. 2.500,-/m² ', 'perindustrian-luas-1001-m-x-rp-2-500-m', 2500, '{"rumus": "meter", "variabel": ["meter"]}', 'bulan', NULL, NULL],
+            ['33.04', '33', 'Luas 501 m² s.d 1000 m² ', 'perindustrian-luas-501-m-s-d-1001-m', 2500000, NULL, 'bulan', NULL, NULL],
+            ['33.05', '33', 'Luas ≥ 1001 m²', 'perindustrian-luas-1001-m-x-rp-2-500-m', 2500, '{"rumus": "meter", "variabel": ["meter"]}', 'bulan', NULL, NULL],
             ['34.01', '34', 'Luas ≤  120 m² ', 'bengkel-mobil-variasi-alat-berat-luas-120-m', 300000, NULL, 'bulan', NULL, NULL],
             ['34.02', '34', 'Luas 121 m² s.d 240 m²', 'bengkel-mobil-variasi-alat-berat-luas-121-m-s-d-240-m', 500000, NULL, 'bulan', NULL, NULL],
             ['34.03', '34', 'Luas ≥ 241 m²', 'bengkel-mobil-variasi-alat-berat-luas-241-m', 1000000, NULL, 'bulan', NULL, NULL],
             ['35.01', '35', 'Luas ≤  120 m²', 'bengkel-motor-luas-20-m', 100000, NULL, 'bulan', NULL, NULL],
-            ['35.02', '35', 'Luas 121 m² s.d 240 m² )', 'bengkel-motor-luas-121-m-s-d-240-m', 200000, NULL, 'bulan', NULL, NULL],
-            ['35.03', '35', 'Luas ≥ 241 m² )', 'bengkel-motor-luas-241-m', 300000, NULL, 'bulan', NULL, NULL],
+            ['35.02', '35', 'Luas 121 m² s.d 240 m²', 'bengkel-motor-luas-121-m-s-d-240-m', 200000, NULL, 'bulan', NULL, NULL],
+            ['35.03', '35', 'Luas ≥ 241 m²', 'bengkel-motor-luas-241-m', 300000, NULL, 'bulan', NULL, NULL],
             ['36.01', '36', 'Pasar Kelas A', 'pasar-pasar-kelas-a', 12000000, NULL, 'bulan', NULL, NULL],
             ['36.02', '36', 'Pasar Kelas B', 'pasar-pasar-kelas-b', 10000000, NULL, 'bulan', NULL, NULL],
             ['36.03', '36', 'Pasar Kelas C', 'pasar-pasar-kelas-c', 8000000, NULL, 'bulan', NULL, NULL],
@@ -165,19 +165,21 @@ class SubKategoriSeeder extends Seeder
             ['38.01', '38', 'Luas ≤ 100  m² ', 'pergudangan-luas-100-m', 500000, NULL, 'bulan', NULL, NULL],
             ['38.02', '38', 'Luas 101 m²  s.d  500  m² ', 'pergudangan-luas-101-m-s-d-500-m', 750000, NULL, 'bulan', NULL, NULL],
             ['38.03', '38', 'Luas  ≥ 501 m²', 'pergudangan-luas-501-m', 1000000, NULL, 'bulan', NULL, NULL],
-            ['39.01', '39', 'Luas  ≤ 100  m² ', 'depo-pelabuhan-peti-kemas-luas-100-m', 1000000, NULL, 'bulan', NULL, NULL],
-            ['39.02', '39', 'Luas 1000 m²  s.d  2000 m² ', 'depo-pelabuhan-peti-kemas-luas-1000-m-s-d-2000-m', 2000000, NULL, 'bulan', NULL, NULL],
-            ['39.03', '39', 'Luas  ≥ 2001', 'depo-pelabuhan-peti-kemas-luas-2001', 3000000, NULL, 'bulan', NULL, NULL],
-            ['40.01', '40', 'Luas Tempat Usaha ≤ 100  m² ', 'gedung-serbaguna-luas-tempat-usaha-100-m', 1000000, NULL, 'bulan', NULL, NULL],
-            ['40.02', '40', 'Luas Tempat Usaha 1000 m²  s.d  2000 m² ', 'gedung-serbaguna-luas-tempat-usaha-1000-m-s-d-2000-m', 2000000, NULL, 'bulan', NULL, NULL],
-            ['40.03', '40', 'Luas Tempat Usahs ≥ 2001', 'gedung-serbaguna-luas-tempat-usahs-2001', 3000000, NULL, 'bulan', NULL, NULL],
+            ['39.01', '39', 'Luas  ≤ 1000  m² ', 'depo-pelabuhan-peti-kemas-luas-100-m', 1000000, NULL, 'bulan', NULL, NULL],
+            ['39.02', '39', 'Luas 1001 m²  s.d  2000 m² ', 'depo-pelabuhan-peti-kemas-luas-1000-m-s-d-2000-m', 2000000, NULL, 'bulan', NULL, NULL],
+            ['39.03', '39', 'Luas ≥ 2001 m²', 'depo-pelabuhan-peti-kemas-luas-2001', 3000000, NULL, 'bulan', NULL, NULL],
+            ['40.01', '40', 'Luas Tempat Usaha ≤ 1000  m² ', 'gedung-serbaguna-luas-tempat-usaha-100-m', 1000000, NULL, 'bulan', NULL, NULL],
+            ['40.02', '40', 'Luas Tempat Usaha 1001 m²  s.d  2000 m² ', 'gedung-serbaguna-luas-tempat-usaha-1000-m-s-d-2000-m', 2000000, NULL, 'bulan', NULL, NULL],
+            ['40.03', '40', 'Luas Tempat Usaha ≥ 2001 m²', 'gedung-serbaguna-luas-tempat-usaha-2001', 3000000, NULL, 'bulan', NULL, NULL],
             ['41.01', '41', 'Usaha Jasa Lainya', 'usaha-barang-jasa-lainya-usaha-jasa-lainya', 1000000, NULL, 'bulan', NULL, NULL]
         ];
+        
 
         $records = array_map(function ($row) use ($fields) {
             $data = array_combine($fields, $row);
 
-            // Parse perhitungan dan pisahkan rumus dan variabel
+            $data['namaSubKategori'] = preg_replace('/\s+/', ' ', trim($data['namaSubKategori']));
+
             if (!empty($data['perhitungan'])) {
                 $perhitungan = json_decode($data['perhitungan'], true);
                 $data['rumus'] = $perhitungan['rumus'] ?? null;
@@ -187,10 +189,8 @@ class SubKategoriSeeder extends Seeder
                 $data['variabel'] = null;
             }
 
-            // Hapus field perhitungan karena sudah dipecah
             unset($data['perhitungan']);
 
-            // Parse tanggal
             $data['created_at'] = $data['created_at'] ? Carbon::parse($data['created_at'])->utc() : now()->utc();
             $data['updated_at'] = $data['updated_at'] ? Carbon::parse($data['updated_at'])->utc() : now()->utc();
 

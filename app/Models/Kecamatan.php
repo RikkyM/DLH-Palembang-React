@@ -16,6 +16,11 @@ class Kecamatan extends Model
         'slug'
     ];
 
+    public function uptd()
+    {
+        return $this->hasOne(Uptd::class, 'kodeKecamatan', 'kodeKecamatan');
+    }
+
     protected static function booted()
     {
         static::creating(function ($kecamatan) {

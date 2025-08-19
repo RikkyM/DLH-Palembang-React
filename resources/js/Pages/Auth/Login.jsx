@@ -11,9 +11,8 @@ const Login = () => {
 
   const user = props[0]?.auth?.user;
 
-  // Ubah field dari 'nip' ke 'login' agar konsisten dengan backend
   const { data, setData, post, processing, errors } = useForm({
-    login: "", // Ganti dari 'nip' ke 'login'
+    login: "",
     password: "",
     remember: false,
   });

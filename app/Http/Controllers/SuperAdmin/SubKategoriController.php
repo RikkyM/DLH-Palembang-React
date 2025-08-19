@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\SubKategoriImport;
 use App\Models\Kategori;
 use App\Models\SubKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SubKategoriController extends Controller
 {
@@ -24,7 +26,7 @@ class SubKategoriController extends Controller
                     $kat->where('namaKategori', 'like', "%{$search}%");
                 })->orWhere('namaSubKategori', 'like', "%{$search}%");
             })
-            ->orderBy('kodeSubKategori', 'ASC')
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();
 
@@ -57,10 +59,12 @@ class SubKategoriController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'kodeKategori' => 'required',
             'namaSubKategori' => 'required|string',
             'tarif' => 'required|numeric',
+            'tarif2' => 'nullable|numeric',
             'satuan' => 'required|string',
             'rumus' => [
                 'sometimes',
@@ -75,6 +79,7 @@ class SubKategoriController extends Controller
             'namaSubKategori.string' => 'Nama sub-kategori harus berupa teks.',
             'tarif.required' => 'Tarif harus diisi.',
             'tarif.numeric' => 'Tarif harus berupa angka.',
+            'tarif2.numeric' => 'Tarif 2 harus berupa angka.',
             'satuan.required' => 'Satuan harus diisi.',
             'satuan.string' => 'Satuan harus berupa teks.',
             'rumus.regex' => 'Format rumus tidak valid. Gunakan huruf dan operator matematika yang benar.',
@@ -87,7 +92,9 @@ class SubKategoriController extends Controller
             ? null
             : $validated['variabel'];
 
-        $validated['slug'] = Str::slug($validated['namaSubKategori']);
+        $validated['tarif2'] = (int) $request->tarif2;
+
+        // $validated['slug'] = Str::slug($validated['namaSubKategori']);
 
         SubKategori::create($validated);
 
@@ -119,6 +126,7 @@ class SubKategoriController extends Controller
             'kodeKategori' => 'nullable',
             'namaSubKategori' => 'nullable|string',
             'tarif' => 'nullable|numeric',
+            'tarif2' => 'nullable|numeric',
             'satuan' => 'nullable|string',
             'rumus' => [
                 'nullable',
@@ -131,6 +139,7 @@ class SubKategoriController extends Controller
             'namaSubKategori.string' => 'Nama sub-kategori harus berupa teks.',
             'tarif.required' => 'Tarif harus diisi.',
             'tarif.numeric' => 'Tarif harus berupa angka.',
+            'tarif2.numeric' => 'Tarif 2 harus berupa angka.',
             'satuan.required' => 'Satuan harus diisi.',
             'satuan.string' => 'Satuan harus berupa teks.',
             'rumus.regex' => 'Format rumus tidak valid. Gunakan huruf dan operator matematika yang benar.',
@@ -143,9 +152,11 @@ class SubKategoriController extends Controller
             ? null
             : $validated['variabel'];
 
-        if (isset($validated['namaSubKategori'])) {
-            $validated['slug'] = Str::slug($validated['namaSubKategori']);
-        }
+        // if (isset($validated['namaSubKategori'])) {
+        //     $validated['slug'] = Str::slug($validated['namaSubKategori']);
+        // }
+
+        $validated['tarif2'] = (int) $request->tarif2;
 
         $validated = array_filter($validated, function ($value) {
             return $value !== null && $value !== '';
@@ -168,5 +179,21 @@ class SubKategoriController extends Controller
         $subKategori->delete();
 
         return redirect()->back();
+    }
+
+    public function importExcelIndex()
+    {
+        return view('imports.import');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        Excel::import(new SubKategoriImport, $request->file('file'));
+
+        return back();
     }
 }

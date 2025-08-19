@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('alamat');
             $table->string('tempatLahir');
             $table->date('tanggalLahir');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('noHP');
             $table->timestamps();
 

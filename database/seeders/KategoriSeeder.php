@@ -129,7 +129,7 @@ class KategoriSeeder extends Seeder
             ],
             [
                 'kodeKategori' => '17',
-                'namaKategori' => 'Pusar Perbelanjaan/ Super Market/Pasar Swalayan/Hypermart',
+                'namaKategori' => 'Pusat Perbelanjaan/ Super Market/Pasar Swalayan/Hypermart',
                 'slug' => 'pusar-perbelanjaan-super-market-pasar-swalayan-hypermart',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
@@ -150,14 +150,14 @@ class KategoriSeeder extends Seeder
             ],
             [
                 'kodeKategori' => '20',
-                'namaKategori' => 'Bar/Pub/Klub/Diskotik/ Karaoke',
+                'namaKategori' => 'Bar/Pub/Klub/Diskotik/Karaoke',
                 'slug' => 'bar-pub-klub-diskotik-karaoke',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
             [
                 'kodeKategori' => '21',
-                'namaKategori' => 'Massage/PantiPijat/Spa',
+                'namaKategori' => 'Massage/Panti Pijat/Spa',
                 'slug' => 'massage-pantipijat-spa',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
@@ -220,8 +220,8 @@ class KategoriSeeder extends Seeder
             ],
             [
                 'kodeKategori' => '30',
-                'namaKategori' => 'Pedang Kaki Lima',
-                'slug' => 'pedang-kaki-lima',
+                'namaKategori' => 'Pedagang Kaki Lima',
+                'slug' => 'pedagang-kaki-lima',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
@@ -248,7 +248,7 @@ class KategoriSeeder extends Seeder
             ],
             [
                 'kodeKategori' => '34',
-                'namaKategori' => 'Bengkel Mobil/Variasi/ Alat Berat',
+                'namaKategori' => 'Bengkel Mobil/Variasi/Alat Berat',
                 'slug' => 'bengkel-mobil-variasi-alat-berat',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()

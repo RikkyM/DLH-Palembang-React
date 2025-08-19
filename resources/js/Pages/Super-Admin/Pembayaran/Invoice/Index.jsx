@@ -197,6 +197,16 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5"
                           >
+                            <FileText size={20} /> Edit
+                          </a>
+                          <a
+                            href={route("super-admin.invoice.pdf", {
+                              filename: data.file,
+                            })}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5"
+                          >
                             <FileText size={20} /> PDF
                           </a>
                         </td>

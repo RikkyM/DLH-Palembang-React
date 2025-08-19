@@ -1,0 +1,129 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Exports\WajibRetribusiExport;
+use App\Models\Skrd;
+use App\Models\User;
+use App\Models\WajibRetribusi;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+
+class WajibRetribusiController extends Controller
+{
+    public function downloadPdf(Request $request)
+    {
+        $query = WajibRetribusi::with([
+            'kategori',
+            'subKategori',
+            'kelurahan',
+            'kecamatan',
+            'user:id,namaLengkap',
+            'pemilik',
+            'uptd'
+        ]);
+
+        if ($search = $request->search) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', fn($q2) => $q2->where('namaLengkap', 'like', "%{$search}%"))
+                    ->orWhere('namaObjekRetribusi', 'like', "%{$search}%");
+            });
+        }
+
+        if ($kategori = $request->kategori) {
+            $query->whereHas('kategori', fn($q) => $q->where('kodeKategori', $kategori));
+        }
+
+        if ($subKategori = $request->{'sub-kategori'}) {
+            $query->whereHas('subKategori', fn($q) => $q->where('kodeSubKategori', $subKategori));
+        }
+
+        if ($kecamatan = $request->kecamatan) {
+            $query->whereHas('kecamatan', fn($q) => $q->where('kodeKecamatan', $kecamatan));
+        }
+
+        if ($kelurahan = $request->kelurahan) {
+            $query->whereHas('kelurahan', fn($q) => $q->where('kodeKelurahan', $kelurahan));
+        }
+
+        if ($petugas = $request->petugas) {
+            $query->whereHas(
+                'user',
+                fn($q) => $q->where('id', $petugas)
+            );
+        }
+
+        if ($tahun = $request->tahun) {
+            $query->whereYear('created_at', $tahun);
+        }
+
+        if ($status = $request->status) {
+            $query->where('status', $status);
+        }
+
+        if ($request->filled('per_page')) {
+            $perPage = (int) $request->get('per_page', 10);
+            $data = $query->take($perPage)->get();
+        } else {
+            $data = $query->get();
+        }
+
+        $pdf = Pdf::loadView('exports.wajib-retribusi.wajib-retribusi-pdf', compact('data'))
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath("")
+            ]);
+
+        $fileName = 'laporan-wajib-retribusi-' . date('Y-m-d-H-i-s') . '.pdf';
+
+        return $pdf->download($fileName);
+    }
+
+    public function draftPdf($id)
+    {
+        $data = WajibRetribusi::with(['user:id,namaLengkap,lokasi,role', 'pemilik', 'kecamatan', 'kelurahan'])->findOrFail($id);
+
+        $skrd = Skrd::where('noWajibRetribusi', $data->noWajibRetribusi)->first();
+
+        $user = User::firstWhere('role', 'ROLE_KABID');
+
+        $pdf = Pdf::loadView('exports.wajib-retribusi.draft-pdf', [
+            'data' => $data,
+            'kabid' => $user,
+            'skrd' => $skrd
+        ])
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'arial',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath("")
+            ]);
+
+        return $pdf->stream("draft-retribusi-{$data->noWajibRetribusi}.pdf");
+    }
+
+    public function export(Request $request)
+    {
+        $fileName = 'laporan-wajib-retribusi-' . date('Y-m-d') . '.xlsx';
+
+        return Excel::download(
+            new WajibRetribusiExport($request),
+            $fileName
+        );
+    }
+
+    // public function exportSingle($id)
+    // {
+    //     $export = new WajibRetribusiSingleExport($id);
+    //     return Excel::download($export, 'wajib-retribusi-' . $id . '.xlsx');
+    // }
+}

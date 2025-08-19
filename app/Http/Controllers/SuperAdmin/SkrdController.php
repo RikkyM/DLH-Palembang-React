@@ -6,8 +6,6 @@ use App\Exports\SkrdDataExport;
 use App\Exports\SkrdExport;
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
-use App\Models\Pembayaran;
-use App\Models\Pemilik;
 use App\Models\Skrd;
 use App\Models\SubKategori;
 use App\Models\User;
@@ -38,7 +36,7 @@ class SkrdController extends Controller
     {
         $search = $request->get('search');
         $sortBy = $request->get('sort', 'id');
-        $sortDir = $request->get('direction', 'asc');
+        $sortDir = $request->get('direction', 'desc');
         $kategoriId = $request->get('kategori');
         $subKategoriId = $request->get('sub-kategori');
         $petugasId = $request->get('petugas');
@@ -233,6 +231,8 @@ class SkrdController extends Controller
         $data = Skrd::with(['user:id,namaLengkap,lokasi,role', 'pembayaran', 'pemilik'])->findOrFail($id);
 
         $user = User::firstWhere('role', 'ROLE_KABID');
+
+        // dd($data);
 
         $pdf = Pdf::loadView('exports.skrd.skrd-single-pdf', [
             'data' => $data,

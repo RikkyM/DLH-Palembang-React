@@ -19,6 +19,7 @@ class SubKategori extends Model
         'rumus',
         'variabel',
         'tarif',
+        'tarif2',
     ];
 
     protected $casts = [
