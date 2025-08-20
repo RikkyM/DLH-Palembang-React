@@ -54,11 +54,6 @@ const DialogForm = ({ isOpen, onClose, retribusi = null }) => {
       put(
         route("kuptd.wajib-retribusi.update", retribusi.id),
         {
-          ...data,
-          status: status,
-        },
-        {
-          forceFormData: true,
           onSuccess: () => {
             setData({ keterangan: "", status: "" });
             onClose();
@@ -96,7 +91,7 @@ const DialogForm = ({ isOpen, onClose, retribusi = null }) => {
               ref={firstInputRef}
               id="keterangan"
               type="text"
-              placeholder="Masukkan nama kecamatan..."
+              placeholder="Masukkan keterangan..."
               className="rounded bg-gray-200 px-3 py-2 outline-none"
               value={data.keterangan}
               onChange={(e) => setData("keterangan", e.target.value)}

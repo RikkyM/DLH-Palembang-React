@@ -1,4 +1,3 @@
-import TableHead from "@/components/TableHead";
 import { Link } from "@inertiajs/react";
 import {
   ArrowDown,

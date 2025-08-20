@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Kuptd\DashboardController;
+use App\Http\Controllers\Kuptd\SkrdController;
 use App\Http\Controllers\Kuptd\WajibRetribusiController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,4 +15,5 @@ Route::middleware('role:ROLE_KUPTD')->prefix('kuptd')->name('kuptd.')->group(fun
     Route::resource('/wajib-retribusi', WajibRetribusiController::class)->except(['edit', 'destroy'])->parameters([
         'wajib-retribusi' => 'retribusi'
     ]);
+    Route::resource('/skrd', SkrdController::class);
 });

@@ -262,9 +262,7 @@ const Index = ({
                 if (status) params.append("status", status);
 
                 window.open(
-                  route("pendaftar.skrd.download-pdf") +
-                    "?" +
-                    params.toString(),
+                  route("skrd.download-pdf") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -282,9 +280,7 @@ const Index = ({
                 if (status) params.append("status", status);
 
                 window.open(
-                  route("pendaftar.skrd.download-excel") +
-                    "?" +
-                    params.toString(),
+                  route("skrd.download-excel") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -294,7 +290,7 @@ const Index = ({
             </button>
           </div>
         </div>
-        <div className={`rounded bg-white shadow`}>
+        <div className={`overflow-auto rounded bg-white shadow`}>
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
               <svg
@@ -346,9 +342,6 @@ const Index = ({
                     datas.data.map((data, index) => (
                       <tr
                         key={data.id || index}
-                        onClick={() =>
-                          router.get(route("pendaftar.skrd.show", data.id))
-                        }
                         className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
                       >
                         <td className="text-center">
@@ -435,7 +428,9 @@ const Index = ({
                             </React.Fragment>
                           );
                         })}
-                        <td onClick={(e) => e.stopPropagation()}>
+                        <td
+                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+                        >
                           <div className="flex flex-wrap gap-2 *:rounded *:text-xs *:font-medium *:sm:text-sm">
                             {/* <button className="flex items-center gap-1.5 outline-none">
                                                     <PencilLine size={20} />{" "}
@@ -444,9 +439,9 @@ const Index = ({
                             <button
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               onClick={(e) => {
-                                e.stopPropagation();
+                                // e.stopPropagation();
                                 window.open(
-                                  route("pendaftar.skrd.download-data-pdf", {
+                                  route("skrd.download-data-pdf", {
                                     id: data.id,
                                   }),
                                   "_blank",
@@ -458,9 +453,9 @@ const Index = ({
                             <button
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               onClick={(e) => {
-                                e.stopPropagation();
+                                // e.stopPropagation();
                                 window.open(
-                                  route("pendaftar.skrd.download-data-excel", {
+                                  route("skrd.download-data-excel", {
                                     id: data.id,
                                   }),
                                   "_blank",
@@ -470,6 +465,11 @@ const Index = ({
                               <FileText size={20} /> Excel
                             </button>
                             <button
+                              onClick={() =>
+                                router.get(
+                                  route("pendaftar.skrd.show", data.id),
+                                )
+                              }
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               // onClick={(e) => {
                               //   e.stopPropagation();

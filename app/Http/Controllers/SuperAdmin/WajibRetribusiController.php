@@ -162,8 +162,8 @@ class WajibRetribusiController extends Controller
         $getKelurahan = $request->get('kelurahan');
         $getPetugas = $request->get('petugas');
         $getStatus = $request->get('status');
-        $getPage = $request->get('per_page', 10);
         $getTahun = $request->get('tahun');
+        $getPage = $request->get('per_page', 10);
 
         $query = WajibRetribusi::with([
             'kategori',
@@ -175,8 +175,12 @@ class WajibRetribusiController extends Controller
             'uptd'
         ]);
 
-        if ($status) {
-            $query->where('status', $status);
+        // if ($status) {
+        //     $query->where('status', $status);
+        // }
+
+        if ($status && $view !== 'Index') {
+            $query->where('status', $status)->whereNull('noWajibRetribusi');
         }
 
         $this->sortTable($query, $sortBy, $sortDir);
@@ -235,7 +239,7 @@ class WajibRetribusiController extends Controller
 
     public function index(Request $request)
     {
-        return $this->renderWajibRetribusi($request, null, 'Index');
+        return $this->renderWajibRetribusi($request, null);
     }
 
     public function diterima(Request $request)
@@ -334,7 +338,6 @@ class WajibRetribusiController extends Controller
         $tarif = $sub->{$jenisTarif} ?? 0;
         $rumus = $sub->rumus ?? '';
 
-        // dd($tarif);
 
         $tarifPerbulan = $tarif;
 
@@ -357,8 +360,9 @@ class WajibRetribusiController extends Controller
                 return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
             }
         } else {
-            $tarifPerbulan = $request->input('bulan') * $tarif;
+            $tarifPerbulan = $validated['variabelValues']['bulan'] * $tarif;
         }
+
 
         DB::beginTransaction();
 
@@ -403,6 +407,7 @@ class WajibRetribusiController extends Controller
                 'jumlahLantai' => $request->jLantai,
                 'maksud' => "Wajib Retribusi Baru",
                 'status' => "Approved",
+                "current_role" => "ROLE_PENDAFTAR",
                 'createdThisYear' => now()->year == now()->year ? 't' : 'f',
                 'historyAction' => [
                     [
@@ -598,6 +603,7 @@ class WajibRetribusiController extends Controller
 
         $retribusi->status = 'Processed';
         $retribusi->historyAction = $history;
+        $retribusi->current_role = "ROLE_KUPTD";
         $retribusi->save();
 
         return redirect()->back()->with('success', 'Retribusi berhasil dikirim.');

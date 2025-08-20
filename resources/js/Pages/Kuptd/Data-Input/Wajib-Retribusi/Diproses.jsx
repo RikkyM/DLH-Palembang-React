@@ -120,7 +120,7 @@ const Diproses = ({
     if (pj) params.pj = pj;
     if (kategori) params.kategori = kategori;
     if (subKategori) params["sub-kategori"] = subKategori;
-    if (kecamatan) params.kecamatan = kecamatan;
+    // if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
     if (sort && sort !== "id") {
       params.sort = sort;
@@ -219,7 +219,7 @@ const Diproses = ({
                     placeholder="Pilih Sub Kategori"
                     disabled={!kategori}
                   />
-                  <SearchableSelect
+                  {/* <SearchableSelect
                     id="kecamatanlist"
                     options={kecamatanList}
                     value={kecamatan}
@@ -228,7 +228,7 @@ const Diproses = ({
                       setKelurahan("");
                     }}
                     placeholder="Pilih Kecamatan"
-                  />
+                  /> */}
                   <SearchableSelect
                     id="kelurahanlist"
                     options={kelurahanList}
@@ -352,7 +352,7 @@ const Diproses = ({
           )}
         </div>
 
-        <SmartPagination datas={datas} filters={filters} />
+                {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
     </Layout>
   );

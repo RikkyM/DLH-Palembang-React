@@ -18,20 +18,20 @@ const KuptdNavigation = () => {
     },
     {
       label: "Inbox Diterima",
-        route: "kuptd.wajib-retribusi-diterima",
+      route: "kuptd.wajib-retribusi-diterima",
     },
     {
       label: "Inbox Diproses",
-        route: "kuptd.wajib-retribusi-diproses",
+      route: "kuptd.wajib-retribusi-diproses",
     },
     {
       label: "Inbox Ditolak",
-        route: "kuptd.wajib-retribusi-ditolak",
+      route: "kuptd.wajib-retribusi-ditolak",
     },
     {
       label: "Inbox Selesai (SKRD)",
-      //   route: "kuptd.skrd.index",
-      //   activeRoute: "kuptd.skrd.*",
+      route: "kuptd.skrd.index",
+      activeRoute: "kuptd.skrd.*",
     },
   ];
 

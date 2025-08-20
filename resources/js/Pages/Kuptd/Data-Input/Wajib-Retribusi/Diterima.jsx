@@ -97,14 +97,14 @@ const Diterima = ({
     [subKategoriOptions],
   );
 
-  const kecamatanList = useMemo(
-    () =>
-      kecamatanOptions.map((kec) => ({
-        value: kec.kodeKecamatan,
-        label: kec.namaKecamatan,
-      })),
-    [kecamatanOptions],
-  );
+  // const kecamatanList = useMemo(
+  //   () =>
+  //     kecamatanOptions.map((kec) => ({
+  //       value: kec.kodeKecamatan,
+  //       label: kec.namaKecamatan,
+  //     })),
+  //   [kecamatanOptions],
+  // );
 
   const kelurahanList = useMemo(
     () =>
@@ -122,7 +122,7 @@ const Diterima = ({
     if (pj) params.pj = pj;
     if (kategori) params.kategori = kategori;
     if (subKategori) params["sub-kategori"] = subKategori;
-    if (kecamatan) params.kecamatan = kecamatan;
+    // if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
     if (sort && sort !== "id") {
       params.sort = sort;
@@ -237,9 +237,9 @@ const Diterima = ({
                     value={subKategori}
                     onChange={(val) => setSubKategori(val)}
                     placeholder="Pilih Sub Kategori"
-                    disabled={!kategori}
+                    // disabled={!kategori}
                   />
-                  <SearchableSelect
+                  {/* <SearchableSelect
                     id="kecamatanlist"
                     options={kecamatanList}
                     value={kecamatan}
@@ -248,14 +248,14 @@ const Diterima = ({
                       setKelurahan("");
                     }}
                     placeholder="Pilih Kecamatan"
-                  />
+                  /> */}
                   <SearchableSelect
                     id="kelurahanlist"
                     options={kelurahanList}
                     value={kelurahan}
                     onChange={(val) => setKelurahan(val)}
                     placeholder="Pilih Kelurahan"
-                    disabled={!kecamatan}
+                    // disabled={!kecamatan}
                   />
                   <SearchableSelect
                     id="pjlist"
@@ -291,7 +291,7 @@ const Diterima = ({
                 if (search) params.append("search", search);
                 if (kategori) params.append("kategori", kategori);
                 if (subKategori) params.append("sub-kategori", subKategori);
-                if (kecamatan) params.append("kecamatan", kecamatan);
+                // if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
 
                 params.append("status", "Approved");

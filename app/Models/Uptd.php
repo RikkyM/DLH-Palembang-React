@@ -13,4 +13,9 @@ class Uptd extends Model
         'alamat',
         'kodeKecamatan'
     ];
+
+    public function user()
+    {
+        return $this->hasMany(User::class, 'uptdId', 'id');
+    }
 }

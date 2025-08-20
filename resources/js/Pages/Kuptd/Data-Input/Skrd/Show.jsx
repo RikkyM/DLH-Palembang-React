@@ -1,6 +1,6 @@
-import Layout from "../../../Layout";
+import Layout from "../../Layout";
 
-const Index = ({ data, bulan }) => {
+const Show = ({ data, bulan }) => {
   return (
     <Layout title={data.namaObjekRetribusi}>
       <section className="p-3">
@@ -9,7 +9,7 @@ const Index = ({ data, bulan }) => {
             <button
               onClick={() => {
                 window.open(
-                  route("pendaftar.skrd.download-data-pdf", {
+                  route("skrd.download-data-pdf", {
                     id: data.id,
                   }),
                   "_blank",
@@ -22,7 +22,7 @@ const Index = ({ data, bulan }) => {
             <button
               onClick={() => {
                 window.open(
-                  route("pendaftar.skrd.download-data-excel", {
+                  route("skrd.download-data-excel", {
                     id: data.id,
                   }),
                   "_blank",
@@ -165,4 +165,4 @@ const Index = ({ data, bulan }) => {
   );
 };
 
-export default Index;
+export default Show;

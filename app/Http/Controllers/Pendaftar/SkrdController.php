@@ -115,7 +115,7 @@ class SkrdController extends Controller
      */
     public function show(Skrd $skrd)
     {
-        return Inertia::render('Pendaftar/Data-Input/Skrd/Show/Index', [
+        return Inertia::render('Pendaftar/Data-Input/Skrd/Show', [
             'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd']),
             'bulan' => $this->getBulan()
         ]);

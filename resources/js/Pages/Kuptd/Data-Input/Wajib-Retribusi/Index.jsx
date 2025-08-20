@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
-import { Link, router } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 
 import { ChevronDown, Download, FileText, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -16,7 +16,6 @@ const Index = ({
   kecamatanOptions = [],
   kelurahanOptions = [],
   statusOptions = [],
-  currentUserRole,
 }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
@@ -33,6 +32,8 @@ const Index = ({
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
+
+  console.log(kecamatan);
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
@@ -123,15 +124,38 @@ const Index = ({
     () =>
       statusOptions?.map((statusOption) => ({
         value: statusOption.value,
-        label:
-          statusOption.label == "Approved"
-            ? "Disetujui"
-            : statusOption.label == "Rejected"
-              ? "Ditolak"
-              : "Diproses",
+        label: statusOption.label === "Approved" ? "Diterima" : statusOption.label === "Processed" ? "Diproses" : "Ditolak",
       })),
     [statusOptions],
   );
+
+  //   const statusList = useMemo(
+  //   () =>
+  //     statusOptions
+  //       ?.map((statusOption) => {
+  //         if (
+  //           (statusOption.value === "Processed" &&
+  //             statusOption.current_role === "ROLE_KUPTD") ||
+  //           (statusOption.value === "Approved" &&
+  //             statusOption.current_role == null)
+  //         ) {
+  //           return { value: "Approved", label: "Diterima" };
+  //         }
+  //         if (
+  //           statusOption.value === "Processed" &&
+  //           statusOption.current_role !== "ROLE_KUPTD"
+  //         ) {
+  //           return { value: "Processed", label: "Diproses" };
+  //         }
+  //         if (statusOption.value === "Rejected") {
+  //           return { value: "Rejected", label: "Ditolak" };
+  //         }
+  //         return null;
+  //       })
+  //       .filter(Boolean)
+  //       .filter((v, i, a) => a.findIndex(t => t.value === v.value) === i), // Remove duplicates
+  //   [statusOptions],
+  // );
 
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
@@ -140,7 +164,7 @@ const Index = ({
     if (pj) params.pj = pj;
     if (kategori) params.kategori = kategori;
     if (subKategori) params["sub-kategori"] = subKategori;
-    if (kecamatan) params.kecamatan = kecamatan;
+    // if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
 
     if (perPage && perPage !== 10) params.per_page = perPage;
@@ -208,7 +232,7 @@ const Index = ({
 
   return (
     <Layout title="WAJIB RETRIBUSI">
-      <section className="min-h-screen overflow-hidden p-3">
+      <section className="min-h-screen overflow-hidden p-3 relative">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
@@ -238,10 +262,12 @@ const Index = ({
                 onClick={() => {
                   const params = new URLSearchParams();
 
+                  if (kecamatan) params.append("kecamatan", kecamatan);
                   if (perPage) params.append("per_page", perPage);
+                  if (status) params.append("status", status);
 
                   window.open(
-                    route("kuptd.wajib-retribusi.download-pdf") +
+                    route("wajib-retribusi.download-pdf") +
                       "?" +
                       params.toString(),
                     "_blank",
@@ -287,7 +313,7 @@ const Index = ({
                     placeholder="Pilih Sub Kategori"
                     disabled={!kategori}
                   />
-                  <SearchableSelect
+                  {/* <SearchableSelect
                     id="kecamatanlist"
                     options={kecamatanList}
                     value={kecamatan}
@@ -296,14 +322,14 @@ const Index = ({
                       setKelurahan("");
                     }}
                     placeholder="Pilih Kecamatan"
-                  />
+                  /> */}
                   <SearchableSelect
                     id="kelurahanlist"
                     options={kelurahanList}
                     value={kelurahan}
                     onChange={(val) => setKelurahan(val)}
                     placeholder="Pilih Kelurahan"
-                    disabled={!kecamatan}
+                    // disabled={!kecamatan}
                   />
                   <SearchableSelect
                     id="pjlist"
@@ -357,7 +383,7 @@ const Index = ({
                 if (status) params.append("status", status);
 
                 window.open(
-                  route("kuptd.wajib-retribusi.download-pdf") +
+                  route("wajib-retribusi.download-pdf") +
                     "?" +
                     params.toString(),
                   "_blank",
@@ -453,42 +479,20 @@ const Index = ({
                         <td>{data.user.namaLengkap}</td>
                         <td>
                           <span
-                            className={`select-none rounded py-2 font-medium ${
-                              data.status == "Processed" &&
-                              data.current_role == "ROLE_KUPTD"
-                                ? "text-teal-600"
-                                : data.status == "Processed" &&
-                                    data.current_role != "ROLE_PENDAFTAR" &&
-                                    data.current_role != "ROLE_KUPTD"
-                                  ? "text-amber-600"
-                                  : data.noWajibRetribusi != null
-                                    ? "text-teal-600"
-                                    : data.status == "Rejected"
-                                      ? "text-red-600"
-                                      : "text-gray-600"
-                            }`}
-                            // className={`select-none rounded py-2 font-medium
-                            // ${
-                            //   data.status == "Approved"
-                            //     ? "text-teal-600"
-                            //     : data.status == "Processed"
-                            //       ? "text-amber-500"
-                            //       : "text-red-500"
-                            // }
-                            // `}
+                            className={`select-none rounded py-2 font-medium ${((data.status === "Processed" && data.current_role === "ROLE_KUPTD") || (data.status === "Approved" && data.current_role == null)) && "text-teal-600"} ${data.status === "Processed" && data.current_role !== "ROLE_KUPTD" && "text-amber-500"} ${data.status === "Rejected" && "text-red-500"}`}
                           >
-                            {data.status == "Processed" &&
-                              data.current_role == "ROLE_KUPTD" &&
+                            {((data.status === "Processed" &&
+                              data.current_role === "ROLE_KUPTD") ||
+                              (data.status === "Approved" &&
+                                data.current_role == null)) &&
                               "Diterima"}
-                            {data.status == "Processed" &&
-                              data.current_role != "ROLE_PENDAFTAR" &&
-                              data.current_role != "ROLE_KUPTD" &&
+                            {data.status === "Processed" &&
+                              data.current_role !== "ROLE_KUPTD" &&
                               "Diproses"}
-                            {data.noWajibRetribusi != null && "Diterima"}
-                            {data.status == "Rejected" && "Ditolak"}
+                            {data.status === "Rejected" && "Ditolak"}
                           </span>
                         </td>
-                        <td>
+                        <td className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}>
                           <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
                             {/* <Link
                               href={route("kuptd.wajib-retribusi.edit", {

@@ -4,6 +4,7 @@ import Layout from "../../Layout";
 import { useForm } from "@inertiajs/react";
 import "leaflet/dist/leaflet.css";
 import { useCallback, useEffect, useState } from "react";
+import { isAllowedKey } from "@/Utils/inputValidators";
 
 const Edit = ({
   pemohonOptions = [],
@@ -387,6 +388,11 @@ const Edit = ({
               autoComplete="off"
               placeholder="RT"
               value={data.rt}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
                 if (value.length <= 3) {
@@ -412,6 +418,11 @@ const Edit = ({
               autoComplete="off"
               placeholder="RW"
               value={data.rw}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
                 if (value.length <= 3) {
@@ -542,6 +553,11 @@ const Edit = ({
               autoComplete="off"
               placeholder="Jumlah Bulan..."
               value={data.variabelValues.bulan || ""}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
 
@@ -631,9 +647,18 @@ const Edit = ({
                         autoComplete="off"
                         placeholder={`Masukkan nilai ${field}...`}
                         value={data.variabelValues[field] || ""}
-                        onChange={(e) =>
-                          handleVariabelChange(field, e.target.value)
-                        }
+                        onKeyDown={(e) => {
+                          if (!isAllowedKey(e)) {
+                            e.preventDefault();
+                          }
+                        }}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, "");
+
+                          if (value >= 0 && value.length <= 10) {
+                            handleVariabelChange(field, value);
+                          }
+                        }}
                         required
                         disabled={!isEnabled}
                       />
@@ -694,6 +719,11 @@ const Edit = ({
               autoComplete="off"
               placeholder="Jumlah Bangunan..."
               value={data.jBangunan}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) =>
                 setData("jBangunan", e.target.value.replace(/\D/g, ""))
               }
@@ -716,6 +746,11 @@ const Edit = ({
               autoComplete="off"
               placeholder="Jumlah Lantai..."
               value={data.jLantai}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) =>
                 setData("jLantai", e.target.value.replace(/\D/g, ""))
               }

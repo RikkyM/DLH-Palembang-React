@@ -300,9 +300,7 @@ const Diproses = ({
                 params.append("status", "Processed");
 
                 window.open(
-                  route("wajib-retribusi.export") +
-                    "?" +
-                    params.toString(),
+                  route("wajib-retribusi.export") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -352,7 +350,7 @@ const Diproses = ({
           )}
         </div>
 
-        <SmartPagination datas={datas} filters={filters} />
+        {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
     </Layout>
   );

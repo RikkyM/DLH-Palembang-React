@@ -1,6 +1,12 @@
-import TableHead from "@/Components/TableHead";
 import { Link } from "@inertiajs/react";
-import { FileText, Pencil, Send, TableOfContents } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  FileText,
+  Pencil,
+  Send,
+  TableOfContents,
+} from "lucide-react";
 import { useProvider } from "@/Context/GlobalContext";
 
 const Table = ({
@@ -12,12 +18,19 @@ const Table = ({
   direction,
   setDirection,
   isLoading,
+  handleSendDiterima,
 }) => {
   const { openModal } = useProvider();
+  const handleSort = (column) => {
+    const newDirection =
+      sort === column && direction === "desc" ? "asc" : "desc";
+    setSort(column);
+    setDirection(newDirection);
+  };
   return (
     <table className="min-w-full divide-y divide-gray-300 p-3">
       <thead>
-        <TableHead
+        {/* <TableHead
           columns={columns}
           sort={sort}
           direction={direction}
@@ -25,7 +38,30 @@ const Table = ({
             setSort(column);
             setDirection(dir);
           }}
-        />
+        /> */}
+        <tr className="*:p-2 *:text-sm *:font-medium *:uppercase">
+          <th className="text-left">Aksi</th>
+          {columns.map((col) => (
+            <th
+              key={col.key}
+              className={`${col.align} cursor-pointer select-none`}
+              onClick={() => handleSort(col.key)}
+            >
+              <span className="flex items-center gap-1.5">
+                {col.label}
+                {sort === col.key && (
+                  <span className="ml-1">
+                    {direction === "desc" ? (
+                      <ArrowUp size={20} />
+                    ) : (
+                      <ArrowDown size={20} />
+                    )}
+                  </span>
+                )}
+              </span>
+            </th>
+          ))}
+        </tr>
       </thead>
       <tbody className="dividfe-y divide-neutral-300 text-xs md:text-sm">
         {isLoading ? (
@@ -61,51 +97,66 @@ const Table = ({
               key={data.id || index}
               className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
             >
-              <td className="text-center">
-                {(datas.current_page - 1) * datas.per_page + index + 1}
-              </td>
-              <td>{data.noPendaftaran}</td>
-              <td>{data.noWajibRetribusi ?? "-"}</td>
-              <td>{data.pemilik.namaPemilik}</td>
-              <td>{data.namaObjekRetribusi}</td>
-              <td className="max-w-sm truncate">{data.alamat}</td>
-              <td>{data.kelurahan.namaKelurahan}</td>
-              <td>{data.kecamatan.namaKecamatan}</td>
-              <td>{data.kategori.namaKategori}</td>
-              <td>{data.sub_kategori.namaSubKategori}</td>
-              <td>{data.uptd.namaUptd}</td>
-              <td>{data.user.namaLengkap}</td>
+              {/* <td>
+                <div className="flex flex-col gap-2 *:rounded *:text-sm *:font-medium">
+                  <button
+                    className="flex items-center gap-1.5 whitespace-nowrap"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(
+                        route("wajib-retribusi.draft-pdf", {
+                          id: data.id,
+                        }),
+                        "_blank",
+                      );
+                    }}
+                  >
+                    <FileText size={20} /> Draft SKRD
+                  </button>
+                  {data.status === "Approved" && (
+                    <>
+                      <Link
+                        href={route("pendaftar.wajib-retribusi.edit", {
+                          retribusi: data.noPendaftaran,
+                        })}
+                        className="flex items-center gap-1.5"
+                      >
+                        <PencilLine size={20} /> Edit
+                      </Link>
+                      <button
+                        onClick={(e) => handleSendDiterima(e, data.id)}
+                        className="flex items-center gap-1.5 whitespace-nowrap"
+                      >
+                        <Send size={20} /> Kirim
+                      </button>
+                    </>
+                  )}
+                  {data.status === "Rejected" && (
+                    <>
+                      <button className="flex items-center gap-1.5 whitespace-nowrap">
+                        <Pencil size={20} /> Edit
+                      </button>
+                      <button className="flex items-center gap-1.5 whitespace-nowrap">
+                        <Send size={20} /> Kirim
+                      </button>
+                    </>
+                  )}
+                </div>
+              </td> */}
               <td>
-                <span
-                  className={`select-none rounded py-2 font-medium ${
-                    data.status == "Processed" &&
-                    data.current_role == "ROLE_KUPTD"
-                      ? "text-teal-600"
-                      : data.status == "Processed" &&
-                          data.current_role != "ROLE_PENDAFTAR" &&
-                          data.current_role != "ROLE_KUPTD"
-                        ? "text-amber-600"
-                        : data.noWajibRetribusi != null
-                          ? "text-teal-600"
-                          : data.status == "Rejected"
-                            ? "text-red-600"
-                            : "text-gray-600"
-                  }`}
-                >
-                  {data.status == "Processed" &&
-                    data.current_role == "ROLE_KUPTD" &&
-                    "Diterima"}
-                  {data.status == "Processed" &&
-                    data.current_role != "ROLE_PENDAFTAR" &&
-                    data.current_role != "ROLE_KUPTD" &&
-                    "Diproses"}
-                  {data.noWajibRetribusi != null && "Diterima"}
-                  {data.status == "Rejected" && "Ditolak"}
-                </span>
-              </td>
-              <td>
-                <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
-                  <button className="flex items-center gap-1.5 whitespace-nowrap">
+                <div className="flex flex-col gap-2 *:rounded *:text-sm *:font-medium">
+                  <button
+                    className="flex items-center gap-1.5 whitespace-nowrap"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(
+                        route("wajib-retribusi.draft-pdf", {
+                          id: data.id,
+                        }),
+                        "_blank",
+                      );
+                    }}
+                  >
                     {/* <FileText size={20} /> Draft untuk di proses */}
                     <FileText size={20} /> Draft SKRD
                   </button>
@@ -128,17 +179,51 @@ const Table = ({
                         </button>
                       </>
                     )}
-                  {data.status === "Rejected" && data.current_role != 'ROLE_PENDAFTAR' && (
-                    <>
-                      <button className="flex items-center gap-1.5 whitespace-nowrap">
-                        <Pencil size={20} /> Edit
-                      </button>
-                      <button className="flex items-center gap-1.5 whitespace-nowrap">
-                        <Send size={20} /> Kirim
-                      </button>
-                    </>
-                  )}
+                  {data.status === "Rejected" &&
+                    data.current_role != "ROLE_PENDAFTAR" && (
+                      <>
+                        <button className="flex items-center gap-1.5 whitespace-nowrap">
+                          <Pencil size={20} /> Edit
+                        </button>
+                        <button className="flex items-center gap-1.5 whitespace-nowrap">
+                          <Send size={20} /> Kirim
+                        </button>
+                      </>
+                    )}
                 </div>
+              </td>
+              <td className="text-center">
+                {(datas.current_page - 1) * datas.per_page + index + 1}
+              </td>
+              <td>{data.noPendaftaran}</td>
+              <td>{data.noWajibRetribusi ?? "-"}</td>
+              <td>{data.pemilik.namaPemilik}</td>
+              <td>{data.namaObjekRetribusi}</td>
+              <td className="max-w-sm truncate">{data.alamat}</td>
+              <td>{data.kelurahan.namaKelurahan}</td>
+              <td>{data.kecamatan.namaKecamatan}</td>
+              <td>{data.kategori.namaKategori}</td>
+              <td>{data.sub_kategori.namaSubKategori}</td>
+              <td>{data.uptd.namaUptd}</td>
+              <td>{data.user.namaLengkap}</td>
+              <td>
+                {((data.status === "Processed" &&
+                  data.current_role === "ROLE_KUPTD") ||
+                  (data.status === "Approved" &&
+                    data.current_role == null)) && (
+                  <span className="py-2 font-medium text-teal-600">
+                    Diterima
+                  </span>
+                )}
+                {data.status === "Processed" &&
+                  data.current_role !== "ROLE_KUPTD" && (
+                    <span className="py-2 font-medium text-amber-600">
+                      Diproses
+                    </span>
+                  )}
+                {data.status === "Rejected" && (
+                  <span className="py-2 font-medium text-red-600">Ditolak</span>
+                )}
               </td>
             </tr>
           ))

@@ -43,7 +43,7 @@ const LocationMarker = ({ position, setPosition }) => {
 const MapPicker = ({
   latitude,
   longitude,
-  onLocationChange,
+  onLocationChange = () => null,
   height = "300px",
   resetTrigger = 0,
 }) => {

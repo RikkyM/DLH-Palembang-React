@@ -135,7 +135,12 @@ const Index = ({
     () =>
       statusOptions?.map((statusOption) => ({
         value: statusOption.value,
-        label: statusOption.label == "Approved" ? "Disetujui" : "Ditolak",
+        label:
+          statusOption.label === "Approved"
+            ? "Diterima"
+            : statusOption.label === "Processed"
+              ? "Diproses"
+              : "Ditolak",
       })),
     [statusOptions],
   );

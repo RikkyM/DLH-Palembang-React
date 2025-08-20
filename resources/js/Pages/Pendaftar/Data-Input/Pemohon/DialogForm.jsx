@@ -58,7 +58,6 @@ const DialogForm = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     clearErrors();
 
     if (isEditMode) {

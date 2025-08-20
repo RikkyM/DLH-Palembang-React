@@ -34,12 +34,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
             Route::get('/wajib-retribusi/{id}/export-single', 'exportSingle')->name('wajib-retribusi.export-single');
         });
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
-        Route::controller(SkrdController::class)->group(function () {
-            Route::get('/download-pdf', 'downloadPdf')->name('skrd.download-pdf');
-            Route::get('/download-excel', 'downloadExcel')->name('skrd.download-excel');
-            Route::get('/{id}/download-data-pdf', 'downloadSinglePdf')->name('skrd.download-data-pdf');
-            Route::get('/{id}/download-data-excel', 'downloadSingleExcel')->name('skrd.download-data-excel');
-        });
+        
     });
 
     Route::prefix('pembayaran')->group(function () {

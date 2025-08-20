@@ -125,8 +125,12 @@ class WajibRetribusiController extends Controller
         }
     }
 
-    private function renderWajibRetribusi(Request $request, string $status = null, $view = 'Index', $noWr = null)
-    {
+    private function renderWajibRetribusi(
+        Request $request,
+        $status = null,
+        string $view = 'Index',
+        ?callable $extraFilter = null
+    ) {
         $getSearch = $request->get('search');
         $getSortBy = $request->get('sort', 'id');
         $getSortDir = $request->get('direction', 'desc');
@@ -155,20 +159,24 @@ class WajibRetribusiController extends Controller
             $query->where('status', $status);
         }
 
+        if ($extraFilter) {
+            $extraFilter($query);
+        }
+
         if ($status && $view !== 'Index') {
             $query->where('status', $status)->whereNull('noWajibRetribusi');
         }
 
         $this->sortTable($query, $getSortBy, $getSortDir);
-        $this->filterData($query, $getSearch, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, $getStatus);
+        $this->filterData($query, $getSearch, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, null, $getTahun);
 
         $penanggungJawab = Pemilik::select('id', 'namaPemilik')->get();
         $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
         $subKategori = $getKategori ? SubKategori::where('kodeKategori', $getKategori)->select('kodeSubKategori', 'namaSubKategori')->get() : collect();
         $kecamatan = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
-            ->whereHas('uptd', function ($q) {
-                $q->where('id', auth()->user()->uptdId);
-            })
+            // ->whereHas('uptd', function ($q) {
+            //     $q->where('id', auth()->user()->uptdId);
+            // })
             ->get();
         $kelurahan = $getKecamatan ? Kelurahan::where('kodeKecamatan', $getKecamatan)->select('kodeKelurahan', 'namaKelurahan')->get() : collect();
         $petugas = User::select('id', 'namaLengkap')->where('role', 'ROLE_PENDAFTAR')->get();
@@ -214,7 +222,6 @@ class WajibRetribusiController extends Controller
             'petugasOptions' => $petugas,
             'statusOptions' => $statusOptions,
             'tahunOptions' => $tahunOptions,
-            'user' => Auth::user()->role
         ]);
     }
 
@@ -223,12 +230,35 @@ class WajibRetribusiController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->renderWajibRetribusi($request, null);
+        return $this->renderWajibRetribusi(
+            $request,
+            null,
+            "Index",
+            function ($q) use ($request) {
+                if ($request->get('status') === "Approved") {
+                    $q->where(function ($data) {
+                        $data->where('status', 'Approved')
+                            ->where('current_role', "ROLE_PENDAFTAR");
+                    })->orWhere(function ($data) {
+                        $data->where('status', 'Approved')
+                            ->whereNull("current_role");
+                    });
+                }
+
+                if ($request->get('status') === "Processed") {
+                    $q->where('status', "Processed");
+                }
+
+                if ($request->get('status') === "Rejected") {
+                    $q->where('status', "Rejected");
+                }
+            }
+        );
     }
 
     public function diterima(Request $request)
     {
-        return $this->renderWajibRetribusi($request, 'Approved', 'Diterima', null);
+        return $this->renderWajibRetribusi($request, 'Approved', 'Diterima');
     }
 
     public function diproses(Request $request)
@@ -397,6 +427,7 @@ class WajibRetribusiController extends Controller
                 'jumlahLantai' => $request->jLantai,
                 'maksud' => "Wajib Retribusi Baru",
                 'status' => "Approved",
+                "current_role" => "ROLE_PENDAFTAR",
                 'createdThisYear' => now()->year == now()->year ? 't' : 'f',
                 'historyAction' => [
                     [
@@ -457,7 +488,7 @@ class WajibRetribusiController extends Controller
             ->get()
             ->map(fn($kategori) => ['value' => $kategori->kodeKategori, 'label' => $kategori->namaKategori]);
 
-        $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'rumus', 'variabel','tarif', 'tarif2')
+        $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'rumus', 'variabel', 'tarif', 'tarif2')
             ->orderBy('namaSubKategori')
             ->get()
             ->groupBy('kodeKategori')

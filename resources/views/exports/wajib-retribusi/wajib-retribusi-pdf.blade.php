@@ -285,8 +285,22 @@
                         <td>{{ $item->subKategori->namaSubKategori ?? '-' }}</td>
                         <td>{{ $item->uptd->namaUptd ?? '-' }}</td>
                         <td class="text-center">
-                            <span class="status-approved" style="color: {{ $item->status == 'Approved' ? '#166534' : 'red' }}">
-                                {{ $item->status == 'Approved' ? 'Diterima' : 'Ditolak' }}
+                            @php
+                                $style = null;
+                                if ($item->status === "Processed" && $item->current_role === "ROLE_KUPTD" || $item->status === "Approved" && $item->current_role == null) {
+                                    $style = "#166534";
+                                    $item->status = "Diterima";
+                                } elseif ($item->status === "Processed" && $item->current_role !== "ROLE_KUPTD") {
+                                    $style = "#F59E0C";
+                                    $item->status = 'Diproses';
+                                } elseif ($item->status === "Rejected") {
+                                    $style = 'red';
+                                    $item->status = "Ditolak";
+                                }
+                            @endphp
+                            <span class="status-approved" style="color: {{ $style }}">
+                                {{-- {{ $item->status == 'Approved' ? 'Diterima' : 'Ditolak' }} --}}
+                                {{ $item->status }}
                             </span>
                         </td>
                     </tr>

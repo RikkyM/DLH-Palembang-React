@@ -4,6 +4,7 @@ import Layout from "../../Layout";
 import { useForm } from "@inertiajs/react";
 import "leaflet/dist/leaflet.css";
 import { useCallback, useEffect, useState } from "react";
+import { isAllowedKey } from "@/Utils/inputValidators";
 
 const Create = ({
   pemohonOptions = [],
@@ -232,7 +233,6 @@ const Create = ({
       }
     }
 
-
     let total = tarif;
 
     variabelArray.forEach((field) => {
@@ -246,19 +246,18 @@ const Create = ({
     return total || 0;
   };
 
-useEffect(() => {
-  const total = calculateTotal();
+  useEffect(() => {
+    const total = calculateTotal();
 
-  if (data.totalRetribusi !== total) {
-    setData("totalRetribusi", total);
-  }
-}, [
-  data.variabelValues,
-  data.tarifRetribusi,
-  data.jenisTarif,
-  data.kodeSubKategori,
-]);
-
+    if (data.totalRetribusi !== total) {
+      setData("totalRetribusi", total);
+    }
+  }, [
+    data.variabelValues,
+    data.tarifRetribusi,
+    data.jenisTarif,
+    data.kodeSubKategori,
+  ]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -270,7 +269,7 @@ useEffect(() => {
     post(route("super-admin.wajib-retribusi.store"), {
       data: {
         ...data,
-        totalRetribusi: total
+        totalRetribusi: total,
       },
       onSuccess: () => {
         setData(initialData);
@@ -363,6 +362,11 @@ useEffect(() => {
               autoComplete="off"
               placeholder="RT"
               value={data.rt}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
                 if (value.length <= 3) {
@@ -388,6 +392,11 @@ useEffect(() => {
               autoComplete="off"
               placeholder="RW"
               value={data.rw}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
                 if (value.length <= 3) {
@@ -518,6 +527,11 @@ useEffect(() => {
               autoComplete="off"
               placeholder="Jumlah Bulan..."
               value={data.variabelValues.bulan || ""}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
                 if (value >= 0 && value.length <= 2) {
@@ -606,9 +620,18 @@ useEffect(() => {
                         autoComplete="off"
                         placeholder={`Masukkan nilai ${field}...`}
                         value={data.variabelValues[field] || ""}
-                        onChange={(e) =>
-                          handleVariabelChange(field, e.target.value)
-                        }
+                        onKeyDown={(e) => {
+                          if (!isAllowedKey(e)) {
+                            e.preventDefault();
+                          }
+                        }}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, "");
+
+                          if (value >= 0 && value.length <= 10) {
+                            handleVariabelChange(field, value);
+                          }
+                        }}
                         required
                         disabled={!isEnabled}
                       />
@@ -670,6 +693,11 @@ useEffect(() => {
               autoComplete="off"
               placeholder="Jumlah Bangunan..."
               value={data.jBangunan}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) =>
                 setData("jBangunan", e.target.value.replace(/\D/g, ""))
               }
@@ -692,6 +720,11 @@ useEffect(() => {
               autoComplete="off"
               placeholder="Jumlah Lantai..."
               value={data.jLantai}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) =>
                 setData("jLantai", e.target.value.replace(/\D/g, ""))
               }

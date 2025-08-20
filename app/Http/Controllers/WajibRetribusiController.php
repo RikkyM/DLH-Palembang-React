@@ -8,6 +8,7 @@ use App\Models\Skrd;
 use App\Models\User;
 use App\Models\WajibRetribusi;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class WajibRetribusiController extends Controller
@@ -58,9 +59,51 @@ class WajibRetribusiController extends Controller
             $query->whereYear('created_at', $tahun);
         }
 
-        if ($status = $request->status) {
-            $query->where('status', $status);
+        // if ($status = $request->get('status')) {
+        //     // $query->where('status', $status);
+        //     if (Auth::user()->role === "ROLE_KUPTD") {
+        //         $query->where(function ($data) {
+        //             $data->where('status', "Processed")
+        //                 ->where('current_role', Auth::user()->role);
+        //         })->orWhere(function($data) {
+        //             $data->whereNull('current_role');
+        //         });
+        //         // $query->where(function ($data) {
+        //         //     $data->where('status', "Processed")
+        //         //         ->where('current_role', "ROLE_KUPTD");
+        //         // });
+        //     }
+        // }
+        if ($status = $request->get('status')) {
+            if (Auth::user()->role == 'ROLE_KUPTD') {
+                if ($status === "Approved") {
+                    $query->where(function($q) {
+                        $q->where(function($data) {
+                            $data->where('status', "Processed")
+                                ->where('current_role', Auth::user()->role);
+                        })
+                        ->orWhere(function($data) {
+                            $data->where('status', "Approved")
+                                ->whereNotNull('noWajibRetribusi');
+                        });
+                    });
+                }
+
+                if ($status === "Processed") {
+                    $query->where('status', "Processed")
+                        ->where('current_role', '!=', Auth::user()->role);
+                }
+
+                if ($status === "Rejected") {
+                    $query->where('status', 'Rejected');
+                }
+
+            } else {
+                // Untuk role lain, gunakan filter status standar
+                $query->where('status', $status);
+            }
         }
+
 
         if ($request->filled('per_page')) {
             $perPage = (int) $request->get('per_page', 10);
