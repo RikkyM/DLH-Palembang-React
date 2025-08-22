@@ -91,7 +91,9 @@ const Table = ({
                       : "Diproses"}
                 </span>
               </td>
-              <td>
+              <td
+                className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+              >
                 <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
                   <button
                     className="flex items-center gap-1.5 whitespace-nowrap"

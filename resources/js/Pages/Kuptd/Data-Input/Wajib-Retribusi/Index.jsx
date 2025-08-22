@@ -33,8 +33,6 @@ const Index = ({
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
 
-  console.log(kecamatan);
-
   const columns = [
     { key: "id", label: "No", align: "text-center" },
     {

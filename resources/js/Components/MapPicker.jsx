@@ -66,15 +66,6 @@ const MapPicker = ({
     }
   }, [latitude, longitude]);
 
-  useEffect(() => {
-    if (position) {
-      const [lat, lng] = position;
-      if (lat !== parseFloat(latitude) || lng !== parseFloat(longitude)) {
-        onLocationChange(lat, lng);
-      }
-    }
-  }, [position]);
-
   const defaultCenter = [-2.976, 104.7754];
   const center = position || defaultCenter;
 

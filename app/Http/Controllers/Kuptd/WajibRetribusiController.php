@@ -210,7 +210,6 @@ class WajibRetribusiController extends Controller
         $getStatus = $request->get('status');
         $getPage = $request->get('per_page', 10);
 
-
         $query = WajibRetribusi::with([
             'kategori',
             'subKategori',
@@ -228,6 +227,8 @@ class WajibRetribusiController extends Controller
         if ($extraFilter) {
             $extraFilter($query);
         }
+
+        // dd($query->get()->toArray());
 
         $this->sortTable($query, $getSortBy, $getSortDir);
         $this->filterData($query, $getSearch, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas);
@@ -320,7 +321,7 @@ class WajibRetribusiController extends Controller
                     $q->where(function ($data) {
                         $data->where('status', "Processed")
                             ->where('current_role', "ROLE_KUPTD");
-                    })->orWhere(function($data) {
+                    })->orWhere(function ($data) {
                         $data->where('status', 'Approved')
                             ->whereNull('current_role');
                     });
@@ -335,7 +336,13 @@ class WajibRetribusiController extends Controller
                     $q->where('status', "Rejected");
                 }
 
-                
+                if ($request->get('status') === null) {
+                    $q->where(function ($data) {
+                        $data->where('current_role', '!=', "ROLE_PENDAFTAR")
+                            ->orWhere('status', "Rejected")
+                            ->orWhereNull('current_role');
+                    });
+                }
             }
         );
     }

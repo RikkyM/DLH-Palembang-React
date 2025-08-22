@@ -247,13 +247,13 @@ const Index = ({
                 placeholder="Pilih Sub Kategori"
                 disabled={!kategori}
               />
-              <SearchableSelect
+              {/* <SearchableSelect
                 id="petugaslist"
                 options={petugasList}
                 value={petugas}
                 onChange={(val) => setPetugas(val)}
                 placeholder="Pilih Petugas Pendaftar"
-              />
+              /> */}
               <SearchableSelect
                 id="statusList"
                 options={statusList}
