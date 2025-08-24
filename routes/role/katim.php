@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\Kuptd\DashboardController;
-use App\Http\Controllers\Kuptd\SkrdController;
-use App\Http\Controllers\Kuptd\WajibRetribusiController;
+use App\Http\Controllers\Katim\DashboardController;
+use App\Http\Controllers\Katim\SkrdController;
+use App\Http\Controllers\Katim\WajibRetribusiController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('role:ROLE_KUPTD')->prefix('kuptd')->name('kuptd.')->group(function () {
+Route::middleware('role:ROLE_KATIM')->prefix('katim')->name('katim.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::prefix('data-input')->group(function () {
         Route::prefix('wajib-retribusi')->name('wajib-retribusi.')->controller(WajibRetribusiController::class)->group(function () {
@@ -19,6 +19,6 @@ Route::middleware('role:ROLE_KUPTD')->prefix('kuptd')->name('kuptd.')->group(fun
         Route::resource('/wajib-retribusi', WajibRetribusiController::class)->except(['edit', 'show', 'destroy'])->parameters([
             'wajib-retribusi' => 'retribusi'
         ]);
-        Route::resource('/skrd', SkrdController::class);
+        Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
     });
 });

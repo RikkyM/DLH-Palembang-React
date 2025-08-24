@@ -194,7 +194,7 @@ const Index = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("super-admin.skrd.index"), params, {
+      router.get(route("katim.skrd.index"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "filters"],
@@ -290,9 +290,7 @@ const Index = ({
                 if (status) params.append("status", status);
 
                 window.open(
-                  route("skrd.download-pdf") +
-                    "?" +
-                    params.toString(),
+                  route("skrd.download-pdf") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -311,9 +309,7 @@ const Index = ({
                 if (status) params.append("status", status);
 
                 window.open(
-                  route("skrd.download-excel") +
-                    "?" +
-                    params.toString(),
+                  route("skrd.download-excel") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -486,12 +482,9 @@ const Index = ({
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               onClick={(e) => {
                                 window.open(
-                                  route(
-                                    "skrd.download-data-excel",
-                                    {
-                                      id: data.id,
-                                    },
-                                  ),
+                                  route("skrd.download-data-excel", {
+                                    id: data.id,
+                                  }),
                                   "_blank",
                                 );
                               }}
@@ -501,14 +494,14 @@ const Index = ({
                             <button
                               onClick={() =>
                                 router.get(
-                                  route("super-admin.skrd.show", data.id),
+                                  route("katim.skrd.show", data.id),
                                 )
                               }
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               // onClick={(e) => {
                               //   e.stopPropagation();
                               //   window.open(
-                              //     route("super-admin.skrd.download-data-excel", {
+                              //     route("katim.skrd.download-data-excel", {
                               //       id: data.id,
                               //     }),
                               //     "_blank",

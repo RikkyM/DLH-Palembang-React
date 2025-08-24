@@ -1,11 +1,11 @@
 import MainLayout from "@/Layouts/MainLayout";
-import KuptdNavigation from "./Navigation";
+import KatimNavigation from "./Navigation";
 import Header from "@/Components/Header";
 
 const Layout = ({ title, children }) => {
   return (
     <MainLayout>
-      <KuptdNavigation />
+      <KatimNavigation />
       <section className="max-h-dvh flex-1 overflow-auto">
         <Header title={title} />
         {children}

@@ -122,7 +122,12 @@ const Index = ({
     () =>
       statusOptions?.map((statusOption) => ({
         value: statusOption.value,
-        label: statusOption.label === "Approved" ? "Diterima" : statusOption.label === "Processed" ? "Diproses" : "Ditolak",
+        label:
+          statusOption.label === "Approved"
+            ? "Diterima"
+            : statusOption.label === "Processed"
+              ? "Diproses"
+              : "Ditolak",
       })),
     [statusOptions],
   );
@@ -230,7 +235,7 @@ const Index = ({
 
   return (
     <Layout title="WAJIB RETRIBUSI">
-      <section className="min-h-screen overflow-hidden p-3 relative">
+      <section className="relative min-h-screen overflow-hidden p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
@@ -490,7 +495,9 @@ const Index = ({
                             {data.status === "Rejected" && "Ditolak"}
                           </span>
                         </td>
-                        <td className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}>
+                        <td
+                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+                        >
                           <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
                             {/* <Link
                               href={route("kuptd.wajib-retribusi.edit", {

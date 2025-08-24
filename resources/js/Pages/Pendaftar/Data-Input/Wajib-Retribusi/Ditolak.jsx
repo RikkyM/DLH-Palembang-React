@@ -65,6 +65,7 @@ const Ditolak = ({
     },
     { key: "uptd", label: "uptd", align: "text-left truncate" },
     { key: "petugas", label: "nama petugas", align: "text-left truncate" },
+    { key: "keterangan", label: "keterangan", align: "text-left" },
     { key: "status", label: "status", align: "text-left truncate" },
   ];
 
@@ -155,7 +156,7 @@ const Ditolak = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("pendaftar.wajib-retribusi-ditolak"), params, {
+      router.get(route("pendaftar.wajib-retribusi.ditolak"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],

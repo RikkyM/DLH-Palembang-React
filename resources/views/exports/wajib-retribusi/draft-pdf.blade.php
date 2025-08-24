@@ -98,7 +98,7 @@
                 </h2>
                 <span style="font-size: 17px;">Dasar:</span><br>
                 <div style="padding-left: 40px; font-size: 17px; line-height: 1.4em;">Peraturan Daerah Kota Palembang
-                    No. 27 Tahun 2011<br>Surat keputusan kepala DLHK Kota Palembang<br>No : {{ $skrd->noSkrd ?? "-" }}
+                    No. 27 Tahun 2011<br>Surat keputusan kepala DLHK Kota Palembang<br>No : {{ $skrd->noSkrd ?? '-' }}
                     <br>Tanggal/Tahun: {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}
                     <br>Tentang: Surat Ketetapan Retribusi Daerah Tahun 2023<br>(Aneka Retribusi Kebersihan)
                 </div><br>
@@ -137,19 +137,20 @@
                 <td style="width: 25%; text-align: center; border: 1px solid black; padding: 4px;">Tarif / Tahun</th>
             </tr>
             <tr style="font-size: 14px;">
+
                 <td colspan="3" style="border: 1px solid black; padding: 4px; width: 50%;">Objek Retribusi yang harus
                     dibayar/bulan: <br /> Rp {{ number_format($data->tarifPerbulan, 2, ',', '.') }}</td>
                 <td colspan="2" style="border: 1px solid black; padding: 4px; width: 50%;">
                     Terbilang:<br />
-                    {{ terbilang($data->tarifPerbulan) }}
+                    <span style="text-transform: uppercase;">{{ terbilang($data->tarifPerbulan) }} rupiah</span>
                 </td>
             </tr>
             <tr style="font-size: 14px;">
                 <td colspan="3" style="border: 1px solid black; padding: 4px; width: 50%;">Objek Retribusi yang harus
-                    dibayar/tahun: <br />Rp {{ number_format($data->tarifPerbulan * 12, 2, ',', '.') }}</td>
+                    dibayar/tahun: <br />Rp {{ number_format($data->tarifPertahun, 2, ',', '.') }}</td>
                 <td colspan="2" style="border: 1px solid black; padding: 4px; width: 50%;">
                     Terbilang:<br>
-                    {{ terbilang($data->tarifPerbulan * 12) }}
+                    <span style="text-transform: uppercase;">{{ terbilang($data->tarifPertahun) }} rupiah</span>
                 </td>
             </tr>
         </tbody>
@@ -220,7 +221,7 @@
         <table style="border-collapse: collapse; width: 100%; max-width: 800px;line-height: 0.7rem; font-size: 14px;">
             <tr>
                 <td style="width: 25%; vertical-align: top;">No. SKRD</td>
-                <td style="width: 25%;">: {{$skrd->noSkrd ?? "-"}}</td>
+                <td style="width: 25%;">: {{ $skrd->noSkrd ?? '-' }}</td>
                 <td style="width: 25%; padding-left: 10px;">Diterima Tanggal</td>
                 <td style="width: 25%;">: -</td>
             </tr>
@@ -253,7 +254,7 @@
             </tr>
             <tr>
                 <td style="vertical-align: top;">Tarif Ketetapan / Tahun</td>
-                <td>: Rp {{ number_format($data->tarifPerbulan * 12, 2, ',', '.') }}</td>
+                <td>: Rp {{ number_format($data->tarifPertahun, 2, ',', '.') }}</td>
                 <td></td>
                 <td></td>
             </tr>

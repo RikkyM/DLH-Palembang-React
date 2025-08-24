@@ -5,11 +5,13 @@ import {
   Marker,
   useMap,
   useMapEvents,
+  Popup,
 } from "react-leaflet";
 import L from "leaflet";
 
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
+import { Map } from "lucide-react";
 
 let DefaultIcon = L.icon({
   iconUrl: icon,
@@ -30,14 +32,34 @@ const RecenterMap = ({ lat, lng }) => {
   return null;
 };
 
-const LocationMarker = ({ position, setPosition }) => {
-  useMapEvents({
-    click(e) {
-      setPosition([e.latlng.lat, e.latlng.lng]);
-    },
-  });
+const LocationMarker = ({ position, setPosition, editable }) => {
+  useMapEvents(
+    editable === true
+      ? {
+          click(e) {
+            setPosition([e.latlng.lat, e.latlng.lng]);
+          },
+        }
+      : {},
+  );
 
-  return position ? <Marker position={position}></Marker> : null;
+  return position ? (
+    <Marker position={position}>
+      {!editable ? (
+        <Popup>
+          <a
+            href={`https://www.google.com/maps?q=${position[0]},${position[1]}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-blue-600"
+          >
+            <Map />
+            <span>Buka di Google Maps</span>
+          </a>
+        </Popup>
+      ) : null}
+    </Marker>
+  ) : null;
 };
 
 const MapPicker = ({
@@ -46,6 +68,7 @@ const MapPicker = ({
   onLocationChange = () => null,
   height = "300px",
   resetTrigger = 0,
+  editable,
 }) => {
   const [position, setPosition] = useState(null);
 
@@ -69,6 +92,15 @@ const MapPicker = ({
   const defaultCenter = [-2.976, 104.7754];
   const center = position || defaultCenter;
 
+  useEffect(() => {
+    if (position) {
+      const [lat, lng] = position;
+      if (lat !== parseFloat(latitude) || lng !== parseFloat(longitude)) {
+        onLocationChange(lat, lng);
+      }
+    }
+  }, [position]);
+
   return (
     <div
       style={{ height, width: "100%" }}
@@ -79,12 +111,20 @@ const MapPicker = ({
         zoom={13}
         style={{ height: "100%", width: "100%" }}
         key={`map-${resetTrigger}`}
+        // dragging={!editable ? false : true}
+        // doubleClickZoom={!editable ? false : true}
+        // touchZoom={!editable ? false : true}
+        // zoomControl={!editable ? false : true}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <LocationMarker position={position} setPosition={setPosition} />
+        <LocationMarker
+          position={position}
+          setPosition={setPosition}
+          editable={editable}
+        />
         {position && <RecenterMap lat={position[0]} lng={position[1]} />}
       </MapContainer>
     </div>

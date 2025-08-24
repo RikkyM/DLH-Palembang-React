@@ -200,7 +200,7 @@ const Index = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("super-admin.wajib-retribusi.index"), params, {
+      router.get(route("katim.wajib-retribusi.index"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
@@ -378,7 +378,7 @@ const Index = ({
           </div>
           <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start">
             <Link
-              href={route("super-admin.wajib-retribusi.create")}
+              href={route("katim.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
             >
               Tambah
@@ -492,17 +492,17 @@ const Index = ({
                         <td>{data.user.namaLengkap}</td>
                         <td>
                           <span
-                            className={`select-none rounded py-2 font-medium ${
-                              data.status == "Approved"
-                                ? "text-teal-600"
-                                : data.status == "Processed"
-                                  ? "text-amber-500"
-                                  : "text-red-500"
-                            }`}
+                            className={`select-none rounded py-2 font-medium ${((data.status === "Processed" && data.current_role === "ROLE_KATIM") || (data.status === "Approved" && data.current_role == null)) && "text-teal-600"} ${data.status === "Processed" && data.current_role !== "ROLE_KATIM" && "text-amber-500"} ${data.status === "Rejected" && "text-red-500"}`}
                           >
-                            {data.status == "Approved" && "Diterima"}
-                            {data.status == "Processed" && "Diproses"}
-                            {data.status == "Rejected" && "Ditolak"}
+                            {((data.status === "Processed" &&
+                              data.current_role === "ROLE_KATIM") ||
+                              (data.status === "Approved" &&
+                                data.current_role == null)) &&
+                              "Diterima"}
+                            {data.status === "Processed" &&
+                              data.current_role !== "ROLE_KATIM" &&
+                              "Diproses"}
+                            {data.status === "Rejected" && "Ditolak"}
                           </span>
                         </td>
                         <td
@@ -510,7 +510,7 @@ const Index = ({
                         >
                           <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
                             {/* <Link
-                              href={route("super-admin.wajib-retribusi.edit", {
+                              href={route("katim.wajib-retribusi.edit", {
                                 retribusi: data.noPendaftaran,
                               })}
                               className="flex items-center gap-1.5"
@@ -526,7 +526,7 @@ const Index = ({
 
                                 window.open(
                                   route(
-                                    "super-admin.wajib-retribusi.export-single",
+                                    "katim.wajib-retribusi.export-single",
                                     { id: data.id },
                                   ),
                                   "_blank",

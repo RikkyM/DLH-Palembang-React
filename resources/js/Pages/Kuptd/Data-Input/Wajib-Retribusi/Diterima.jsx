@@ -157,7 +157,7 @@ const Diterima = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("kuptd.wajib-retribusi-diterima"), params, {
+      router.get(route("kuptd.wajib-retribusi.diterima"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
@@ -297,7 +297,7 @@ const Diterima = ({
                 params.append("status", "Approved");
 
                 window.open(
-                  route("kuptd.wajib-retribusi.download-pdf") +
+                  route("wajib-retribusi.download-pdf") +
                     "?" +
                     params.toString(),
                   "_blank",
@@ -320,7 +320,7 @@ const Diterima = ({
                 params.append("status", "Approved");
 
                 window.open(
-                  route("kuptd.wajib-retribusi.export") +
+                  route("wajib-retribusi.export") +
                     "?" +
                     params.toString(),
                   "_blank",

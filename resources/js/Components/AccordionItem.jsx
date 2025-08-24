@@ -1,58 +1,52 @@
 import { useState, useEffect } from "react";
-import { Link, usePage } from "@inertiajs/react";
 import { ChevronDown } from "lucide-react";
+import { Link } from "@inertiajs/react";
 
-const AccordionItem = ({ title, items, isRouteActive }) => {
-  const { url } = usePage();
-
-  const isRouteActiveIgnoreQuery = (routeName, activeRoute = null) => {
-    if (!routeName) return false;
-
-    try {
-      // Jika ada activeRoute (wildcard pattern), gunakan itu untuk pengecekan
-      const routeToCheck = activeRoute || routeName;
-
-      // Jika menggunakan wildcard pattern (mengandung *)
-      if (routeToCheck.includes("*")) {
-        const pattern = routeToCheck.replace("*", "");
-        const currentRouteName = route().current();
-
-        // Cek apakah current route dimulai dengan pattern
-        return currentRouteName && currentRouteName.startsWith(pattern);
-      }
-
-      // Untuk route normal tanpa wildcard
-      const routeUrl = route(routeName);
-      const currentPathname = new URL(url, window.location.origin).pathname;
-      const routePathname = new URL(routeUrl, window.location.origin).pathname;
-
-      return currentPathname === routePathname;
-    } catch (error) {
-      return isRouteActive ? isRouteActive(routeName) : false;
-    }
-  };
-
-  const hasActiveItem = items.some(
-    (item) =>
-      item.route && isRouteActiveIgnoreQuery(item.route, item.activeRoute),
-  );
-
-  const [isOpen, setIsOpen] = useState(hasActiveItem);
-  const [wasManuallyToggled, setWasManuallyToggled] = useState(false);
+const AccordionItem = ({ title, items, defaultOpen = false }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   useEffect(() => {
-    if (hasActiveItem && !isOpen && !wasManuallyToggled) {
+    if (defaultOpen) {
       setIsOpen(true);
     }
+  }, [defaultOpen]);
 
-    if (!hasActiveItem) {
-      setWasManuallyToggled(false);
+  const handleToggle = () => setIsOpen((prev) => !prev);
+
+  // 🔹 fungsi general untuk cek apakah item sedang aktif
+  const isItemActive = (item) => {
+    if (Array.isArray(item.activeRoute)) {
+      return item.activeRoute.some((r) => {
+        // fleksibel: cek kalau route edit wajib retribusi apapun role-nya
+        if (r.endsWith(".wajib-retribusi.edit")) {
+          const params = route().params;
+          if (
+            item.label.toLowerCase().includes("diterima") &&
+            params.status === "diterima"
+          ) {
+            return route().current(r);
+          }
+          if (
+            item.label.toLowerCase().includes("ditolak") &&
+            params.status === "ditolak"
+          ) {
+            return route().current(r);
+          }
+          return false;
+        }
+        return route().current(r);
+      });
     }
-  }, [hasActiveItem, isOpen, wasManuallyToggled]);
 
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-    setWasManuallyToggled(true);
+    if (item.activeRoute) {
+      return route().current(item.activeRoute);
+    }
+
+    if (item.route) {
+      return route().current(item.route);
+    }
+
+    return false;
   };
 
   return (
@@ -64,9 +58,7 @@ const AccordionItem = ({ title, items, isRouteActive }) => {
         <span>{title}</span>
         <ChevronDown
           size={18}
-          className={`transition-all duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`transition-all duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
       <div
@@ -75,20 +67,25 @@ const AccordionItem = ({ title, items, isRouteActive }) => {
         }`}
       >
         <div className="pl-3">
-          <ul className="ml-0.5 space-y-1.5 border-l border-neutral-400 p-3 pl-3 text-sm">
+          <ul className="ml-0.5 space-y-1.5 border-l border-neutral-400 p-3 text-sm">
             {items.map((item, index) => (
               <li key={index}>
-                <Link
-                  href={item.route ? route(item.route) : "#"}
-                  className={`inline-block w-full rounded p-2 transition-all duration-300 ${
-                    item.route &&
-                    isRouteActiveIgnoreQuery(item.route, item.activeRoute)
-                      ? "bg-teal-400 font-medium text-white"
-                      : "hover:bg-neutral-100"
-                  }`}
-                >
-                  {item.label}
-                </Link>
+                {item.route ? (
+                  <Link
+                    href={route(item.route)}
+                    className={`inline-block w-full rounded p-2 transition-all duration-300 ${
+                      isItemActive(item)
+                        ? "bg-teal-400 font-medium text-white"
+                        : "hover:bg-neutral-100"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <span className="inline-block w-full rounded p-2 text-neutral-500">
+                    {item.label}
+                  </span>
+                )}
               </li>
             ))}
           </ul>

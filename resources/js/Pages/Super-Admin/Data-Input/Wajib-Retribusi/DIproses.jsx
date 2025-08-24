@@ -118,7 +118,7 @@ const Diproses = ({
   const petugasList = useMemo(
     () =>
       petugasOptions.map((petugas) => ({
-        value: petugas.id.toString(),
+        value: petugas.namaLengkap,
         label: petugas.namaLengkap,
       })),
     [petugasOptions],
@@ -136,16 +136,16 @@ const Diproses = ({
     if (petugas) params.petugas = petugas;
     if (sort && sort !== "id") {
       params.sort = sort;
-      if (direction && direction.toLowerCase() === "desc") {
-        params.direction = "desc";
+      if (direction && direction.toLowerCase() === "asc") {
+        params.direction = "asc";
       }
     } else if (
       sort === "id" &&
       direction &&
-      direction.toLowerCase() === "desc"
+      direction.toLowerCase() === "asc"
     ) {
       params.sort = sort;
-      params.direction = "desc";
+      params.direction = "asc";
     }
 
     return params;
@@ -167,7 +167,7 @@ const Diproses = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("super-admin.wajib-retribusi-diproses"), params, {
+      router.get(route("super-admin.wajib-retribusi.diproses"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],

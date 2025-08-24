@@ -13,6 +13,7 @@ const DropdownInput = ({
   valueKey = "value",
   labelKey = "label",
   className = "",
+  classDisabled,
   dropdownClassName = "",
   noDataText = "Tidak ada data ditemukan",
 }) => {
@@ -170,7 +171,7 @@ const DropdownInput = ({
           id={id}
           type="text"
           placeholder={placeholder}
-          className={`w-full cursor-pointer rounded bg-gray-200 px-3 py-2 outline-none ${
+          className={`w-full cursor-pointer rounded bg-gray-200 px-3 py-2 outline-none ${classDisabled} ${
             disabled ? "cursor-not-allowed opacity-50" : ""
           } ${error ? "border border-red-500" : ""}`}
           value={isOpen ? searchTerm : displayValue}

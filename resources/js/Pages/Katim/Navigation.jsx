@@ -2,39 +2,39 @@ import { Link, usePage } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
 import AccordionItem from "@/Components/AccordionItem";
 
-const KuptdNavigation = () => {
+const KatimNavigation = () => {
   const { url } = usePage();
 
   const dataInputs = [
     {
       label: "Data Wajib Retribusi",
-      route: "kuptd.wajib-retribusi.index",
+      route: "katim.wajib-retribusi.index",
       activeRoute: [
-        "kuptd.wajib-retribusi.index",
-        "kuptd.wajib-retribusi.create",
+        "katim.wajib-retribusi.index",
+        "katim.wajib-retribusi.create",
       ],
     },
     {
       label: "Inbox Diterima",
-      route: "kuptd.wajib-retribusi.diterima",
+      route: "katim.wajib-retribusi.diterima",
       activeRoute: [
-        "kuptd.wajib-retribusi.diterima",
-        "kuptd.wajib-retribusi.show",
+        "katim.wajib-retribusi.diterima",
+        "katim.wajib-retribusi.show",
       ],
     },
     {
       label: "Inbox Diproses",
-      route: "kuptd.wajib-retribusi.diproses",
+      route: "katim.wajib-retribusi.diproses",
     },
     {
       label: "Inbox Ditolak",
-      route: "kuptd.wajib-retribusi.ditolak",
-      activeRoute: "kuptd.wajib-retribusi.ditolak",
+      route: "katim.wajib-retribusi.ditolak",
+      activeRoute: "katim.wajib-retribusi.ditolak",
     },
     {
       label: "Inbox Selesai (SKRD)",
-      route: "kuptd.skrd.index",
-      activeRoute: "kuptd.skrd.*",
+      route: "katim.skrd.index",
+      activeRoute: "katim.skrd.*",
     },
   ];
 
@@ -66,7 +66,7 @@ const KuptdNavigation = () => {
       if (item.activeRoute) {
         if (Array.isArray(item.activeRoute)) {
           return item.activeRoute.some((r) => {
-            if (r === "kuptd.wajib-retribusi.show") {
+            if (r === "katim.wajib-retribusi.show") {
               const params = route().params;
               if (
                 item.label.toLowerCase().includes("diterima") &&
@@ -95,20 +95,20 @@ const KuptdNavigation = () => {
       <div className="space-y-1.5 p-3">
         <Link
           className={`block rounded px-3 py-2 transition-all duration-300 ${
-            route().current("kuptd.dashboard")
+            route().current("katim.dashboard")
               ? "bg-teal-400 font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
           }`}
-          href={route("kuptd.dashboard")}
+          href={route("katim.dashboard")}
         >
           Dashboard
         </Link>
 
         <AccordionItem
-                  title="Data Input"
-                  items={dataInputs}
-                  defaultOpen={isAccordionActive(dataInputs)}
-                />
+          title="Data Input"
+          items={dataInputs}
+          defaultOpen={isAccordionActive(dataInputs)}
+        />
 
         {/* <AccordionItem
           title="Settings"
@@ -120,4 +120,4 @@ const KuptdNavigation = () => {
   );
 };
 
-export default KuptdNavigation;
+export default KatimNavigation;

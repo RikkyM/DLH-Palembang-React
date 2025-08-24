@@ -1,12 +1,11 @@
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import {
-  ArrowDown,
-  ArrowUp,
   FileText,
   Pencil,
   PencilLine,
   Send,
 } from "lucide-react";
+import TableHead from "@/Components/TableHead";
 
 const Table = ({
   datas,
@@ -17,18 +16,33 @@ const Table = ({
   direction,
   setDirection,
   isLoading,
-  handleSendDiterima,
 }) => {
-  const handleSort = (column) => {
-    const newDirection =
-      sort === column && direction === "desc" ? "asc" : "desc";
-    setSort(column);
-    setDirection(newDirection);
-  };
+  // const handleSort = (column) => {
+  //   const newDirection =
+  //     sort === column && direction === "desc" ? "asc" : "desc";
+  //   setSort(column);
+  //   setDirection(newDirection);
+  // };
+
+  const handleSend = (e, id) => {
+      e.preventDefault();
+  
+      router.put(
+        route("pendaftar.wajib-retribusi.send", id),
+        {},
+        {
+          preserveScroll: true,
+          onError: (errors) => {
+            console.error("Terjadi kesalahan ketika mengirim");
+          },
+        },
+      );
+    };
+
   return (
     <table className="min-w-full divide-y divide-gray-300 p-3">
       <thead>
-        {/* <TableHead
+        <TableHead
           columns={columns}
           sort={sort}
           direction={direction}
@@ -36,8 +50,8 @@ const Table = ({
             setSort(column);
             setDirection(dir);
           }}
-        /> */}
-        <tr className="*:p-2 *:text-sm *:font-medium *:uppercase">
+        />
+        {/* <tr className="*:p-2 *:text-sm *:font-medium *:uppercase">
           <th className="text-left">Aksi</th>
           {columns.map((col) => (
             <th
@@ -59,7 +73,7 @@ const Table = ({
               </span>
             </th>
           ))}
-        </tr>
+        </tr> */}
       </thead>
       <tbody className="dividfe-y divide-neutral-300 text-xs md:text-sm">
         {isLoading ? (
@@ -95,7 +109,41 @@ const Table = ({
               key={data.id || index}
               className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
             >
+              <td className="text-center">
+                {(datas.current_page - 1) * datas.per_page + index + 1}
+              </td>
+              <td>{data.noPendaftaran}</td>
+              <td>{data.noWajibRetribusi ?? "-"}</td>
+              <td>{data.pemilik.namaPemilik}</td>
+              <td>{data.namaObjekRetribusi}</td>
+              <td className="max-w-sm truncate">{data.alamat}</td>
+              <td>{data.kelurahan.namaKelurahan}</td>
+              <td>{data.kecamatan.namaKecamatan}</td>
+              <td>{data.kategori.namaKategori}</td>
+              <td>{data.sub_kategori.namaSubKategori}</td>
+              <td>{data.uptd.namaUptd}</td>
+              <td>{data.user.namaLengkap}</td>
+              {data.status == "Rejected" && <td>{data.keterangan}</td>}
               <td>
+                <span
+                  className={`select-none rounded py-2 font-medium ${
+                    data.status == "Approved"
+                      ? "text-teal-600"
+                      : data.status == "Rejected"
+                        ? "text-red-600"
+                        : "text-amber-600"
+                  }`}
+                >
+                  {data.status == "Approved"
+                    ? "Diterima"
+                    : data.status == "Rejected"
+                      ? "Ditolak"
+                      : "Diproses"}
+                </span>
+              </td>
+              <td
+                className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+              >
                 <div className="flex flex-col gap-2 *:rounded *:text-sm *:font-medium">
                   <button
                     className="flex items-center gap-1.5 whitespace-nowrap"
@@ -116,14 +164,15 @@ const Table = ({
                     <>
                       <Link
                         href={route("pendaftar.wajib-retribusi.edit", {
-                          retribusi: data.noPendaftaran,
+                          status: "diterima",
+                          retribusi: data.id,
                         })}
                         className="flex items-center gap-1.5"
                       >
                         <PencilLine size={20} /> Edit
                       </Link>
                       <button
-                        onClick={(e) => handleSendDiterima(e, data.id)}
+                        onClick={(e) => handleSend(e, data.id)}
                         className="flex items-center gap-1.5 whitespace-nowrap"
                       >
                         <Send size={20} /> Kirim
@@ -132,46 +181,24 @@ const Table = ({
                   )}
                   {data.status === "Rejected" && (
                     <>
-                      <button className="flex items-center gap-1.5 whitespace-nowrap">
+                      <Link
+                        href={route("pendaftar.wajib-retribusi.edit", {
+                          status: "ditolak",
+                          retribusi: data.id,
+                        })}
+                        className="flex items-center gap-1.5 whitespace-nowrap"
+                      >
                         <Pencil size={20} /> Edit
-                      </button>
-                      <button className="flex items-center gap-1.5 whitespace-nowrap">
+                      </Link>
+                      <button
+                        onClick={(e) => handleSend(e, data.id)}
+                        className="flex items-center gap-1.5 whitespace-nowrap"
+                      >
                         <Send size={20} /> Kirim
                       </button>
                     </>
                   )}
                 </div>
-              </td>
-              <td className="text-center">
-                {(datas.current_page - 1) * datas.per_page + index + 1}
-              </td>
-              <td>{data.noPendaftaran}</td>
-              <td>{data.noWajibRetribusi ?? "-"}</td>
-              <td>{data.pemilik.namaPemilik}</td>
-              <td>{data.namaObjekRetribusi}</td>
-              <td className="max-w-sm truncate">{data.alamat}</td>
-              <td>{data.kelurahan.namaKelurahan}</td>
-              <td>{data.kecamatan.namaKecamatan}</td>
-              <td>{data.kategori.namaKategori}</td>
-              <td>{data.sub_kategori.namaSubKategori}</td>
-              <td>{data.uptd.namaUptd}</td>
-              <td>{data.user.namaLengkap}</td>
-              <td>
-                <span
-                  className={`select-none rounded py-2 font-medium ${
-                    data.status == "Approved"
-                      ? "text-teal-600"
-                      : data.status == "Rejected"
-                        ? "text-red-600"
-                        : "text-amber-600"
-                  }`}
-                >
-                  {data.status == "Approved"
-                    ? "Diterima"
-                    : data.status == "Rejected"
-                      ? "Ditolak"
-                      : "Diproses"}
-                </span>
               </td>
             </tr>
           ))

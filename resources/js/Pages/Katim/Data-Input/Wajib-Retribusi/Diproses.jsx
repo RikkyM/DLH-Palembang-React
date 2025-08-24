@@ -15,6 +15,7 @@ const Diproses = ({
   subKategoriOptions,
   kecamatanOptions,
   kelurahanOptions,
+  petugasOptions = [],
 }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
@@ -23,6 +24,7 @@ const Diproses = ({
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
   const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
+  const [petugas, setPetugas] = useState(filters.petugas || "");
   const [showFilters, setShowFilters] = useState(false);
   const [pj, setpj] = useState(filters.pj || "");
   const [isLoading, setIsLoading] = useState(false);
@@ -113,6 +115,15 @@ const Diproses = ({
     [kelurahanOptions],
   );
 
+  const petugasList = useMemo(
+    () =>
+      petugasOptions.map((petugas) => ({
+        value: petugas.namaLengkap,
+        label: petugas.namaLengkap,
+      })),
+    [petugasOptions],
+  );
+
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
 
@@ -122,6 +133,7 @@ const Diproses = ({
     if (subKategori) params["sub-kategori"] = subKategori;
     if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
+    if (petugas) params.petugas = petugas;
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "asc") {
@@ -155,7 +167,7 @@ const Diproses = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("pendaftar.wajib-retribusi.diproses"), params, {
+      router.get(route("katim.wajib-retribusi.diproses"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
@@ -174,6 +186,7 @@ const Diproses = ({
     subKategori,
     kecamatan,
     kelurahan,
+    petugas,
     pj,
   ]);
 
@@ -238,6 +251,13 @@ const Diproses = ({
                     disabled={!kecamatan}
                   />
                   <SearchableSelect
+                    id="petugaslist"
+                    options={petugasList}
+                    value={petugas}
+                    onChange={(val) => setPetugas(val)}
+                    placeholder="Pilih Petugas Pendaftar"
+                  />
+                  <SearchableSelect
                     id="pjlist"
                     options={pjList}
                     value={pj}
@@ -273,11 +293,12 @@ const Diproses = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (petugas) params.append("petugas", petugas);
 
                 params.append("status", "Processed");
 
                 window.open(
-                  route("wajib-retribusi.download-pdf") +
+                  route("katim.wajib-retribusi.download-pdf") +
                     "?" +
                     params.toString(),
                   "_blank",
@@ -296,11 +317,14 @@ const Diproses = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (petugas) params.append("petugas", petugas);
 
                 params.append("status", "Processed");
 
                 window.open(
-                  route("wajib-retribusi.export") + "?" + params.toString(),
+                  route("katim.wajib-retribusi.export") +
+                    "?" +
+                    params.toString(),
                   "_blank",
                 );
               }}

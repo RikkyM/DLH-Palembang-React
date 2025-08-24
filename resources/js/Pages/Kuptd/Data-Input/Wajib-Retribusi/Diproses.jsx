@@ -155,7 +155,7 @@ const Diproses = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("kuptd.wajib-retribusi-diproses"), params, {
+      router.get(route("kuptd.wajib-retribusi.diproses"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],

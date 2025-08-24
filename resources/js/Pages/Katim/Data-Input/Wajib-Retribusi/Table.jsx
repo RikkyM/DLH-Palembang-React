@@ -1,10 +1,5 @@
 import { Link } from "@inertiajs/react";
-import {
-  FileText,
-  Pencil,
-  Send,
-  TableOfContents,
-} from "lucide-react";
+import { FileText, Pencil, Send, TableOfContents } from "lucide-react";
 import { useProvider } from "@/Context/GlobalContext";
 import TableHead from "@/Components/TableHead";
 
@@ -158,7 +153,7 @@ const Table = ({
               {data.status == "Rejected" && <td>{data.keterangan}</td>}
               <td>
                 {((data.status === "Processed" &&
-                  data.current_role === "ROLE_KUPTD") ||
+                  data.current_role === "ROLE_KATIM") ||
                   (data.status === "Approved" &&
                     data.current_role == null)) && (
                   <span className="py-2 font-medium text-teal-600">
@@ -166,7 +161,7 @@ const Table = ({
                   </span>
                 )}
                 {data.status === "Processed" &&
-                  data.current_role !== "ROLE_KUPTD" && (
+                  (data.current_role !== "ROLE_KATIM") && (
                     <span className="py-2 font-medium text-amber-600">
                       Diproses
                     </span>
@@ -195,10 +190,10 @@ const Table = ({
                     <FileText size={20} /> Draft SKRD
                   </button>
                   {data.status === "Processed" &&
-                    data.current_role == "ROLE_KUPTD" && (
+                    data.current_role == "ROLE_KATIM" && (
                       <>
                         <Link
-                          href={route("kuptd.wajib-retribusi.show", {
+                          href={route("katim.wajib-retribusi.show", {
                             status: "diterima",
                             retribusi: data.id,
                           })}

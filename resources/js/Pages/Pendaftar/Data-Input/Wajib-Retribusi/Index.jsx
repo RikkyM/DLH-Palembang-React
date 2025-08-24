@@ -125,7 +125,7 @@ const Index = ({
   const petugasList = useMemo(
     () =>
       petugasOptions.map((petugas) => ({
-        value: petugas.id.toString(),
+        value: petugas.namaLengkap,
         label: petugas.namaLengkap,
       })),
     [petugasOptions],
@@ -393,7 +393,7 @@ const Index = ({
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (status) params.append("status", status);
-                if (tahun) params.append('tahun', tahun);
+                if (tahun) params.append("tahun", tahun);
 
                 window.open(
                   route("wajib-retribusi.download-pdf") +
@@ -503,7 +503,9 @@ const Index = ({
                             {data.status == "Rejected" && "Ditolak"}
                           </span>
                         </td>
-                        <td>
+                        <td
+                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+                        >
                           <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
                             {/* <Link
                               href={route("pendaftar.wajib-retribusi.edit", {

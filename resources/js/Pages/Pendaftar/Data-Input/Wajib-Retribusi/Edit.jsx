@@ -13,6 +13,7 @@ const Edit = ({
   kategoriOptions = [],
   subKategoriOptions = [],
   retribusi,
+  status,
 }) => {
   const [mapReset, setMapReset] = useState(0);
 
@@ -44,9 +45,16 @@ const Edit = ({
     longitude: retribusi.longitude || null,
     fotoBangunan: null,
     fotoBerkas: null,
-    variabelValues: { bulan: 1 },
+    variabelValues: {
+      bulan: retribusi.bulan,
+      unit: retribusi?.unit,
+      m2: retribusi?.m2,
+      giat: retribusi?.giat,
+      hari: retribusi?.hari,
+      meter: retribusi?.meter,
+    },
     tarifRetribusi: 0,
-    jenisTarif: "tarif",
+    jenisTarif: retribusi.jenisTarif,
   };
 
   const handleVariabelChange = (variabelName, value) => {
@@ -61,6 +69,8 @@ const Edit = ({
 
   const { data, setData, errors, processing, clearErrors, post } =
     useForm(initialData);
+
+    console.log(data);
 
   useEffect(() => {
     if (data.kodeKategori && data.kodeSubKategori) {
@@ -209,20 +219,20 @@ const Edit = ({
     });
   };
 
-  const handleClearForm = () => {
-    setData({
-      ...initialData,
-      variabelValues: {},
-    });
-    clearErrors();
+  // const handleClearForm = () => {
+  //   setData({
+  //     ...initialData,
+  //     variabelValues: {},
+  //   });
+  //   clearErrors();
 
-    const fileInputs = document.querySelectorAll('input[type="file"]');
-    fileInputs.forEach((input) => {
-      input.value = "";
-    });
+  //   const fileInputs = document.querySelectorAll('input[type="file"]');
+  //   fileInputs.forEach((input) => {
+  //     input.value = "";
+  //   });
 
-    setMapReset((prev) => prev + 1);
-  };
+  //   setMapReset((prev) => prev + 1);
+  // };
 
   const calculateTotal = () => {
     const selectedSub = getSelectedSubKategori();
@@ -289,21 +299,25 @@ const Edit = ({
 
     const total = calculateTotal();
 
-    console.log(data.tarifRetribusi);
-
-    post(route("pendaftar.wajib-retribusi.update", { id: retribusi.id }), {
-      data: {
-        ...data,
-        tarifRetribusi: data.tarifRetribusi,
-        totalRetribusi: total,
+    post(
+      route("pendaftar.wajib-retribusi.update", {
+        retribusi: retribusi.id,
+        status,
+      }),
+      {
+        data: {
+          ...data,
+          tarifRetribusi: data.tarifRetribusi,
+          totalRetribusi: total,
+        },
+        onSuccess: () => {
+          setData(initialData);
+        },
+        onError: (e) => {
+          console.error(e);
+        },
       },
-      onSuccess: () => {
-        setData(initialData);
-      },
-      onError: (e) => {
-        console.error(e);
-      },
-    });
+    );
   };
 
   return (
@@ -608,17 +622,6 @@ const Edit = ({
                 : JSON.parse(selectedSubKategori.variabel || "[]");
             }
 
-            {
-              /* const inputFields = [
-              "bulan",
-              "unit",
-              "m2",
-              "giat",
-              "hari",
-              "meter",
-            ]; */
-            }
-
             const inputFields = ["unit", "m2", "giat", "hari", "meter"];
 
             return (
@@ -632,7 +635,7 @@ const Edit = ({
                     >
                       <label
                         htmlFor={`variabel-${field}`}
-                        className="capitalize after:text-red-500 after:content-['*']"
+                        className={`capitalize ${isEnabled && "after:text-red-500 after:content-['*']"}`}
                       >
                         {field}
                       </label>
@@ -640,7 +643,7 @@ const Edit = ({
                         className={`px-3 py-2 outline-none ${
                           isEnabled
                             ? "bg-gray-200"
-                            : "cursor-not-allowed bg-gray-100"
+                            : "cursor-not-allowed bg-slate-300"
                         }`}
                         type="number"
                         id={`variabel-${field}`}
@@ -851,6 +854,7 @@ const Edit = ({
               latitude={data.latitude || ""}
               longitude={data.longitude || ""}
               onLocationChange={handleLocationChange}
+              editable={true}
               height="400px"
               resetTrigger={mapReset}
             />
@@ -898,13 +902,13 @@ const Edit = ({
             )}
           </div>
           <div className="col-span-2 flex flex-col gap-1.5 text-sm md:flex-row md:justify-end md:gap-4">
-            <button
+            {/* <button
               type="button"
               onClick={handleClearForm}
               className="order-2 md:order-1"
             >
               Clear Form
-            </button>
+            </button> */}
             <button
               type="submit"
               disabled={processing}

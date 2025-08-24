@@ -118,7 +118,7 @@ const Diterima = ({
   const petugasList = useMemo(
     () =>
       petugasOptions.map((petugas) => ({
-        value: petugas.id.toString(),
+        value: petugas.namaLengkap,
         label: petugas.namaLengkap,
       })),
     [petugasOptions],
@@ -167,7 +167,7 @@ const Diterima = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("super-admin.wajib-retribusi-diterima"), params, {
+      router.get(route("super-admin.wajib-retribusi.diterima"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
@@ -189,24 +189,6 @@ const Diterima = ({
     petugas,
     pj,
   ]);
-
-  const handleSendDiterima = (e, id) => {
-    e.preventDefault();
-
-    router.put(
-      route("super-admin.wajib-retribusi.send-diterima", id),
-      {},
-      {
-        preserveScroll: true,
-        onSuccess: () => {
-          console.log("test");
-        },
-        onError: (errors) => {
-          console.error("Terjadi kesalahan ketika mengirim");
-        },
-      },
-    );
-  };
 
   return (
     <Layout title="WAJIB RETRIBUSI DITERIMA">
@@ -340,9 +322,7 @@ const Diterima = ({
                 params.append("status", "Approved");
 
                 window.open(
-                  route("wajib-retribusi.export") +
-                    "?" +
-                    params.toString(),
+                  route("wajib-retribusi.export") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -387,7 +367,6 @@ const Diterima = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
-                handleSendDiterima={handleSendDiterima}
               />
             </>
           )}

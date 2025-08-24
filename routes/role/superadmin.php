@@ -19,22 +19,21 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
 
     Route::prefix('data-input')->group(function () {
         Route::resource('/pemohon', PemohonController::class)->only(['index', 'store', 'update']);
-        Route::controller(WajibRetribusiController::class)->group(function () {
-            Route::get('/wajib-retribusi', 'index')->name('wajib-retribusi.index');
-            Route::get('/wajib-retribusi/diterima', 'diterima')->name('wajib-retribusi-diterima');
-            Route::get('/wajib-retribusi/diproses', 'diproses')->name('wajib-retribusi-diproses');
-            Route::get('/wajib-retribusi/ditolak', 'ditolak')->name('wajib-retribusi-ditolak');
-            Route::get('/wajib-retribusi/tambah-data-wajib-retribusi', 'create')->name('wajib-retribusi.create');
-            Route::post('/wajib-retribusi/store', 'store')->name('wajib-retribusi.store');
-            Route::get('/wajib-retribusi/edit-data-wajib-retribusi/{retribusi}', 'edit')->name('wajib-retribusi.edit');
-            Route::put('/wajib-retribusi/update/{id}', 'update')->name('wajib-retribusi.update');
-            Route::put('/wajib-retribusi/{id}/send-diterima', 'sendDiterima')->name('wajib-retribusi.send-diterima');
-            Route::get('/wajib-retribusi/download-pdf', 'downloadPdf')->name('wajib-retribusi.download-pdf');
-            Route::get('/wajib-retribusi/export', 'export')->name('wajib-retribusi.export');
-            Route::get('/wajib-retribusi/{id}/export-single', 'exportSingle')->name('wajib-retribusi.export-single');
+        Route::controller(WajibRetribusiController::class)->name('wajib-retribusi.')->prefix('wajib-retribusi')->group(function () {
+            Route::get('/diterima', 'diterima')->name('diterima');
+            Route::get('/diproses', 'diproses')->name('diproses');
+            Route::get('/ditolak', 'ditolak')->name('ditolak');
+            Route::get('/{status}/{retribusi}/edit', 'edit')
+                ->where(['status' => 'diterima|ditolak'])
+                ->name('edit');
+            Route::put('/{id}/send', 'send')->name('send');
         });
+        Route::resource('/wajib-retribusi', WajibRetribusiController::class)
+            ->except(['destroy', 'edit'])
+            ->parameters([
+                'wajib-retribusi' => 'retribusi'
+            ]);
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
-        
     });
 
     Route::prefix('pembayaran')->group(function () {
@@ -48,7 +47,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::resource('/uptd', UptdController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/user', UserController::class)->only(['index', 'store', 'update']);
         Route::resource('/kecamatan', KecamatanController::class)->only(['index', 'store', 'update', 'destroy']);
-    Route::resource('/kelurahan', KelurahanController::class)->only(['index', 'store', 'update', 'destroy']);
+        Route::resource('/kelurahan', KelurahanController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/kategori', KategoriController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/sub-kategori', SubKategoriController::class)->only(['index', 'store', 'update', 'destroy']);
     });

@@ -12,8 +12,11 @@ const Edit = ({
   kategoriOptions = [],
   subKategoriOptions = [],
   retribusi,
+  status
 }) => {
   const [mapReset, setMapReset] = useState(0);
+
+  console.log(retribusi);
 
   const getSelectedSubKategori = () => {
     if (!data.kodeKategori || !data.kodeSubKategori) return null;
@@ -43,9 +46,16 @@ const Edit = ({
     longitude: retribusi.longitude || null,
     fotoBangunan: null,
     fotoBerkas: null,
-    variabelValues: { bulan: 1 },
+    variabelValues: {
+      bulan: retribusi.bulan,
+      unit: retribusi?.unit,
+      m2: retribusi?.m2,
+      giat: retribusi?.giat,
+      hari: retribusi?.hari,
+      meter: retribusi?.meter,
+    },
     tarifRetribusi: 0,
-    jenisTarif: "tarif",
+    jenisTarif: retribusi.jenisTarif,
   };
 
   const handleVariabelChange = (variabelName, value) => {
@@ -290,7 +300,7 @@ const Edit = ({
 
     console.log(data.tarifRetribusi);
 
-    post(route("super-admin.wajib-retribusi.update", { id: retribusi.id }), {
+    post(route("super-admin.wajib-retribusi.update", { status: status, retribusi: retribusi.id }), {
       data: {
         ...data,
         tarifRetribusi: data.tarifRetribusi,
@@ -592,17 +602,6 @@ const Edit = ({
                 : JSON.parse(selectedSubKategori.variabel || "[]");
             }
 
-            {
-              /* const inputFields = [
-              "bulan",
-              "unit",
-              "m2",
-              "giat",
-              "hari",
-              "meter",
-            ]; */
-            }
-
             const inputFields = ["unit", "m2", "giat", "hari", "meter"];
 
             return (
@@ -624,7 +623,7 @@ const Edit = ({
                         className={`px-3 py-2 outline-none ${
                           isEnabled
                             ? "bg-gray-200"
-                            : "cursor-not-allowed bg-gray-100"
+                            : "cursor-not-allowed bg-slate-300"
                         }`}
                         type="number"
                         id={`variabel-${field}`}
@@ -818,6 +817,7 @@ const Edit = ({
               onLocationChange={handleLocationChange}
               height="400px"
               resetTrigger={mapReset}
+              editable={true}
             />
           </div>
           <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">

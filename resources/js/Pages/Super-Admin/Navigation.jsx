@@ -5,11 +5,6 @@ import AccordionItem from "@/Components/AccordionItem";
 const SuperAdminNavigation = () => {
   const { url } = usePage();
 
-  const isRouteActive = (routeName) => {
-    const generatedRoute = route(routeName);
-    return generatedRoute.includes(url);
-  };
-
   const dataInputs = [
     {
       label: "Pemohon",
@@ -18,19 +13,30 @@ const SuperAdminNavigation = () => {
     {
       label: "Data Wajib Retribusi",
       route: "super-admin.wajib-retribusi.index",
-      activeRoute: "super-admin.wajib-retribusi.*",
+      activeRoute: [
+        "super-admin.wajib-retribusi.index",
+        "super-admin.wajib-retribusi.create",
+      ],
     },
     {
       label: "Inbox Diterima",
-      route: "super-admin.wajib-retribusi-diterima",
+      route: "super-admin.wajib-retribusi.diterima",
+      activeRoute: [
+        "super-admin.wajib-retribusi.diterima",
+        "super-admin.wajib-retribusi.edit",
+      ],
     },
     {
       label: "Inbox Diproses",
-      route: "super-admin.wajib-retribusi-diproses",
+      route: "super-admin.wajib-retribusi.diproses",
     },
     {
       label: "Inbox Ditolak",
-      route: "super-admin.wajib-retribusi-ditolak",
+      route: "super-admin.wajib-retribusi.ditolak",
+      activeRoute: [
+        "super-admin.wajib-retribusi.ditolak",
+        "super-admin.wajib-retribusi.edit",
+      ],
     },
     {
       label: "Inbox Selesai (SKRD)",
@@ -38,6 +44,7 @@ const SuperAdminNavigation = () => {
       activeRoute: "super-admin.skrd.*",
     },
   ];
+
 
   const pembayaranItems = [
     {
@@ -112,12 +119,41 @@ const SuperAdminNavigation = () => {
     },
   ];
 
+  const isAccordionActive = (items) =>
+    items.some((item) => {
+      if (item.activeRoute) {
+        if (Array.isArray(item.activeRoute)) {
+          return item.activeRoute.some((r) => {
+            if (r === "super-admin.wajib-retribusi.edit") {
+              const params = route().params;
+              if (
+                item.label.toLowerCase().includes("diterima") &&
+                params.status === "diterima"
+              ) {
+                return route().current(r);
+              }
+              if (
+                item.label.toLowerCase().includes("ditolak") &&
+                params.status === "ditolak"
+              ) {
+                return route().current(r);
+              }
+              return false;
+            }
+            return route().current(r);
+          });
+        }
+        return route().current(item.activeRoute);
+      }
+      return item.route ? route().current(item.route) : false;
+    });
+
   return (
     <Sidebar>
       <div className="space-y-1.5 p-3">
         <Link
           className={`block rounded px-3 py-2 transition-all duration-300 ${
-            isRouteActive("super-admin.dashboard")
+            route().current('super-admin.dashboard')
               ? "bg-teal-400 font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
           }`}
@@ -129,25 +165,22 @@ const SuperAdminNavigation = () => {
         <AccordionItem
           title="Data Input"
           items={dataInputs}
-          isRouteActive={isRouteActive}
+          defaultOpen={isAccordionActive(dataInputs)}
         />
-
         <AccordionItem
           title="Pembayaran"
           items={pembayaranItems}
-          isRouteActive={isRouteActive}
+          defaultOpen={isAccordionActive(pembayaranItems)}
         />
-
         <AccordionItem
           title="Laporan"
           items={laporanItems}
-          isRouteActive={isRouteActive}
+          defaultOpen={isAccordionActive(laporanItems)}
         />
-
         <AccordionItem
           title="Settings"
           items={settingItems}
-          isRouteActive={isRouteActive}
+          defaultOpen={isAccordionActive(settingItems)}
         />
       </div>
     </Sidebar>

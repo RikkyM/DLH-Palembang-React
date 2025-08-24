@@ -137,7 +137,7 @@ class WajibRetribusiController extends Controller
 
         if ($getPetugas) {
             $query->whereHas('user', function ($q) use ($getPetugas) {
-                $q->where('id', $getPetugas);
+                $q->where('namaLengkap', $getPetugas);
             });
         };
 
@@ -191,7 +191,7 @@ class WajibRetribusiController extends Controller
         $subKategori = $getKategori ? SubKategori::where('kodeKategori', $getKategori)->select('kodeSubKategori', 'namaSubKategori')->get() : collect();
         $kecamatan = Kecamatan::select('kodeKecamatan', 'namaKecamatan')->get();
         $kelurahan = $getKecamatan ? Kelurahan::where('kodeKecamatan', $getKecamatan)->select('kodeKelurahan', 'namaKelurahan')->get() : collect();
-        $petugas = User::select('id', 'namaLengkap')->where('role', 'ROLE_PENDAFTAR')->get();
+        $petugas = User::select('namaLengkap')->where('role', 'ROLE_PENDAFTAR')->distinct()->get();
 
         $statusOptions = WajibRetribusi::select('status')
             ->distinct()
@@ -237,6 +237,9 @@ class WajibRetribusiController extends Controller
         ]);
     }
 
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
         return $this->renderWajibRetribusi($request, null);
@@ -257,6 +260,9 @@ class WajibRetribusiController extends Controller
         return $this->renderWajibRetribusi($request, 'Rejected', 'Ditolak');
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         $pemohonOptions = Pemilik::select('id', 'namaPemilik')
@@ -328,6 +334,9 @@ class WajibRetribusiController extends Controller
         ]);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(WajibRetribusiRequest $request)
     {
         $validated = $request->validated();
@@ -338,8 +347,7 @@ class WajibRetribusiController extends Controller
         $tarif = $sub->{$jenisTarif} ?? 0;
         $rumus = $sub->rumus ?? '';
 
-
-        $tarifPerbulan = $tarif;
+        $tarifPertahun = $tarif;
 
         if (!empty($validated['variabelValues']) && $rumus) {
             // $validated['variabelValues']['bulan'] = $request->input('bulan');
@@ -353,14 +361,14 @@ class WajibRetribusiController extends Controller
             try {
                 $nilaiRumus = 0;
                 eval("\$nilaiRumus = $rumus;");
-                $tarifPerbulan = $tarif * $nilaiRumus;
+                $tarifPertahun = $validated['variabelValues']['bulan'] * $tarif * $nilaiRumus;
 
-                // dd($tarifPerbulan);
+                // dd($tarifPertahun);
             } catch (\Throwable $e) {
                 return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
             }
         } else {
-            $tarifPerbulan = $validated['variabelValues']['bulan'] * $tarif;
+            $tarifPertahun = $validated['variabelValues']['bulan'] * $tarif;
         }
 
 
@@ -402,7 +410,15 @@ class WajibRetribusiController extends Controller
                 'file' => $fotoBerkas,
                 'url_file' => [Storage::url($pathFotoBerkas)],
                 'linkMap' => $request->linkMap,
-                'tarifPerbulan' => $tarifPerbulan,
+                'jenisTarif' => $request->jenisTarif,
+                'bulan' => $validated['variabelValues']['bulan'],
+                'unit' => $validated['variabelValues']['unit'] ?? null,
+                'm2' => $validated['variabelValues']['m2'] ?? null,
+                'giat' => $validated['variabelValues']['giat'] ?? null,
+                'hari' => $validated['variabelValues']['hari'] ?? null,
+                'meter' => $validated['variabelValues']['meter'] ?? null,
+                'tarifPerbulan' => $request->tarifRetribusi,
+                'tarifPertahun' => $tarifPertahun,
                 'jumlahBangunan' => $request->jBangunan,
                 'jumlahLantai' => $request->jLantai,
                 'maksud' => "Wajib Retribusi Baru",
@@ -419,6 +435,8 @@ class WajibRetribusiController extends Controller
                 ]
             ];
 
+            // dd($dataToSave);
+
             WajibRetribusi::create($dataToSave);
 
             DB::commit();
@@ -429,8 +447,30 @@ class WajibRetribusiController extends Controller
         }
     }
 
-    public function edit(WajibRetribusi $retribusi)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($status, WajibRetribusi $retribusi)
+    {
+        // dd($status);
+        // if (!in_array($status, ['diterima', 'ditolak'])) {
+        //     abort(404);
+        // }
+
+        // if ($retribusi->status !== $status) {
+        //     abort(404, 'Status tidak sesuai dengan data');
+        // }
+
+        // dd($retribusi->toArray());
+
         $retribusi->load(['pemilik', 'kelurahan', 'kecamatan', 'kategori', 'subKategori', 'uptd']);
 
         $pemohonOptions = Pemilik::select('id', 'namaPemilik')
@@ -471,6 +511,7 @@ class WajibRetribusiController extends Controller
             ])->values());
 
         return Inertia::render("Super-Admin/Data-Input/Wajib-Retribusi/Edit", [
+            'status' => $status,
             'retribusi' => $retribusi,
             'pemohonOptions' => $pemohonOptions,
             'kecamatanOptions' => $kecamatanOptions,
@@ -480,23 +521,27 @@ class WajibRetribusiController extends Controller
         ]);
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(WajibRetribusiRequest $request, $id)
     {
-
         $validated = $request->validated();
 
         $retribusi = WajibRetribusi::findOrFail($id);
 
-        $tarifPerbulan = $retribusi->tarifPerbulan;
+        $tarifPertahun = $request->totalRetribusi;
+
+        // dd($tarifPertahun);
 
         if ($request->filled('variabelValues') || $request->filled('bulan')) {
             $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
 
-            $tarif = $sub->tarif;
+            $jenisTarif = $request->jenisTarif;
+            $tarif = $sub->{$jenisTarif} ?? 0;
             $rumus = $sub->rumus ?? '';
 
             if (!empty($validated['variabelValues']) && $rumus) {
-                $validated['variabelValues']['bulan'] = $request->input('bulan');
                 foreach ($validated['variabelValues'] as $key => $value) {
                     $rumus = preg_replace('/\b' . preg_quote($key) . '\b/', $value, $rumus);
                 }
@@ -504,14 +549,16 @@ class WajibRetribusiController extends Controller
                 try {
                     $nilaiRumus = 0;
                     eval("\$nilaiRumus = $rumus;");
-                    $tarifPerbulan = $tarif * $nilaiRumus;
+                    $tarifPertahun = $validated['variabelValues']['bulan'] * $tarif * $nilaiRumus;
                 } catch (\Throwable $e) {
                     return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
                 }
             } else {
-                $tarifPerbulan = $request->input('bulan') * $tarif;
+                $tarifPertahun = $validated['variabelValues']['bulan'] * $tarif;
             }
         }
+
+        // dd($tarifPertahun);
 
         DB::beginTransaction();
 
@@ -559,7 +606,15 @@ class WajibRetribusiController extends Controller
                 'file' => $fotoBerkas,
                 'url_file' => $pathFotoBerkas,
                 'linkMap' => $request->linkMap,
-                'tarifPerbulan' => $tarifPerbulan,
+                'jenisTarif' => $request->jenisTarif,
+                'bulan' => $validated['variabelValues']['bulan'],
+                'unit' => $validated['variabelValues']['unit'] ?? null,
+                'm2' => $validated['variabelValues']['m2'] ?? null,
+                'giat' => $validated['variabelValues']['giat'] ?? null,
+                'hari' => $validated['variabelValues']['hari'] ?? null,
+                'meter' => $validated['variabelValues']['meter'] ?? null,
+                'tarifPerbulan' => $request->tarifRetribusi,
+                'tarifPertahun' => $tarifPertahun,
                 'jumlahBangunan' => $request->jBangunan,
                 'jumlahLantai' => $request->jLantai,
                 'historyAction' => array_merge($retribusi->historyAction ?? [], [
@@ -578,7 +633,7 @@ class WajibRetribusiController extends Controller
 
             DB::commit();
 
-            return redirect()->route('super-admin.wajib-retribusi-diterima')->with('success', 'Data berhasil diperbarui.');
+            return redirect()->route('super-admin.wajib-retribusi.diterima')->with('success', 'Data berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollback();
             // dd($e);
@@ -588,7 +643,15 @@ class WajibRetribusiController extends Controller
         // dd("total: Rp." . number_format($this->rumus($validated), 0, ',', '.'));
     }
 
-    public function sendDiterima($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+
+    public function send($id)
     {
         $retribusi = WajibRetribusi::findOrFail($id);
 

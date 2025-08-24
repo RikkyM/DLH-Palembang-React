@@ -28,5 +28,6 @@ Route::prefix('sirep')->group(function () {
         require __DIR__ . '/role/superadmin.php';
         require __DIR__ . '/role/pendaftar.php';
         require __DIR__ . '/role/kuptd.php';
+        require __DIR__ . '/role/katim.php';
     });
 });

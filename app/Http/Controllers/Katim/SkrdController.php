@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Kuptd;
+namespace App\Http\Controllers\Katim;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
@@ -22,7 +22,7 @@ class SkrdController extends Controller
                 return strtoupper(Carbon::create()->month($i)->translatedFormat('M'));
             });
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -38,7 +38,7 @@ class SkrdController extends Controller
         $skrd = Skrd::with([
             'user:id,namaLengkap,lokasi',
             'pembayaran' => fn($q) => $q->orderBy('tanggalBayar')
-        ])->where('uptdId', auth()->user()->uptdId)->addSelect([
+        ])->addSelect([
             'skrd.*',
             'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
                 ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
@@ -78,7 +78,7 @@ class SkrdController extends Controller
             })->select('kodeSubKategori', 'namaSubKategori')->get()
             : collect();
 
-        return Inertia::render('Kuptd/Data-Input/Skrd/Index', [
+        return Inertia::render('Katim/Data-Input/Skrd/Index', [
             'datas' => $skrd->paginate(10)->withQueryString(),
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
@@ -115,7 +115,7 @@ class SkrdController extends Controller
      */
     public function show(Skrd $skrd)
     {
-        return Inertia::render('Kuptd/Data-Input/Skrd/Show', [
+        return Inertia::render('Katim/Data-Input/Skrd/Show', [
             'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd']),
             'bulan' => $this->getBulan()
         ]);

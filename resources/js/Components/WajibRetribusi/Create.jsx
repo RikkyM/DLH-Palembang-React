@@ -23,13 +23,11 @@ const WajibRetribusiCreate = ({
     ROLE_PENDAFTAR: {
       submitRoute: "pendaftar.wajib-retribusi.store",
       redirectRoute: "pendaftar.wajib-retribusi.index",
-      allowedFields: ["all"],
       readonlyFields: [],
     },
     ROLE_SUPERADMIN: {
       submitRoute: "super-admin.wajib-retribusi.store",
       redirectRoute: "super-admin.wajib-retribusi.index",
-      allowedFields: ["all"],
       readonlyFields: [],
     },
   };
@@ -277,7 +275,6 @@ const WajibRetribusiCreate = ({
       totalRetribusi: total,
     };
 
-    console.log("berhasil");
 
     post(route(currentConfig.submitRoute), {
       data: submitData,
@@ -587,14 +584,14 @@ const WajibRetribusiCreate = ({
                   >
                     <Label
                       htmlFor={`variabel-${field}`}
-                      className="capitalize after:text-red-500 after:content-['*']"
+                      className={`capitalize ${isEnabled && "after:text-red-500 after:content-['*']"}`}
                     >
                       {field}
                     </Label>
                     <Input
-                      type="number"
+                      type="text"
                       id={`variabel-${field}`}
-                      className={`${isEnabled ? "bg-gray-200" : "cursor-not-allowed bg-transparent"} ${errors[`variabelValues.${field}`] && "border border-red-500"}`}
+                      className={`${isEnabled ? "bg-gray-200" : "cursor-not-allowed bg-slate-300"} ${errors[`variabelValues.${field}`] && "border border-red-500"}`}
                       placeholder={`Masukkan nilai ${field}...`}
                       value={data.variabelValues[field] || ""}
                       onKeyDown={(e) => {
@@ -802,6 +799,7 @@ const WajibRetribusiCreate = ({
             latitude={data.latitude || ""}
             longitude={data.longitude || ""}
             onLocationChange={handleLocationChange}
+            editable={true}
             height="400px"
             resetTrigger={mapReset}
           />
@@ -830,7 +828,7 @@ const WajibRetribusiCreate = ({
           <Label htmlFor="fotoBerkas">Upload Foto Berkas</Label>
           <Input
             type="file"
-            accept="image/*"
+            accept="image/*,application/pdf"
             id="fotoBerkas"
             onChange={(e) => handleFileChange("fotoBerkas", e.target.files[0])}
             required

@@ -1,21 +1,24 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
-
+import { useProvider } from "@/Context/GlobalContext";
 import { Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
 import Table from "./Table";
+import DialogForm from "./DialogForm";
 
-const Diproses = ({
+const Diterima = ({
   datas,
   filters,
-  pjOptions,
-  kategoriOptions,
-  subKategoriOptions,
-  kecamatanOptions,
-  kelurahanOptions,
+  pjOptions = [],
+  kategoriOptions = [],
+  subKategoriOptions = [],
+  kecamatanOptions = [],
+  kelurahanOptions = [],
+  petugasOptions = []
 }) => {
+  const { modalState, closeModal } = useProvider();
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
@@ -23,6 +26,7 @@ const Diproses = ({
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
   const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
+  const [petugas, setPetugas] = useState(filters.petugas || "");
   const [showFilters, setShowFilters] = useState(false);
   const [pj, setpj] = useState(filters.pj || "");
   const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +74,7 @@ const Diproses = ({
 
   const kategoriList = useMemo(
     () =>
-      kategoriOptions?.map((k) => ({
+      kategoriOptions.map((k) => ({
         value: k.kodeKategori,
         label: k.namaKategori,
       })),
@@ -79,7 +83,7 @@ const Diproses = ({
 
   const pjList = useMemo(
     () =>
-      pjOptions?.map((k) => ({
+      pjOptions.map((k) => ({
         value: k.id.toString(),
         label: k.namaPemilik,
       })),
@@ -88,21 +92,21 @@ const Diproses = ({
 
   const subKategoriList = useMemo(
     () =>
-      subKategoriOptions?.map((s) => ({
+      subKategoriOptions.map((s) => ({
         value: s.kodeSubKategori,
         label: s.namaSubKategori,
       })),
     [subKategoriOptions],
   );
 
-  const kecamatanList = useMemo(
-    () =>
-      kecamatanOptions?.map((kec) => ({
-        value: kec.kodeKecamatan,
-        label: kec.namaKecamatan,
-      })),
-    [kecamatanOptions],
-  );
+  // const kecamatanList = useMemo(
+  //   () =>
+  //     kecamatanOptions.map((kec) => ({
+  //       value: kec.kodeKecamatan,
+  //       label: kec.namaKecamatan,
+  //     })),
+  //   [kecamatanOptions],
+  // );
 
   const kelurahanList = useMemo(
     () =>
@@ -111,6 +115,24 @@ const Diproses = ({
         label: kel.namaKelurahan,
       })),
     [kelurahanOptions],
+  );
+
+  const kecamatanList = useMemo(
+    () =>
+      kecamatanOptions.map((kec) => ({
+        value: kec.kodeKecamatan,
+        label: kec.namaKecamatan,
+      })),
+    [kecamatanOptions],
+  );
+
+  const petugasList = useMemo(
+    () =>
+      petugasOptions.map((petugas) => ({
+        value: petugas.namaLengkap,
+        label: petugas.namaLengkap,
+      })),
+    [petugasOptions],
   );
 
   const buildParams = (additionalParams = {}) => {
@@ -122,6 +144,7 @@ const Diproses = ({
     if (subKategori) params["sub-kategori"] = subKategori;
     if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
+    if (petugas) params.petugas = petugas;
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "asc") {
@@ -155,7 +178,7 @@ const Diproses = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("pendaftar.wajib-retribusi.diproses"), params, {
+      router.get(route("katim.wajib-retribusi.diterima"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
@@ -174,11 +197,30 @@ const Diproses = ({
     subKategori,
     kecamatan,
     kelurahan,
+    petugas,
     pj,
   ]);
 
+  const handleSendDiterima = (e, id) => {
+    e.preventDefault();
+
+    router.put(
+      route("katim.wajib-retribusi-send-diterima", id),
+      {},
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          console.log("Retribusi berhasil dikirim.");
+        },
+        onError: (errors) => {
+          console.error("Terjadi kesalahan ketika mengirim");
+        },
+      },
+    );
+  };
+
   return (
-    <Layout title="WAJIB RETRIBUSI DIPROSES">
+    <Layout title="WAJIB RETRIBUSI DITERIMA">
       <section className="p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
@@ -238,6 +280,13 @@ const Diproses = ({
                     disabled={!kecamatan}
                   />
                   <SearchableSelect
+                    id="petugaslist"
+                    options={petugasList}
+                    value={petugas}
+                    onChange={(val) => setPetugas(val)}
+                    placeholder="Pilih Petugas Pendaftar"
+                  />
+                  <SearchableSelect
                     id="pjlist"
                     options={pjList}
                     value={pj}
@@ -273,8 +322,9 @@ const Diproses = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (petugas) params.append("petugas", petugas);
 
-                params.append("status", "Processed");
+                params.append("status", "Approved");
 
                 window.open(
                   route("wajib-retribusi.download-pdf") +
@@ -296,8 +346,9 @@ const Diproses = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (petugas) params.append("petugas", petugas);
 
-                params.append("status", "Processed");
+                params.append("status", "Approved");
 
                 window.open(
                   route("wajib-retribusi.export") + "?" + params.toString(),
@@ -345,6 +396,7 @@ const Diproses = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
+                handleSendDiterima={handleSendDiterima}
               />
             </>
           )}
@@ -352,8 +404,14 @@ const Diproses = ({
 
         {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
+
+      <DialogForm
+        isOpen={modalState.type === "diterima"}
+        onClose={closeModal}
+        retribusi={modalState.data}
+      />
     </Layout>
   );
 };
 
-export default Diproses;
+export default Diterima;

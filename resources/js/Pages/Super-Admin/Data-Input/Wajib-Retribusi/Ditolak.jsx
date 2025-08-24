@@ -67,6 +67,7 @@ const Ditolak = ({
     },
     { key: "uptd", label: "uptd", align: "text-left truncate" },
     { key: "petugas", label: "nama petugas", align: "text-left truncate" },
+    { key: "keterangan", label: "keterangan", align: "text-left" },
     { key: "status", label: "status", align: "text-left truncate" },
   ];
 
@@ -118,7 +119,7 @@ const Ditolak = ({
   const petugasList = useMemo(
     () =>
       petugasOptions.map((petugas) => ({
-        value: petugas.id.toString(),
+        value: petugas.namaLengkap,
         label: petugas.namaLengkap,
       })),
     [petugasOptions],
@@ -136,16 +137,16 @@ const Ditolak = ({
     if (petugas) params.petugas = petugas;
     if (sort && sort !== "id") {
       params.sort = sort;
-      if (direction && direction.toLowerCase() === "desc") {
-        params.direction = "desc";
+      if (direction && direction.toLowerCase() === "asc") {
+        params.direction = "asc";
       }
     } else if (
       sort === "id" &&
       direction &&
-      direction.toLowerCase() === "desc"
+      direction.toLowerCase() === "asc"
     ) {
       params.sort = sort;
-      params.direction = "desc";
+      params.direction = "asc";
     }
 
     return params;
@@ -167,7 +168,7 @@ const Ditolak = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("super-admin.wajib-retribusi-ditolak"), params, {
+      router.get(route("super-admin.wajib-retribusi.ditolak"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],

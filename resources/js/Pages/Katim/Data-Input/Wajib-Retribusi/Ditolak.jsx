@@ -7,14 +7,15 @@ import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
 import Table from "./Table";
 
-const Diproses = ({
+const Ditolak = ({
   datas,
   filters,
-  pjOptions,
-  kategoriOptions,
-  subKategoriOptions,
-  kecamatanOptions,
-  kelurahanOptions,
+  pjOptions = [],
+  kategoriOptions = [],
+  subKategoriOptions = [],
+  kecamatanOptions = [],
+  kelurahanOptions = [],
+  petugasOptions = [],
 }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
@@ -23,6 +24,7 @@ const Diproses = ({
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
   const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
+  const [petugas, setPetugas] = useState(filters.petugas || "");
   const [showFilters, setShowFilters] = useState(false);
   const [pj, setpj] = useState(filters.pj || "");
   const [isLoading, setIsLoading] = useState(false);
@@ -65,12 +67,13 @@ const Diproses = ({
     },
     { key: "uptd", label: "uptd", align: "text-left truncate" },
     { key: "petugas", label: "nama petugas", align: "text-left truncate" },
+    { key: "keterangan", label: "keterangan", align: "text-left" },
     { key: "status", label: "status", align: "text-left truncate" },
   ];
 
   const kategoriList = useMemo(
     () =>
-      kategoriOptions?.map((k) => ({
+      kategoriOptions.map((k) => ({
         value: k.kodeKategori,
         label: k.namaKategori,
       })),
@@ -79,7 +82,7 @@ const Diproses = ({
 
   const pjList = useMemo(
     () =>
-      pjOptions?.map((k) => ({
+      pjOptions.map((k) => ({
         value: k.id.toString(),
         label: k.namaPemilik,
       })),
@@ -88,7 +91,7 @@ const Diproses = ({
 
   const subKategoriList = useMemo(
     () =>
-      subKategoriOptions?.map((s) => ({
+      subKategoriOptions.map((s) => ({
         value: s.kodeSubKategori,
         label: s.namaSubKategori,
       })),
@@ -97,7 +100,7 @@ const Diproses = ({
 
   const kecamatanList = useMemo(
     () =>
-      kecamatanOptions?.map((kec) => ({
+      kecamatanOptions.map((kec) => ({
         value: kec.kodeKecamatan,
         label: kec.namaKecamatan,
       })),
@@ -113,6 +116,15 @@ const Diproses = ({
     [kelurahanOptions],
   );
 
+  const petugasList = useMemo(
+    () =>
+      petugasOptions.map((petugas) => ({
+        value: petugas.namaLengkap,
+        label: petugas.namaLengkap,
+      })),
+    [petugasOptions],
+  );
+
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
 
@@ -122,6 +134,7 @@ const Diproses = ({
     if (subKategori) params["sub-kategori"] = subKategori;
     if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
+    if (petugas) params.petugas = petugas;
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "asc") {
@@ -155,7 +168,7 @@ const Diproses = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("pendaftar.wajib-retribusi.diproses"), params, {
+      router.get(route("katim.wajib-retribusi.ditolak"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
@@ -174,11 +187,12 @@ const Diproses = ({
     subKategori,
     kecamatan,
     kelurahan,
+    petugas,
     pj,
   ]);
 
   return (
-    <Layout title="WAJIB RETRIBUSI DIPROSES">
+    <Layout title="WAJIB RETRIBUSI DITOLAK">
       <section className="p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
@@ -238,6 +252,13 @@ const Diproses = ({
                     disabled={!kecamatan}
                   />
                   <SearchableSelect
+                    id="petugaslist"
+                    options={petugasList}
+                    value={petugas}
+                    onChange={(val) => setPetugas(val)}
+                    placeholder="Pilih Petugas Pendaftar"
+                  />
+                  <SearchableSelect
                     id="pjlist"
                     options={pjList}
                     value={pj}
@@ -274,7 +295,7 @@ const Diproses = ({
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
 
-                params.append("status", "Processed");
+                params.append("status", "Approved");
 
                 window.open(
                   route("wajib-retribusi.download-pdf") +
@@ -297,7 +318,7 @@ const Diproses = ({
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
 
-                params.append("status", "Processed");
+                params.append("status", "Approved");
 
                 window.open(
                   route("wajib-retribusi.export") + "?" + params.toString(),
@@ -337,7 +358,6 @@ const Diproses = ({
           ) : (
             <>
               <Table
-                search={search}
                 datas={datas}
                 columns={columns}
                 sort={sort}
@@ -356,4 +376,4 @@ const Diproses = ({
   );
 };
 
-export default Diproses;
+export default Ditolak;

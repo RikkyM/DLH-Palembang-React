@@ -38,7 +38,15 @@ return new class extends Migration
             $table->string('file');
             $table->json('url_file');
             $table->string('linkMap')->nullable();
+            $table->enum('jenisTarif', ['tarif', 'tarif2'])->nullable();
+            $table->integer('bulan')->nullable();
+            $table->integer('unit')->nullable();
+            $table->integer('m2')->nullable();
+            $table->integer('giat')->nullable();
+            $table->integer('hari')->nullable();
+            $table->integer('meter')->nullable();
             $table->integer('tarifPerbulan');
+            $table->integer('tarifPertahun')->nullable();
             $table->integer('jumlahBangunan');
             $table->integer('jumlahLantai');
             $table->string('maksud');
