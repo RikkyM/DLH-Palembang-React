@@ -17,12 +17,6 @@ const Table = ({
   setDirection,
   isLoading,
 }) => {
-  // const handleSort = (column) => {
-  //   const newDirection =
-  //     sort === column && direction === "desc" ? "asc" : "desc";
-  //   setSort(column);
-  //   setDirection(newDirection);
-  // };
 
   const handleSend = (e, id) => {
       e.preventDefault();
@@ -122,16 +116,32 @@ const Table = ({
               <td>{data.kategori.namaKategori}</td>
               <td>{data.sub_kategori.namaSubKategori}</td>
               <td>{data.uptd.namaUptd}</td>
+              <td>
+                {new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(data.tarifPerbulan) || 0}
+              </td>
+              <td>
+                {new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(data.tarifPertahun) || 0}
+              </td>
               <td>{data.user.namaLengkap}</td>
               {data.status == "Rejected" && <td>{data.keterangan}</td>}
               <td>
                 <span
                   className={`select-none rounded py-2 font-medium ${
-                    data.status == "Approved"
-                      ? "text-teal-600"
-                      : data.status == "Rejected"
-                        ? "text-red-600"
-                        : "text-amber-600"
+                    data.status === "Approved" && data.current_role != null
+                      ? "text-sky-600"
+                      : data.status == "Processed"
+                        ? "text-amber-500"
+                        : data.status == "Rejected"
+                          ? "text-red-500"
+                          : data.status === "Approved" &&
+                            data.current_role == null &&
+                            "text-green-500"
                   }`}
                 >
                   {data.status == "Approved"

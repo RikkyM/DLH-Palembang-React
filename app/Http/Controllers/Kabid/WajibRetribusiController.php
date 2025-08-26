@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Katim;
+namespace App\Http\Controllers\Kabid;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
@@ -61,7 +61,7 @@ class WajibRetribusiController extends Controller
         }
     }
 
-    private function filterData($query, $search, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, $getStatus = null, $getTahun = null, $getPage = null)
+    private function filterData($query, $search, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, $getStatus, $getTahun = null, $getPage = null)
     {
         if ($search && trim($search) !== '') {
             $query->where(function ($q) use ($search) {
@@ -188,7 +188,7 @@ class WajibRetribusiController extends Controller
             ->values()
             ->map(fn($t) => ['value' => $t, 'label' => $t]);
 
-        return Inertia::render("Katim/Data-Input/Wajib-Retribusi/{$view}", [
+        return Inertia::render("Kabid/Data-Input/Wajib-Retribusi/{$view}", [
             'datas' => $query->paginate($getPage)->withQueryString(),
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
@@ -228,75 +228,33 @@ class WajibRetribusiController extends Controller
                 if ($request->get('status') === "Approved") {
                     $q->where(function ($data) {
                         $data->where('status', "Processed")
-                            ->where('current_role', "ROLE_KATIM");
+                            ->where('current_role', "ROLE_KABID");
                     });
                 }
 
                 if ($request->get('status') === "Processed") {
-                    $q->where('status', 'Processed')->where(function ($data) {
-                        $data->where('current_role', '!=', 'ROLE_KUPTD')
-                            ->where('current_role', '!=', 'ROLE_KATIM');
-                    });
+                    $q->where('status', "Processed")
+                        ->where('current_role', '!=', "ROLE_KATIM");
                 }
 
                 if ($request->get('status') === "Rejected") {
-                    $q->where('status', 'Rejected');
+                    $q->where('status', "Rejected");
                 }
 
-                if ($request->get('status') === "Finished") {
-                    $q->where(function($data) {
+                if ($request->get('status') === 'Finished') {
+                    $q->where(function ($data) {
                         $data->where('status', 'Approved')->whereNull('current_role');
                     })->orWhere('status', 'Finished');
                 }
 
                 if ($request->get('status') === null) {
                     $q->where(function ($data) {
-                        $data->where('current_role', '!=', "ROLE_PENDAFTAR")
-                            ->where('current_role', '!=', 'ROLE_KUPTD');
-                    })->orWhere('status', "Rejected")
-                        ->orWhereNull('current_role');
+                        $data->where('current_role', "ROLE_KABID")
+                            ->orWhere('status', "Rejected")
+                            ->orWhereNull('current_role');
+                    });
                 }
             }
-        );
-    }
-
-    public function diterima(Request $request)
-    {
-        return $this->renderWajibRetribusi(
-            $request,
-            "Processed",
-            "Diterima",
-            fn($q) => $q->where('current_role', 'ROLE_KATIM')
-        );
-    }
-
-    public function diproses(Request $request)
-    {
-        return $this->renderWajibRetribusi(
-            $request,
-            "Processed",
-            "Diproses",
-            fn($q) => $q->where(function ($q) {
-                $q->where(function ($data) {
-                    $data->where('current_role', '!=', 'ROLE_KUPTD')
-                        ->where('current_role', '!=', 'ROLE_KATIM');
-                })
-                    ->where('status', "Processed")
-                    ->orWhereNull('current_role');
-            })
-        );
-    }
-
-    public function ditolak(Request $request)
-    {
-        return $this->renderWajibRetribusi(
-            $request,
-            "Rejected",
-            "Ditolak",
-            fn($q) => $q->where(function ($q) {
-                $q->where('current_role', '!=', 'ROLE_KATIM')
-                    ->orWhereNull('current_role');
-            })
         );
     }
 
@@ -319,57 +277,9 @@ class WajibRetribusiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($status, WajibRetribusi $retribusi)
+    public function show(string $id)
     {
-        // dd($retribusi);
-        $retribusi->load(['pemilik', 'kelurahan', 'kecamatan', 'kategori', 'subKategori', 'uptd']);
-
-        $pemohonOptions = Pemilik::select('id', 'namaPemilik')
-            ->orderBy('namaPemilik')
-            ->get()
-            ->map(fn($pemohon) => ['value' => $pemohon->id, 'label' => $pemohon->namaPemilik]);
-
-        $kecamatanOptions = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
-            ->orderBy('namaKecamatan')
-            ->get()
-            ->map(fn($kecamatan) => ['value' => $kecamatan->kodeKecamatan, 'label' => $kecamatan->namaKecamatan]);
-
-        $kelurahanOptions = Kelurahan::select('kodeKelurahan', 'namaKelurahan', 'kodeKecamatan')
-            ->orderBy('namaKelurahan')
-            ->get()
-            ->groupBy('kodeKecamatan')
-            ->map(fn($grouped) => $grouped->map(fn($kelurahan) => [
-                'value' => $kelurahan->kodeKelurahan,
-                'label' => $kelurahan->namaKelurahan
-            ])->values());
-
-        $kategoriOptions = Kategori::select('kodeKategori', 'namaKategori')
-            ->orderBy('namaKategori')
-            ->get()
-            ->map(fn($kategori) => ['value' => $kategori->kodeKategori, 'label' => $kategori->namaKategori]);
-
-        $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'rumus', 'variabel', 'tarif', 'tarif2')
-            ->orderBy('namaSubKategori')
-            ->get()
-            ->groupBy('kodeKategori')
-            ->map(fn($grouped) => $grouped->map(fn($sub) => [
-                'value' => $sub->kodeSubKategori,
-                'label' => $sub->namaSubKategori,
-                'rumus' => $sub->rumus,
-                'variabel' => $sub->variabel,
-                'tarif' => $sub->tarif,
-                'tarif2' => $sub->tarif2
-            ])->values());
-
-        return Inertia::render("Katim/Data-Input/Wajib-Retribusi/Show", [
-            'status' => $status,
-            'retribusi' => $retribusi,
-            'pemohonOptions' => $pemohonOptions,
-            'kecamatanOptions' => $kecamatanOptions,
-            'kelurahanOptions' => $kelurahanOptions,
-            'kategoriOptions' => $kategoriOptions,
-            'subKategoriOptions' => $subKategoriOptions,
-        ]);
+        //
     }
 
     /**
@@ -383,32 +293,9 @@ class WajibRetribusiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, WajibRetribusi $retribusi)
+    public function update(Request $request, string $id)
     {
-        $request->validate([
-            'status' => 'in:Approved,Rejected,Processed',
-            'keterangan' => $request->status === "Rejected" ? "required" : "nullable"
-        ], [
-            'status.in' => 'Status tidak valid',
-            'keterangan.required' => 'Keterangan perlu diisi'
-        ]);
-
-        $history = $retribusi->historyAction ?? [];
-
-        $history[] = [
-            'role' => Auth::user()->role,
-            'action' => $request->status,
-            'userId' => Auth::id(),
-            'actionDate' => now()->toIso8601String()
-        ];
-
-        $retribusi->keterangan = $request->keterangan;
-        $retribusi->status = $request->status === "Rejected" ? "Rejected" : "Processed";
-        $retribusi->historyAction = $history;
-        $retribusi->current_role = $request->status === "Approved" ? "ROLE_KABID" : "ROLE_PENDAFTAR";
-        $retribusi->save();
-
-        return redirect()->back();
+        //
     }
 
     /**

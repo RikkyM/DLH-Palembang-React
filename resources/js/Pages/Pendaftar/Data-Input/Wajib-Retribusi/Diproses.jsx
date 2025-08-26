@@ -10,11 +10,12 @@ import Table from "./Table";
 const Diproses = ({
   datas,
   filters,
-  pjOptions,
-  kategoriOptions,
-  subKategoriOptions,
-  kecamatanOptions,
-  kelurahanOptions,
+  pjOptions = [],
+  kategoriOptions = [],
+  subKategoriOptions = [],
+  kecamatanOptions = [],
+  kelurahanOptions = [],
+  petugasOptions = [],
 }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
@@ -23,6 +24,7 @@ const Diproses = ({
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
   const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
+  const [petugas, setPetugas] = useState(filters.petugas || "");
   const [showFilters, setShowFilters] = useState(false);
   const [pj, setpj] = useState(filters.pj || "");
   const [isLoading, setIsLoading] = useState(false);
@@ -64,6 +66,16 @@ const Diproses = ({
       align: "text-left truncate",
     },
     { key: "uptd", label: "uptd", align: "text-left truncate" },
+    {
+      key: "tarifPerbulan",
+      label: "tarif perbulan",
+      align: "text-left truncate",
+    },
+    {
+      key: "tarifPertahun",
+      label: "tarif pertahun",
+      align: "text-left truncate",
+    },
     { key: "petugas", label: "nama petugas", align: "text-left truncate" },
     { key: "status", label: "status", align: "text-left truncate" },
   ];
@@ -113,6 +125,15 @@ const Diproses = ({
     [kelurahanOptions],
   );
 
+  const petugasList = useMemo(
+    () =>
+      petugasOptions.map((petugas) => ({
+        value: petugas.namaLengkap,
+        label: petugas.namaLengkap,
+      })),
+    [petugasOptions],
+  );
+
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
 
@@ -122,6 +143,7 @@ const Diproses = ({
     if (subKategori) params["sub-kategori"] = subKategori;
     if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
+    if (petugas) params.petugas = petugas;
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "asc") {
@@ -174,6 +196,7 @@ const Diproses = ({
     subKategori,
     kecamatan,
     kelurahan,
+    petugas,
     pj,
   ]);
 
@@ -238,6 +261,13 @@ const Diproses = ({
                     disabled={!kecamatan}
                   />
                   <SearchableSelect
+                    id="petugasList"
+                    options={petugasList}
+                    value={petugas}
+                    onChange={(val) => setPetugas(val)}
+                    placeholder="Pilih Petugas Pendaftar"
+                  />
+                  <SearchableSelect
                     id="pjlist"
                     options={pjList}
                     value={pj}
@@ -273,6 +303,7 @@ const Diproses = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (petugas) params.append("petugas", petugas);
 
                 params.append("status", "Processed");
 
@@ -296,6 +327,7 @@ const Diproses = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (petugas) params.append("petugas", petugas);
 
                 params.append("status", "Processed");
 

@@ -150,8 +150,12 @@ class WajibRetribusiController extends Controller
         }
     }
 
-    private function renderWajibRetribusi(Request $request, string $status = null, string $view = 'Index')
-    {
+    private function renderWajibRetribusi(
+        Request $request,
+        $status = null,
+        string $view = 'Index',
+        ?callable $extraFilter = null
+    ) {
         $search = $request->get('search');
         $sortBy = $request->get('sort', 'id');
         $sortDir = $request->get('direction', 'desc');
@@ -175,31 +179,40 @@ class WajibRetribusiController extends Controller
             'uptd'
         ]);
 
-        // if ($status) {
-        //     $query->where('status', $status);
-        // }
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        if ($extraFilter) {
+            $extraFilter($query);
+        }
 
         if ($status && $view !== 'Index') {
             $query->where('status', $status)->whereNull('noWajibRetribusi');
         }
 
         $this->sortTable($query, $sortBy, $sortDir);
-        $this->filterData($query, $search, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, $getStatus, $getTahun);
+        $this->filterData($query, $search, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, null, $getTahun);
 
         $penanggungJawab = Pemilik::select('id', 'namaPemilik')->get();
         $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
-        $subKategori = $getKategori ? SubKategori::where('kodeKategori', $getKategori)->select('kodeSubKategori', 'namaSubKategori')->get() : collect();
+        $subKategori = Inertia::lazy(fn() => $getKategori ? SubKategori::where('kodeKategori', $getKategori)->select('kodeSubKategori', 'namaSubKategori')->get() : collect());
         $kecamatan = Kecamatan::select('kodeKecamatan', 'namaKecamatan')->get();
         $kelurahan = $getKecamatan ? Kelurahan::where('kodeKecamatan', $getKecamatan)->select('kodeKelurahan', 'namaKelurahan')->get() : collect();
         $petugas = User::select('namaLengkap')->where('role', 'ROLE_PENDAFTAR')->distinct()->get();
 
-        $statusOptions = WajibRetribusi::select('status')
-            ->distinct()
-            ->whereNotNull('status')
-            ->where('status', '!=', '')
-            ->orderBy('status')
-            ->pluck('status')
-            ->map(fn($s) => ['value' => $s, 'label' => $s]);
+        // $statusOptions = WajibRetribusi::select('status')
+        //     ->distinct()
+        //     ->whereNotNull('status')
+        //     ->where('status', '!=', '')
+        //     ->orderBy('status')
+        //     ->pluck('status')
+        //     ->map(fn($s) => ['value' => $s, 'label' => $s]);
+        $statuses = ['Approved', 'Processed', 'Rejected', 'Finished'];
+        $statusOptions = collect($statuses)->map(fn($s) => [
+            'value' => $s,
+            'label' => $s
+        ]);
 
         $tahunOptions = WajibRetribusi::select('created_at')
             ->get()
@@ -233,7 +246,7 @@ class WajibRetribusiController extends Controller
             'kelurahanOptions' => $kelurahan,
             'petugasOptions' => $petugas,
             'statusOptions' => $statusOptions,
-            'tahunOptions' => $tahunOptions
+            'tahunOptions' => $tahunOptions,
         ]);
     }
 
@@ -242,7 +255,28 @@ class WajibRetribusiController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->renderWajibRetribusi($request, null);
+        return $this->renderWajibRetribusi(
+            $request,
+            null,
+            "Index",
+            function ($q) use ($request) {
+                if ($request->get('status') === "Approved") {
+                    $q->where('status', 'Approved')->whereNotNull('current_role');
+                }
+
+                if ($request->get('status') === "Processed") {
+                    $q->where('status', 'Processed');
+                }
+
+                if ($request->get('status') === "Rejected") {
+                    $q->where('status', 'Rejected');
+                }
+
+                if ($request->get('status') === "Finished") {
+                    $q->where('status', 'Approved')->whereNull('current_role');
+                }
+            }
+        );
     }
 
     public function diterima(Request $request)
@@ -309,7 +343,6 @@ class WajibRetribusiController extends Controller
             });
 
         $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'rumus', 'variabel', 'tarif', 'tarif2')
-            ->orderBy('namaSubKategori')
             ->get()
             ->groupBy('kodeKategori')
             ->map(function ($groupedSubKategori) {
@@ -513,6 +546,7 @@ class WajibRetribusiController extends Controller
         return Inertia::render("Super-Admin/Data-Input/Wajib-Retribusi/Edit", [
             'status' => $status,
             'retribusi' => $retribusi,
+            'userRole' => Auth::user()->role,
             'pemohonOptions' => $pemohonOptions,
             'kecamatanOptions' => $kecamatanOptions,
             'kelurahanOptions' => $kelurahanOptions,

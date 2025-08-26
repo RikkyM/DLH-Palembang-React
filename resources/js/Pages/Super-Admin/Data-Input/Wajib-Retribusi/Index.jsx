@@ -73,6 +73,16 @@ const Index = ({
       align: "text-left truncate",
     },
     { key: "uptd", label: "uptd", align: "text-left truncate" },
+    {
+      key: "tarifPerbulan",
+      label: "tarif perbulan",
+      align: "text-left truncate",
+    },
+    {
+      key: "tarifPertahun",
+      label: "tarif pertahun",
+      align: "text-left truncate",
+    },
     { key: "petugas", label: "nama petugas", align: "text-left truncate" },
     { key: "status", label: "status", align: "text-left truncate" },
   ];
@@ -140,7 +150,9 @@ const Index = ({
             ? "Diterima"
             : statusOption.label === "Processed"
               ? "Diproses"
-              : "Ditolak",
+              : statusOption.label === "Rejected"
+                ? "Ditolak"
+                : "Selesai",
       })),
     [statusOptions],
   );
@@ -169,16 +181,16 @@ const Index = ({
     if (tahun) params.tahun = tahun;
     if (sort && sort !== "id") {
       params.sort = sort;
-      if (direction && direction.toLowerCase() === "desc") {
-        params.direction = "desc";
+      if (direction && direction.toLowerCase() === "asc") {
+        params.direction = "asc";
       }
     } else if (
       sort === "id" &&
       direction &&
-      direction.toLowerCase() === "desc"
+      direction.toLowerCase() === "asc"
     ) {
       params.sort = sort;
-      params.direction = "desc";
+      params.direction = "asc";
     }
 
     return params;
@@ -228,6 +240,16 @@ const Index = ({
 
   const handlePerPageChange = (e) => {
     setPerPage(parseInt(e.target.value));
+  };
+
+  const handleKategoriChange = (val) => {
+    setKategori(val);
+    setSubKategori("");
+    router.reload({
+      only: ["subKategoriOptions"],
+      data: { kategori: val },
+      preserveState: true,
+    });
   };
 
   return (
@@ -297,10 +319,7 @@ const Index = ({
                     id="kategoriList"
                     options={kategoriList}
                     value={kategori}
-                    onChange={(val) => {
-                      setKategori(val);
-                      setSubKategori("");
-                    }}
+                    onChange={handleKategoriChange}
                     placeholder="Pilih Kategori"
                   />
                   <SearchableSelect
@@ -481,7 +500,7 @@ const Index = ({
                         </td>
                         <td>{data.noPendaftaran}</td>
                         <td>{data.noWajibRetribusi ?? "-"}</td>
-                        <td className="">{data.pemilik.namaPemilik}</td>
+                        <td>{data.pemilik.namaPemilik}</td>
                         <td>{data.namaObjekRetribusi}</td>
                         <td className="max-w-sm truncate">{data.alamat}</td>
                         <td>{data.kelurahan.namaKelurahan}</td>
@@ -489,20 +508,41 @@ const Index = ({
                         <td>{data.kategori.namaKategori}</td>
                         <td>{data.sub_kategori.namaSubKategori}</td>
                         <td>{data.uptd.namaUptd}</td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(data.tarifPerbulan) || 0}
+                        </td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(data.tarifPertahun) || 0}
+                        </td>
                         <td>{data.user.namaLengkap}</td>
                         <td>
                           <span
                             className={`select-none rounded py-2 font-medium ${
-                              data.status == "Approved"
-                                ? "text-teal-600"
+                              data.status === "Approved" &&
+                              data.current_role != null
+                                ? "text-sky-600"
                                 : data.status == "Processed"
                                   ? "text-amber-500"
-                                  : "text-red-500"
+                                  : data.status == "Rejected"
+                                    ? "text-red-500"
+                                    : (data.status === "Approved" &&
+                                      data.current_role == null) && "text-green-500"
                             }`}
                           >
-                            {data.status == "Approved" && "Diterima"}
-                            {data.status == "Processed" && "Diproses"}
-                            {data.status == "Rejected" && "Ditolak"}
+                            {data.status === "Approved" &&
+                              data.current_role != null &&
+                              "Diterima"}
+                            {data.status === "Processed" && "Diproses"}
+                            {data.status === "Rejected" && "Ditolak"}
+                            {data.status === "Approved" &&
+                              data.current_role == null &&
+                              "Selesai"}
                           </span>
                         </td>
                         <td

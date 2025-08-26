@@ -16,6 +16,7 @@ Route::prefix('sirep')->group(function () {
             Route::get('/wajib-retribusi/{id}/draft-pdf', 'draftPdf')->name('wajib-retribusi.draft-pdf');
             Route::get('/wajib-retribusi/export', 'export')->name('wajib-retribusi.export');
             // Route::get('/wajib-retribusi/{id}/export-single', 'exportSingle')->name('wajib-retribusi.export-single');
+            Route::get('/wajib-retribusi/{type}/{filename}', 'getImage')->name('private.file');
         });
 
         Route::controller(SkrdController::class)->group(function () {
@@ -29,5 +30,6 @@ Route::prefix('sirep')->group(function () {
         require __DIR__ . '/role/pendaftar.php';
         require __DIR__ . '/role/kuptd.php';
         require __DIR__ . '/role/katim.php';
+        require __DIR__ . '/role/kabid.php';
     });
 });

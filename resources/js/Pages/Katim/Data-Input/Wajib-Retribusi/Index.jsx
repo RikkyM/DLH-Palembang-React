@@ -73,6 +73,16 @@ const Index = ({
       align: "text-left truncate",
     },
     { key: "uptd", label: "uptd", align: "text-left truncate" },
+    {
+      key: "tarifPerbulan",
+      label: "tarif perbulan",
+      align: "text-left truncate",
+    },
+    {
+      key: "tarifPertahun",
+      label: "tarif pertahun",
+      align: "text-left truncate",
+    },
     { key: "petugas", label: "nama petugas", align: "text-left truncate" },
     { key: "status", label: "status", align: "text-left truncate" },
   ];
@@ -140,7 +150,9 @@ const Index = ({
             ? "Diterima"
             : statusOption.label === "Processed"
               ? "Diproses"
-              : "Ditolak",
+              : statusOption.label === "Rejected"
+                ? "Ditolak"
+                : "Selesai",
       })),
     [statusOptions],
   );
@@ -169,16 +181,16 @@ const Index = ({
     if (tahun) params.tahun = tahun;
     if (sort && sort !== "id") {
       params.sort = sort;
-      if (direction && direction.toLowerCase() === "desc") {
-        params.direction = "desc";
+      if (direction && direction.toLowerCase() === "asc") {
+        params.direction = "asc";
       }
     } else if (
       sort === "id" &&
       direction &&
-      direction.toLowerCase() === "desc"
+      direction.toLowerCase() === "asc"
     ) {
       params.sort = sort;
-      params.direction = "desc";
+      params.direction = "asc";
     }
 
     return params;
@@ -275,7 +287,8 @@ const Index = ({
               >
                 <Download size={20} />
               </button>
-              <div className="relative flex w-full gap-2 sm:w-max">
+              {console.log(statusList)}
+              <div className="relative flex w-full gap-2 sm:w-max z-10">
                 <button
                   type="button"
                   className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
@@ -489,20 +502,44 @@ const Index = ({
                         <td>{data.kategori.namaKategori}</td>
                         <td>{data.sub_kategori.namaSubKategori}</td>
                         <td>{data.uptd.namaUptd}</td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(data.tarifPerbulan) || 0}
+                        </td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(data.tarifPertahun) || 0}
+                        </td>
                         <td>{data.user.namaLengkap}</td>
                         <td>
                           <span
-                            className={`select-none rounded py-2 font-medium ${((data.status === "Processed" && data.current_role === "ROLE_KATIM") || (data.status === "Approved" && data.current_role == null)) && "text-teal-600"} ${data.status === "Processed" && data.current_role !== "ROLE_KATIM" && "text-amber-500"} ${data.status === "Rejected" && "text-red-500"}`}
+                            className={`select-none rounded py-2 font-medium ${
+                              data.status === "Processed" &&
+                              data.current_role == 'ROLE_KATIM'
+                                ? "text-sky-600"
+                                : data.status == "Processed" && data.current_role != 'ROLE_KATIM'
+                                  ? "text-amber-500"
+                                  : data.status == "Rejected"
+                                    ? "text-red-500"
+                                    : data.status === "Approved" &&
+                                      data.current_role == null &&
+                                      "text-green-500"
+                            }`}
                           >
-                            {((data.status === "Processed" &&
-                              data.current_role === "ROLE_KATIM") ||
-                              (data.status === "Approved" &&
-                                data.current_role == null)) &&
+                            {data.status === "Processed" &&
+                              data.current_role == "ROLE_KATIM" &&
                               "Diterima"}
                             {data.status === "Processed" &&
-                              data.current_role !== "ROLE_KATIM" &&
+                              data.current_role != "ROLE_KATIM" &&
                               "Diproses"}
                             {data.status === "Rejected" && "Ditolak"}
+                            {data.status === "Approved" &&
+                              data.current_role == null &&
+                              "Selesai"}
                           </span>
                         </td>
                         <td

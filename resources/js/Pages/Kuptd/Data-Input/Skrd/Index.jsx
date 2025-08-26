@@ -163,16 +163,16 @@ const Index = ({
 
     if (sort && sort !== "id") {
       params.sort = sort;
-      if (direction && direction.toLowerCase() === "desc") {
-        params.direction = "desc";
+      if (direction && direction.toLowerCase() === "asc") {
+        params.direction = "asc";
       }
     } else if (
       sort === "id" &&
       direction &&
-      direction.toLowerCase() === "desc"
+      direction.toLowerCase() === "asc"
     ) {
       params.sort = sort;
-      params.direction = "desc";
+      params.direction = "asc";
     }
 
     return params;

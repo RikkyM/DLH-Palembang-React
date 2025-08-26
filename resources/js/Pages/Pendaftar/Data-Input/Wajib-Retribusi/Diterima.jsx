@@ -66,6 +66,16 @@ const Diterima = ({
       align: "text-left truncate",
     },
     { key: "uptd", label: "uptd", align: "text-left truncate" },
+    {
+      key: "tarifPerbulan",
+      label: "tarif perbulan",
+      align: "text-left truncate",
+    },
+    {
+      key: "tarifPertahun",
+      label: "tarif pertahun",
+      align: "text-left truncate",
+    },
     { key: "petugas", label: "nama petugas", align: "text-left truncate" },
     { key: "status", label: "status", align: "text-left truncate" },
   ];

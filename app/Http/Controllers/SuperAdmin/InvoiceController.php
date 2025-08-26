@@ -161,10 +161,7 @@ class InvoiceController extends Controller
             abort(404);
         }
 
-        return Response::file($path, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $filename . '"'
-        ]);
+        return Response::file($path);
     }
 
     public function previewPdf(Request $request)

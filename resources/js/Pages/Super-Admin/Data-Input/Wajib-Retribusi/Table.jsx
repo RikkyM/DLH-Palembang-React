@@ -1,13 +1,6 @@
 import TableHead from "@/Components/TableHead";
 import { Link, router } from "@inertiajs/react";
-import {
-  ArrowDown,
-  ArrowUp,
-  FileText,
-  Pencil,
-  PencilLine,
-  Send,
-} from "lucide-react";
+import { FileText, Pencil, PencilLine, Send } from "lucide-react";
 
 const Table = ({
   datas,
@@ -17,7 +10,6 @@ const Table = ({
   setSort,
   direction,
   setDirection,
-  isLoading,
 }) => {
   const handleSend = (e, id) => {
     e.preventDefault();
@@ -46,87 +38,53 @@ const Table = ({
             setDirection(dir);
           }}
         />
-        {/* <tr className="*:p-2 *:text-sm *:font-medium *:uppercase">
-          {columns.map((col) => (
-            <th
-              key={col.key}
-              className={`${col.align} cursor-pointer select-none`}
-              onClick={() => handleSort(col.key)}
-            >
-              <span className="flex items-center gap-1.5">
-                {col.label}
-                {sort === col.key && (
-                  <span className="ml-1">
-                    {direction === "desc" ? (
-                      <ArrowUp size={20} />
-                    ) : (
-                      <ArrowDown size={20} />
-                    )}
-                  </span>
-                )}
-              </span>
-            </th>
-          ))}
-          <th className="text-right sticky top-0 right-0">Aksi</th>
-        </tr> */}
       </thead>
       <tbody className="dividfe-y divide-neutral-300 text-xs md:text-sm">
-        {isLoading ? (
-          <tr>
-            <td colSpan={14}>
-              <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
-                <svg
-                  className="h-4 w-4 animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                  />
-                </svg>
-                Memuat data...
-              </div>
-            </td>
-          </tr>
-        ) : datas?.data?.length > 0 ? (
+        {datas?.data?.length > 0 ? (
           datas.data.map((data, index) => (
             <tr
               key={data.id || index}
-              className={`${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+              className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
             >
-              <td className="p-2 text-center">
+              <td className="text-center">
                 {(datas.current_page - 1) * datas.per_page + index + 1}
               </td>
-              <td className="p-2">{data.noPendaftaran}</td>
-              <td className="p-2">{data.noWajibRetribusi ?? "-"}</td>
-              <td className="p-2">{data.pemilik.namaPemilik}</td>
-              <td className="p-2">{data.namaObjekRetribusi}</td>
-              <td className="max-w-sm truncate p-2">{data.alamat}</td>
-              <td className="p-2">{data.kelurahan.namaKelurahan}</td>
-              <td className="p-2">{data.kecamatan.namaKecamatan}</td>
-              <td className="p-2">{data.kategori.namaKategori}</td>
-              <td className="p-2">{data.sub_kategori.namaSubKategori}</td>
-              <td className="p-2">{data.uptd.namaUptd}</td>
-              <td className="p-2">{data.user.namaLengkap}</td>
+              <td>{data.noPendaftaran}</td>
+              <td>{data.noWajibRetribusi ?? "-"}</td>
+              <td>{data.pemilik.namaPemilik}</td>
+              <td>{data.namaObjekRetribusi}</td>
+              <td className="max-w-sm truncate">{data.alamat}</td>
+              <td>{data.kelurahan.namaKelurahan}</td>
+              <td>{data.kecamatan.namaKecamatan}</td>
+              <td>{data.kategori.namaKategori}</td>
+              <td>{data.sub_kategori.namaSubKategori}</td>
+              <td>{data.uptd.namaUptd}</td>
+              <td>
+                {new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(data.tarifPerbulan) || 0}
+              </td>
+              <td>
+                {new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(data.tarifPertahun) || 0}
+              </td>
+              <td>{data.user.namaLengkap}</td>
               {data.status == "Rejected" && <td>{data.keterangan}</td>}
-              <td className="p-2">
+              <td>
                 <span
                   className={`select-none rounded py-2 font-medium ${
-                    data.status == "Approved"
-                      ? "text-teal-600"
-                      : data.status == "Rejected"
-                        ? "text-red-600"
-                        : "text-amber-600"
+                    data.status === "Approved" && data.current_role != null
+                      ? "text-sky-600"
+                      : data.status == "Processed"
+                        ? "text-amber-500"
+                        : data.status == "Rejected"
+                          ? "text-red-500"
+                          : data.status === "Approved" &&
+                            data.current_role == null &&
+                            "text-green-500"
                   }`}
                 >
                   {data.status == "Approved"
@@ -150,24 +108,8 @@ const Table = ({
                       );
                     }}
                   >
-                    {/* <FileText size={20} /> Draft untuk di proses */}
                     <FileText size={20} /> Draft SKRD
                   </button>
-                  {/* <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-
-                      window.open(
-                        route("super-admin.wajib-retribusi.export-single", {
-                          id: data.id,
-                        }),
-                        "_blank",
-                      );
-                    }}
-                    className="flex items-center gap-1.5 whitespace-nowrap"
-                  >
-                    <FileText size={20} /> Excel
-                  </button> */}
                   {data.status === "Approved" && (
                     <>
                       <Link

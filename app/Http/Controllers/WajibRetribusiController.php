@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\WajibRetribusi;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class WajibRetribusiController extends Controller
@@ -77,15 +78,15 @@ class WajibRetribusiController extends Controller
         if ($status = $request->get('status')) {
             if (Auth::user()->role == 'ROLE_KUPTD') {
                 if ($status === "Approved") {
-                    $query->where(function($q) {
-                        $q->where(function($data) {
+                    $query->where(function ($q) {
+                        $q->where(function ($data) {
                             $data->where('status', "Processed")
                                 ->where('current_role', Auth::user()->role);
                         })
-                        ->orWhere(function($data) {
-                            $data->where('status', "Approved")
-                                ->whereNotNull('noWajibRetribusi');
-                        });
+                            ->orWhere(function ($data) {
+                                $data->where('status', "Approved")
+                                    ->whereNotNull('noWajibRetribusi');
+                            });
                     });
                 }
 
@@ -97,7 +98,6 @@ class WajibRetribusiController extends Controller
                 if ($status === "Rejected") {
                     $query->where('status', 'Rejected');
                 }
-
             } else {
                 // Untuk role lain, gunakan filter status standar
                 $query->where('status', $status);
@@ -162,6 +162,28 @@ class WajibRetribusiController extends Controller
             new WajibRetribusiExport($request),
             $fileName
         );
+    }
+
+    public function getImage($type, $filename)
+    {
+        // $path = "private/{$folder}/{$filename}";
+        // $path = storage_path('app/private/' . $folder);
+
+        $basePath = match ($type) {
+            'image' => 'foto/bangunan/',
+            'file' => 'foto/berkas/',
+            default => abort(404)
+        };
+
+        $path = storage_path('app/private/' . $basePath . $filename);
+
+        // dd(storage_path('app/private/'. $path));
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path);
     }
 
     // public function exportSingle($id)

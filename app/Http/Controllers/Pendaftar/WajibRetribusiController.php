@@ -16,7 +16,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -180,13 +179,18 @@ class WajibRetribusiController extends Controller
         $kelurahan = $getKecamatan ? Kelurahan::where('kodeKecamatan', $getKecamatan)->select('kodeKelurahan', 'namaKelurahan')->get() : collect();
         $petugas = User::select('namaLengkap')->where('role', 'ROLE_PENDAFTAR')->distinct()->get();
 
-        $statusOptions = WajibRetribusi::select('status')
-            ->distinct()
-            ->whereNotNull('status')
-            ->where('status', '!=', '')
-            ->orderBy('status')
-            ->pluck('status')
-            ->map(fn($s) => ['value' => $s, 'label' => $s]);
+        // $statusOptions = WajibRetribusi::select('status')
+        //     ->distinct()
+        //     ->whereNotNull('status')
+        //     ->where('status', '!=', '')
+        //     ->orderBy('status')
+        //     ->pluck('status')
+        //     ->map(fn($s) => ['value' => $s, 'label' => $s]);
+        $statuses = ['Approved', 'Processed', 'Rejected', 'Finished'];
+        $statusOptions = collect($statuses)->map(fn($s) => [
+            'value' => $s,
+            'label' => $s
+        ]);
 
         $tahunOptions = WajibRetribusi::select('created_at')
             ->get()
@@ -235,21 +239,19 @@ class WajibRetribusiController extends Controller
             "Index",
             function ($q) use ($request) {
                 if ($request->get('status') === "Approved") {
-                    $q->where(function ($data) {
-                        $data->where('status', 'Approved')
-                            ->where('current_role', "ROLE_PENDAFTAR");
-                    })->orWhere(function ($data) {
-                        $data->where('status', 'Approved')
-                            ->whereNull("current_role");
-                    });
+                    $q->where('status', 'Approved')->whereNotNull('current_role');
                 }
 
                 if ($request->get('status') === "Processed") {
-                    $q->where('status', "Processed");
+                    $q->where('status', 'Processed');
                 }
 
                 if ($request->get('status') === "Rejected") {
-                    $q->where('status', "Rejected");
+                    $q->where('status', 'Rejected');
+                }
+
+                if ($request->get('status') === "Finished") {
+                    $q->where('status', 'Approved')->whereNull('current_role');
                 }
             }
         );
@@ -424,9 +426,9 @@ class WajibRetribusiController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'image' => $fotoBangunan,
-                'url_image' => [Storage::url($pathFotoBangunan)],
+                'url_image' => [$pathFotoBangunan],
                 'file' => $fotoBerkas,
-                'url_file' => [Storage::url($pathFotoBerkas)],
+                'url_file' => [$pathFotoBerkas],
                 'linkMap' => $request->linkMap,
                 'jenisTarif' => $request->jenisTarif,
                 'bulan' => $validated['variabelValues']['bulan'],
@@ -519,6 +521,7 @@ class WajibRetribusiController extends Controller
         return Inertia::render("Pendaftar/Data-Input/Wajib-Retribusi/Edit", [
             'status' => $status,
             'retribusi' => $retribusi,
+            'userRole' => Auth::user()->role,
             'pemohonOptions' => $pemohonOptions,
             'kecamatanOptions' => $kecamatanOptions,
             'kelurahanOptions' => $kelurahanOptions,
@@ -535,9 +538,9 @@ class WajibRetribusiController extends Controller
         $validated = $request->validated();
 
         $retribusi = WajibRetribusi::findOrFail($id);
-        
+
         $tarifPertahun = $request->totalRetribusi;
-        
+
         if ($request->filled('variabelValues') || $request->filled('bulan')) {
             $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
 
@@ -573,13 +576,13 @@ class WajibRetribusiController extends Controller
             if ($request->hasFile('fotoBangunan')) {
                 $fileFotoBangunan = $request->file('fotoBangunan');
                 $fotoBangunan = Str::uuid() . '.' . $fileFotoBangunan->getClientOriginalExtension();
-                $pathFotoBangunan = [Storage::url($fileFotoBangunan->storeAs('foto/bangunan', $fotoBangunan, 'local'))];
+                $pathFotoBangunan = [$fileFotoBangunan->storeAs('foto/bangunan', $fotoBangunan, 'local')];
             }
 
             if ($request->hasFile('fotoBerkas')) {
                 $fileFotoBerkas = $request->file('fotoBerkas');
                 $fotoBerkas = Str::uuid() . '.' . $fileFotoBerkas->getClientOriginalExtension();
-                $pathFotoBerkas = [Storage::url($fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local'))];
+                $pathFotoBerkas = [$fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local')];
             }
 
             $uptd = Uptd::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();

@@ -32,29 +32,6 @@ const Table = ({
             setDirection(dir);
           }}
         />
-        {/* <tr className="*:p-2 *:text-sm *:font-medium *:uppercase">
-          <th className="text-left">Aksi</th>
-          {columns.map((col) => (
-            <th
-              key={col.key}
-              className={`${col.align} cursor-pointer select-none`}
-              onClick={() => handleSort(col.key)}
-            >
-              <span className="flex items-center gap-1.5">
-                {col.label}
-                {sort === col.key && (
-                  <span className="ml-1">
-                    {direction === "desc" ? (
-                      <ArrowUp size={20} />
-                    ) : (
-                      <ArrowDown size={20} />
-                    )}
-                  </span>
-                )}
-              </span>
-            </th>
-          ))}
-        </tr> */}
       </thead>
       <tbody className="dividfe-y divide-neutral-300 text-xs md:text-sm">
         {isLoading ? (
@@ -90,52 +67,6 @@ const Table = ({
               key={data.id || index}
               className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
             >
-              {/* <td>
-                <div className="flex flex-col gap-2 *:rounded *:text-sm *:font-medium">
-                  <button
-                    className="flex items-center gap-1.5 whitespace-nowrap"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open(
-                        route("wajib-retribusi.draft-pdf", {
-                          id: data.id,
-                        }),
-                        "_blank",
-                      );
-                    }}
-                  >
-                    <FileText size={20} /> Draft SKRD
-                  </button>
-                  {data.status === "Approved" && (
-                    <>
-                      <Link
-                        href={route("pendaftar.wajib-retribusi.edit", {
-                          retribusi: data.noPendaftaran,
-                        })}
-                        className="flex items-center gap-1.5"
-                      >
-                        <PencilLine size={20} /> Edit
-                      </Link>
-                      <button
-                        onClick={(e) => handleSendDiterima(e, data.id)}
-                        className="flex items-center gap-1.5 whitespace-nowrap"
-                      >
-                        <Send size={20} /> Kirim
-                      </button>
-                    </>
-                  )}
-                  {data.status === "Rejected" && (
-                    <>
-                      <button className="flex items-center gap-1.5 whitespace-nowrap">
-                        <Pencil size={20} /> Edit
-                      </button>
-                      <button className="flex items-center gap-1.5 whitespace-nowrap">
-                        <Send size={20} /> Kirim
-                      </button>
-                    </>
-                  )}
-                </div>
-              </td> */}
               <td className="text-center">
                 {(datas.current_page - 1) * datas.per_page + index + 1}
               </td>
@@ -149,26 +80,47 @@ const Table = ({
               <td>{data.kategori.namaKategori}</td>
               <td>{data.sub_kategori.namaSubKategori}</td>
               <td>{data.uptd.namaUptd}</td>
+              <td>
+                {new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(data.tarifPerbulan) || 0}
+              </td>
+              <td>
+                {new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(data.tarifPertahun) || 0}
+              </td>
               <td>{data.user.namaLengkap}</td>
               {data.status == "Rejected" && <td>{data.keterangan}</td>}
               <td>
-                {((data.status === "Processed" &&
-                  data.current_role === "ROLE_KATIM") ||
-                  (data.status === "Approved" &&
-                    data.current_role == null)) && (
-                  <span className="py-2 font-medium text-teal-600">
-                    Diterima
-                  </span>
-                )}
-                {data.status === "Processed" &&
-                  (data.current_role !== "ROLE_KATIM") && (
-                    <span className="py-2 font-medium text-amber-600">
-                      Diproses
-                    </span>
-                  )}
-                {data.status === "Rejected" && (
-                  <span className="py-2 font-medium text-red-600">Ditolak</span>
-                )}
+                <span
+                  className={`select-none rounded py-2 font-medium ${
+                    data.status === "Processed" &&
+                    data.current_role == "ROLE_KATIM"
+                      ? "text-sky-600"
+                      : data.status == "Processed" &&
+                          data.current_role != "ROLE_KATIM"
+                        ? "text-amber-500"
+                        : data.status == "Rejected"
+                          ? "text-red-500"
+                          : data.status === "Approved" &&
+                            data.current_role == null &&
+                            "text-green-500"
+                  }`}
+                >
+                  {data.status === "Processed" &&
+                    data.current_role == "ROLE_KATIM" &&
+                    "Diterima"}
+                  {data.status === "Processed" &&
+                    data.current_role != "ROLE_KATIM" &&
+                    "Diproses"}
+                  {data.status === "Rejected" && "Ditolak"}
+                  {data.status === "Approved" &&
+                    data.current_role == null &&
+                    "Selesai"}
+                </span>
               </td>
               <td
                 className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
@@ -186,7 +138,6 @@ const Table = ({
                       );
                     }}
                   >
-                    {/* <FileText size={20} /> Draft untuk di proses */}
                     <FileText size={20} /> Draft SKRD
                   </button>
                   {data.status === "Processed" &&
@@ -206,17 +157,6 @@ const Table = ({
                           className="flex items-center gap-1.5 whitespace-nowrap"
                         >
                           <Send size={20} /> Proses
-                        </button>
-                      </>
-                    )}
-                  {data.status === "Rejected" &&
-                    data.current_role != "ROLE_PENDAFTAR" && (
-                      <>
-                        <button className="flex items-center gap-1.5 whitespace-nowrap">
-                          <Pencil size={20} /> Edit
-                        </button>
-                        <button className="flex items-center gap-1.5 whitespace-nowrap">
-                          <Send size={20} /> Kirim
                         </button>
                       </>
                     )}

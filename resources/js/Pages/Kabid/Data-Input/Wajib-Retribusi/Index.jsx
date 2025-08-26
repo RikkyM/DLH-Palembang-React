@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
-import { router } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 
 import { ChevronDown, Download, FileText, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -15,6 +15,7 @@ const Index = ({
   subKategoriOptions = [],
   kecamatanOptions = [],
   kelurahanOptions = [],
+  petugasOptions = [],
   statusOptions = [],
   tahunOptions = [],
 }) => {
@@ -25,6 +26,7 @@ const Index = ({
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
   const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
+  const [petugas, setPetugas] = useState(filters.petugas || "");
   const [status, setStatus] = useState(filters.status || "");
   const [pj, setpj] = useState(filters.pj || "");
   const [perPage, setPerPage] = useState(() => {
@@ -130,6 +132,15 @@ const Index = ({
     [kelurahanOptions],
   );
 
+  const petugasList = useMemo(
+    () =>
+      petugasOptions.map((petugas) => ({
+        value: petugas.namaLengkap,
+        label: petugas.namaLengkap,
+      })),
+    [petugasOptions],
+  );
+
   const statusList = useMemo(
     () =>
       statusOptions?.map((statusOption) => ({
@@ -162,23 +173,24 @@ const Index = ({
     if (pj) params.pj = pj;
     if (kategori) params.kategori = kategori;
     if (subKategori) params["sub-kategori"] = subKategori;
-    // if (kecamatan) params.kecamatan = kecamatan;
+    if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
+    if (petugas) params.petugas = petugas;
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (status) params.status = status;
     if (tahun) params.tahun = tahun;
     if (sort && sort !== "id") {
       params.sort = sort;
-      if (direction && direction.toLowerCase() === "asc") {
-        params.direction = "asc";
+      if (direction && direction.toLowerCase() === "desc") {
+        params.direction = "desc";
       }
     } else if (
       sort === "id" &&
       direction &&
-      direction.toLowerCase() === "asc"
+      direction.toLowerCase() === "desc"
     ) {
       params.sort = sort;
-      params.direction = "asc";
+      params.direction = "desc";
     }
 
     return params;
@@ -200,7 +212,7 @@ const Index = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("kuptd.wajib-retribusi.index"), params, {
+      router.get(route("kabid.wajib-retribusi.index"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
@@ -219,6 +231,7 @@ const Index = ({
     subKategori,
     kecamatan,
     kelurahan,
+    petugas,
     perPage,
     status,
     pj,
@@ -231,7 +244,7 @@ const Index = ({
 
   return (
     <Layout title="WAJIB RETRIBUSI">
-      <section className="relative min-h-screen overflow-hidden p-3">
+      <section className="min-h-screen overflow-hidden p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
@@ -261,10 +274,7 @@ const Index = ({
                 onClick={() => {
                   const params = new URLSearchParams();
 
-                  if (kecamatan) params.append("kecamatan", kecamatan);
                   if (perPage) params.append("per_page", perPage);
-                  if (status) params.append("status", status);
-                if (tahun) params.append("tahun", tahun);
 
                   window.open(
                     route("wajib-retribusi.download-pdf") +
@@ -313,7 +323,7 @@ const Index = ({
                     placeholder="Pilih Sub Kategori"
                     disabled={!kategori}
                   />
-                  {/* <SearchableSelect
+                  <SearchableSelect
                     id="kecamatanlist"
                     options={kecamatanList}
                     value={kecamatan}
@@ -322,14 +332,21 @@ const Index = ({
                       setKelurahan("");
                     }}
                     placeholder="Pilih Kecamatan"
-                  /> */}
+                  />
                   <SearchableSelect
                     id="kelurahanlist"
                     options={kelurahanList}
                     value={kelurahan}
                     onChange={(val) => setKelurahan(val)}
                     placeholder="Pilih Kelurahan"
-                    // disabled={!kecamatan}
+                    disabled={!kecamatan}
+                  />
+                  <SearchableSelect
+                    id="petugaslist"
+                    options={petugasList}
+                    value={petugas}
+                    onChange={(val) => setPetugas(val)}
+                    placeholder="Pilih Petugas Pendaftar"
                   />
                   <SearchableSelect
                     id="pjlist"
@@ -372,12 +389,12 @@ const Index = ({
             </label>
           </div>
           <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start">
-            {/* <Link
-              href={route("kuptd.wajib-retribusi.create")}
+            <Link
+              href={route("kabid.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
             >
               Tambah
-            </Link> */}
+            </Link>
             <button
               onClick={() => {
                 const params = new URLSearchParams();
@@ -387,7 +404,9 @@ const Index = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (petugas) params.append("petugas", petugas);
                 if (status) params.append("status", status);
+                if (tahun) params.append("tahun", tahun);
 
                 window.open(
                   route("wajib-retribusi.download-pdf") +
@@ -409,11 +428,10 @@ const Index = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (petugas) params.append("petugas", petugas);
 
                 window.open(
-                  route("kuptd.wajib-retribusi.export") +
-                    "?" +
-                    params.toString(),
+                  route("wajib-retribusi.export") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -500,10 +518,10 @@ const Index = ({
                           <span
                             className={`select-none rounded py-2 font-medium ${
                               data.status === "Processed" &&
-                              data.current_role == "ROLE_KUPTD"
+                              data.current_role == "ROLE_KABID"
                                 ? "text-sky-600"
                                 : data.status == "Processed" &&
-                                    data.current_role != "ROLE_KUPTD"
+                                    data.current_role != "ROLE_KATIM"
                                   ? "text-amber-500"
                                   : data.status == "Rejected"
                                     ? "text-red-500"
@@ -513,11 +531,11 @@ const Index = ({
                             }`}
                           >
                             {data.status === "Processed" &&
-                              data.current_role == "ROLE_KUPTD" &&
+                              data.current_role == "ROLE_KABID" &&
                               "Diterima"}
-                            {data.status === "Processed" &&
-                              data.current_role != "ROLE_KUPTD" &&
-                              "Diproses"}
+                            {/* {data.status === "Processed" &&
+                              data.current_role != "ROLE_KATIM" &&
+                              "Diproses"} */}
                             {data.status === "Rejected" && "Ditolak"}
                             {data.status === "Approved" &&
                               data.current_role == null &&
@@ -529,7 +547,7 @@ const Index = ({
                         >
                           <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
                             {/* <Link
-                              href={route("kuptd.wajib-retribusi.edit", {
+                              href={route("kabid.wajib-retribusi.edit", {
                                 retribusi: data.noPendaftaran,
                               })}
                               className="flex items-center gap-1.5"
@@ -545,7 +563,7 @@ const Index = ({
 
                                 window.open(
                                   route(
-                                    "kuptd.wajib-retribusi.export-single",
+                                    "kabid.wajib-retribusi.export-single",
                                     { id: data.id },
                                   ),
                                   "_blank",
