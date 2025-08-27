@@ -16,25 +16,25 @@ const KabidNavigation = () => {
     },
     {
       label: "Inbox Diterima",
-    //   route: "kabid.wajib-retribusi.diterima",
-    //   activeRoute: [
-    //     "kabid.wajib-retribusi.diterima",
-    //     "kabid.wajib-retribusi.show",
-    //   ],
+      route: "kabid.wajib-retribusi.diterima",
+      activeRoute: [
+        "kabid.wajib-retribusi.diterima",
+        "kabid.wajib-retribusi.show",
+      ],
     },
-    {
-      label: "Inbox Diproses",
+    // {
+    //   label: "Inbox Diproses",
     //   route: "kabid.wajib-retribusi.diproses",
-    },
+    // },
     {
       label: "Inbox Ditolak",
-    //   route: "kabid.wajib-retribusi.ditolak",
-    //   activeRoute: "kabid.wajib-retribusi.ditolak",
+      route: "kabid.wajib-retribusi.ditolak",
+      activeRoute: "kabid.wajib-retribusi.ditolak",
     },
     {
       label: "Inbox Selesai (SKRD)",
-    //   route: "kabid.skrd.index",
-    //   activeRoute: "kabid.skrd.*",
+      route: "kabid.skrd.index",
+      activeRoute: "kabid.skrd.*",
     },
   ];
 

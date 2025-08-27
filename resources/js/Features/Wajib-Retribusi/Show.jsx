@@ -142,7 +142,7 @@ const WajibRetribusiShow = ({
             readOnly={true}
           />
         </div>
-        <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
+        <div className="col-span-2 flex flex-col gap-1.5 text-sm">
           <label htmlFor="pemohon">Pemohon</label>
           <input
             className="cursor-auto rounded bg-gray-200 px-3 py-2 capitalize outline-none"
@@ -328,7 +328,7 @@ const WajibRetribusiShow = ({
                       className={`cursor-auto px-3 py-2 outline-none ${
                         isEnabled
                           ? "bg-gray-200"
-                          : "cursor-not-allowed bg-slate-300"
+                          : "cursor-not-allowed bg-gray-200"
                       }`}
                       type="number"
                       id={`variabel-${field}`}
@@ -356,10 +356,14 @@ const WajibRetribusiShow = ({
                   className="cursor-auto rounded bg-gray-200 px-3 py-2 outline-none"
                   type="text"
                   id="total"
+                  // value={new Intl.NumberFormat("id-ID", {
+                  //   style: "currency",
+                  //   currency: "IDR",
+                  // }).format(calculateTotal())}
                   value={new Intl.NumberFormat("id-ID", {
                     style: "currency",
                     currency: "IDR",
-                  }).format(calculateTotal())}
+                  }).format(retribusi.tarifPertahun)}
                   readOnly
                 />
               </div>

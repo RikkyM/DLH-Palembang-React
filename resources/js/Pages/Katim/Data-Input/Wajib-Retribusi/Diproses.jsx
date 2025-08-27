@@ -5,7 +5,7 @@ import { router } from "@inertiajs/react";
 import { Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
-import Table from "./Table";
+import Table from "@/Components/WajibRetribusi/Table";
 
 const Diproses = ({
   datas,
@@ -379,6 +379,7 @@ const Diproses = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
+                role="ROLE_KATIM"
               />
             </>
           )}

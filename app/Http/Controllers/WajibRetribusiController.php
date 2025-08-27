@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Exports\WajibRetribusiExport;
 use App\Models\Skrd;
+use App\Models\TandaTangan;
 use App\Models\User;
 use App\Models\WajibRetribusi;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -136,10 +137,13 @@ class WajibRetribusiController extends Controller
 
         $user = User::firstWhere('role', 'ROLE_KABID');
 
+        $tandaTangan = TandaTangan::first();
+
         $pdf = Pdf::loadView('exports.wajib-retribusi.draft-pdf', [
             'data' => $data,
             'kabid' => $user,
-            'skrd' => $skrd
+            'skrd' => $skrd,
+            'tandaTangan' => $tandaTangan
         ])
             ->setPaper('a4', 'portrait')
             ->setOptions([

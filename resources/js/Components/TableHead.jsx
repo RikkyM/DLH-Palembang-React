@@ -38,7 +38,7 @@ const TableHead = ({
         </th>
       ))}
       {children}
-      <th className="text-right sticky top-0 right-0 bg-white">Aksi</th>
+      <th className="sticky right-0 top-0 bg-white text-right">Aksi</th>
     </tr>
   );
 };

@@ -686,6 +686,8 @@ class SkrdSeeder extends Seeder
 
             unset($data['petugasPendaftarId']);
             
+            $data['url_image'] = json_encode([trim($data['url_image'])]);
+            $data['url_fileSkrd'] = json_encode([trim($data['url_fileSkrd'])]);
             $data["alamatObjekRetribusi"] = trim($data["alamatObjekRetribusi"]);
             $data['created_at'] = Carbon::parse($data['created_at'])->utc();
             $data['updated_at'] = Carbon::parse($data['updated_at'])->utc();

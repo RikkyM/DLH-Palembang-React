@@ -5,8 +5,8 @@ import { useProvider } from "@/Context/GlobalContext";
 import { Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
-import Table from "./Table";
-import DialogForm from "./DialogForm";
+import Table from "@/Components/WajibRetribusi/Table";
+import DialogForm from "@/Components/WajibRetribusi/DialogForm";
 
 const Diterima = ({
   datas,
@@ -17,6 +17,7 @@ const Diterima = ({
   kecamatanOptions = [],
   kelurahanOptions = [],
   petugasOptions = [],
+  user = "ROLE_KATIM"
 }) => {
   const { modalState, closeModal } = useProvider();
   const [search, setSearch] = useState(filters.search || "");
@@ -407,6 +408,7 @@ const Diterima = ({
                 setDirection={setDirection}
                 isLoading={isLoading}
                 handleSendDiterima={handleSendDiterima}
+                role="ROLE_KATIM"
               />
             </>
           )}
@@ -419,6 +421,7 @@ const Diterima = ({
         isOpen={modalState.type === "diterima"}
         onClose={closeModal}
         retribusi={modalState.data}
+        user={user}
       />
     </Layout>
   );

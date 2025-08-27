@@ -23,12 +23,10 @@ const WajibRetribusiCreate = ({
     ROLE_PENDAFTAR: {
       submitRoute: "pendaftar.wajib-retribusi.store",
       redirectRoute: "pendaftar.wajib-retribusi.index",
-      readonlyFields: [],
     },
     ROLE_SUPERADMIN: {
       submitRoute: "super-admin.wajib-retribusi.store",
       redirectRoute: "super-admin.wajib-retribusi.index",
-      readonlyFields: [],
     },
   };
 
@@ -98,15 +96,18 @@ const WajibRetribusiCreate = ({
     { value: "FIRMA", label: "FIRMA" },
   ];
 
-  const handleLocationChange = useCallback((lat, lng) => {
-  if (lat != null && lng != null) {
-    setData((prevData) => ({
-      ...prevData,
-      latitude: String(lat),
-      longitude: String(lng),
-    }));
-  }
-}, [setData]);
+  const handleLocationChange = useCallback(
+    (lat, lng) => {
+      if (lat != null && lng != null) {
+        setData((prevData) => ({
+          ...prevData,
+          latitude: String(lat),
+          longitude: String(lng),
+        }));
+      }
+    },
+    [setData],
+  );
 
   const handleFileChange = (field, file) => {
     setData(field, file);
@@ -274,7 +275,6 @@ const WajibRetribusiCreate = ({
       tarifRetribusi: data.tarifRetribusi,
       totalRetribusi: total,
     };
-
 
     post(route(currentConfig.submitRoute), {
       data: submitData,

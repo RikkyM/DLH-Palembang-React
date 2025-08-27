@@ -4,66 +4,68 @@ import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import { useForm } from "@inertiajs/react";
 import { useEffect } from "react";
 
-const DialogForm = ({ isOpen, onClose, retribusi = null }) => {
+const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
   const firstInputRef = useAutoFocusInput(isOpen, true);
 
-  const { data, setData, errors, processing, clearErrors, put } = useForm({
-    keterangan: "",
-    status: "",
-  });
+  const roleConfig = {
+    ROLE_KUPTD: {
+      submit: "kuptd.wajib-retribusi.update",
+    },
+    ROLE_KATIM: {
+      submit: "katim.wajib-retribusi.update",
+    },
+    ROLE_KABID: {
+      submit: "kabid.wajib-retribusi.update",
+      skrd: "kabid.wajib-retribusi.create-skrd",
+    },
+  };
+
+  const currentConfig = roleConfig[user] || null;
+
+  const { data, setData, errors, processing, clearErrors, post, put } = useForm(
+    {
+      keterangan: "",
+      status: "",
+    },
+  );
 
   useEffect(() => {
     if (isOpen) {
-        setData({
-            keterangan: "",
-            status: ""
-        })
+      setData({
+        keterangan: "",
+        status: "",
+      });
     }
-  }, [isOpen, retribusi])
+  }, [isOpen, retribusi]);
 
-//   const handleSubmit = (e, status) => {
-//     e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-//     console.log({ keterangan: data.keterangan, status }); // ✅ Nilai benar
+    clearErrors();
 
-//     post(
-//       route("katim.wajib-retribusi-proses", retribusi.id),
-//       // {
-//       //   keterangan: data.keterangan,
-//       //   status: status,
-//       // },
-//       {
-//         data: {
-//             ...data
-//         },
-//         forceFormData: true,
-//         onSuccess: () => {
-//           setData({ keterangan: "", status: "" });
-//           onClose();
-//         },
-//         onError: (e) => {
-//           console.error(e);
-//         },
-//       },
-//     );
-//   };
+    if (!currentConfig) {
+      console.error("Role tidak dikenali");
+      return;
+    }
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
+    console.log(currentConfig.skrd)
 
-      put(
-        route("katim.wajib-retribusi.update", retribusi.id),
-        {
-          onSuccess: () => {
-            setData({ keterangan: "", status: "" });
-            onClose();
-          },
-          onError: (e) => {
-            console.error(e);
-          },
+    if (data.status === "Finished") {
+      post(route(currentConfig.skrd, retribusi.id), {
+        onSuccess: () => {
+          setData({ keterangan: "", status: "" });
+          onClose();
         },
-      );
-    };
+      });
+    } else {
+      put(route(currentConfig.submit, retribusi.id), {
+        onSuccess: () => {
+          setData({ keterangan: "", status: "" });
+          onClose();
+        },
+      });
+    }
+  };
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
@@ -113,7 +115,13 @@ const DialogForm = ({ isOpen, onClose, retribusi = null }) => {
               className="order-1 rounded bg-green-500 px-3 py-2 font-medium text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
               disabled={processing}
               type="submit"
-              onClick={(e) => setData("status", "Approved")}
+              onClick={(e) => {
+                if (user === "ROLE_KUPTD" || user === "ROLE_KATIM") {
+                  setData("status", "Approved");
+                } else {
+                  setData("status", "Finished");
+                }
+              }}
             >
               {processing ? "Proses..." : "Terima"}
             </button>

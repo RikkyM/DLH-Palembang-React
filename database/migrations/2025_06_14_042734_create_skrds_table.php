@@ -40,9 +40,9 @@ return new class extends Migration
             $table->string('statusSkrd');
             $table->json('historyAction');
             $table->string('fileSkrd')->nullable();
-            $table->string('url_fileSkrd')->nullable();
+            $table->json('url_fileSkrd')->nullable();
             $table->string('image');
-            $table->string('url_image');
+            $table->json('url_image');
             $table->timestamps();
             $table->string('varetribusi')->nullable();
         });

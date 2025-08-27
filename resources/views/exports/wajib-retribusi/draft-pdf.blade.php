@@ -147,7 +147,8 @@
             </tr>
             <tr style="font-size: 14px;">
                 <td colspan="3" style="border: 1px solid black; padding: 4px; width: 50%;">Objek Retribusi yang harus
-                    dibayar/tahun: <br />Rp {{ number_format($data->tarifPertahun, 2, ',', '.') }}</td>
+                    dibayar/tahun: <br />Rp
+                    {{ $data->tarifPertahun ? number_format($data->tarifPertahun, 2, ',', '.') : '-' }}</td>
                 <td colspan="2" style="border: 1px solid black; padding: 4px; width: 50%;">
                     Terbilang:<br>
                     <span style="text-transform: uppercase;">{{ terbilang($data->tarifPertahun) }} rupiah</span>
@@ -170,7 +171,7 @@
                 </a>
             </td>
             <td style="width: 50%; text-align: center;">
-                <p style="font-size: 14px; line-height: 0.8rem; width: max-content; margin: 0 auto 110px;">An. Kepala
+                {{-- <p style="font-size: 14px; line-height: 0.8rem; width: max-content; margin: 0 auto 110px;">An. Kepala
                     Dinas
                     Lingkungan
                     Hidup<br />Kota Palembang<br />
@@ -179,6 +180,14 @@
                     style="font-size: 14px; line-height: 0.8rem; text-align: left; display: inline-block; margin: 0 auto; width: 230px;">
                     {{ $kabid->namaLengkap }}
                     <br />NIP
+                </p> --}}
+                <p style="font-size: 14px; line-height: 0.8rem; width: max-content; margin: 0 auto 110px;">
+                    {{ $tandaTangan->jabatan1 }}<br />{{ $tandaTangan->kota }}<br />
+                    {{ $tandaTangan->jabatan2 }}</p>
+                <p
+                    style="font-size: 14px; line-height: 0.8rem; text-align: left; display: inline-block; margin: 0 auto; width: 230px;">
+                    {{ $tandaTangan->nama }}
+                    <br />NIP {{ $tandaTangan->nip }}
                 </p>
             </td>
         </tr>

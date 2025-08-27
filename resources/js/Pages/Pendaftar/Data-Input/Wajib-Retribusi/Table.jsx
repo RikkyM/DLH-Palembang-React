@@ -1,10 +1,5 @@
 import { Link, router } from "@inertiajs/react";
-import {
-  FileText,
-  Pencil,
-  PencilLine,
-  Send,
-} from "lucide-react";
+import { FileText, Pencil, PencilLine, Send } from "lucide-react";
 import TableHead from "@/Components/TableHead";
 
 const Table = ({
@@ -17,21 +12,20 @@ const Table = ({
   setDirection,
   isLoading,
 }) => {
-
   const handleSend = (e, id) => {
-      e.preventDefault();
-  
-      router.put(
-        route("pendaftar.wajib-retribusi.send", id),
-        {},
-        {
-          preserveScroll: true,
-          onError: (errors) => {
-            console.error("Terjadi kesalahan ketika mengirim");
-          },
+    e.preventDefault();
+
+    router.put(
+      route("pendaftar.wajib-retribusi.send", id),
+      {},
+      {
+        preserveScroll: true,
+        onError: (errors) => {
+          console.error("Terjadi kesalahan ketika mengirim");
         },
-      );
-    };
+      },
+    );
+  };
 
   return (
     <table className="min-w-full divide-y divide-gray-300 p-3">
@@ -45,59 +39,9 @@ const Table = ({
             setDirection(dir);
           }}
         />
-        {/* <tr className="*:p-2 *:text-sm *:font-medium *:uppercase">
-          <th className="text-left">Aksi</th>
-          {columns.map((col) => (
-            <th
-              key={col.key}
-              className={`${col.align} cursor-pointer select-none`}
-              onClick={() => handleSort(col.key)}
-            >
-              <span className="flex items-center gap-1.5">
-                {col.label}
-                {sort === col.key && (
-                  <span className="ml-1">
-                    {direction === "desc" ? (
-                      <ArrowUp size={20} />
-                    ) : (
-                      <ArrowDown size={20} />
-                    )}
-                  </span>
-                )}
-              </span>
-            </th>
-          ))}
-        </tr> */}
       </thead>
       <tbody className="dividfe-y divide-neutral-300 text-xs md:text-sm">
-        {isLoading ? (
-          <tr>
-            <td colSpan={14}>
-              <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
-                <svg
-                  className="h-4 w-4 animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                  />
-                </svg>
-                Memuat data...
-              </div>
-            </td>
-          </tr>
-        ) : datas?.data?.length > 0 ? (
+        {datas?.data?.length > 0 ? (
           datas.data.map((data, index) => (
             <tr
               key={data.id || index}

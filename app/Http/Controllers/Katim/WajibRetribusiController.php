@@ -321,7 +321,6 @@ class WajibRetribusiController extends Controller
      */
     public function show($status, WajibRetribusi $retribusi)
     {
-        // dd($retribusi);
         $retribusi->load(['pemilik', 'kelurahan', 'kecamatan', 'kategori', 'subKategori', 'uptd']);
 
         $pemohonOptions = Pemilik::select('id', 'namaPemilik')

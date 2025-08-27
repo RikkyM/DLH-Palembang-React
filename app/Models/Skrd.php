@@ -11,6 +11,7 @@ class Skrd extends Model
         "noSkrd",
         "nomorOnly",
         "uptdId",
+        'namaPendaftar',
         "petugasPendaftarId",
         "noWajibRetribusi",
         "namaObjekRetribusi",
@@ -29,7 +30,7 @@ class Skrd extends Model
         "terbilangTahun",
         "terbilangBulan",
         "latitudeObjekRetribusi",
-        "longtitudeObjekRetribusi",
+        "longitudeObjekRetribusi",
         "tahun",
         "objekRetribusiId",
         "statusSkrd",
@@ -42,6 +43,56 @@ class Skrd extends Model
         "updated_at",
         "varetribusi"
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $last = Skrd::orderBy('nomorOnly', 'desc')->first();
+            $nextNumber = $last ? $last->nomorOnly + 1 : 1;
+
+            $tahun = date('Y');
+
+            $model->nomorOnly = $nextNumber;
+
+            $model->noSkrd = sprintf("%s/SPKRD/DLH/%s", $nextNumber, $tahun);
+
+            $lastWajib = WajibRetribusi::whereYear('created_at', date('Y'))
+                ->get()
+                ->sortByDesc(function ($item) {
+                    $parts = explode('.', $item->noWajibRetribusi);
+
+                    if (count($parts) === 3) {
+                        return intval($parts[1]);
+                    } else {
+                        return intval($parts[0]);
+                    }
+                })
+                ->first();
+
+            if ($lastWajib) {
+                $parts = explode('.', $lastWajib->noWajibRetribusi);
+                if (count($parts) === 3) {
+                    $lastNumber = intval($parts[1]);
+                } else {
+                    $lastNumber = intval($parts[0]);
+                }
+                $nextWajib = $lastNumber + 1;
+            } else {
+                $nextWajib = 1;
+            }
+
+            // dd($nextWajib);
+
+            $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
+            $noWajibRetribusi = $formatted . '.' . $tahun;
+
+            // dd($noWajibRetribusi);
+
+            $model->noWajibRetribusi = $noWajibRetribusi;
+        });
+    }
 
     public function user()
     {
@@ -66,5 +117,10 @@ class Skrd extends Model
     public function invoice()
     {
         return $this->belongsTo(Invoice::class, 'noSkrd', 'noSkrd');
+    }
+
+    public function wajibRetribusi()
+    {
+        return $this->belongsTo(WajibRetribusi::class, 'noWajibRetribusi', 'noWajibRetribusi');
     }
 }

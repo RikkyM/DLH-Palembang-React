@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
-
 import { Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
-import Table from "./Table";
+import Table from "@/Components/WajibRetribusi/Table";
 
 const Diterima = ({
   datas,
@@ -396,6 +395,7 @@ const Diterima = ({
                 setDirection={setDirection}
                 isLoading={isLoading}
                 handleSendDiterima={handleSendDiterima}
+                role="ROLE_PENDAFTAR"
               />
             </>
           )}
