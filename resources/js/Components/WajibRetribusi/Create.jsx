@@ -649,8 +649,47 @@ const WajibRetribusiCreate = ({
           required={true}
           valueKey="value"
           labelKey="label"
-          className="col-span-2"
+          className="col-span-2 md:col-span-1"
         />
+        {/* <DropdownInput
+          id="penagih"
+          label="Penagih"
+          placeholder="Pilih Status Tempat..."
+          value={data.statusTempat}
+          onChange={(value) => handleInputChange("statusTempat", value)}
+          options={statusTempat}
+          error={errors.statusTempat}
+          required={true}
+          valueKey="value"
+          labelKey="label"
+          className="col-span-2"
+        /> */}
+        <FormInput className="col-span-2 md:col-span-1">
+          <Label
+            htmlFor="penagih"
+            className="after:text-red-500 after:content-['*']"
+          >
+            Penagih
+          </Label>
+          <Input
+            type="number"
+            id="penagih"
+            className={`${errors.jBangunan && "border border-red-500"}`}
+            placeholder="Pilih jumlah penagih..."
+            // value={data.jBangunan}
+            // onKeyDown={(e) => {
+            //   if (!isAllowedKey(e)) {
+            //     e.preventDefault();
+            //   }
+            // }}
+            // onChange={(e) =>
+            //   handleInputChange("jBangunan", e.target.value.replace(/\D/g, ""))
+            // }
+          />
+          {errors.jBangunan && (
+            <span className="text-xs text-red-500">{errors.jBangunan}</span>
+          )}
+        </FormInput>
         <FormInput className="col-span-2 md:col-span-1">
           <Label
             htmlFor="jBangunan"

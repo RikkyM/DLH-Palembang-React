@@ -18,6 +18,7 @@ const DialogForm = ({
 
   const initialData = {
     noSkrd: "",
+    tarifPerbulan: "",
     jumlahBulan: "",
     satuan: "",
     namaBank: "",
@@ -25,10 +26,20 @@ const DialogForm = ({
     noRekening: "",
     tanggalTerbit: "",
     jatuhTempo: "",
+    totalTagihan: "",
   };
 
   const { data, setData, errors, processing, clearErrors, post, put } =
     useForm(initialData);
+
+    useEffect(() => {
+      if (data.tarifPerbulan && data.jumlahBulan) {
+        const total = data.tarifPerbulan * data.jumlahBulan
+        setData('totalTagihan', total)
+      } else {
+        setData('totalTagihan', "");
+      }
+    }, [data.tarifPerbulan, data.jumlahBulan])
 
   useEffect(() => {
     if (isOpen) {
@@ -45,27 +56,27 @@ const DialogForm = ({
     }
   }, [isOpen, invoice?.id, isEditMode]);
 
-  useEffect(() => {
-    if (data.tanggalTerbit && data.jatuhTempo) {
-      const start = new Date(data.tanggalTerbit);
-      const end = new Date(data.jatuhTempo);
+  // useEffect(() => {
+  //   if (data.tanggalTerbit && data.jatuhTempo) {
+  //     const start = new Date(data.tanggalTerbit);
+  //     const end = new Date(data.jatuhTempo);
 
-      let months =
-        (end.getFullYear() - start.getFullYear()) * 12 +
-        (end.getMonth() - start.getMonth());
+  //     let months =
+  //       (end.getFullYear() - start.getFullYear()) * 12 +
+  //       (end.getMonth() - start.getMonth());
 
-      if (end.getDate() < start.getDate()) {
-        months -= 1;
-      }
+  //     if (end.getDate() < start.getDate()) {
+  //       months -= 1;
+  //     }
 
-      if (months < 0) months = 0;
-      // months += 1;
+  //     if (months < 0) months = 0;
+  //     // months += 1;
 
-      setData("jumlahBulan", months);
-    } else {
-      setData("jumlahBulan", "");
-    }
-  }, [data.tanggalTerbit, data.jatuhTempo]);
+  //     setData("jumlahBulan", months);
+  //   } else {
+  //     setData("jumlahBulan", "");
+  //   }
+  // }, [data.tanggalTerbit, data.jatuhTempo]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -117,9 +128,12 @@ const DialogForm = ({
                 (r) => r.noWajibRetribusi === value,
               );
 
+              console.log(selected);
+
               setData("noWajibRetribusi", selected?.noWajibRetribusi || "");
               setData("noSkrd", selected?.noSkrd || "");
               setData("namaObjekRetribusi", selected?.namaObjekRetribusi || "");
+              setData("tarifPerbulan", selected?.tagihanPerBulanSkrd || "");
             }}
             options={retribusiList}
             error={errors.noWajibRetribusi}
@@ -140,6 +154,58 @@ const DialogForm = ({
             />
             {errors.noSkrd && (
               <span className="text-sm text-red-500">{errors.noSkrd}</span>
+            )}
+          </FormInput>
+
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label htmlFor="tarifPerbulan">Tarif Perbulan</Label>
+            <Input
+              id="tarifPerbulan"
+              value={data.tarifPerbulan}
+              onChange={(e) => setData("tarifPerbulan", e.target.value)}
+              readOnly={true}
+            />
+            {errors.tarifPerbulan && (
+              <span className="text-sm text-red-500">
+                {errors.tarifPerbulan}
+              </span>
+            )}
+          </FormInput>
+
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label htmlFor="jumlahBulan">Jumlah Bulan</Label>
+            <Input
+              id="jumlahBulan"
+              type="number"
+              value={data.jumlahBulan}
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10);
+                if (!isNaN(value) && value >= 1 && value <= 12) {
+                  setData("jumlahBulan", value);
+                } else if (e.target.value === "") {
+                  setData("jumlahBulan", "");
+                }
+              }}
+              min={1}
+              max={12}
+              placeholder="Masukkan jumlah bulan..."
+            />
+            {errors.jumlahBulan && (
+              <span className="text-sm text-red-500">{errors.jumlahBulan}</span>
+            )}
+          </FormInput>
+
+          <FormInput className="col-span-2">
+            <Label htmlFor="totalTagihan">Total Tagihan</Label>
+            <Input
+              id="totalTagihan"
+              value={data.totalTagihan}
+              onChange={(e) => setData("totalTagihan", e.target.value)}
+            />
+            {errors.tarifPerbulan && (
+              <span className="text-sm text-red-500">
+                {errors.tarifPerbulan}
+              </span>
             )}
           </FormInput>
 
@@ -173,31 +239,7 @@ const DialogForm = ({
           </FormInput>
 
           <FormInput className="col-span-2">
-            <Label htmlFor="jumlahBulan">Jumlah Bulan</Label>
-            <Input
-              id="jumlahBulan"
-              type="number"
-              value={data.jumlahBulan}
-              readOnly={true}
-              tabIndex={-1}
-              // onChange={(e) => {
-              //   const value = parseInt(e.target.value, 10);
-              //   if (!isNaN(value) && value >= 1 && value <= 12) {
-              //     setData("jumlahBulan", value);
-              //   } else if (e.target.value === "") {
-              //     setData("jumlahBulan", "");
-              //   }
-              // }}
-              min={1}
-              placeholder="Masukkan jumlah bulan..."
-            />
-            {errors.jumlahBulan && (
-              <span className="text-sm text-red-500">{errors.jumlahBulan}</span>
-            )}
-          </FormInput>
-
-          <FormInput className="col-span-2">
-            <Label htmlFor="satuan">Satuan</Label>
+            <Label htmlFor="satuan">Keterangan Bulan</Label>
             <Input
               id="satuan"
               value={data.satuan}
@@ -208,7 +250,7 @@ const DialogForm = ({
               <span className="text-sm text-red-500">{errors.satuan}</span>
             )}
           </FormInput>
-          <FormInput className="col-span-2">
+          {/* <FormInput className="col-span-2">
             <Label htmlFor="namaBank">Nama Bank</Label>
             <Input
               id="namaBank"
@@ -219,8 +261,8 @@ const DialogForm = ({
             {errors.namaBank && (
               <span className="text-sm text-red-500">{errors.namaBank}</span>
             )}
-          </FormInput>
-          <FormInput className="col-span-2">
+          </FormInput> */}
+          {/* <FormInput className="col-span-2">
             <Label htmlFor="pengirim">Nama Pengirim</Label>
             <Input
               id="pengirim"
@@ -231,8 +273,8 @@ const DialogForm = ({
             {errors.pengirim && (
               <span className="text-sm text-red-500">{errors.pengirim}</span>
             )}
-          </FormInput>
-          <FormInput className="col-span-2">
+          </FormInput> */}
+          {/* <FormInput className="col-span-2">
             <Label htmlFor="noRekening">No Rekening</Label>
             <Input
               id="noRekening"
@@ -248,7 +290,7 @@ const DialogForm = ({
             {errors.noRekening && (
               <span className="text-sm text-red-500">{errors.noRekening}</span>
             )}
-          </FormInput>
+          </FormInput> */}
 
           <div className="col-span-2 flex flex-col gap-3 text-sm md:flex-row md:justify-end md:gap-2">
             <button

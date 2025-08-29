@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use App\Exports\SkrdDataExport;
-use App\Exports\SkrdExport;
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
 use App\Models\Skrd;
 use App\Models\SubKategori;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Maatwebsite\Excel\Facades\Excel;
 
 class SkrdController extends Controller
 {

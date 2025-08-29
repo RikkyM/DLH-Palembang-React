@@ -90,7 +90,7 @@ class SkrdController extends Controller
             'kabid' => $user
         ])
             ->setPaper('a4', 'portrait')
-            ->setOptions([
+        ->setOptions([
                 'dpi' => 150,
                 'defaultFont' => 'arial',
                 'isHtml5ParserEnabled' => true,

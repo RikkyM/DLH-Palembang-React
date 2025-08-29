@@ -7,6 +7,7 @@ use App\Http\Controllers\SuperAdmin\KecamatanController;
 use App\Http\Controllers\SuperAdmin\KelurahanController;
 use App\Http\Controllers\SuperAdmin\PemohonController;
 use App\Http\Controllers\SuperAdmin\PenerimaanRetribusiController;
+use App\Http\Controllers\SuperAdmin\SetoranController;
 use App\Http\Controllers\SuperAdmin\SkrdController;
 use App\Http\Controllers\SuperAdmin\SubKategoriController;
 use App\Http\Controllers\SuperAdmin\UptdController;
@@ -38,9 +39,13 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
 
     Route::prefix('pembayaran')->group(function () {
         Route::resource('/invoice', InvoiceController::class)->only(['index', 'show', 'store', 'update']);
-        Route::get('/invoice/pdf/{filename}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
+        // Route::get('/invoice/pdf/{filename}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
+        Route::get('/invoice/pdf/{invoice}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
         Route::get('/preview-invoice', [InvoiceController::class, 'previewPdf'])->name('invoice.preview'); // route ini digunakan untuk preview invoice saja tidak terlalu digunakan
         Route::resource('/penerimaan-retribusi', PenerimaanRetribusiController::class);
+        // Route::resource('/input-setoran', SetoranController::class)->only(['index', 'create']);
+        Route::get('/input-setoran', [SetoranController::class, 'create'])->name('input-setoran');
+        Route::resource('/data-setoran', SetoranController::class)->only(['index']);
     });
 
     Route::prefix('settings')->group(function () {

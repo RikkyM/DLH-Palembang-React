@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Invoice;
 use App\Models\Skrd;
+use App\Models\User;
 use App\Models\WajibRetribusi;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -54,7 +55,7 @@ class InvoiceController extends Controller
 
         $invoices = $query->paginate(10);
 
-        $skrd = Skrd::select('noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi')->get();
+        $skrd = Skrd::select('noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'tagihanPerBulanSkrd')->get();
 
         return Inertia::render('Super-Admin/Pembayaran/Invoice/Index', [
             'datas' => $invoices,
@@ -80,7 +81,7 @@ class InvoiceController extends Controller
      */
     public function store(InvoiceRequest $request)
     {
-        $request->validated();
+        // $request->validated();
         // dd($request->all());
 
         $skrd = Skrd::where('noSkrd', $request->noSkrd)->firstOrFail();
@@ -95,24 +96,24 @@ class InvoiceController extends Controller
                 'noSkrd' => $request->noSkrd,
                 'jumlah_bulan' => $request->jumlahBulan,
                 'satuan' => $request->satuan,
-                'nama_bank' => $request->namaBank,
-                'atas_nama' => $request->pengirim,
-                'no_rekening' => $request->noRekening,
+                // 'nama_bank' => $request->namaBank,
+                // 'atas_nama' => $request->pengirim,
+                // 'no_rekening' => $request->noRekening,
                 'total_retribusi' => $total,
                 'terbilang' => trim(terbilang($total)),
                 'tanggal_terbit' => $request->tanggalTerbit,
                 'jatuh_tempo' => $request->jatuhTempo
             ]);
 
-            $pdf = Pdf::loadView('exports.invoices.invoice', ['invoice' => $invoice, 'skrd' => $skrd])->setPaper('a4');
+            // $pdf = Pdf::loadView('exports.invoices.invoice', ['invoice' => $invoice, 'skrd' => $skrd])->setPaper('a4');
 
-            $filename = str_replace('/', '-', $invoice->no_invoice) . '.pdf';
+            // $filename = str_replace('/', '-', $invoice->no_invoice) . '.pdf';
 
-            Storage::put('invoices/' . $filename, $pdf->output());
+            // Storage::put('invoices/' . $filename, $pdf->output());
 
-            $invoice->update([
-                'file' => $filename
-            ]);
+            // $invoice->update([
+            //     'file' => $filename
+            // ]);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -153,15 +154,30 @@ class InvoiceController extends Controller
         //
     }
 
-    public function openFile($filename)
+    // public function openFile($filename)
+    public function openFile(Invoice $invoice)
     {
-        $path = storage_path('app/private/invoices/' . $filename);
+        // $path = storage_path('app/private/invoices/' . $filename);
 
-        if (!file_exists($path)) {
-            abort(404);
-        }
+        // if (!file_exists($path)) {
+        //     abort(404);
+        // }
 
-        return Response::file($path);
+        // return Response::file($path);
+
+        $invoice->load('skrd');
+
+        // $kuptd = Skrd::with('user')->whereHas('user', function($q) use ($invoice) {
+        //     $q->where('uptdId', $invoice->skrd->uptdId)->where('role', 'ROLE_KUPTD');
+        // });
+
+        $kuptd = User::where('uptdId', $invoice->skrd->uptdId)->where('role', "ROLE_KUPTD")->first();
+        // dd($kuptd->first());
+        // // dd($invoice->skrd);
+
+        $pdf = Pdf::loadView('exports.invoices.invoice', ['invoice' => $invoice, 'skrd' => $invoice->skrd, 'kuptd' => $kuptd])->setPaper('a4');
+        // dd($data);
+        return $pdf->stream("invoice.pdf");
     }
 
     public function previewPdf(Request $request)

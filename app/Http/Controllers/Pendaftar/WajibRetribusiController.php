@@ -461,6 +461,7 @@ class WajibRetribusiController extends Controller
             return redirect()->route('pendaftar.wajib-retribusi.index')->with('success', 'Data berhasil disimpan.');
         } catch (\Exception $e) {
             DB::rollback();
+            dd($e);
             return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data.']);
         }
     }

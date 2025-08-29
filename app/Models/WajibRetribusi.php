@@ -130,21 +130,21 @@ class WajibRetribusi extends Model
         return $this->belongsTo(Kecamatan::class, 'kodeKecamatan', 'kodeKecamatan');
     }
 
-    // protected static function boot()
-    // {
-    //     parent::boot();
+    protected static function boot()
+    {
+        parent::boot();
 
-    //     static::creating(function ($model) {
-    //         $last = self::orderBy('id', 'desc')->first();
+        static::creating(function ($model) {
+            $last = self::orderBy('id', 'desc')->first();
 
-    //         $lastNumber = 0;
-    //         if ($last && preg_match('/^\d+$/', $last->noPendaftaran)) {
-    //             $lastNumber = intval($last->noPendaftaran);
-    //         }
+            $lastNumber = 0;
+            if ($last && preg_match('/^\d+$/', $last->noPendaftaran)) {
+                $lastNumber = intval($last->noPendaftaran);
+            }
 
-    //         $nextNumber = $lastNumber + 1;
+            $nextNumber = $lastNumber + 1;
 
-    //         $model->noPendaftaran = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
-    //     });
-    // }
+            $model->noPendaftaran = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        });
+    }
 }

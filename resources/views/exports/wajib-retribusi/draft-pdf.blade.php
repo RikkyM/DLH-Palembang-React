@@ -181,11 +181,11 @@
                     {{ $kabid->namaLengkap }}
                     <br />NIP
                 </p> --}}
-                <p style="font-size: 14px; line-height: 0.8rem; width: max-content; margin: 0 auto 110px;">
+                <p style="font-size: 14px; line-height: 0.5rem; width: max-content; margin: 0 auto 110px; text-transform: uppercase">
                     {{ $tandaTangan->jabatan1 }}<br />{{ $tandaTangan->kota }}<br />
                     {{ $tandaTangan->jabatan2 }}</p>
                 <p
-                    style="font-size: 14px; line-height: 0.8rem; text-align: left; display: inline-block; margin: 0 auto; width: 230px;">
+                    style="font-size: 14px; line-height: 0.5rem; text-align: left; display: inline-block; margin: 0 auto; width: 230px; text-transform: uppercase">
                     {{ $tandaTangan->nama }}
                     <br />NIP {{ $tandaTangan->nip }}
                 </p>

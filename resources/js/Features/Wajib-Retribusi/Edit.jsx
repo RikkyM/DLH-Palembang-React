@@ -692,8 +692,37 @@ const WajibRetribusiEdit = ({
           required={true}
           valueKey="value"
           labelKey="label"
-          className="col-span-2"
+          className="col-span-2 md:col-span-1"
         />
+
+        <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
+          <label
+            htmlFor="penagih"
+            className="after:text-red-500 after:content-['*']"
+          >
+            Penagih
+          </label>
+          <input
+            className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.jBangunan && "border border-red-500"}`}
+            type="text"
+            id="penagih"
+            autoComplete="off"
+            placeholder="Pilih penagih..."
+            // value={data.jBangunan}
+            // onKeyDown={(e) => {
+            //   if (!isAllowedKey(e)) {
+            //     e.preventDefault();
+            //   }
+            // }}
+            // onChange={(e) =>
+            //   setData("jBangunan", e.target.value.replace(/\D/g, ""))
+            // }
+          />
+          {errors.jBangunan && (
+            <span className="text-xs text-red-500">{errors.jBangunan}</span>
+          )}
+        </div>
+        
         <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
           <label
             htmlFor="jBangunan"

@@ -191,7 +191,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
                         <td className="text-right">
                           <a
                             href={route("super-admin.invoice.pdf", {
-                              filename: data.file,
+                              id: data.id,
                             })}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -201,7 +201,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
                           </a>
                           <a
                             href={route("super-admin.invoice.pdf", {
-                              filename: data.file,
+                              id: data.id,
                             })}
                             target="_blank"
                             rel="noopener noreferrer"

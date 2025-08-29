@@ -53,7 +53,7 @@ const SuperAdminNavigation = () => {
     },
     {
       label: "Input Setoran",
-      // route: "super-admin.laporan.piutang-retribusi",
+      route: "super-admin.input-setoran",
     },
     {
       label: "Data Setoran",
