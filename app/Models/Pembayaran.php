@@ -12,4 +12,9 @@ class Pembayaran extends Model
     {
         return $this->belongsTo(Skrd::class, 'skrdId', 'id');
     }
+
+    public function uptd()
+    {
+        return $this->belongsTo(Uptd::class, 'uptdId', 'id');
+    }
 }
