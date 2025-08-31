@@ -97,7 +97,7 @@ const Sidebar = ({ children }) => {
 
         {/* footer */}
         <section className="overflow-hidden md:hidden">
-          <div className="w-64 min-w-64 p-3">
+          <div className="w-full min-w-64 p-3">
             <button
               ref={buttonRef}
               onClick={handleProfile}

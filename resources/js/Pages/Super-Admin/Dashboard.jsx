@@ -14,23 +14,25 @@ const Dashboard = ({ year, years, stats, chart, chartKecamatan }) => {
   };
   return (
     <Layout title="Dashboard">
-      <section className="min-h-screen overflow-hidden p-3">
-        {years.map((y) => (
-          <button
-            key={y}
-            onClick={() => handleChangeYear(y)}
-            className={`mx-1 rounded px-4 py-2 text-xs outline-none md:text-sm ${
-              parseInt(y) === parseInt(year)
-                ? "bg-teal-400 text-white"
-                : "border border-gray-300 bg-white text-gray-800 shadow"
-            }`}
-          >
-            {y}
-          </button>
-        ))}
+      <section className="min-h-screen overflow-hidden p-3 relative">
+        <div>
+          {years.map((y) => (
+            <button
+              key={y}
+              onClick={() => handleChangeYear(y)}
+              className={`mx-1 rounded px-4 py-2 text-xs outline-none md:text-sm ${
+                parseInt(y) === parseInt(year)
+                  ? "bg-teal-400 text-white"
+                  : "border border-gray-300 bg-white text-gray-800 shadow"
+              }`}
+            >
+              {y}
+            </button>
+          ))}
+        </div>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-          <div className="order-1 col-span-2 mt-2 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white p-4 shadow">
+          <div className="order-1 col-span-2 mt-2 grid gap-2 md:grid-cols-2">
+            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
               <div className="flex items-center gap-2">
                 <div className="rounded-full bg-[#C9FFB1] p-2">
                   <Users className="size-5 text-[#63B63F]" />
@@ -43,7 +45,7 @@ const Dashboard = ({ year, years, stats, chart, chartKecamatan }) => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white p-4 shadow">
+            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
               <div className="flex items-center gap-2">
                 <div className="rounded-full bg-[#FFC561] p-2">
                   <FileText className="size-5 text-[#BF5905]" />
@@ -56,7 +58,7 @@ const Dashboard = ({ year, years, stats, chart, chartKecamatan }) => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white p-4 shadow">
+            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
               <div className="flex items-center gap-2">
                 <div className="rounded-full bg-green-300 p-2">
                   <Wallet className="size-5 text-green-500" />
@@ -72,7 +74,7 @@ const Dashboard = ({ year, years, stats, chart, chartKecamatan }) => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white p-4 shadow">
+            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
               <div className="flex items-center gap-2">
                 <div className="rounded-full bg-green-300 p-2">
                   <DollarSign className="size-5 text-green-500" />
@@ -88,7 +90,7 @@ const Dashboard = ({ year, years, stats, chart, chartKecamatan }) => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white p-4 shadow">
+            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
               <div className="flex items-center gap-2">
                 <div className="rounded-full bg-amber-300 p-2">
                   <Clock className="size-5 text-amber-500" />
@@ -104,7 +106,7 @@ const Dashboard = ({ year, years, stats, chart, chartKecamatan }) => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white p-4 shadow">
+            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
               <div className="flex items-center gap-2">
                 <div className="rounded-full bg-green-300 p-2">
                   <DollarSign className="size-5 text-green-500" />
@@ -120,7 +122,7 @@ const Dashboard = ({ year, years, stats, chart, chartKecamatan }) => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white p-4 shadow">
+            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
               <div className="flex items-center gap-2">
                 <div className="rounded-full bg-green-300 p-2">
                   <DollarSign className="size-5 text-green-500" />
@@ -136,7 +138,7 @@ const Dashboard = ({ year, years, stats, chart, chartKecamatan }) => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white p-4 shadow">
+            <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
               <div className="flex items-center gap-2">
                 <div className="rounded-full bg-green-300 p-2">
                   <DollarSign className="size-5 text-green-500" />
@@ -153,7 +155,7 @@ const Dashboard = ({ year, years, stats, chart, chartKecamatan }) => {
               </div>
             </div>
           </div>
-          <div className="order-3 col-span-2 row-span-1 rounded border border-gray-300 bg-white p-6 shadow sm:row-span-2 lg:order-2 lg:col-span-1 lg:mt-2">
+          <div className="order-3 col-span-2 row-span-1 rounded border border-gray-300 bg-white px-10 py-6 shadow sm:row-span-2 lg:order-2 lg:col-span-1 lg:mt-2">
             <h2 className="mb-4 text-lg font-semibold">
               Penerimaan Kecamatan {year}
             </h2>

@@ -1,4 +1,5 @@
 import { Chart } from "chart.js/auto";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useEffect, useRef } from "react";
 
 const tailwindColors = [
@@ -51,24 +52,55 @@ const PieChart = ({ labels, data }) => {
         maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
+          datalabels: {
+            color: "#fff",
+            font: {
+              weight: "bold",
+            },
+            formatter: (value, ctx) => {
+              const dataArr = ctx.chart.data.datasets[0].data;
+              const total = dataArr.reduce((a, b) => a + b, 0);
+              const percentage = ((value / total) * 100).toFixed(1) + "%";
+              return percentage;
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let value = context.raw;
+                return new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(value);
+              },
+            },
+          },
         },
       },
+      plugins: [ChartDataLabels],
     });
   }, [labels, data]);
 
   return (
     <div className="flex flex-col">
-      <div className="px-14 pb-5 md:px-10">
+      <div className="px-10 pb-5 lg:px-5">
         <canvas className="!h-full !w-full" ref={chartRef} />
       </div>
-      <div className="flex h-full flex-1 flex-wrap justify-start gap-4">
+      <div className="grid h-full grid-cols-1 justify-start gap-0.5">
         {labels.map((label, i) => (
           <div key={i} className="flex items-center gap-2 text-xs xl:text-sm">
             <span
               className="inline-block size-3 rounded-full"
               style={{ backgroundColor: generateColors(labels.length)[i] }}
             />
-            <span>{label}</span>
+            <span>
+              {label} -{" "}
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(data[i])}
+            </span>
           </div>
         ))}
       </div>
