@@ -24,7 +24,7 @@ class KategoriController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('Super-Admin/Settings/Kategori/Index', [
+        return Inertia::render('Super-Admin/Master-Data/Kategori/Index', [
             'datas' => $kategori,
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null

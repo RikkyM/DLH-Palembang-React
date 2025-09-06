@@ -1,4 +1,4 @@
-import { PencilLine, Search } from "lucide-react";
+import { ChevronDown, PencilLine, Search } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useState } from "react";
 import { useProvider } from "@/Context/GlobalContext";
@@ -12,6 +12,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || "");
   const [direction, setDirection] = useState(filters.direction || "asc");
+  const [perPage, setPerPage] = useState(() => {
+    return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   const columns = [
@@ -25,8 +28,8 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
     { key: "tanggalLahir", label: "Tanggal Lahir", align: "text-left" },
     { key: "noHp", label: "Nomor Hp", align: "text-left" },
     { key: "email", label: "Email", align: "text-left" },
-    { key: "jabatan", label: "Jabatan", align: "text-left" },
-    { key: "created_at", label: "create date" },
+    // { key: "jabatan", label: "Jabatan", align: "text-left" },
+    { key: "created_at", label: "create date", align: "text-left" },
   ];
 
   useEffect(() => {
@@ -38,11 +41,12 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
       if (sort && sort !== filters.sort) params.sort = sort;
       if (direction && direction !== filters.direction)
         params.direction = direction;
+      if (perPage && perPage !== 10) params.per_page = perPage;
 
       router.get(route("super-admin.pemohon.index"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas"],
+        only: ["datas", "filters"],
         onFinish: () => setIsLoading(false),
       });
     }, 500);
@@ -51,7 +55,11 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
       clearTimeout(timeoutId);
       setIsLoading(false);
     };
-  }, [search, sort, direction]);
+  }, [search, sort, direction, perPage]);
+
+  const handlePerPageChange = (e) => {
+    setPerPage(parseInt(e.target.value));
+  };
 
   const allFilters = {
     search: search || filters.search,
@@ -61,23 +69,48 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
 
   return (
     <Layout title="PEMOHON">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
-          <label
-            htmlFor="search"
-            className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
-          >
-            <Search size={20} />
-            <input
-              autoComplete="off"
-              type="search"
-              id="search"
-              placeholder="Cari nama..."
-              className="flex-1 outline-none"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </label>
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="showData"
+              className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
+            >
+              <select
+                name="showData"
+                id="showData"
+                value={perPage}
+                onChange={handlePerPageChange}
+                className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="250">250</option>
+                <option value="-1">Semua</option>
+              </select>
+              <ChevronDown
+                size={20}
+                className="pointer-events-none absolute right-1 bg-transparent"
+              />
+            </label>
+            <label
+              htmlFor="search"
+              className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
+            >
+              <Search size={20} />
+              <input
+                autoComplete="off"
+                type="search"
+                id="search"
+                placeholder="Cari nama..."
+                className="flex-1 outline-none"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </label>
+          </div>
           <button
             onClick={() => {
               openModal("create");
@@ -88,9 +121,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
           </button>
         </div>
 
-        <div className="overflow-x-auto rounded bg-white shadow">
+        <div className="max-h-[calc(100%_-_150px)] overflow-auto rounded">
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500 bg-white shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -114,8 +147,8 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
             </div>
           ) : (
             <>
-              <table className="min-w-full divide-y divide-gray-300 whitespace-nowrap p-3">
-                <thead>
+              <table className="min-w-full divide-y divide-gray-300 p-3">
+                <thead className="truncate">
                   <TableHead
                     columns={columns}
                     sort={sort}
@@ -127,48 +160,25 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                   />
                 </thead>
                 <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
-                  {isLoading ? (
-                    <tr>
-                      <td colSpan={12}>
-                        <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
-                          <svg
-                            className="h-4 w-4 animate-spin"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            />
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8v8z"
-                            />
-                          </svg>
-                          Memuat data...
-                        </div>
-                      </td>
-                    </tr>
-                  ) : datas?.data?.length > 0 ? (
-                    datas.data.map((data, index) => (
+                  {(datas.data ?? datas)?.length > 0 ? (
+                    (datas.data ?? datas).map((data, index) => (
                       <tr
                         key={data.id || index}
-                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
-                          {(datas.current_page - 1) * datas.per_page +
+                          {/* {(datas.current_page - 1) * datas.per_page +
+                            index +
+                            1} */}
+                          {((datas.current_page ?? 1) - 1) *
+                            (datas.per_page ?? (datas.data ?? datas).length) +
                             index +
                             1}
                         </td>
                         <td>{data.nik}</td>
                         <td>{data.namaPemilik}</td>
-                        <td className="max-w-72 truncate" title={data.alamat}>
-                          {data.alamat}
+                        <td>
+                          <div className="w-72">{data.alamat}</div>
                         </td>
                         <td>{data.kelurahan.namaKelurahan}</td>
                         <td>{data.kecamatan.namaKecamatan}</td>
@@ -184,10 +194,10 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                               .replace(/\//g, "-")}
                         </td>
 
-                        <td>{data.noHP}</td>
+                        <td>{data.noHP ?? "-"}</td>
                         <td>{data.email ?? "-"}</td>
-                        <td>{data.jabatan}</td>
-                        <td>
+                        {/* <td>{data.jabatan ?? "-"}</td> */}
+                        <td className="truncate">
                           {data.created_at &&
                             new Date(data.created_at)
                               .toLocaleDateString("id-ID", {
@@ -197,7 +207,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                               })
                               .replace(/\//g, "-")}
                         </td>
-                        <td className="space-x-1 text-right md:space-x-2">
+                        <td
+                          className={`sticky right-0 space-x-1 text-right md:space-x-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                        >
                           <button
                             type="button"
                             onClick={() => {
@@ -228,7 +240,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
           )}
         </div>
 
-        {!isLoading && <SmartPagination datas={datas} filters={allFilters} />}
+        {!isLoading && datas?.links && (
+          <SmartPagination datas={datas} filters={allFilters} />
+        )}
       </section>
       <DialogForm
         isOpen={modalState.type === "create" || modalState.type === "edit"}

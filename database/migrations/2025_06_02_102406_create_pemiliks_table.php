@@ -16,13 +16,14 @@ return new class extends Migration
             $table->string('kodeKecamatan', 8);
             $table->string('kodeKelurahan', 8);
             $table->string('namaPemilik');
-            $table->string('jabatan');
+            $table->string('jabatan')->nullable();
             $table->string('nik')->unique();
             $table->string('alamat');
             $table->string('tempatLahir');
             $table->date('tanggalLahir');
             $table->string('email')->nullable();
-            $table->string('noHP');
+            $table->string('noHP')->nullable();
+            $table->string('ktp')->nullable();
             $table->timestamps();
 
             $table->foreign('kodeKelurahan')->references('kodeKelurahan')->on('kelurahan')->onUpdate('cascade')->onDelete('cascade');

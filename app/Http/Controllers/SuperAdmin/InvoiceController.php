@@ -55,7 +55,28 @@ class InvoiceController extends Controller
 
         $invoices = $query->paginate(10);
 
-        $skrd = Skrd::select('noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'tagihanPerBulanSkrd')->get();
+        $skrd = Skrd::select('noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'tagihanPerBulanSkrd')
+            ->where('noSkrd', '!=', null)
+            ->get()
+            ->sortBy(function ($item) {
+                $parts = explode('/', $item->noSkrd);
+
+                $nomorAwal = (int) $parts[0];
+                $tahun = (int) end ($parts);
+
+                return ([$nomorAwal, $tahun]);
+            })
+            ->values()
+            ->map(function ($skrd) {
+                return [
+                    'value' => $skrd->noSkrd,
+                    'label' => $skrd->noSkrd,
+                    'namaObjekRetribusi' => $skrd->namaObjekRetribusi,
+                    'tagihanPerbulan' => $skrd->tagihanPerBulanSkrd
+                ];
+            });
+
+            // dd($skrd->toArray());
 
         return Inertia::render('Super-Admin/Pembayaran/Invoice/Index', [
             'datas' => $invoices,

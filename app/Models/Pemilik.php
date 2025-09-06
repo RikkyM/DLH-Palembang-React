@@ -19,7 +19,8 @@ class Pemilik extends Model
         'tempatLahir',
         'tanggalLahir',
         'email',
-        'noHP'
+        'noHP',
+        'ktp'
     ];
 
     /**

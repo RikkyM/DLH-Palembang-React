@@ -10,5 +10,7 @@
         <input type="file" name="file" required>
         <button type="submit">Preview</button>
     </form>
+
+    
 </body>
 </html>

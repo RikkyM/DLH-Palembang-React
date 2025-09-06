@@ -6,7 +6,7 @@ const Layout = ({ title, children }) => {
   return (
     <MainLayout>
       <SuperAdminNavigation />
-      <section className="max-h-dvh flex-1 overflow-auto">
+      <section className="h-screen flex-1 overflow-auto">
         <Header title={title} />
         {children}
       </section>

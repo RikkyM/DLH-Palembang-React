@@ -75,7 +75,7 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
                     href={route(item.route)}
                     className={`inline-block w-full rounded p-2 transition-all duration-300 ${
                       isItemActive(item)
-                        ? "bg-teal-400 font-medium text-white"
+                        ? "bg-[#B3CEAF] font-medium text-white"
                         : "hover:bg-neutral-100"
                     }`}
                   >

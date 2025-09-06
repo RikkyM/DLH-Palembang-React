@@ -92,31 +92,54 @@ const SuperAdminNavigation = () => {
     },
   ];
 
-  const settingItems = [
+  const masterData = [
     {
-      label: "Uptd",
+      label: "Data Uptd",
       route: "super-admin.uptd.index",
     },
     {
-      label: "User / Pegawai",
+      label: "Data User / Pegawai",
       route: "super-admin.user.index",
     },
     {
-      label: "Kecamatan",
+      label: "Data Penagih / Kolektor",
+      // route: "super-admin.user.index",
+    },
+    {
+      label: "Data Kecamatan",
       route: "super-admin.kecamatan.index",
     },
     {
-      label: "Kelurahan",
+      label: "Data Kelurahan",
       route: "super-admin.kelurahan.index",
     },
     {
-      label: "Kategori",
+      label: "Data Kategori Layanan",
       route: "super-admin.kategori.index",
     },
     {
-      label: "Sub Kategori",
+      label: "Data Sub Kategori Layanan",
       route: "super-admin.sub-kategori.index",
     },
+    {
+      label: "Badan Usaha",
+      // route: "super-admin.sub-kategori.index",
+    },
+  ];
+
+  const settingItems = [
+    {
+      label: "Penanda Tangan",
+      // route: "super-admin.uptd.index",
+    },
+    {
+      label: "Data Instansi",
+      // route: "super-admin.user.index",
+    },
+    // {
+    //   label: "Template Dokumen",
+    //   // route: "super-admin.kecamatan.index",
+    // },
   ];
 
   const isAccordionActive = (items) =>
@@ -153,8 +176,8 @@ const SuperAdminNavigation = () => {
       <div className="space-y-1.5 p-3">
         <Link
           className={`block rounded px-3 py-2 transition-all duration-300 ${
-            route().current('super-admin.dashboard')
-              ? "bg-teal-400 font-medium text-white"
+            route().current("super-admin.dashboard")
+              ? "bg-[#B3CEAF] font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
           }`}
           href={route("super-admin.dashboard")}
@@ -178,7 +201,12 @@ const SuperAdminNavigation = () => {
           defaultOpen={isAccordionActive(laporanItems)}
         />
         <AccordionItem
-          title="Settings"
+          title="Master Data"
+          items={masterData}
+          defaultOpen={isAccordionActive(masterData)}
+        />
+        <AccordionItem
+          title="Setting"
           items={settingItems}
           defaultOpen={isAccordionActive(settingItems)}
         />

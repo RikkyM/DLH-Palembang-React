@@ -37,7 +37,7 @@ class SubKategoriController extends Controller
             ];
         });
 
-        return Inertia::render('Super-Admin/Settings/Sub-Kategori/Index', [
+        return Inertia::render('Super-Admin/Master-Data/Sub-Kategori/Index', [
             'datas' => $subkategori,
             'kategori' => $kategori,
             'filters' => [

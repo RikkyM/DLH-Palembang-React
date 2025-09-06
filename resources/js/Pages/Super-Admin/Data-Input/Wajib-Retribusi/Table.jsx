@@ -44,7 +44,7 @@ const Table = ({
           datas.data.map((data, index) => (
             <tr
               key={data.id || index}
-              className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+              className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
             >
               <td className="text-center">
                 {(datas.current_page - 1) * datas.per_page + index + 1}
@@ -95,7 +95,7 @@ const Table = ({
                 </span>
               </td>
               <td
-                className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+                className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
               >
                 <div className="flex h-full w-full flex-col gap-2 p-2 *:rounded *:text-sm *:font-medium">
                   <button

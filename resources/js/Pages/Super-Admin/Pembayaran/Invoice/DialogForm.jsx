@@ -1,6 +1,6 @@
 import Dialog from "@/Components/Dialog";
 import { useForm } from "@inertiajs/react";
-import { X } from "lucide-react";
+import { CloudCog, X } from "lucide-react";
 import DropdownInput from "@/Components/DropdownInput";
 import React, { useEffect, useMemo } from "react";
 import FormInput from "@/Components/FormInput";
@@ -18,12 +18,13 @@ const DialogForm = ({
 
   const initialData = {
     noSkrd: "",
+    namaObjekRetribusi: "",
     tarifPerbulan: "",
     jumlahBulan: "",
     satuan: "",
-    namaBank: "",
-    pengirim: "",
-    noRekening: "",
+    // namaBank: "",
+    // pengirim: "",
+    // noRekening: "",
     tanggalTerbit: "",
     jatuhTempo: "",
     totalTagihan: "",
@@ -93,14 +94,14 @@ const DialogForm = ({
     });
   };
 
-  const retribusiList = useMemo(
-    () =>
-      retribusiOptions.map((r) => ({
-        value: r.noWajibRetribusi,
-        label: r.namaObjekRetribusi,
-      })),
-    [retribusiOptions],
-  );
+  // const retribusiList = useMemo(
+  //   () =>
+  //     retribusiOptions.map((r) => ({
+  //       value: r.noWajibRetribusi,
+  //       label: r.noSkrd,
+  //     })),
+  //   [retribusiOptions],
+  // );
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
@@ -119,24 +120,36 @@ const DialogForm = ({
           className="grid grid-cols-2 gap-3 px-5 pb-5 font-poppins"
         >
           <DropdownInput
-            id="nama wajib retribusi"
-            label="Nama Wajib Retribusi"
-            placeholder="Pilih Wajib Retribusi..."
-            value={data.noWajibRetribusi}
+            id="noSkrd"
+            label="Nomor STRD"
+            placeholder="Pilih Nomor STRD..."
+            value={data.noSkrd}
             onChange={(value) => {
               const selected = retribusiOptions.find(
-                (r) => r.noWajibRetribusi === value,
+                (opt) => opt.value === value,
               );
 
-              console.log(selected);
-
-              setData("noWajibRetribusi", selected?.noWajibRetribusi || "");
-              setData("noSkrd", selected?.noSkrd || "");
-              setData("namaObjekRetribusi", selected?.namaObjekRetribusi || "");
-              setData("tarifPerbulan", selected?.tagihanPerBulanSkrd || "");
+              setData('noSkrd', value)
+              setData("namaObjekRetribusi", selected.namaObjekRetribusi);
+              setData('tarifPerbulan', selected.tagihanPerbulan)
             }}
-            options={retribusiList}
-            error={errors.noWajibRetribusi}
+            options={retribusiOptions}
+            error={errors.noSkrd}
+            // value={data.noWajibRetribusi}
+            // onChange={(value) => {
+            //   const selected = retribusiOptions.find(
+            //     (r) => r.noWajibRetribusi === value,
+            //   );
+
+            //   console.log(selected);
+
+            //   setData("noWajibRetribusi", selected?.noWajibRetribusi || "");
+            //   setData("noSkrd", selected?.noSkrd || "");
+            //   setData("namaObjekRetribusi", selected?.namaObjekRetribusi || "");
+            //   setData("tarifPerbulan", selected?.tagihanPerBulanSkrd || "");
+            // }}
+            // options={retribusiList}
+            // error={errors.noWajibRetribusi}
             required={true}
             valueKey="value"
             labelKey="label"
@@ -144,16 +157,16 @@ const DialogForm = ({
           />
 
           <FormInput className="col-span-2">
-            <Label htmlFor="noSkrd">No SKRD</Label>
+            <Label htmlFor="noSkrd">Nama Objek Retribusi</Label>
             <Input
-              id="noSkrd"
-              value={data.noSkrd}
-              onChange={(e) => setData("noSkrd", e.target.value)}
+              id="namaObjekRetribusi"
+              value={data.namaObjekRetribusi}
+              onChange={(e) => setData("namaObjekRetribusi", e.target.value)}
               readOnly={true}
               tabIndex={-1}
             />
-            {errors.noSkrd && (
-              <span className="text-sm text-red-500">{errors.noSkrd}</span>
+            {errors.namaObjekRetribusi && (
+              <span className="text-xs text-red-500">{errors.noSkrd}</span>
             )}
           </FormInput>
 
@@ -166,7 +179,7 @@ const DialogForm = ({
               readOnly={true}
             />
             {errors.tarifPerbulan && (
-              <span className="text-sm text-red-500">
+              <span className="text-xs text-red-500">
                 {errors.tarifPerbulan}
               </span>
             )}
@@ -191,7 +204,7 @@ const DialogForm = ({
               placeholder="Masukkan jumlah bulan..."
             />
             {errors.jumlahBulan && (
-              <span className="text-sm text-red-500">{errors.jumlahBulan}</span>
+              <span className="text-xs text-red-500">{errors.jumlahBulan}</span>
             )}
           </FormInput>
 
@@ -203,7 +216,7 @@ const DialogForm = ({
               onChange={(e) => setData("totalTagihan", e.target.value)}
             />
             {errors.tarifPerbulan && (
-              <span className="text-sm text-red-500">
+              <span className="text-xs text-red-500">
                 {errors.tarifPerbulan}
               </span>
             )}
@@ -219,7 +232,7 @@ const DialogForm = ({
               className="w-full appearance-none"
             />
             {errors.tanggalTerbit && (
-              <span className="text-sm text-red-500">
+              <span className="text-xs text-red-500">
                 {errors.tanggalTerbit}
               </span>
             )}
@@ -234,7 +247,7 @@ const DialogForm = ({
               className="w-full appearance-none"
             />
             {errors.jatuhTempo && (
-              <span className="text-sm text-red-500">{errors.jatuhTempo}</span>
+              <span className="text-xs text-red-500">{errors.jatuhTempo}</span>
             )}
           </FormInput>
 
@@ -247,7 +260,7 @@ const DialogForm = ({
               placeholder="contoh: Bulan (Jan s.d Des)"
             />
             {errors.satuan && (
-              <span className="text-sm text-red-500">{errors.satuan}</span>
+              <span className="text-xs text-red-500">{errors.satuan}</span>
             )}
           </FormInput>
           {/* <FormInput className="col-span-2">
@@ -259,7 +272,7 @@ const DialogForm = ({
               placeholder="Masukkan nama bank..."
             />
             {errors.namaBank && (
-              <span className="text-sm text-red-500">{errors.namaBank}</span>
+              <span className="text-xs text-red-500">{errors.namaBank}</span>
             )}
           </FormInput> */}
           {/* <FormInput className="col-span-2">
@@ -271,7 +284,7 @@ const DialogForm = ({
               placeholder="Masukkan nama pengirim..."
             />
             {errors.pengirim && (
-              <span className="text-sm text-red-500">{errors.pengirim}</span>
+              <span className="text-xs text-red-500">{errors.pengirim}</span>
             )}
           </FormInput> */}
           {/* <FormInput className="col-span-2">
@@ -288,7 +301,7 @@ const DialogForm = ({
               placeholder="Masukkan nomor rekening..."
             />
             {errors.noRekening && (
-              <span className="text-sm text-red-500">{errors.noRekening}</span>
+              <span className="text-xs text-red-500">{errors.noRekening}</span>
             )}
           </FormInput> */}
 

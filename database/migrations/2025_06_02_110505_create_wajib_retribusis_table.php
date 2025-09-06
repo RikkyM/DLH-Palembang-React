@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('kodeKecamatan');
             $table->foreignId('uptdId')->constrained('uptd')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('pemilikId')->constrained('pemilik')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedBigInteger('petugasPendaftarId');
+            $table->foreignId('petugasPendaftarId')->constrained('users')->onUpdate('cascade');
+            $table->foreignId('penagihId')->nullable()->constrained('penagih')->onUpdate('cascade');
             $table->string('namaObjekRetribusi');
             $table->text('deskripsiUsaha');
             $table->string('bentukBadanUsaha');
@@ -35,11 +36,13 @@ return new class extends Migration
             $table->string('longitude');
             $table->string('image');
             $table->json('url_image');
-            $table->string('file');
-            $table->json('url_file');
+            $table->string('file')->nullable();
+            $table->json('url_file')->nullable();
             $table->string('linkMap')->nullable();
             $table->enum('jenisTarif', ['tarif', 'tarif2'])->nullable();
             $table->integer('bulan')->nullable();
+            $table->string('keteranganBulan')->nullable();
+            $table->date('tanggalSkrd')->nullable();
             $table->integer('unit')->nullable();
             $table->integer('m2')->nullable();
             $table->integer('giat')->nullable();
@@ -61,7 +64,8 @@ return new class extends Migration
             $table->foreign('kodeSubKategori')->references('kodeSubKategori')->on('sub_kategori')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('kodeKelurahan')->references('kodeKelurahan')->on('kelurahan')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('kodeKecamatan')->references('kodeKecamatan')->on('kecamatan')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('petugasPendaftarId')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            // $table->foreign('petugasPendaftarId')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            // $table->foreign('penagihId')->references('id')->on('penagih')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

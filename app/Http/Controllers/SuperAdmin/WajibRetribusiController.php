@@ -8,6 +8,7 @@ use App\Models\Kategori;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
 use App\Models\Pemilik;
+use App\Models\Penagih;
 use App\Models\SubKategori;
 use App\Models\Uptd;
 use App\Models\User;
@@ -223,8 +224,14 @@ class WajibRetribusiController extends Controller
             ->values()
             ->map(fn($t) => ['value' => $t, 'label' => $t]);
 
+        if ($getPage <= 0) {
+            $datas = $query->get();
+        } else {
+            $datas = $query->paginate($getPage)->withQueryString();
+        }
+
         return Inertia::render("Super-Admin/Data-Input/Wajib-Retribusi/{$view}", [
-            'datas' => $query->paginate($request->get('per_page', 10))->withQueryString(),
+            'datas' => $datas,
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,
                 'sort' => $sortBy,
@@ -273,7 +280,7 @@ class WajibRetribusiController extends Controller
                 }
 
                 if ($request->get('status') === "Finished") {
-                    $q->where('status', 'Approved')->whereNull('current_role');
+                    $q->where('status', 'Approved')->orWhere('current_role', 'ROLE_KABID')->orWhereNull('current_role');
                 }
             }
         );
@@ -281,17 +288,40 @@ class WajibRetribusiController extends Controller
 
     public function diterima(Request $request)
     {
-        return $this->renderWajibRetribusi($request, 'Approved', 'Diterima');
+        return $this->renderWajibRetribusi(
+            $request,
+            null,
+            'Diterima',
+            fn($q) => $q->where(function ($data) {
+                $data->where('status', 'Approved')
+                    ->where('current_role', 'ROLE_PENDAFTAR');
+            })
+        );
     }
 
     public function diproses(Request $request)
     {
-        return $this->renderWajibRetribusi($request, 'Processed', 'Diproses');
+        return $this->renderWajibRetribusi(
+            $request,
+            null,
+            'Diproses',
+            fn($q) => $q->where(function ($data) {
+                $data->where('status', 'Processed')
+                    ->where('current_role', '!=', 'ROLE_PENDAFTAR');
+            })
+        );
     }
 
     public function ditolak(Request $request)
     {
-        return $this->renderWajibRetribusi($request, 'Rejected', 'Ditolak');
+        return $this->renderWajibRetribusi(
+            $request,
+            null,
+            'Ditolak',
+            fn($q) => $q->where(function ($data) {
+                $data->where('status', 'Rejected');
+            })
+        );
     }
 
     /**
@@ -310,7 +340,6 @@ class WajibRetribusiController extends Controller
             });
 
         $kecamatanOptions = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
-            ->orderBy('namaKecamatan')
             ->get()
             ->map(function ($kecamatan) {
                 return [
@@ -320,7 +349,6 @@ class WajibRetribusiController extends Controller
             });
 
         $kelurahanOptions = Kelurahan::select('kodeKelurahan', 'namaKelurahan', 'kodeKecamatan')
-            ->orderBy('namaKelurahan')
             ->get()
             ->groupBy('kodeKecamatan')
             ->map(function ($groupedKelurahan) {
@@ -333,7 +361,6 @@ class WajibRetribusiController extends Controller
             });
 
         $kategoriOptions = Kategori::select('kodeKategori', 'namaKategori')
-            ->orderBy('namaKategori')
             ->get()
             ->map(function ($kategori) {
                 return [
@@ -358,12 +385,23 @@ class WajibRetribusiController extends Controller
                 })->values();
             });
 
+        $penagihOptions = Penagih::select('id', 'nama')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($penagih) {
+                return [
+                    'value' => $penagih->id,
+                    'label' => $penagih->nama
+                ];
+            });
+
         return Inertia::render('Super-Admin/Data-Input/Wajib-Retribusi/Create', [
             'pemohonOptions' => $pemohonOptions,
             'kecamatanOptions' => $kecamatanOptions,
             'kelurahanOptions' => $kelurahanOptions,
             'kategoriOptions' => $kategoriOptions,
-            'subKategoriOptions' => $subKategoriOptions
+            'subKategoriOptions' => $subKategoriOptions,
+            'penagihOptions' => $penagihOptions
         ]);
     }
 
@@ -412,10 +450,12 @@ class WajibRetribusiController extends Controller
             $fileFotoBerkas = $request->file('fotoBerkas');
 
             $fotoBangunan = Str::uuid() . '.' . $fileFotoBangunan->getClientOriginalExtension();
-            $fotoBerkas = Str::uuid() . '.' . $fileFotoBerkas->getClientOriginalExtension();
-
             $pathFotoBangunan = $fileFotoBangunan->storeAs('foto/bangunan', $fotoBangunan, 'local');
-            $pathFotoBerkas = $fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local');
+
+            if (!empty($request->file('fotoBerkas'))) {
+                $fotoBerkas = Str::uuid() . '.' . $fileFotoBerkas->getClientOriginalExtension();
+                $pathFotoBerkas = [$fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local')];
+            }
 
             $uptd = Uptd::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
 
@@ -426,6 +466,7 @@ class WajibRetribusiController extends Controller
                 'kodeKecamatan' => $request->kodeKecamatan,
                 'uptdId' => $uptd->id,
                 'pemilikId' => $request->pemilikId,
+                'penagihId' => $request->penagihId,
                 'petugasPendaftarId' => Auth::user()->id,
                 'namaObjekRetribusi' => $request->namaObjekRetribusi,
                 'deskripsiUsaha' => $request->deskripsi,
@@ -439,12 +480,16 @@ class WajibRetribusiController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'image' => $fotoBangunan,
-                'url_image' => [Storage::url($pathFotoBangunan)],
-                'file' => $fotoBerkas,
-                'url_file' => [Storage::url($pathFotoBerkas)],
+                'url_image' => [$pathFotoBangunan],
+                'file' => $fotoBerkas ?? null,
+                'url_file' => !empty($pathFotoBerkas) ? array_map(function ($path) {
+                    return Storage::url($path);
+                }, $pathFotoBerkas) : [],
                 'linkMap' => $request->linkMap,
                 'jenisTarif' => $request->jenisTarif,
                 'bulan' => $validated['variabelValues']['bulan'],
+                'keteranganBulan' => strtoupper($request->keteranganBulan),
+                'tanggalSkrd' => $request->tanggalSkrd,
                 'unit' => $validated['variabelValues']['unit'] ?? null,
                 'm2' => $validated['variabelValues']['m2'] ?? null,
                 'giat' => $validated['variabelValues']['giat'] ?? null,
@@ -470,12 +515,15 @@ class WajibRetribusiController extends Controller
 
             // dd($dataToSave);
 
+            // dd($dataToSave, $request->all());
+
             WajibRetribusi::create($dataToSave);
 
             DB::commit();
             return redirect()->route('super-admin.wajib-retribusi.index')->with('success', 'Data berhasil disimpan.');
         } catch (\Exception $e) {
             DB::rollback();
+            dd($e);
             return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data.']);
         }
     }
@@ -493,6 +541,7 @@ class WajibRetribusiController extends Controller
      */
     public function edit($status, WajibRetribusi $retribusi)
     {
+        // dd($retribusi);
         // dd($status);
         // if (!in_array($status, ['diterima', 'ditolak'])) {
         //     abort(404);
@@ -543,6 +592,16 @@ class WajibRetribusiController extends Controller
                 'tarif2' => $sub->tarif2,
             ])->values());
 
+        $penagihOptions = Penagih::select('id', 'nama')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($penagih) {
+                return [
+                    'value' => $penagih->id,
+                    'label' => $penagih->nama
+                ];
+            });
+
         return Inertia::render("Super-Admin/Data-Input/Wajib-Retribusi/Edit", [
             'status' => $status,
             'retribusi' => $retribusi,
@@ -552,6 +611,7 @@ class WajibRetribusiController extends Controller
             'kelurahanOptions' => $kelurahanOptions,
             'kategoriOptions' => $kategoriOptions,
             'subKategoriOptions' => $subKategoriOptions,
+            'penagihOptions' => $penagihOptions
         ]);
     }
 
@@ -623,6 +683,7 @@ class WajibRetribusiController extends Controller
                 'kodeKecamatan' => $request->kodeKecamatan,
                 'uptdId' => $uptd->id,
                 'pemilikId' => $request->pemilikId,
+                'penagihId' => $request->penagihId,
                 'petugasPendaftarId' => Auth::user()->id,
                 'namaObjekRetribusi' => $request->namaObjekRetribusi,
                 'deskripsiUsaha' => $request->deskripsi,
@@ -637,11 +698,13 @@ class WajibRetribusiController extends Controller
                 'longitude' => $request->longitude,
                 'image' => $fotoBangunan,
                 'url_image' => $pathFotoBangunan,
-                'file' => $fotoBerkas,
+                'file' => $fotoBerkas ?? null,
                 'url_file' => $pathFotoBerkas,
                 'linkMap' => $request->linkMap,
                 'jenisTarif' => $request->jenisTarif,
                 'bulan' => $validated['variabelValues']['bulan'],
+                'keteranganBulan' => strtoupper($request->keteranganBulan),
+                'tanggalSkrd' => $request->tanggalSkrd ? Carbon::parse($request->tanggalSkrd)->format('Y-m-d') : null,
                 'unit' => $validated['variabelValues']['unit'] ?? null,
                 'm2' => $validated['variabelValues']['m2'] ?? null,
                 'giat' => $validated['variabelValues']['giat'] ?? null,
@@ -661,13 +724,18 @@ class WajibRetribusiController extends Controller
                 ])
             ];
 
+            // dd($retribusi);
             // dd($dataToUpdate);
 
             $retribusi->update($dataToUpdate);
 
             DB::commit();
 
-            return redirect()->route('super-admin.wajib-retribusi.diterima')->with('success', 'Data berhasil diperbarui.');
+            if ($retribusi->status === "Rejected") {
+                return redirect()->route('super-admin.wajib-retribusi.ditolak')->with('success', 'Data berhasil diperbarui.');
+            } else {
+                return redirect()->route('super-admin.wajib-retribusi.diterima')->with('success', 'Data berhasil diperbarui.');
+            }
         } catch (\Exception $e) {
             DB::rollback();
             // dd($e);
@@ -698,6 +766,27 @@ class WajibRetribusiController extends Controller
             'actionDate' => now()->toIso8601String()
         ];
 
+        $tahun = date('Y');
+
+        $noWr = WajibRetribusi::whereYear('created_at', $tahun)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($noWr) {
+            $parts = explode('.', $noWr->noWajibRetribusi);
+            if (count($parts) === 3) {
+                $lastNumber = intval($parts[1]);
+            } else {
+                $lastNumber = intval($parts[0]);
+            }
+            $nextWr = $lastNumber + 1;
+        } else {
+            $nextWr = 1;
+        }
+
+        $formatted = str_pad($nextWr, 3, '0', STR_PAD_LEFT);
+
+        $retribusi->noWajibRetribusi = $formatted . '.' . $tahun;
         $retribusi->status = 'Processed';
         $retribusi->historyAction = $history;
         $retribusi->current_role = "ROLE_KUPTD";

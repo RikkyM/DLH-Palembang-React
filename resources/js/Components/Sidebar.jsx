@@ -57,14 +57,14 @@ const Sidebar = ({ children }) => {
     <>
       <div
         onClick={toggleSidebar}
-        className={`fixed inset-0 z-20 min-h-dvh bg-black/50 transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-30 min-h-dvh bg-black/50 transition-opacity duration-300 md:hidden ${
           isOpen
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
         }`}
       ></div>
       <aside
-        className={`fixed bottom-0 left-0 top-0 z-20 flex max-h-dvh flex-col bg-white transition-all duration-300 ease-[cubic-bezier(0.65,0.05,0.36,1)] md:relative md:w-72 ${
+        className={`fixed bottom-0 left-0 top-0 z-30 flex max-h-dvh flex-col bg-white transition-all duration-300 ease-[cubic-bezier(0.65,0.05,0.36,1)] md:relative md:w-72 ${
           isOpen ? "w-72" : "w-0"
         }`}
       >
@@ -75,7 +75,6 @@ const Sidebar = ({ children }) => {
                         alt="logo"
                         className="w-64 min-w-64 p-7"
                     /> */}
-
           <picture>
             <source srcSet="/img/logo.webp" type="image/webp" />
             <img
@@ -85,9 +84,10 @@ const Sidebar = ({ children }) => {
               width="256"
               height="80"
               decoding="async"
-              className="w-64 min-w-64 p-7"
+              className="w-64 min-w-72 px-7 pt-7 w-full"
             />
           </picture>
+          <p className="uppercase text-xs w-full min-w-72 px-14">sistem informasi retribusi persampahan versi 2</p>
         </section>
 
         {/* body */}

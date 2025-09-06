@@ -21,6 +21,7 @@ const DropdownInput = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [displayValue, setDisplayValue] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [dropUp, setDropUp] = useState(false); // ✅ untuk cek posisi dropdown
   const dropdownRef = useRef(null);
   const inputRef = useRef(null);
   const optionRefs = useRef([]);
@@ -61,9 +62,18 @@ const DropdownInput = ({
 
   const handleInputClick = () => {
     if (!disabled) {
-      setIsOpen(!isOpen);
+      const nextIsOpen = !isOpen;
+      setIsOpen(nextIsOpen);
       setSearchTerm("");
       setHighlightedIndex(-1);
+
+      if (!isOpen && inputRef.current) {
+        const rect = inputRef.current.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+        // kalau ruang bawah kurang dan atas lebih luas → dropdown ke atas
+        setDropUp(spaceBelow < 200 && spaceAbove > spaceBelow);
+      }
     }
   };
 
@@ -72,6 +82,13 @@ const DropdownInput = ({
     setSearchTerm(term);
     setIsOpen(true);
     setHighlightedIndex(-1);
+
+    if (inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      setDropUp(spaceBelow < 200 && spaceAbove > spaceBelow);
+    }
   };
 
   const handleOptionSelect = (option) => {
@@ -99,6 +116,13 @@ const DropdownInput = ({
         setIsOpen(true);
         setSearchTerm("");
         setHighlightedIndex(-1);
+
+        if (inputRef.current) {
+          const rect = inputRef.current.getBoundingClientRect();
+          const spaceBelow = window.innerHeight - rect.bottom;
+          const spaceAbove = rect.top;
+          setDropUp(spaceBelow < 200 && spaceAbove > spaceBelow);
+        }
       }
       return;
     }
@@ -208,7 +232,9 @@ const DropdownInput = ({
         {/* Dropdown Menu */}
         {isOpen && (
           <div
-            className={`absolute z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-md border border-gray-300 bg-white shadow-lg ${dropdownClassName}`}
+            className={`absolute z-50 max-h-60 w-full overflow-y-auto rounded-md border border-gray-300 bg-white shadow-lg ${dropdownClassName} ${
+              dropUp ? "bottom-full mb-1" : "top-full mt-1"
+            }`}
           >
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option, index) => (

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Exports\SkrdDataExport;
 use App\Exports\SkrdExport;
 use App\Models\Skrd;
+use App\Models\TandaTangan;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
@@ -83,13 +84,16 @@ class SkrdController extends Controller
 
         $user = User::firstWhere('role', 'ROLE_KABID');
 
-        // dd($data);
+        $tandaTangan = TandaTangan::first();
+
+        $f4 = [0, 0, 595.276, 935.433];
 
         $pdf = Pdf::loadView('exports.skrd.skrd-single-pdf', [
             'data' => $data,
-            'kabid' => $user
+            'kabid' => $user,
+            'tandaTangan' => $tandaTangan
         ])
-            ->setPaper('a4', 'portrait')
+            ->setPaper($f4, 'portrait')
         ->setOptions([
                 'dpi' => 150,
                 'defaultFont' => 'arial',

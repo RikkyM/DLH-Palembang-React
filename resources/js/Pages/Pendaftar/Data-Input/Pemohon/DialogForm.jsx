@@ -2,8 +2,11 @@ import Dialog from "@/Components/Dialog";
 import { X } from "lucide-react";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import { useForm } from "@inertiajs/react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import DropdownInput from "@/Components/DropdownInput";
+import FormInput from "../../../../Components/FormInput";
+import Label from "../../../../Components/Label";
+import Input from "../../../../Components/Input";
 
 const DialogForm = ({
   isOpen,
@@ -15,6 +18,7 @@ const DialogForm = ({
 }) => {
   const isEditMode = mode === "edit" && pemohon;
   const firstInputRef = useAutoFocusInput(isOpen, true);
+  const fileInputRef = useRef(null);
 
   const initialData = {
     nik: "",
@@ -26,16 +30,18 @@ const DialogForm = ({
     kodeKelurahan: "",
     noHP: "",
     email: "",
-    jabatan: "",
+    // jabatan: "",
+    ktp: null,
   };
 
-  const { data, setData, errors, processing, clearErrors, post, put } =
+  const { data, setData, errors, processing, clearErrors, post } =
     useForm(initialData);
 
   useEffect(() => {
     if (isOpen) {
       if (isEditMode && pemohon?.id !== data.id) {
         setData({
+          _method: "PUT",
           nik: pemohon.nik || "",
           namaPemilik: pemohon.namaPemilik || "",
           alamat: pemohon.alamat || "",
@@ -45,7 +51,8 @@ const DialogForm = ({
           kodeKelurahan: pemohon.kodeKelurahan || "",
           noHP: pemohon.noHP || "",
           email: pemohon.email || "",
-          jabatan: pemohon.jabatan || "",
+          // jabatan: pemohon.jabatan || "",
+          // ktp: pemohon.ktp || null,
         });
       } else if (!isEditMode) {
         setData(initialData);
@@ -58,12 +65,17 @@ const DialogForm = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     clearErrors();
 
     if (isEditMode) {
-      put(route("pendaftar.pemohon.update", pemohon.id), {
+      post(route("pendaftar.pemohon.update", pemohon.id), {
+        forceFormData: true,
         onSuccess: () => {
           setData(initialData);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+          }
           onClose();
         },
         onError: (e) => {
@@ -74,12 +86,22 @@ const DialogForm = ({
       post(route("pendaftar.pemohon.store"), {
         onSuccess: () => {
           setData(initialData);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+          }
           onClose();
         },
         onError: (e) => {
           console.error(e);
         },
       });
+    }
+  };
+
+  const handleFileChange = (field, file) => {
+    setData(field, file);
+    if (errors[field]) {
+      clearErrors(field);
     }
   };
 
@@ -91,68 +113,126 @@ const DialogForm = ({
 
   const filteredKelurahanOptions = kelurahanOptions[data.kodeKecamatan] || [];
 
+  const handleClose = () => {
+    setData(initialData);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    onClose();
+  };
+
   return (
-    <Dialog isOpen={isOpen} onClose={onClose}>
+    <Dialog isOpen={isOpen} onClose={handleClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`h-max max-h-full w-full max-w-lg overflow-auto rounded bg-white transition-all duration-300 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-1 ${isOpen ? "scale-100" : "scale-95"}`}
+        className={`h-max max-h-full w-full max-w-2xl overflow-auto rounded bg-white transition-all duration-300 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-1 ${isOpen ? "scale-100" : "scale-95"}`}
       >
         <div className="flex items-center justify-between p-5">
           <h3 className="text-lg font-medium">Form Pemohon</h3>
-          <button type="button" onClick={onClose}>
+          <button type="button" onClick={handleClose}>
             <X size={20} />
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-5 px-5 pb-5">
-          <div className="flex flex-col gap-1.5 text-sm">
-            <label
-              htmlFor="nik"
-              className="after:text-red-500 after:content-['*']"
-            >
-              NIK
-            </label>
-            <input
-              autoComplete="off"
-              ref={firstInputRef}
-              id="nik"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              placeholder="Masukkan NIK..."
-              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.nik && "border border-red-500"}`}
-              value={data.nik}
-              onChange={(e) => {
-                const value = e.target.value.replace(/\D/g, "");
-                if (value.length <= 16) {
-                  setData("nik", value);
-                }
-              }}
-            />
-            {errors.nik && (
-              <span className="text-xs text-red-500">{errors.nik}</span>
-            )}
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-3 gap-5 px-5 pb-5"
+        >
+          <div className="col-span-3 grid grid-cols-2 gap-5">
+            <div className="flex flex-col gap-1.5 text-sm">
+              <label
+                htmlFor="nik"
+                className="after:text-red-500 after:content-['*']"
+              >
+                NIK
+              </label>
+              <input
+                autoComplete="off"
+                ref={firstInputRef}
+                id="nik"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="Masukkan NIK..."
+                className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.nik && "border border-red-500"}`}
+                value={data.nik}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "");
+                  if (value.length <= 16) {
+                    setData("nik", value);
+                  }
+                }}
+              />
+              {errors.nik && (
+                <span className="text-xs text-red-500">{errors.nik}</span>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5 text-sm">
+              <label
+                htmlFor="namaPemohon"
+                className="after:text-red-500 after:content-['*']"
+              >
+                Nama Pemilik
+              </label>
+              <input
+                autoComplete="off"
+                id="namaPemohon"
+                type="text"
+                placeholder="Masukkan nama pemohon..."
+                className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.namaPemilik && "border border-red-500"}`}
+                value={data.namaPemilik}
+                onChange={(e) => setData("namaPemilik", e.target.value)}
+              />
+              {errors.namaPemilik && (
+                <span className="text-xs text-red-500">
+                  {errors.namaPemilik}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5 text-sm">
+              <label
+                htmlFor="tempatLahir"
+                className="after:text-red-500 after:content-['*']"
+              >
+                Tempat Lahir
+              </label>
+              <input
+                autoComplete="off"
+                id="tempatLahir"
+                type="text"
+                placeholder="Masukkan tempat lahir..."
+                className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.tempatLahir && "border border-red-500"}`}
+                value={data.tempatLahir}
+                onChange={(e) => setData("tempatLahir", e.target.value)}
+              />
+              {errors.tempatLahir && (
+                <span className="text-xs text-red-500">
+                  {errors.tempatLahir}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5 text-sm">
+              <label
+                htmlFor="tanggalLahir"
+                className="after:text-red-500 after:content-['*']"
+              >
+                Tanggal Lahir
+              </label>
+              <input
+                id="tanggalLahir"
+                type="date"
+                className={`w-full appearance-none rounded bg-gray-200 px-3 py-2 outline-none ${errors.tanggalLahir && "border border-red-500"}`}
+                value={data.tanggalLahir}
+                max={new Date().toISOString().split("T")[0]}
+                onChange={(e) => setData("tanggalLahir", e.target.value)}
+              />
+              {errors.tanggalLahir && (
+                <span className="text-xs text-red-500">
+                  {errors.tanggalLahir}
+                </span>
+              )}
+            </div>
           </div>
-          <div className="flex flex-col gap-1.5 text-sm">
-            <label
-              htmlFor="namaPemohon"
-              className="after:text-red-500 after:content-['*']"
-            >
-              Nama Pemilk
-            </label>
-            <input
-              autoComplete="off"
-              id="namaPemohon"
-              type="text"
-              placeholder="Masukkan nama pemohon..."
-              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.namaPemilik && "border border-red-500"}`}
-              value={data.namaPemilik}
-              onChange={(e) => setData("namaPemilik", e.target.value)}
-            />
-            {errors.namaPemilik && (
-              <span className="text-xs text-red-500">{errors.namaPemilik}</span>
-            )}
-          </div>
-          <div className="flex flex-col gap-1.5 text-sm">
+          <div className="col-span-3 flex flex-col gap-1.5 text-sm">
             <label
               htmlFor="alamat"
               className="after:text-red-500 after:content-['*']"
@@ -172,78 +252,35 @@ const DialogForm = ({
               <span className="text-xs text-red-500">{errors.alamat}</span>
             )}
           </div>
-          <div className="flex flex-col gap-1.5 text-sm">
-            <label
-              htmlFor="tempatLahir"
-              className="after:text-red-500 after:content-['*']"
-            >
-              Tempat Lahir
-            </label>
-            <input
-              autoComplete="off"
-              id="tempatLahir"
-              type="text"
-              placeholder="Masukkan tempat lahir..."
-              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.tempatLahir && "border border-red-500"}`}
-              value={data.tempatLahir}
-              onChange={(e) => setData("tempatLahir", e.target.value)}
+          <div className="col-span-3 grid grid-cols-2 gap-5">
+            <DropdownInput
+              id="kecamatan"
+              label="Kecamatan"
+              placeholder="Pilih kecamatan..."
+              value={data.kodeKecamatan}
+              onChange={(value) => setData("kodeKecamatan", value)}
+              options={kecamatanOptions}
+              error={errors.kodeKecamatan}
+              required={true}
+              valueKey="value"
+              labelKey="label"
             />
-            {errors.tempatLahir && (
-              <span className="text-xs text-red-500">{errors.tempatLahir}</span>
-            )}
-          </div>
-          <div className="flex flex-col gap-1.5 text-sm">
-            <label
-              htmlFor="tanggalLahir"
-              className="after:text-red-500 after:content-['*']"
-            >
-              Tanggal Lahir
-            </label>
-            <input
-              id="tanggalLahir"
-              type="date"
-              className={`w-full appearance-none rounded bg-gray-200 px-3 py-2 outline-none ${errors.tanggalLahir && "border border-red-500"}`}
-              value={data.tanggalLahir}
-              onChange={(e) => setData("tanggalLahir", e.target.value)}
+            <DropdownInput
+              id="kelurahan"
+              label="Kelurahan"
+              placeholder="Pilih kelurahan..."
+              value={data.kodeKelurahan}
+              onChange={(value) => setData("kodeKelurahan", value)}
+              options={filteredKelurahanOptions}
+              error={errors.kodeKelurahan}
+              required={true}
+              valueKey="value"
+              labelKey="label"
+              disabled={!data.kodeKecamatan}
             />
-            {errors.tanggalLahir && (
-              <span className="text-xs text-red-500">
-                {errors.tanggalLahir}
-              </span>
-            )}
           </div>
-          <DropdownInput
-            id="kecamatan"
-            label="Kecamatan"
-            placeholder="Pilih kecamatan..."
-            value={data.kodeKecamatan}
-            onChange={(value) => setData("kodeKecamatan", value)}
-            options={kecamatanOptions}
-            error={errors.kodeKecamatan}
-            required={true}
-            valueKey="value"
-            labelKey="label"
-          />
-          <DropdownInput
-            id="kelurahan"
-            label="Kelurahan"
-            placeholder="Pilih kelurahan..."
-            value={data.kodeKelurahan}
-            onChange={(value) => setData("kodeKelurahan", value)}
-            options={filteredKelurahanOptions}
-            error={errors.kodeKelurahan}
-            required={true}
-            valueKey="value"
-            labelKey="label"
-            disabled={!data.kodeKecamatan}
-          />
-          <div className="flex flex-col gap-1.5 text-sm">
-            <label
-              htmlFor="noHP"
-              className="after:text-red-500 after:content-['*']"
-            >
-              Nomor HP
-            </label>
+          <div className="col-span-3 flex flex-col gap-1.5 text-sm md:col-span-1">
+            <label htmlFor="noHP">Nomor HP</label>
             <input
               autoComplete="off"
               id="noHP"
@@ -262,7 +299,7 @@ const DialogForm = ({
               <span className="text-xs text-red-500">{errors.noHP}</span>
             )}
           </div>
-          <div className="flex flex-col gap-1.5 text-sm">
+          <div className="col-span-3 flex flex-col gap-1.5 text-sm md:col-span-1">
             <label htmlFor="email">Email</label>
             <input
               autoComplete="off"
@@ -277,7 +314,22 @@ const DialogForm = ({
               <span className="text-xs text-red-500">{errors.email}</span>
             )}
           </div>
-          <div className="flex flex-col gap-1.5 text-sm">
+          <FormInput className="col-span-3 md:col-span-1">
+            <Label htmlFor="ktp">Upload KTP</Label>
+            <Input
+              ref={fileInputRef}
+              type="file"
+              id="ktp"
+              accept="image/*"
+              className="text-xs"
+              onChange={(e) => handleFileChange("ktp", e.target.files[0])}
+            />
+            {errors.ktp && (
+              <span className="text-xs text-red-500">{errors.ktp}</span>
+            )}
+            {pemohon?.ktp && <span className="text-xs">{pemohon?.ktp}</span>}
+          </FormInput>
+          {/* <div className="flex flex-col gap-1.5 text-sm">
             <label
               htmlFor="jabatan"
               className="after:text-red-500 after:content-['*']"
@@ -296,8 +348,8 @@ const DialogForm = ({
             {errors.jabatan && (
               <span className="text-xs text-red-500">{errors.jabatan}</span>
             )}
-          </div>
-          <div className="flex flex-col gap-3 text-sm md:flex-row md:justify-end md:gap-2">
+          </div> */}
+          <div className="col-span-3 flex flex-col gap-3 text-sm md:flex-row md:justify-end md:gap-2">
             <button
               className="order-1 rounded bg-teal-400 px-3 py-2 font-medium text-white transition-colors hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
               disabled={processing}
@@ -306,7 +358,7 @@ const DialogForm = ({
               {processing ? "Menyimpan..." : "Simpan Data"}
             </button>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="order-2 rounded-md border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 hover:bg-gray-50 md:order-1"
               type="button"
             >

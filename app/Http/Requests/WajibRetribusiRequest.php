@@ -25,6 +25,7 @@ class WajibRetribusiRequest extends FormRequest
         $rules = [
             'namaObjekRetribusi' => 'required|string',
             'pemilikId' => 'required',
+            'penagihId' => 'required',
             'alamatObjekRetribusi' => 'required|string',
             'rt' => 'required',
             'rw' => 'required',
@@ -49,20 +50,17 @@ class WajibRetribusiRequest extends FormRequest
                 'mimes:pdf,jpg,jpeg,png',
                 'max:5120'
             ],
-            'fotoBerkas' => [
-                $isEdit ? 'nullable' : 'required',
-                'file',
-                'mimes:pdf,jpg,jpeg,png',
-                'max:5120'
-            ],
+            'fotoBerkas' => 'sometimes|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'variabelValues' => 'sometimes|array',
+            'keteranganBulan' => 'required',
+            'tanggalSkrd' => 'required|date',
             'tarifRetribusi' => 'required|numeric|min:1',
             'totalRetribusi' => 'required|numeric|min:1'
         ];
 
         if ($this->isMethod('post')) {
             $rules['fotoBangunan'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
-            $rules['fotoBerkas'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
+            $rules['fotoBerkas'] = 'sometimes|nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
         }
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {
@@ -79,6 +77,7 @@ class WajibRetribusiRequest extends FormRequest
             'namaObjekRetribusi.required' => 'Nama objek retribusi wajib diisi.',
             'namaObjekRetribusi.string' => 'Nama objek retribusi harus berupa teks.',
             'pemilikId.required' => 'Pemilik objek retribusi wajib dipilih.',
+            'penagihId.required' => 'Penagih wajib diisi.',
             'alamatObjekRetribusi.required' => 'Alamat objek retribusi wajib diisi.',
             'alamatObjekRetribusi.string' => 'Alamat objek retribusi harus berupa teks.',
             'rt.required' => 'RT wajib diisi.',
@@ -105,6 +104,9 @@ class WajibRetribusiRequest extends FormRequest
             'fotoBerkas.mimes' => 'Foto berkas harus berformat PDF, JPG, JPEG, atau PNG.',
             'fotoBerkas.max' => 'Ukuran foto berkas maksimal 5MB.',
             'variabelValues.array' => 'Variabel values harus berupa array.',
+            'keteranganBulan.required' => 'Keterangan bulan wajib diisi.',
+            'tanggalSkrd.required' => 'Tanggal SKRD wajib diisi.',
+            'tanggalSkrd.date' => 'Tanggal SKRD harus format tanggal.',
             'tarifRetribusi.required' => 'Tarif retribusi wajib diisi.',
             'tarifRetribusi.numeric' => 'Tarif retribusi harus angka.',
             'tarifRetribusi.min' => 'Tarif retribusi tidak boleh 0',

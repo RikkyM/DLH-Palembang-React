@@ -60,4 +60,6 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
 
     Route::get('excel', [SubKategoriController::class, 'importExcelIndex'])->name('excelIndex');
     Route::post('excel', [SubKategoriController::class, 'importExcel'])->name('excel');
+    Route::get('/export-username', [DashboardController::class, 'exportUserCSV']);
+    Route::get('/export-user-pdf', [DashboardController::class, 'exportUserPdf']);
 });

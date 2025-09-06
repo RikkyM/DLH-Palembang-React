@@ -43,7 +43,7 @@ class UserController extends Controller
                 ];
             });
 
-        return Inertia::render('Super-Admin/Settings/User/Index', [
+        return Inertia::render('Super-Admin/Master-Data/User/Index', [
             'users' => $users,
             'uptd' => $uptdOptions,
             'filters' => [

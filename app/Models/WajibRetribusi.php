@@ -19,6 +19,7 @@ class WajibRetribusi extends Model
         'uptdId',
         'pemilikId',
         'petugasPendaftarId',
+        'penagihId',
         'namaObjekRetribusi',
         'deskripsiUsaha',
         'bentukBadanUsaha',
@@ -37,6 +38,8 @@ class WajibRetribusi extends Model
         'linkMap',
         'jenisTarif',
         'bulan',
+        'keteranganBulan',
+        'tanggalSkrd',
         'unit',
         'm2',
         'giat',
@@ -59,6 +62,53 @@ class WajibRetribusi extends Model
         'url_file' => 'array',
         'historyAction' => 'array'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $last = self::orderBy('id', 'desc')->first();
+
+            $lastNumber = 0;
+            if ($last && preg_match('/^\d+$/', $last->noPendaftaran)) {
+                $lastNumber = intval($last->noPendaftaran);
+            }
+
+            $nextNumber = $lastNumber + 1;
+
+            $model->noPendaftaran = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+            $model->noWajibRetribusi = self::generateNoWajibRetribusi();
+        });
+    }
+
+    /**
+     * Method generate nomor wajib retribusi
+     */
+    protected static function generateNoWajibRetribusi()
+    {
+        $tahun = date('Y');
+
+        $lastWajib = WajibRetribusi::whereYear('created_at', $tahun)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($lastWajib) {
+            $parts = explode('.', $lastWajib->noWajibRetribusi);
+            if (count($parts) === 3) {
+                $lastNumber = intval($parts[1]);
+            } else {
+                $lastNumber = intval($parts[0]);
+            }
+            $nextWajib = $lastNumber + 1;
+        } else {
+            $nextWajib = 1;
+        }
+
+        $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
+        return $formatted . '.' . $tahun;
+    }
 
     /**
      * Mutator untuk namaObjekRetribusi
@@ -130,21 +180,8 @@ class WajibRetribusi extends Model
         return $this->belongsTo(Kecamatan::class, 'kodeKecamatan', 'kodeKecamatan');
     }
 
-    protected static function boot()
+    public function penagih()
     {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $last = self::orderBy('id', 'desc')->first();
-
-            $lastNumber = 0;
-            if ($last && preg_match('/^\d+$/', $last->noPendaftaran)) {
-                $lastNumber = intval($last->noPendaftaran);
-            }
-
-            $nextNumber = $lastNumber + 1;
-
-            $model->noPendaftaran = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
-        });
+        return $this->belongsTo(Penagih::class, 'penagihId', 'id');
     }
 }

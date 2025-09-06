@@ -189,7 +189,7 @@ const Index = ({
 
   return (
     <Layout title="SKRD">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 md:flex-row md:items-center md:gap-0">
           <div className="relative flex w-full gap-2 sm:w-max">
             <button
@@ -203,7 +203,7 @@ const Index = ({
             </button>
             <div
               ref={filterRef}
-              className={`absolute left-0 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
+              className={`absolute left-0 top-full z-10 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
                 showFilters
                   ? "pointer-events-auto mt-3 opacity-100"
                   : "pointer-events-none mt-0 opacity-0"
@@ -290,7 +290,7 @@ const Index = ({
             </button>
           </div>
         </div>
-        <div className={`overflow-auto rounded bg-white shadow`}>
+        <div className="max-h-[calc(100%_-_150px)] overflow-x-auto rounded bg-white shadow">
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
               <svg
@@ -329,8 +329,10 @@ const Index = ({
                   >
                     {bulan.map((bulan, i) => (
                       <React.Fragment key={i}>
-                        <th className="cursor-pointer select-none">{bulan}</th>
-                        <th className="cursor-pointer select-none truncate">
+                        <th className="cursor-pointer select-none bg-[#F1B174]">
+                          {bulan}
+                        </th>
+                        <th className="cursor-pointer select-none truncate bg-[#F1B174]">
                           Tanggal Bayar
                         </th>
                       </React.Fragment>
@@ -342,7 +344,7 @@ const Index = ({
                     datas.data.map((data, index) => (
                       <tr
                         key={data.id || index}
-                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
                           {(datas.current_page - 1) * datas.per_page +
@@ -357,7 +359,9 @@ const Index = ({
                             .replace(/\//g, "-")}
                         </td>
                         <td>{data.namaObjekRetribusi}</td>
-                        <td>{data.alamatObjekRetribusi}</td>
+                        <td>
+                          <div className="w-72">{data.alamatObjekRetribusi}</div>
+                        </td>
                         <td>{data.kelurahanObjekRetribusi}</td>
                         <td>{data.kecamatanObjekRetribusi}</td>
                         <td>{data.namaKategori}</td>
@@ -429,7 +433,7 @@ const Index = ({
                           );
                         })}
                         <td
-                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
                           <div className="flex flex-wrap gap-2 *:rounded *:text-xs *:font-medium *:sm:text-sm">
                             {/* <button className="flex items-center gap-1.5 outline-none">

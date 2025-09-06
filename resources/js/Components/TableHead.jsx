@@ -16,12 +16,13 @@ const TableHead = ({
   };
 
   return (
-    <tr className="*:p-2 *:text-sm *:font-medium *:uppercase">
+    <tr className="text-white *:p-2 *:text-sm *:font-medium *:uppercase">
       {columns.map((col) => (
         <th
           key={col.key}
-          className={`${col.align} cursor-pointer select-none`}
+          className={`${col.align} sticky top-0 z-0 cursor-pointer select-none bg-[#F1B174]`}
           onClick={() => handleSort(col.key)}
+          title="Sort"
         >
           <span className="flex items-center gap-1.5">
             {col.label}
@@ -38,7 +39,9 @@ const TableHead = ({
         </th>
       ))}
       {children}
-      <th className="sticky right-0 top-0 bg-white text-right">Aksi</th>
+      <th className="sticky right-0 top-0 z-10 bg-[#F1B174] text-right text-white">
+        Aksi
+      </th>
     </tr>
   );
 };

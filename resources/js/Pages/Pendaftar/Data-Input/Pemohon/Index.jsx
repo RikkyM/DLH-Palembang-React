@@ -25,7 +25,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
     { key: "tanggalLahir", label: "Tanggal Lahir", align: "text-left" },
     { key: "noHp", label: "Nomor Hp", align: "text-left" },
     { key: "email", label: "Email", align: "text-left" },
-    { key: "jabatan", label: "Jabatan", align: "text-left" },
+    // { key: "jabatan", label: "Jabatan", align: "text-left" },
     { key: "created_at", label: "create date" },
   ];
 
@@ -156,9 +156,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                               .replace(/\//g, "-")}
                         </td>
 
-                        <td>{data.noHP}</td>
+                        <td>{data.noHP ?? "-"}</td>
                         <td>{data.email ?? "-"}</td>
-                        <td>{data.jabatan}</td>
+                        {/* <td>{data.jabatan ?? "-"}</td> */}
                         <td>
                           {data.created_at &&
                             new Date(data.created_at)
@@ -169,7 +169,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                               })
                               .replace(/\//g, "-")}
                         </td>
-                        <td className="space-x-1 text-right md:space-x-2">
+                        <td className={`space-x-1 text-right md:space-x-2 sticky right-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}>
                           <button
                             type="button"
                             onClick={() => {

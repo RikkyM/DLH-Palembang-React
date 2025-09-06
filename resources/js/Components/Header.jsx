@@ -38,7 +38,7 @@ const Header = ({ title }) => {
   }, [menu]);
 
   return (
-    <header className="sticky top-0 z-10 h-20 p-2 md:relative">
+    <header className="sticky top-0 z-20 h-20 p-2 md:relative">
       <nav className="flex h-full w-full items-center justify-between rounded bg-white px-4 shadow-sm md:bg-transparent md:shadow-none">
         <h3 className="text-lg font-semibold">{title}</h3>
         <button
@@ -63,7 +63,10 @@ const Header = ({ title }) => {
                     className="absolute h-full w-full object-cover object-center"
                   />
                 </div>
-                <p className="text-sm font-semibold">{user?.namaLengkap}</p>
+                <div className="flex flex-col items-start">
+                  <p className="text-sm font-semibold">{user?.namaLengkap}</p>
+                  <p className="text-xs">{user?.jabatan}</p>
+                </div>
               </div>
               {/* <Ellipsis size={20} /> */}
             </button>

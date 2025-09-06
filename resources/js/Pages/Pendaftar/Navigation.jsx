@@ -102,8 +102,8 @@ const PendaftarNavigation = () => {
       <div className="space-y-1.5 p-3">
         <Link
           className={`block rounded px-3 py-2 transition-all duration-300 ${
-            route().current('pendaftar.dashboard')
-              ? "bg-teal-400 font-medium text-white"
+            route().current("pendaftar.dashboard")
+              ? "bg-[#B3CEAF] font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
           }`}
           href={route("pendaftar.dashboard")}

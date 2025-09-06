@@ -14,6 +14,7 @@ const WajibRetribusiCreate = ({
   kelurahanOptions = [],
   kategoriOptions = [],
   subKategoriOptions = [],
+  penagihOptions = [],
   userRole = "ROLE_PENDAFTAR",
   customProps = {},
 }) => {
@@ -41,6 +42,7 @@ const WajibRetribusiCreate = ({
   const initialData = {
     namaObjekRetribusi: "",
     pemilikId: "",
+    penagihId: "",
     alamatObjekRetribusi: "",
     rt: "",
     rw: "",
@@ -59,8 +61,10 @@ const WajibRetribusiCreate = ({
     fotoBangunan: null,
     fotoBerkas: null,
     variabelValues: {},
+    keteranganBulan: "",
     tarifRetribusi: 0,
     jenisTarif: "tarif",
+    tanggalSkrd: new Date().toISOString().split("T")[0],
     ...customProps.initialData,
   };
 
@@ -288,12 +292,12 @@ const WajibRetribusiCreate = ({
   };
 
   return (
-    <section className="p-3">
+    <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 gap-5 md:grid-cols-2"
+        className="grid grid-cols-1 gap-5 md:grid-cols-3"
       >
-        <FormInput className="col-span-2">
+        <FormInput className="col-span-3">
           <Label
             htmlFor="namaObjekRetribusi"
             className="after:text-red-500 after:content-['*']"
@@ -326,9 +330,9 @@ const WajibRetribusiCreate = ({
           required={true}
           valueKey="value"
           labelKey="label"
-          className="col-span-2"
+          className="col-span-3"
         />
-        <FormInput className="col-span-2">
+        <FormInput className="col-span-3">
           <Label
             htmlFor="alamatObjekRetribusi"
             className="after:text-red-500 after:content-['*']"
@@ -345,218 +349,265 @@ const WajibRetribusiCreate = ({
             }
           />
         </FormInput>
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label
-            htmlFor="rt"
-            className="after:text-red-500 after:content-['*']"
-          >
-            RT
-          </Label>
-          <Input
-            type="number"
-            id="rt"
-            className={`${errors.rt && "border border-red-500"}`}
-            placeholder="RT"
-            value={data.rt}
-            onKeyDown={(e) => {
-              if (!isAllowedKey(e)) {
-                e.preventDefault();
-              }
-            }}
-            onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, "");
-              if (value.length <= 3) {
-                handleInputChange("rt", value);
-              }
-            }}
+        <div className="col-span-3 grid gap-5 lg:grid-cols-4">
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="rt"
+              className="after:text-red-500 after:content-['*']"
+            >
+              RT
+            </Label>
+            <Input
+              type="number"
+              id="rt"
+              className={`${errors.rt && "border border-red-500"}`}
+              placeholder="RT"
+              value={data.rt}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value.length <= 3) {
+                  handleInputChange("rt", value);
+                }
+              }}
+            />
+            {errors.rt && (
+              <span className="text-xs text-red-500">{errors.rt}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="rw"
+              className="after:text-red-500 after:content-['*']"
+            >
+              RW
+            </Label>
+            <Input
+              type="number"
+              id="rw"
+              className={`${errors.rw && "border border-red-500"}`}
+              placeholder="RW"
+              value={data.rw}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value.length <= 3) {
+                  handleInputChange("rw", value);
+                }
+              }}
+            />
+            {errors.rw && (
+              <span className="text-xs text-red-500">{errors.rw}</span>
+            )}
+          </FormInput>
+          <DropdownInput
+            id="kecamatan"
+            label="Pilih Kecamatan"
+            placeholder="Silahkan Pilih Kecamatan..."
+            value={data.kodeKecamatan}
+            onChange={(value) => handleInputChange("kodeKecamatan", value)}
+            options={kecamatanOptions}
+            error={errors.kodeKecamatan}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2 md:col-span-1"
           />
-          {errors.rt && (
-            <span className="text-xs text-red-500">{errors.rt}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label
-            htmlFor="rw"
-            className="after:text-red-500 after:content-['*']"
-          >
-            RW
-          </Label>
-          <Input
-            type="number"
-            id="rw"
-            className={`${errors.rw && "border border-red-500"}`}
-            placeholder="RW"
-            value={data.rw}
-            onKeyDown={(e) => {
-              if (!isAllowedKey(e)) {
-                e.preventDefault();
-              }
-            }}
-            onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, "");
-              if (value.length <= 3) {
-                handleInputChange("rw", value);
-              }
-            }}
+          <DropdownInput
+            id="kelurahan"
+            label="Pilih Kelurahan"
+            placeholder="Silahkan Pilih Kelurahan..."
+            value={data.kodeKelurahan}
+            onChange={(value) => handleInputChange("kodeKelurahan", value)}
+            options={filteredKelurahanOptions}
+            error={errors.kodeKelurahan}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            disabled={!data.kodeKecamatan}
+            className="col-span-2 md:col-span-1"
           />
-          {errors.rw && (
-            <span className="text-xs text-red-500">{errors.rw}</span>
-          )}
-        </FormInput>
-        <DropdownInput
-          id="kecamatan"
-          label="Pilih Kecamatan"
-          placeholder="Silahkan Pilih Kecamatan..."
-          value={data.kodeKecamatan}
-          onChange={(value) => handleInputChange("kodeKecamatan", value)}
-          options={kecamatanOptions}
-          error={errors.kodeKecamatan}
-          required={true}
-          valueKey="value"
-          labelKey="label"
-          className="col-span-2 md:col-span-1"
-        />
-        <DropdownInput
-          id="kelurahan"
-          label="Pilih Kelurahan"
-          placeholder="Silahkan Pilih Kelurahan..."
-          value={data.kodeKelurahan}
-          onChange={(value) => handleInputChange("kodeKelurahan", value)}
-          options={filteredKelurahanOptions}
-          error={errors.kodeKelurahan}
-          required={true}
-          valueKey="value"
-          labelKey="label"
-          disabled={!data.kodeKecamatan}
-          className="col-span-2 md:col-span-1"
-        />
-        <DropdownInput
-          id="bentukUsaha"
-          label="Bentuk Badan Usaha"
-          placeholder="Pilih Bentuk Badan Usaha"
-          value={data.bentukUsaha}
-          onChange={(value) => handleInputChange("bentukUsaha", value)}
-          options={bentukUsaha}
-          error={errors.bentukUsaha}
-          required={true}
-          valueKey="value"
-          labelKey="label"
-          className="col-span-2"
-        />
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="deskripsi"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Deskripsi Usaha
-          </Label>
-          <Input
-            id="deskripsi"
-            className={`${errors.deskripsi && "border border-red-500"}`}
-            placeholder="Deskripsi Usaha..."
-            value={data.deskripsi}
-            onChange={(e) => handleInputChange("deskripsi", e.target.value)}
+        </div>
+        <div className="col-span-3 grid gap-5 lg:grid-cols-2">
+          <DropdownInput
+            id="bentukUsaha"
+            label="Bentuk Badan Usaha"
+            placeholder="Pilih Bentuk Badan Usaha"
+            value={data.bentukUsaha}
+            onChange={(value) => handleInputChange("bentukUsaha", value)}
+            options={bentukUsaha}
+            error={errors.bentukUsaha}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2 md:col-span-1"
           />
-          {errors.deskripsi && (
-            <span className="text-xs text-red-500">{errors.deskripsi}</span>
-          )}
-        </FormInput>
-        <DropdownInput
-          id="jenisTarif"
-          label="Pilih Layanan"
-          placeholder="Silahkan Pilih Layanan..."
-          value={data.jenisTarif}
-          onChange={handleJenisTarifChange}
-          options={[
-            { value: "tarif", label: "Tarif 1" },
-            { value: "tarif2", label: "Tarif 2" },
-          ]}
-          error={errors.jenisTarif}
-          required={true}
-          valueKey="value"
-          labelKey="label"
-          className="col-span-2"
-        />
-        <DropdownInput
-          id="kategori"
-          label="Pilih Kategori"
-          placeholder="Silahkan Pilih Kategori..."
-          value={data.kodeKategori}
-          onChange={handleKategoriChange}
-          options={kategoriOptions}
-          error={errors.kodeKategori}
-          required={true}
-          valueKey="value"
-          labelKey="label"
-          className="col-span-2 md:col-span-1"
-        />
-        <DropdownInput
-          id="subkategori"
-          label="Pilih Sub Kategori"
-          placeholder="Silahkan Pilih Sub Kategori..."
-          value={data.kodeSubKategori}
-          onChange={handleSubKategoriChange}
-          options={filteredSubKategoriOptions}
-          error={errors.kodeSubKategori}
-          required={true}
-          valueKey="value"
-          labelKey="label"
-          disabled={!data.kodeKategori}
-          className="col-span-2 md:col-span-1"
-        />
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label
-            htmlFor="bulan"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Bulan
-          </Label>
-          <Input
-            type="number"
-            min={1}
-            max={99}
-            id="bulan"
-            className={`${errors.bulan && "border border-red-500"}`}
-            placeholder="Jumlah Bulan..."
-            value={data.variabelValues.bulan || ""}
-            onKeyDown={(e) => {
-              if (!isAllowedKey(e)) {
-                e.preventDefault();
-              }
-            }}
-            onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, "");
-              if (value >= 0 && value.length <= 2) {
-                handleVariabelChange("bulan", value);
-              }
-            }}
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="deskripsi"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Deskripsi Usaha
+            </Label>
+            <Input
+              id="deskripsi"
+              className={`${errors.deskripsi && "border border-red-500"}`}
+              placeholder="Deskripsi Usaha Contoh: warung nasi / toko sepatu / warung gado-gado..."
+              value={data.deskripsi}
+              onChange={(e) => handleInputChange("deskripsi", e.target.value)}
+            />
+            {errors.deskripsi && (
+              <span className="text-xs text-red-500">{errors.deskripsi}</span>
+            )}
+          </FormInput>
+        </div>
+        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
+          <DropdownInput
+            id="jenisTarif"
+            label="Pilih Layanan"
+            placeholder="Silahkan Pilih Layanan..."
+            value={data.jenisTarif}
+            onChange={handleJenisTarifChange}
+            options={[
+              { value: "tarif", label: "Tarif 1" },
+              { value: "tarif2", label: "Tarif 2" },
+            ]}
+            error={errors.jenisTarif}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2 md:col-span-1"
           />
-          {errors.bulan && (
-            <span className="text-xs text-red-500">{errors.bulan}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label
-            htmlFor="tarifRetribusi"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Tarif Retribusi
-          </Label>
-          <Input
-            id="tarifRetribusi"
-            className={`${errors.tarifRetribusi && "border border-red-500"}`}
-            tabIndex={-1}
-            value={
-              new Intl.NumberFormat("id-ID", {
+          <DropdownInput
+            id="kategori"
+            label="Pilih Kategori"
+            placeholder="Silahkan Pilih Kategori..."
+            value={data.kodeKategori}
+            onChange={handleKategoriChange}
+            options={kategoriOptions}
+            error={errors.kodeKategori}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2 md:col-span-1"
+          />
+          <DropdownInput
+            id="subkategori"
+            label="Pilih Sub Kategori"
+            placeholder="Silahkan Pilih Sub Kategori..."
+            value={data.kodeSubKategori}
+            onChange={handleSubKategoriChange}
+            options={filteredSubKategoriOptions}
+            error={errors.kodeSubKategori}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            disabled={!data.kodeKategori}
+            className="col-span-2 md:col-span-1"
+          />
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="bulan"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Bulan
+            </Label>
+            <Input
+              type="number"
+              min={1}
+              max={99}
+              id="bulan"
+              className={`${errors.bulan && "border border-red-500"}`}
+              placeholder="Jumlah Bulan..."
+              value={data.variabelValues.bulan || ""}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value >= 0 && value.length <= 2) {
+                  handleVariabelChange("bulan", value);
+                }
+              }}
+            />
+            {errors.bulan && (
+              <span className="text-xs text-red-500">{errors.bulan}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="tarifRetribusi"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Tarif Retribusi
+            </Label>
+            <Input
+              id="tarifRetribusi"
+              className={`${errors.tarifRetribusi && "border border-red-500"}`}
+              tabIndex={-1}
+              value={
+                new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                }).format(data.tarifRetribusi) || 0
+              }
+              readOnly
+            />
+            {errors.tarifRetribusi && (
+              <span className="text-xs text-red-500">
+                {errors.tarifRetribusi}
+              </span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label htmlFor="total">Total Retribusi</Label>
+            <Input
+              id="total"
+              tabIndex={-1}
+              className={`${errors.totalRetribusi && "border border-red-500"}`}
+              value={new Intl.NumberFormat("id-ID", {
                 style: "currency",
                 currency: "IDR",
-              }).format(data.tarifRetribusi) || 0
+              }).format(calculateTotal())}
+              readOnly
+            />
+            {errors.totalRetribusi && (
+              <span className="text-xs text-red-500">
+                {errors.totalRetribusi}
+              </span>
+            )}
+          </FormInput>
+        </div>
+        <FormInput className="lg:col-span-3">
+          <Label
+            htmlFor="keteranganBulan"
+            className="after:text-red-500 after:content-['*']"
+          >
+            Keterangan Bulan
+          </Label>
+          <Input
+            id="keteranganBulan"
+            type="text"
+            className={`${errors.keteranganBulan && "border border-red-500"}`}
+            placeholder="Contoh: Bulan (Jan s.d Des)"
+            value={data.keteranganBulan}
+            onChange={(e) =>
+              handleInputChange("keteranganBulan", e.target.value)
             }
-            readOnly={true}
           />
-          {errors.tarifRetribusi && (
+          {errors.keteranganBulan && (
             <span className="text-xs text-red-500">
-              {errors.tarifRetribusi}
+              {errors.keteranganBulan}
             </span>
           )}
         </FormInput>
@@ -574,7 +625,7 @@ const WajibRetribusiCreate = ({
           const inputFields = ["unit", "m2", "giat", "hari", "meter"];
 
           return (
-            <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="col-span-3 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               {inputFields.map((field, index) => {
                 const isEnabled = variabelArray.includes(field);
                 return (
@@ -592,7 +643,11 @@ const WajibRetribusiCreate = ({
                       type="text"
                       id={`variabel-${field}`}
                       className={`${isEnabled ? "bg-gray-200" : "cursor-not-allowed bg-slate-300"} ${errors[`variabelValues.${field}`] && "border border-red-500"}`}
-                      placeholder={`Masukkan nilai ${field}...`}
+                      placeholder={
+                        field === "giat"
+                          ? "Jumlah kegiatan 1 atau 2 atau 3"
+                          : `Masukkan nilai ${field}...`
+                      }
                       value={data.variabelValues[field] || ""}
                       onKeyDown={(e) => {
                         if (!isAllowedKey(e)) {
@@ -617,41 +672,24 @@ const WajibRetribusiCreate = ({
                   </FormInput>
                 );
               })}
-              <FormInput className="col-span-1">
-                <Label htmlFor="total">Total Retribusi</Label>
-                <Input
-                  id="total"
-                  tabIndex={-1}
-                  className={`${errors.totalRetribusi && "border border-red-500"}`}
-                  value={new Intl.NumberFormat("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
-                  }).format(calculateTotal())}
-                  readOnly
-                />
-                {errors.totalRetribusi && (
-                  <span className="text-xs text-red-500">
-                    {errors.totalRetribusi}
-                  </span>
-                )}
-              </FormInput>
             </div>
           );
         })()}
-        <DropdownInput
-          id="statusTempat"
-          label="Status Tempat"
-          placeholder="Pilih Status Tempat..."
-          value={data.statusTempat}
-          onChange={(value) => handleInputChange("statusTempat", value)}
-          options={statusTempat}
-          error={errors.statusTempat}
-          required={true}
-          valueKey="value"
-          labelKey="label"
-          className="col-span-2 md:col-span-1"
-        />
-        {/* <DropdownInput
+        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
+          <DropdownInput
+            id="statusTempat"
+            label="Status Tempat"
+            placeholder="Pilih Status Tempat..."
+            value={data.statusTempat}
+            onChange={(value) => handleInputChange("statusTempat", value)}
+            options={statusTempat}
+            error={errors.statusTempat}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2 md:col-span-1"
+          />
+          {/* <DropdownInput
           id="penagih"
           label="Penagih"
           placeholder="Pilih Status Tempat..."
@@ -664,176 +702,169 @@ const WajibRetribusiCreate = ({
           labelKey="label"
           className="col-span-2"
         /> */}
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label
-            htmlFor="penagih"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Penagih
-          </Label>
-          <Input
-            type="number"
-            id="penagih"
-            className={`${errors.jBangunan && "border border-red-500"}`}
-            placeholder="Pilih jumlah penagih..."
-            // value={data.jBangunan}
-            // onKeyDown={(e) => {
-            //   if (!isAllowedKey(e)) {
-            //     e.preventDefault();
-            //   }
-            // }}
-            // onChange={(e) =>
-            //   handleInputChange("jBangunan", e.target.value.replace(/\D/g, ""))
-            // }
-          />
-          {errors.jBangunan && (
-            <span className="text-xs text-red-500">{errors.jBangunan}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label
-            htmlFor="jBangunan"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Jumlah Bangunan
-          </Label>
-          <Input
-            type="number"
-            id="jBangunan"
-            className={`${errors.jBangunan && "border border-red-500"}`}
-            placeholder="Jumlah Bangunan..."
-            value={data.jBangunan}
-            onKeyDown={(e) => {
-              if (!isAllowedKey(e)) {
-                e.preventDefault();
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="jBangunan"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Jumlah Bangunan
+            </Label>
+            <Input
+              type="number"
+              id="jBangunan"
+              className={`${errors.jBangunan && "border border-red-500"}`}
+              placeholder="Jumlah Bangunan..."
+              value={data.jBangunan}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
+              onChange={(e) =>
+                handleInputChange(
+                  "jBangunan",
+                  e.target.value.replace(/\D/g, ""),
+                )
               }
-            }}
-            onChange={(e) =>
-              handleInputChange("jBangunan", e.target.value.replace(/\D/g, ""))
-            }
-          />
-          {errors.jBangunan && (
-            <span className="text-xs text-red-500">{errors.jBangunan}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label
-            htmlFor="jLantai"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Jumlah Lantai
-          </Label>
-          <Input
-            id="jLantai"
-            className={`${errors.jLantai && "border border-red-500"}`}
-            placeholder="Jumlah Lantai..."
-            value={data.jLantai}
-            onKeyDown={(e) => {
-              if (!isAllowedKey(e)) {
-                e.preventDefault();
+            />
+            {errors.jBangunan && (
+              <span className="text-xs text-red-500">{errors.jBangunan}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="jLantai"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Jumlah Lantai
+            </Label>
+            <Input
+              id="jLantai"
+              className={`${errors.jLantai && "border border-red-500"}`}
+              placeholder="Jumlah Lantai..."
+              value={data.jLantai}
+              onKeyDown={(e) => {
+                if (!isAllowedKey(e)) {
+                  e.preventDefault();
+                }
+              }}
+              onChange={(e) =>
+                handleInputChange("jLantai", e.target.value.replace(/\D/g, ""))
               }
-            }}
-            onChange={(e) =>
-              handleInputChange("jLantai", e.target.value.replace(/\D/g, ""))
-            }
-          />
-          {errors.jLantai && (
-            <span className="text-xs text-red-500">{errors.jLantai}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label
-            htmlFor="latitude"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Latitude
-          </Label>
-          <Input
-            id="latitude"
-            type="number"
-            step="any"
-            min={-90}
-            max={90}
-            className={`${errors.latitude && "border border-red-500"}`}
-            placeholder="Latitude..."
-            value={data.latitude || ""}
-            onChange={(e) => {
-              let value = e.target.value.replace(/[^0-9\.\-]/g, "");
+            />
+            {errors.jLantai && (
+              <span className="text-xs text-red-500">{errors.jLantai}</span>
+            )}
+          </FormInput>
+        </div>
+        <div className="col-span-3 grid gap-5 lg:grid-cols-4">
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="latitude"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Latitude
+            </Label>
+            <Input
+              id="latitude"
+              type="number"
+              step="any"
+              min={-90}
+              max={90}
+              className={`${errors.latitude && "border border-red-500"}`}
+              placeholder="Latitude..."
+              value={data.latitude || ""}
+              onChange={(e) => {
+                let value = e.target.value.replace(/[^0-9\.\-]/g, "");
 
-              const parts = value.split(".");
+                const parts = value.split(".");
 
-              if (parts.length > 2) {
-                value = parts[0] + "." + parts.slice(1).join("");
-              }
+                if (parts.length > 2) {
+                  value = parts[0] + "." + parts.slice(1).join("");
+                }
 
-              value = value.replace(/(?!^)-/g, "");
+                value = value.replace(/(?!^)-/g, "");
 
-              if (value.includes("-") && value.indexOf("-") > 0) {
-                value = value.replace("-", "");
-              }
+                if (value.includes("-") && value.indexOf("-") > 0) {
+                  value = value.replace("-", "");
+                }
 
-              handleInputChange("latitude", value);
-            }}
-            // onBlur={() => handleInputChange("latitude", latInput)}
-          />
-          {errors.latitude && (
-            <span className="text-xs text-red-500">{errors.latitude}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label
-            htmlFor="longitude"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Longitude
-          </Label>
-          <Input
-            id="longitude"
-            type="number"
-            step="any"
-            min={-180}
-            max={180}
-            className={`${errors.longitude && "border border-red-500"}`}
-            placeholder="Longitude..."
-            value={data.longitude || ""}
-            onChange={(e) => {
-              let value = e.target.value;
+                handleInputChange("latitude", value);
+              }}
+              // onBlur={() => handleInputChange("latitude", latInput)}
+            />
+            {errors.latitude && (
+              <span className="text-xs text-red-500">{errors.latitude}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="longitude"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Longitude
+            </Label>
+            <Input
+              id="longitude"
+              type="number"
+              step="any"
+              min={-180}
+              max={180}
+              className={`${errors.longitude && "border border-red-500"}`}
+              placeholder="Longitude..."
+              value={data.longitude || ""}
+              onChange={(e) => {
+                let value = e.target.value;
 
-              value = value.replace(/[^0-9\.\-]/g, "");
+                value = value.replace(/[^0-9\.\-]/g, "");
 
-              const parts = value.split(".");
-              if (parts.length > 2) {
-                value = parts[0] + "." + parts.slice(1).join("");
-              }
+                const parts = value.split(".");
+                if (parts.length > 2) {
+                  value = parts[0] + "." + parts.slice(1).join("");
+                }
 
-              value = value.replace(/(?!^)-/g, "");
-              if (value.includes("-") && value.indexOf("-") > 0) {
-                value = value.replace("-", "");
-              }
+                value = value.replace(/(?!^)-/g, "");
+                if (value.includes("-") && value.indexOf("-") > 0) {
+                  value = value.replace("-", "");
+                }
 
-              handleInputChange("longitude", value);
-            }}
-            // onBlur={() => handleInputChange("longitude", lngInput)}
-          />
-          {errors.longitude && (
-            <span className="text-xs text-red-500">{errors.longitude}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2">
-          <Label htmlFor="linkMap">Link Map</Label>
-          <Input
-            type="url"
-            id="linkMap"
-            className={`${errors.linkMap && "border border-red-500"}`}
-            placeholder="Link Map..."
-            value={data.linkMap}
-            onChange={(e) => handleInputChange("linkMap", e.target.value)}
-          />
-          {errors.linkMap && (
-            <span className="text-xs text-red-500">{errors.linkMap}</span>
-          )}
-        </FormInput>
-        <FormInput className="z-0 col-span-2">
+                handleInputChange("longitude", value);
+              }}
+              // onBlur={() => handleInputChange("longitude", lngInput)}
+            />
+            {errors.longitude && (
+              <span className="text-xs text-red-500">{errors.longitude}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label htmlFor="linkMap">Link Map</Label>
+            <Input
+              type="url"
+              id="linkMap"
+              className={`${errors.linkMap && "border border-red-500"}`}
+              placeholder="Link Map..."
+              value={data.linkMap}
+              onChange={(e) => handleInputChange("linkMap", e.target.value)}
+            />
+            {errors.linkMap && (
+              <span className="text-xs text-red-500">{errors.linkMap}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label htmlFor="tanggalSkrd">Tanggal STRD</Label>
+            <Input
+              type="date"
+              id="tanggalSkrd"
+              className={`${errors.tanggalSkrd && "border border-red-500"}`}
+              value={data.tanggalSkrd}
+              onChange={(e) => handleInputChange("tanggalSkrd", e.target.value)}
+            />
+            {errors.tanggalSkrd && (
+              <span className="text-xs text-red-500">{errors.tanggalSkrd}</span>
+            )}
+          </FormInput>
+        </div>
+        <FormInput className="z-0 col-span-3">
           <MapPicker
             latitude={data.latitude || ""}
             longitude={data.longitude || ""}
@@ -843,45 +874,94 @@ const WajibRetribusiCreate = ({
             resetTrigger={mapReset}
           />
         </FormInput>
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label htmlFor="fotoBangunan">Upload Foto Bangunan</Label>
-          <Input
-            type="file"
-            id="fotoBangunan"
-            accept="image/*"
-            onChange={(e) =>
-              handleFileChange("fotoBangunan", e.target.files[0])
-            }
-            required
+        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="fotoBangunan"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Upload Foto Bangunan
+            </Label>
+            <Input
+              type="file"
+              id="fotoBangunan"
+              accept="image/*"
+              onChange={(e) =>
+                handleFileChange("fotoBangunan", e.target.files[0])
+              }
+              required
+            />
+            {errors.fotoBangunan && (
+              <span className="text-xs text-red-500">
+                {errors.fotoBangunan}
+              </span>
+            )}
+            {data.fotoBangunan && (
+              <span className="text-xs text-green-600">
+                File dipilih: {data.fotoBangunan.name}
+              </span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label htmlFor="fotoBerkas">Upload Foto Berkas</Label>
+            <Input
+              type="file"
+              accept="image/*,application/pdf"
+              id="fotoBerkas"
+              onChange={(e) =>
+                handleFileChange("fotoBerkas", e.target.files[0])
+              }
+            />
+            {errors.fotoBerkas && (
+              <span className="text-xs text-red-500">{errors.fotoBerkas}</span>
+            )}
+            {data.fotoBerkas && (
+              <span className="text-xs text-green-600">
+                File dipilih: {data.fotoBerkas.name}
+              </span>
+            )}
+          </FormInput>
+          {/* <FormInput className="col-span-2 md:col-span-1">
+            <Label
+              htmlFor="penagih"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Nama Penagih/Kolektor
+            </Label>
+            <Input
+              type="text"
+              id="penagih"
+              className={`${errors.jBangunan && "border border-red-500"}`}
+              placeholder="Pilih Penagih..."
+              // value={data.jBangunan}
+              // onKeyDown={(e) => {
+              //   if (!isAllowedKey(e)) {
+              //     e.preventDefault();
+              //   }
+              // }}
+              // onChange={(e) =>
+              //   handleInputChange("jBangunan", e.target.value.replace(/\D/g, ""))
+              // }
+            />
+            {errors.jBangunan && (
+              <span className="text-xs text-red-500">{errors.jBangunan}</span>
+            )}
+          </FormInput> */}
+          <DropdownInput
+            id="penagih"
+            label="Nama Penagih/Kolektor"
+            placeholder="Pilih Penagih..."
+            value={data.penagihId}
+            onChange={(value) => handleInputChange("penagihId", value)}
+            options={penagihOptions}
+            error={errors.penagihId}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2 md:col-span-1"
           />
-          {errors.fotoBangunan && (
-            <span className="text-xs text-red-500">{errors.fotoBangunan}</span>
-          )}
-          {data.fotoBangunan && (
-            <span className="text-xs text-green-600">
-              File dipilih: {data.fotoBangunan.name}
-            </span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 md:col-span-1">
-          <Label htmlFor="fotoBerkas">Upload Foto Berkas</Label>
-          <Input
-            type="file"
-            accept="image/*,application/pdf"
-            id="fotoBerkas"
-            onChange={(e) => handleFileChange("fotoBerkas", e.target.files[0])}
-            required
-          />
-          {errors.fotoBerkas && (
-            <span className="text-xs text-red-500">{errors.fotoBerkas}</span>
-          )}
-          {data.fotoBerkas && (
-            <span className="text-xs text-green-600">
-              File dipilih: {data.fotoBerkas.name}
-            </span>
-          )}
-        </FormInput>
-        <div className="col-span-2 flex flex-col gap-1.5 text-sm md:flex-row md:justify-end md:gap-4">
+        </div>
+        <div className="col-span-3 flex flex-col gap-1.5 text-sm md:flex-row md:justify-end md:gap-4">
           <button
             type="button"
             onClick={handleClearForm}

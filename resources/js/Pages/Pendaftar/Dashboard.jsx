@@ -1,10 +1,10 @@
+import DashboardPages from "@/Features/Dashboard";
 import Layout from "./Layout";
 
-
-const Dashboard = () => {
+const Dashboard = (props) => {
   return (
     <Layout title="Dashboard">
-      <div>Dashboard</div>
+      <DashboardPages {...props} />
     </Layout>
   );
 };

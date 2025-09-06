@@ -37,18 +37,36 @@ class SkrdController extends Controller
         $subKategoriId = $request->get('sub-kategori');
         $petugasId = $request->get('petugas');
         $status = $request->get('status');
+        $getPage = $request->get('per_page', 10);
 
         $skrd = Skrd::with([
             'user:id,namaLengkap,lokasi',
             'pembayaran' => function ($q) {
                 $q->orderBy('tanggalBayar');
             }
-        ])->addSelect([
-            'skrd.*',
-            'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
-                ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
-                ->whereColumn('skrdId', 'skrd.id')
-        ]);
+        ])
+            ->select([
+                'id',
+                'noSkrd',
+                'noWajibRetribusi',
+                'namaObjekRetribusi',
+                'alamatObjekRetribusi',
+                "kelurahanObjekRetribusi",
+                "kecamatanObjekRetribusi",
+                "deskripsiUsaha",
+                "tagihanPerBulanSkrd",
+                "tagihanPerTahunSkrd",
+                'namaKategori',
+                'namaSubKategori',
+                'namaPendaftar',
+                'tagihanPerTahunSkrd',
+                'created_at',
+            ])
+            ->addSelect([
+                'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
+                    ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
+                    ->whereColumn('skrdId', 'skrd.id')
+            ]);
 
         if ($sortBy === 'sisa_tertagih') {
             $skrd->orderByRaw("(tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) {$sortDir}");
@@ -88,8 +106,14 @@ class SkrdController extends Controller
             : collect();
         $petugas = User::select('id', 'namaLengkap', 'lokasi')->where('role', 'ROLE_PENDAFTAR')->orderBy('namaLengkap')->get();
 
+        if ($getPage <= 0) {
+            $datas = $skrd->get();
+        } else {
+            $datas = $skrd->paginate($getPage)->withQueryString();
+        }
+
         return Inertia::render('Super-Admin/Data-Input/Skrd/Index', [
-            'datas' => $skrd->paginate(10)->withQueryString(),
+            'datas' => $datas,
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,
                 'sort' => $sortBy,

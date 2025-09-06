@@ -36,14 +36,14 @@ class UserSeeder extends Seeder
 
         $data = [
             [47, 'Aufa Haqqu Hablillah,S.T', null, 'ROLE_KASUBAG_TU_UPDT', 'Kasubbag TU UPTD Ilir Barat 2', '199506202019021002', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-02-05 10:02:20.985+07', 'Laki-laki', '-', '-', '-', 'ILIR BARAT DUA', 3, '2024-02-05 10:02:20.983+07'],
-            [242, 'Adi Wijaya, S.E', null, 'ROLE_KASUBAG_TU_UPDT', 'Kepala UPTD Bukit Kecil', '1977062720011210012', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-01-24 13:32:57.162+07', 'Laki-laki', '-', '-', '-', 'BUKIT KECIL', 13, '2024-01-24 13:32:57.161+07'],
+            [242, 'Adi Wijaya, S.E', 'adiwijayakasubag', 'ROLE_KASUBAG_TU_UPDT', 'Kepala UPTD Bukit Kecil', '1977062720011210012', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-01-24 13:32:57.162+07', 'Laki-laki', '-', '-', '-', 'BUKIT KECIL', 13, '2024-01-24 13:32:57.161+07'],
             [123, 'Ayuni Chotimah', "aycot", 'ROLE_PENDAFTAR', 'Staf', '013', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 16:26:57.343+07', '-', '-', '-', '-', 'BUKIT KECIL', 13, '2023-12-28 16:26:57.343+07'],
             [122, 'Vina Angguningtyas', "vinul", 'ROLE_PENDAFTAR', 'Staf', '017', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 16:26:57.343+07', '-', '-', '-', '-', 'ALANG-ALANG LEBAR', 17, '2023-12-28 16:26:57.343+07'],
             [133, 'Vina Angguningtyas', null, 'ROLE_PENDAFTAR', 'Staf', '011', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 16:26:57.343+07', '-', '-', '-', '-', 'KEMUNING', 11, '2023-12-28 16:26:57.343+07'],
             [130, 'Vina Angguningtyas', null, 'ROLE_PENDAFTAR', 'Staf', '019', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 16:26:57.343+07', '-', '-', '-', '-', 'JAKABARING', 19, '2023-12-28 16:26:57.343+07'],
             [44, 'Dwi Maharani, S.T, M.M', null, 'ROLE_KASUBAG_TU_UPDT', 'Kasubbag TU UPTD Plaju', '198503182011012011', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-03-06 09:02:19.632+07', 'Perempuan', '-', '-', '-', 'PLAJU', 16, '2024-03-06 09:02:19.63+07'],
             [134, 'Rany Nopiani', "opet", 'ROLE_PENDAFTAR', 'Staf', '015', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 16:26:57.343+07', '-', '-', '-', '-', 'KERTAPATI', 15, '2023-12-28 16:26:57.343+07'],
-            [124, 'Putri Pertiwi', null, 'ROLE_PENDAFTAR', 'Staf', '014', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 16:26:57.343+07', '-', '-', '-', '-', 'GANDUS', 14, '2023-12-28 16:26:57.343+07'],
+            [124, 'Putri Pertiwi', 'putripertiwi', 'ROLE_PENDAFTAR', 'Staf', '014', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 16:26:57.343+07', '-', '-', '-', '-', 'GANDUS', 14, '2023-12-28 16:26:57.343+07'],
             [136, 'Putri Pertiwi', null, 'ROLE_PENDAFTAR', 'Staf', '016', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 16:26:57.343+07', '-', '-', '-', '-', 'PLAJU', 16, '2023-12-28 16:26:57.343+07'],
             [51, 'Efrianto, S.T', null, 'ROLE_KUPTD', 'Kepala UPTD Gandus', '198003292009021001', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-01-24 14:43:23.162+07', 'Laki-laki', '-', '-', '-', 'GANDUS', 14, '2024-01-24 14:43:23.161+07'],
             [57, 'Birmansyah, SKM.,M.Si', null, 'ROLE_KUPTD', 'Kepala UPTD Sukarami', '197307211993031001', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 13:13:31.092+07', 'Laki-laki', '-', '-', '-', 'SUKARAMI', 9, '2023-12-28 13:13:31.091+07'],
@@ -95,7 +95,7 @@ class UserSeeder extends Seeder
             [63, 'Iwan Kurniawan,S.H', null, 'ROLE_KUPTD', 'Plt. Kepala UPTD Semabor', '198212042011011003', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-02-15 08:28:17.781+07', 'Laki-laki', '-', '-', '-', 'SEMATANG BORANG', 18, '2024-02-15 08:28:17.78+07'],
             [72, 'Lusiana, S.Si., M.Si', null, 'ROLE_BENDAHARA', 'Bendahara', '197507292014072001', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-01-24 11:54:44.664+07', 'Perempuan', '-', '-', '-', 'DINAS', 1, '2024-01-24 11:54:44.663+07'],
             [78, 'Ardiansah, S.Sos., M.Si', null, 'ROLE_KATIM', 'Ketua Tim PSLB3', '198103232009011011', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-01-29 12:25:45.131+07', 'Laki-laki', '-', '-', '-', 'DINAS', 1, '2024-01-29 12:25:45.128+07'],
-            [61, 'Adi Wijaya, S.E', null, 'ROLE_KUPTD', 'Kepala UPTD Bukit Kecil', '197706272001121001', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-01-24 13:32:57.162+07', 'Laki-laki', '-', '-', '-', 'BUKIT KECIL', 13, '2024-01-24 13:32:57.161+07'],
+            [61, 'Adi Wijaya, S.E', 'adiwijayakuptd', 'ROLE_KUPTD', 'Kepala UPTD Bukit Kecil', '197706272001121001', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-01-24 13:32:57.162+07', 'Laki-laki', '-', '-', '-', 'BUKIT KECIL', 13, '2024-01-24 13:32:57.161+07'],
             [67, 'M. Syahid Mubarok, S.Kom', null, 'ROLE_KUPTD', 'Kepala UPTD Ilir Barat 1', '198206222010011005', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-01-24 11:26:35.64+07', 'Laki-laki', '-', '-', '-', 'ILIR BARAT SATU', 6, '2024-01-24 11:26:35.639+07'],
             [76, 'Indar Tri Setiantoro, ST., M.Si', null, 'ROLE_KATIM', 'Ketua Tim PSLB3', '197504182000031003', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 12:48:57.248886+07', 'Laki-laki', '-', '-', '-', 'DINAS', 1, NULL],
             [71, 'Aris Satria Bandarnata, S.STP., M.Si', null, 'ROLE_SEKDIN', 'Sekretaris Dinas Lingkungan Hidup', '198110022001121001', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2024-01-24 11:46:40.024+07', 'Laki-laki', '-', '-', '-', 'DINAS', 1, '2024-01-24 11:46:40.023+07'],
@@ -107,9 +107,32 @@ class UserSeeder extends Seeder
             [141, 'Anggun Lestari', null, 'ROLE_PENDAFTAR', 'Staf', '009', '-', '$2y$10$Qos.Hey.QN2rieJbtf.SPu6Kx8RNOQnD9t5DkjjdUI2U0.K3Mxgo6', '2023-12-28 12:48:57.248886+07', '2023-12-28 16:26:57.343+07', '-', '-', '-', '-', 'SUKARAMI', 9, '2023-12-28 16:26:57.343+07'],
         ];
 
+        $checkName = array_column(
+            array_filter($data, fn($row) => $row[2] !== null),
+            1
+        );
 
-        $records = array_map(function ($row) use ($fields) {
+        $records = array_map(function ($row) use ($fields, $checkName) {
             $data = array_combine($fields, $row);
+
+            if ($data['username'] === null && !in_array($data['namaLengkap'], $checkName)) {
+                $cleanName = strtolower(preg_replace('/[.,]/', '', $data['namaLengkap']));
+                $parts = explode(' ', $cleanName);
+                // $parts = array_slice($parts, 0, 2);
+                if (count($parts) <= 2) {
+                    $username = $parts[0];
+                } else {
+                    // $username = implode('', $parts);
+                    // $username = array_slice($parts, 0, 2);
+                    $username = $parts[0] . $parts[1];
+                }
+
+                $data['username'] = $username;
+            }
+
+            if ($data['jabatan'] === 'Staf') {
+                $data['jabatan'] = 'Petugas Daftar';
+            }
 
             $data['created_at'] = Carbon::parse($data['created_at'])->utc();
 

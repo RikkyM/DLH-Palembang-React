@@ -28,7 +28,7 @@ class UptdController extends Controller
 
         $data->appends($request->only('search'));
 
-        return Inertia::render('Super-Admin/Settings/Uptd/Index', [
+        return Inertia::render('Super-Admin/Master-Data/Uptd/Index', [
             'datas' => $data,
             'filters' => [
                 'search' => $request->search && trim($request->search) ? $request->search : null

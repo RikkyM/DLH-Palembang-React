@@ -219,7 +219,7 @@ const Diterima = ({
 
   return (
     <Layout title="WAJIB RETRIBUSI DITERIMA">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
@@ -235,7 +235,7 @@ const Diterima = ({
                 </button>
                 <div
                   ref={filterRef}
-                  className={`absolute left-0 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
+                  className={`absolute left-0 z-10 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
                     showFilters
                       ? "pointer-events-auto mt-3 opacity-100"
                       : "pointer-events-none mt-0 opacity-0"

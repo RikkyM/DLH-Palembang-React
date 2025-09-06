@@ -39,12 +39,28 @@ export default defineConfig({
   //   host: "0.0.0.0",
   //   port: 5173,
   //   hmr: {
-  //     host: "192.168.18.13",
+  //     host: "dev.rikky-mahendra.my.id",
+  //     protocol: "wss",
+  //     // host: "192.168.18.13",
   //     // host: "192.168.18.75",
   //     port: 5173,
   //   },
   //   watch: {
   //     usePolling: true,
   //   },
+  // },
+  // server: {
+  //   host: "0.0.0.0",
+  //   port: 5173,
+  //   strictPort: true,
+  //   hmr: {
+  //     host: "dev.rikky-mahendra.my.id",
+  //     port: 5173, // Gunakan port 443 untuk HTTPS
+  //   },
+  //   origin: "https://dev.rikky-mahendra.my.id",
+  //   watch: {
+  //     usePolling: true,
+  //   },
+  // },
   // },
 });

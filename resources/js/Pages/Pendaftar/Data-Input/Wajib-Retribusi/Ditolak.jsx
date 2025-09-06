@@ -203,7 +203,7 @@ const Ditolak = ({
 
   return (
     <Layout title="WAJIB RETRIBUSI DITOLAK">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
@@ -219,7 +219,7 @@ const Ditolak = ({
                 </button>
                 <div
                   ref={filterRef}
-                  className={`absolute left-0 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
+                  className={`absolute z-10 left-0 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
                     showFilters
                       ? "pointer-events-auto mt-3 opacity-100"
                       : "pointer-events-none mt-0 opacity-0"
@@ -343,7 +343,7 @@ const Ditolak = ({
             </button>
           </div>
         </div>
-        <div className="overflow-x-auto rounded bg-white shadow">
+        <div className="overflow-x-auto rounded bg-white shadow max-h-[calc(100%_-_150px)]">
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
               <svg

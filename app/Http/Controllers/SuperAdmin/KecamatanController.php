@@ -25,7 +25,7 @@ class KecamatanController extends Controller
             ->withQueryString();
 
 
-        return Inertia::render('Super-Admin/Settings/Kecamatan/Index', [
+        return Inertia::render('Super-Admin/Master-Data/Kecamatan/Index', [
             'datas' => $kecamatan,
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,

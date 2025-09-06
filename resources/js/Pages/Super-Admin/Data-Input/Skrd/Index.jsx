@@ -1,4 +1,4 @@
-import { FileText, Filter, Search } from "lucide-react";
+import { ChevronDown, FileText, Filter, Search } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -22,6 +22,9 @@ const Index = ({
   const [status, setStatus] = useState(filters.status || "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
+  const [perPage, setPerPage] = useState(() => {
+    return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   const allFilters = {
@@ -160,7 +163,7 @@ const Index = ({
     if (subKategori) params["sub-kategori"] = subKategori;
     if (petugas) params.petugas = petugas;
     if (status) params.status = status;
-
+    if (perPage && perPage !== 10) params.per_page = perPage;
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "asc") {
@@ -205,13 +208,49 @@ const Index = ({
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [search, kategori, subKategori, petugas, sort, direction, status]);
+  }, [
+    search,
+    kategori,
+    subKategori,
+    petugas,
+    perPage,
+    sort,
+    direction,
+    status,
+  ]);
+
+  const handlePerPageChange = (e) => {
+    setPerPage(parseInt(e.target.value));
+  };
 
   return (
     <Layout title="SKRD">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 md:flex-row md:items-center md:gap-0">
           <div className="relative flex w-full gap-2 sm:w-max">
+            <label
+              htmlFor="showData"
+              className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
+            >
+              <select
+                name="showData"
+                id="showData"
+                value={perPage}
+                onChange={handlePerPageChange}
+                className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="250">250</option>
+                <option value="-1">Semua</option>
+              </select>
+              <ChevronDown
+                size={20}
+                className="pointer-events-none absolute right-1 bg-transparent"
+              />
+            </label>
             <button
               type="button"
               className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
@@ -223,7 +262,7 @@ const Index = ({
             </button>
             <div
               ref={filterRef}
-              className={`absolute left-0 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
+              className={`absolute left-0 top-full z-10 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
                 showFilters
                   ? "pointer-events-auto mt-3 opacity-100"
                   : "pointer-events-none mt-0 opacity-0"
@@ -290,9 +329,7 @@ const Index = ({
                 if (status) params.append("status", status);
 
                 window.open(
-                  route("skrd.download-pdf") +
-                    "?" +
-                    params.toString(),
+                  route("skrd.download-pdf") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -311,9 +348,7 @@ const Index = ({
                 if (status) params.append("status", status);
 
                 window.open(
-                  route("skrd.download-excel") +
-                    "?" +
-                    params.toString(),
+                  route("skrd.download-excel") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -323,9 +358,9 @@ const Index = ({
             </button>
           </div>
         </div>
-        <div className={`overflow-auto rounded bg-white shadow`}>
+        <div className={`max-h-[calc(100%_-_150px)] overflow-auto rounded ${!isLoading && "shadow"}`}>
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -362,8 +397,10 @@ const Index = ({
                   >
                     {bulan.map((bulan, i) => (
                       <React.Fragment key={i}>
-                        <th className="cursor-pointer select-none">{bulan}</th>
-                        <th className="cursor-pointer select-none truncate">
+                        <th className="sticky top-0 z-0 cursor-pointer select-none bg-[#F1B174]">
+                          {bulan}
+                        </th>
+                        <th className="sticky top-0 z-0 cursor-pointer select-none truncate bg-[#F1B174]">
                           Tanggal Bayar
                         </th>
                       </React.Fragment>
@@ -371,14 +408,15 @@ const Index = ({
                   </TableHead>
                 </thead>
                 <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
-                  {datas?.data?.length > 0 ? (
-                    datas.data.map((data, index) => (
+                  {(datas.data ?? datas)?.length > 0 ? (
+                    (datas.data ?? datas).map((data, index) => (
                       <tr
                         key={data.id || index}
-                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
-                          {(datas.current_page - 1) * datas.per_page +
+                          {((datas.current_page ?? 1) - 1) *
+                            (datas.per_page ?? (datas.data ?? datas).length) +
                             index +
                             1}
                         </td>
@@ -462,7 +500,7 @@ const Index = ({
                           );
                         })}
                         <td
-                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
                           <div className="flex flex-wrap gap-2 *:rounded *:text-xs *:font-medium *:sm:text-sm">
                             {/* <button className="flex items-center gap-1.5 outline-none">
@@ -486,12 +524,9 @@ const Index = ({
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               onClick={(e) => {
                                 window.open(
-                                  route(
-                                    "skrd.download-data-excel",
-                                    {
-                                      id: data.id,
-                                    },
-                                  ),
+                                  route("skrd.download-data-excel", {
+                                    id: data.id,
+                                  }),
                                   "_blank",
                                 );
                               }}

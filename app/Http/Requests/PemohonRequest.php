@@ -4,7 +4,9 @@ namespace App\Http\Requests;
 
 use App\Models\Pemilik;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class PemohonRequest extends FormRequest
 {
@@ -25,9 +27,9 @@ class PemohonRequest extends FormRequest
     {
         $pemilikId = $this->route('pemohon');
 
-        if ($this->isMethod('put') || $this->isMethod('patch')) {
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             return [
-                'nik' => 'nullable|digits:16|unique:pemilik,nik,' . $pemilikId. ',id',
+                'nik' => 'nullable|digits:16|unique:pemilik,nik,' . $pemilikId . ',id',
                 'namaPemilik' => 'nullable|string|min:5',
                 'alamat' => 'nullable|string|min:5|max:255',
                 'tempatLahir' => 'nullable|string|min:3',
@@ -35,8 +37,9 @@ class PemohonRequest extends FormRequest
                 'kodeKecamatan' => 'nullable|exists:kecamatan,kodeKecamatan',
                 'kodeKelurahan' => 'nullable|exists:kelurahan,kodeKelurahan',
                 'noHP' => 'nullable|digits_between:10,15',
-                'email' => 'nullable|email|min:5|unique:pemilik,email,' . $pemilikId. ',id',
+                'email' => 'nullable|email|min:5|unique:pemilik,email,' . $pemilikId . ',id',
                 'jabatan' => 'nullable|string|min:3',
+                'ktp' => 'sometimes|nullable|file|mimes:jpg,jpeg,png|max:5120'
             ];
         }
 
@@ -48,9 +51,10 @@ class PemohonRequest extends FormRequest
             'tanggalLahir' => 'required|date',
             'kodeKecamatan' => 'required|exists:kecamatan,kodeKecamatan',
             'kodeKelurahan' => 'required|exists:kelurahan,kodeKelurahan',
-            'noHP' => 'required|digits_between:10,15',
-            'email' => 'nullable|email|min:5|unique:pemilik,email,' . $pemilikId,
-            'jabatan' => 'required|string|min:3',
+            'noHP' => 'sometimes|nullable|digits_between:10,15',
+            'email' => 'sometimes|nullable|email|min:5|unique:pemilik,email,' . $pemilikId,
+            'ktp' => 'sometimes|nullable|file|mimes:jpg,jpeg,png|max:5120'
+            // 'jabatan' => 'required|string|min:3',
         ];
     }
 
@@ -73,13 +77,16 @@ class PemohonRequest extends FormRequest
             'kodeKecamatan.exists' => 'Kecamatan yang dipilih tidak valid.',
             'kodeKelurahan.required' => 'Kelurahan wajib dipilih.',
             'kodeKelurahan.exists' => 'Kelurahan yang dipilih tidak valid.',
-            'noHP.required' => 'Nomor HP wajib diisi.',
+            'noHP.sometimes' => 'Nomor HP wajib diisi.',
             'noHP.digits_between' => 'Nomor HP harus terdiri dari 10 sampai 15 digit angka.',
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.min' => 'Email minimal 5 karakter.',
-            'jabatan.required' => 'Jabatan wajib diisi.',
-            'jabatan.min' => 'Jabatan minimal 3 karakter.',
+            'ktp.file' => "KTP harus file.",
+            'ktp.mimes' => 'KTP harus berformat jpg, jpeg, png.',
+            'ktp.max' => 'Ukuran file maksimal 5MB'
+            // 'jabatan.required' => 'Jabatan wajib diisi.',
+            // 'jabatan.min' => 'Jabatan minimal 3 karakter.',
         ];
     }
 
@@ -87,8 +94,25 @@ class PemohonRequest extends FormRequest
     {
         $validated = $this->validated();
 
+        if (isset($validated['ktp']) && $validated['ktp']) {
+            $ktp = $validated['ktp'];
+
+            $nameFile = Str::uuid() . '.' . $ktp->getClientOriginalExtension();
+            $ktp->storeAs('foto/ktp', $nameFile, 'local');
+
+            $validated['ktp'] = $nameFile;
+        }
+
+        // dd($validated);
+
         if ($data) {
             $pemohon = Pemilik::findOrFail($data);
+            
+            if (isset($validated['ktp'])) {
+                Storage::disk('local')->delete('foto/ktp/' . $pemohon->ktp);
+                $pemohon->ktp = $validated['ktp'];
+            }
+
             $pemohon->update($validated);
             return $pemohon;
         }

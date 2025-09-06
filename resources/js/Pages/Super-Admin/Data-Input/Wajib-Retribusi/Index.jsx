@@ -254,13 +254,13 @@ const Index = ({
 
   return (
     <Layout title="WAJIB RETRIBUSI">
-      <section className="min-h-screen overflow-hidden p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
               <label
                 htmlFor="showData"
-                className="relative flex w-full min-w-14 max-w-16 cursor-pointer items-center gap-1.5 text-sm"
+                className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
               >
                 <select
                   name="showData"
@@ -274,6 +274,7 @@ const Index = ({
                   <option value="50">50</option>
                   <option value="100">100</option>
                   <option value="250">250</option>
+                  <option value="-1">Semua</option>
                 </select>
                 <ChevronDown
                   size={20}
@@ -309,7 +310,7 @@ const Index = ({
                 </button>
                 <div
                   ref={filterRef}
-                  className={`absolute right-0 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
+                  className={`absolute right-0 top-full z-10 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
                     showFilters
                       ? "pointer-events-auto mt-3 opacity-100"
                       : "pointer-events-none mt-0 opacity-0"
@@ -448,9 +449,11 @@ const Index = ({
             </button>
           </div>
         </div>
-        <div className="overflow-x-auto rounded bg-white shadow">
+        <div
+          className={`max-h-[calc(100%_-_150px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+        >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -487,14 +490,15 @@ const Index = ({
                   />
                 </thead>
                 <tbody className="text-xs md:text-sm">
-                  {datas?.data?.length > 0 ? (
-                    datas.data.map((data, index) => (
+                  {(datas.data ?? datas)?.length > 0 ? (
+                    (datas.data ?? datas).map((data, index) => (
                       <tr
                         key={data.id || index}
-                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
-                          {(datas.current_page - 1) * datas.per_page +
+                          {((datas.current_page ?? 1) - 1) *
+                            (datas.per_page ?? (datas.data ?? datas).length) +
                             index +
                             1}
                         </td>
@@ -502,7 +506,9 @@ const Index = ({
                         <td>{data.noWajibRetribusi ?? "-"}</td>
                         <td>{data.pemilik.namaPemilik}</td>
                         <td>{data.namaObjekRetribusi}</td>
-                        <td className="max-w-sm truncate">{data.alamat}</td>
+                        <td>
+                          <div className="w-72">{data.alamat}</div>
+                        </td>
                         <td>{data.kelurahan.namaKelurahan}</td>
                         <td>{data.kecamatan.namaKecamatan}</td>
                         <td>{data.kategori.namaKategori}</td>
@@ -531,8 +537,13 @@ const Index = ({
                                   ? "text-amber-500"
                                   : data.status == "Rejected"
                                     ? "text-red-500"
-                                    : (data.status === "Approved" &&
-                                      data.current_role == null) && "text-green-500"
+                                    : data.status === "Approved" &&
+                                      data.current_role == null &&
+                                      "text-green-500"
+                            } ${
+                              data.status === "Finished" &&
+                              data.current_role === "ROLE_KABID" &&
+                              "text-green-500"
                             }`}
                           >
                             {data.status === "Approved" &&
@@ -543,10 +554,13 @@ const Index = ({
                             {data.status === "Approved" &&
                               data.current_role == null &&
                               "Selesai"}
+                            {data.status === "Finished" &&
+                              data.current_role === "ROLE_KABID" &&
+                              "Selesai"}
                           </span>
                         </td>
                         <td
-                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+                          className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
                           <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
                             {/* <Link

@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { router } from "@inertiajs/react";
 import { usePagination } from "../hooks/usePagination";
 
-const SmartPagination = ({ datas, filters = {}, routeName = null }) => {
+const SmartPagination = ({ datas, className = null, filters = {}, routeName = null }) => {
   const { handlePageChange, generatePagesToShow, buildPageUrl } =
     usePagination();
 
@@ -38,7 +38,7 @@ const SmartPagination = ({ datas, filters = {}, routeName = null }) => {
   };
 
   return (
-    <div className="border-t border-gray-200 bg-white px-4 py-3">
+    <div className={`border-t border-gray-200 bg-white px-4 py-3 ${className}`}>
       <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
         <div className="hidden text-sm text-gray-700 md:block">
           Menampilkan <span className="font-medium">{datas.from || 0}</span>{" "}

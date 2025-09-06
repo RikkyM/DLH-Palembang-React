@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('namaKategori');
             $table->string('namaSubKategori');
             $table->integer('jumlahBulan');
+            $table->string('keteranganBulan')->nullable();
+            $table->date('tanggalSkrd')->nullable();
             $table->integer('tagihanPerBulanSkrd');
             $table->integer('tagihanPerTahunSkrd');
             $table->string('tarifPerBulanObjekRetribusi');

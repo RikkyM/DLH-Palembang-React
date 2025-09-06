@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Pembayaran;
 use App\Models\Skrd;
 use App\Models\Uptd;
+use App\Models\User;
 use App\Models\WajibRetribusi;
 use App\Services\DashboardService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,6 +78,7 @@ class DashboardController extends Controller
         // }
 
         return Inertia::render('Super-Admin/Dashboard', [
+            'rute' => 'super-admin.dashboard',
             'year' => $year,
             'years' => $dashboardService->getYears(),
             'stats' => $dashboardService->getStats($year),
@@ -100,5 +103,46 @@ class DashboardController extends Controller
             //     'data' => $dataKec
             // ]
         ]);
+    }
+
+    public function exportUserCSV()
+    {
+        $fileName = 'usernames.csv';
+        $users = User::select(['namaLengkap', 'username'])->get();
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function () use ($users) {
+            $handle = fopen('php://output', 'w');
+
+            // header kolom
+            fputcsv($handle, ['nama lengkap', 'username']);
+
+            // isi data
+            foreach ($users as $user) {
+                fputcsv($handle, [$user->namaLengkap, $user->username]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportUserPdf()
+    {
+        $users = User::select(['namaLengkap', 'username', 'jabatan'])->where('namaLengkap', '!=', 'Superadmin')->orderBy('jabatan', 'asc')->get();
+        // dd($users);
+
+        $pdf = Pdf::loadView('exports.user', compact('users'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('user.pdf');
     }
 }

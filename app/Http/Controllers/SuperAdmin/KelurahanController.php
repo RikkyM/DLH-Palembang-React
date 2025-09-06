@@ -35,7 +35,7 @@ class KelurahanController extends Controller
             ];
         });
 
-        return Inertia::render('Super-Admin/Settings/Kelurahan/Index', [
+        return Inertia::render('Super-Admin/Master-Data/Kelurahan/Index', [
             'datas' => $kelurahan,
             'kecamatan' => $kecamatan,
             'filters' => [

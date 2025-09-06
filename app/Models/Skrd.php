@@ -83,8 +83,6 @@ class Skrd extends Model
                 $nextWajib = 1;
             }
 
-            // dd($nextWajib);
-
             $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
             $noWajibRetribusi = $formatted . '.' . $tahun;
 

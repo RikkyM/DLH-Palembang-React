@@ -21,6 +21,7 @@ class PemohonController extends Controller
         $search = $request->get('search');
         $sortBy = $request->get('sort', 'id');
         $sortDir = $request->get('direction', 'desc');
+        $getPage = $request->get('per_page', 10);
 
         $query = Pemilik::with(['kecamatan', 'kelurahan']);
 
@@ -61,7 +62,6 @@ class PemohonController extends Controller
             });
 
         $kelurahanOptions = Kelurahan::select('kodeKelurahan', 'namaKelurahan', 'kodeKecamatan')
-            ->orderBy('namaKelurahan')
             ->get()
             ->groupBy('kodeKecamatan')
             ->map(function ($groupedKelurahan) {
@@ -73,14 +73,19 @@ class PemohonController extends Controller
                 })->values();
             });
 
-        $pemohon = $query->paginate(10)->withQueryString();
+        if ($getPage <= 0) {
+            $pemohon = $query->get();
+        } else {
+            $pemohon = $query->paginate($getPage)->withQueryString();
+        }
 
         return Inertia::render('Super-Admin/Data-Input/Pemohon/Index', [
             'datas' => $pemohon,
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,
                 'sort' => $sortBy,
-                'direction' => $sortDir
+                'direction' => $sortDir,
+                'per_page' => (int) $getPage,
             ],
             'kecamatanOptions' => $kecamatanOptions,
             'kelurahanOptions' => $kelurahanOptions
@@ -130,6 +135,7 @@ class PemohonController extends Controller
      */
     public function update(PemohonRequest $request, int $data)
     {
+        // dd($data);
         try {
             $request->handle($data);
 

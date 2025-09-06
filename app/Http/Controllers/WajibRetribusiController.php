@@ -139,13 +139,15 @@ class WajibRetribusiController extends Controller
 
         $tandaTangan = TandaTangan::first();
 
+        $f4 = [0, 0, 595.276, 935.433];
+
         $pdf = Pdf::loadView('exports.wajib-retribusi.draft-pdf', [
             'data' => $data,
             'kabid' => $user,
             'skrd' => $skrd,
             'tandaTangan' => $tandaTangan
         ])
-            ->setPaper('a4', 'portrait')
+            ->setPaper($f4, 'portrait')
             ->setOptions([
                 'dpi' => 150,
                 'defaultFont' => 'arial',
@@ -155,7 +157,7 @@ class WajibRetribusiController extends Controller
                 'chroot' => realpath("")
             ]);
 
-        return $pdf->stream("draft-retribusi-{$data->noWajibRetribusi}.pdf");
+        return $pdf->stream("draft-{$data->namaObjekRetribusi}.pdf");
     }
 
     public function export(Request $request)
