@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -523,8 +524,17 @@ class WajibRetribusiController extends Controller
             return redirect()->route('super-admin.wajib-retribusi.index')->with('success', 'Data berhasil disimpan.');
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
-            return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data.']);
+
+            Log::error('Gagal simpan Wajib Retribusi', [
+                'time' => Carbon::now()->toDateTimeString(),
+                'user_id' => Auth::id(),
+                'route' => request()->path(),
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.']);
         }
     }
 
@@ -541,18 +551,6 @@ class WajibRetribusiController extends Controller
      */
     public function edit($status, WajibRetribusi $retribusi)
     {
-        // dd($retribusi);
-        // dd($status);
-        // if (!in_array($status, ['diterima', 'ditolak'])) {
-        //     abort(404);
-        // }
-
-        // if ($retribusi->status !== $status) {
-        //     abort(404, 'Status tidak sesuai dengan data');
-        // }
-
-        // dd($retribusi->toArray());
-
         $retribusi->load(['pemilik', 'kelurahan', 'kecamatan', 'kategori', 'subKategori', 'uptd']);
 
         $pemohonOptions = Pemilik::select('id', 'namaPemilik')
@@ -652,8 +650,6 @@ class WajibRetribusiController extends Controller
             }
         }
 
-        // dd($tarifPertahun);
-
         DB::beginTransaction();
 
         try {
@@ -738,8 +734,16 @@ class WajibRetribusiController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollback();
-            // dd($e);
-            return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data.']);
+
+            Log::error('Update Wajib Wajib Retribusi gagal', [
+                'id' => $id,
+                'time' => Carbon::now()->toDateTimeString(),
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.']);
         }
 
         // dd("total: Rp." . number_format($this->rumus($validated), 0, ',', '.'));
