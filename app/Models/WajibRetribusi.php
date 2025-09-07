@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class WajibRetribusi extends Model
 {
@@ -88,26 +89,27 @@ class WajibRetribusi extends Model
      */
     protected static function generateNoWajibRetribusi()
     {
-        $tahun = date('Y');
+        return DB::transaction(function () {
+            $tahun = date('Y');
 
-        $lastWajib = WajibRetribusi::whereYear('created_at', $tahun)
-            ->orderBy('id', 'desc')
-            ->first();
+            $lastWajib = WajibRetribusi::whereYear('updated_at', $tahun)
+                ->whereNotNull('noWajibRetribusi')
+                ->where('noWajibRetribusi', '!=', '')
+                ->lockForUpdate()
+                ->orderBy('id', 'desc')
+                ->first();
 
-        if ($lastWajib) {
-            $parts = explode('.', $lastWajib->noWajibRetribusi);
-            if (count($parts) === 3) {
-                $lastNumber = intval($parts[1]);
-            } else {
-                $lastNumber = intval($parts[0]);
+            $lastNumber = 0;
+            if ($lastWajib) {
+                $parts = explode('.', $lastWajib->noWajibRetribusi);
+                $lastNumber = count($parts) === 3 ? intval($parts[1]) : intval($parts[0]);
             }
-            $nextWajib = $lastNumber + 1;
-        } else {
-            $nextWajib = 1;
-        }
 
-        $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
-        return $formatted . '.' . $tahun;
+            $nextWajib = $lastNumber + 1;
+            $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
+
+            return $formatted . '.' . $tahun;
+        });
     }
 
     /**

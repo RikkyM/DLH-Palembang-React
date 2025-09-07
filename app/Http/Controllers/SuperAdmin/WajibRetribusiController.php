@@ -766,27 +766,9 @@ class WajibRetribusiController extends Controller
             'actionDate' => now()->toIso8601String()
         ];
 
-        $tahun = date('Y');
-
-        $noWr = WajibRetribusi::whereYear('created_at', $tahun)
-            ->orderBy('id', 'desc')
-            ->first();
-
-        if ($noWr) {
-            $parts = explode('.', $noWr->noWajibRetribusi);
-            if (count($parts) === 3) {
-                $lastNumber = intval($parts[1]);
-            } else {
-                $lastNumber = intval($parts[0]);
-            }
-            $nextWr = $lastNumber + 1;
-        } else {
-            $nextWr = 1;
+        if (empty($retribusi->noWajibRetribusi)) {
+            $retribusi->noWajibRetribusi = WajibRetribusi::generateNoWajibRetribusi();
         }
-
-        $formatted = str_pad($nextWr, 3, '0', STR_PAD_LEFT);
-
-        $retribusi->noWajibRetribusi = $formatted . '.' . $tahun;
         $retribusi->status = 'Processed';
         $retribusi->historyAction = $history;
         $retribusi->current_role = "ROLE_KUPTD";

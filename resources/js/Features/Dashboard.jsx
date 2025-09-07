@@ -10,15 +10,15 @@ const DashboardPages = ({ year, years, stats, chart, chartKecamatan, rute }) => 
   };
   return (
     <section className="relative min-h-screen overflow-hidden p-3">
-      <div>
+      <div className="inline-flex gap-2 overflow-auto w-full small-scrollbar py-1">
         {years.map((y) => (
           <button
             key={y}
             onClick={() => handleChangeYear(y)}
-            className={`mx-1 rounded px-4 py-2 text-xs outline-none md:text-sm ${
+            className={`mx-1 rounded border border-gray-300 px-4 py-2 text-xs outline-none md:text-sm ${
               parseInt(y) === parseInt(year)
                 ? "bg-[#B3CEAF] text-white"
-                : "border border-gray-300 bg-white text-gray-800 shadow"
+                : "bg-white text-gray-800 shadow"
             }`}
           >
             {y}

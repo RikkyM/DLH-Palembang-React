@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('wajib_retribusi', function (Blueprint $table) {
             $table->id();
             $table->string('noPendaftaran');
-            $table->string('noWajibRetribusi')->nullable();
+            $table->string('noWajibRetribusi')->nullable()->unique();
             $table->string('kodeKategori');
             $table->string('kodeSubKategori');
             $table->string('kodeKelurahan');

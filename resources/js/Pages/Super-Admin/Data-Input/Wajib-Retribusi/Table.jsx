@@ -40,14 +40,17 @@ const Table = ({
         />
       </thead>
       <tbody className="dividfe-y divide-neutral-300 text-xs md:text-sm">
-        {datas?.data?.length > 0 ? (
-          datas.data.map((data, index) => (
+        {(datas.data || datas)?.length > 0 ? (
+          (datas.data || datas).map((data, index) => (
             <tr
               key={data.id || index}
               className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
             >
               <td className="text-center">
-                {(datas.current_page - 1) * datas.per_page + index + 1}
+                {((datas.current_page ?? 1) - 1) *
+                  (datas.per_page ?? (datas.data ?? datas).length) +
+                  index +
+                  1}
               </td>
               <td>{data.noPendaftaran}</td>
               <td>{data.noWajibRetribusi ?? "-"}</td>
