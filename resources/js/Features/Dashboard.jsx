@@ -1,16 +1,26 @@
 import { router } from "@inertiajs/react";
-
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import { Clock, DollarSign, FileText, Users, Wallet } from "lucide-react";
 import BarChart from "@/Components/Chart/BarChart";
 import PieChart from "@/Components/Chart/PieChart";
+import { useState } from "react";
 
-const DashboardPages = ({ year, years, stats, chart, chartKecamatan, rute }) => {
+const DashboardPages = ({
+  year,
+  years,
+  stats,
+  chart,
+  chartKecamatan,
+  rute,
+}) => {
+  const [date, setDate] = useState(new Date());
   const handleChangeYear = (y) => {
     router.get(route(rute), { year: y }, { preserveState: true });
   };
   return (
     <section className="relative min-h-screen overflow-hidden p-3">
-      <div className="inline-flex gap-2 overflow-auto w-full small-scrollbar py-1">
+      <div className="small-scrollbar inline-flex w-full gap-2 overflow-auto py-1">
         {years.map((y) => (
           <button
             key={y}
@@ -25,8 +35,8 @@ const DashboardPages = ({ year, years, stats, chart, chartKecamatan, rute }) => 
           </button>
         ))}
       </div>
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-        <div className="order-1 col-span-2 mt-2 grid gap-2 md:grid-cols-2">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="order-1 col-span-2 mt-2 grid gap-2 md:col-span-2 md:grid-cols-2">
           <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
             <div className="flex items-center gap-2">
               <div className="rounded-full bg-[#84BAFF] p-2">
@@ -150,13 +160,17 @@ const DashboardPages = ({ year, years, stats, chart, chartKecamatan, rute }) => 
             </div>
           </div>
         </div>
-        <div className="order-3 col-span-2 row-span-1 rounded border border-gray-300 bg-white px-10 py-6 shadow sm:row-span-2 lg:order-2 lg:col-span-1 lg:mt-2">
+        <div className="col-span-2 rounded lg:order-2 lg:col-span-1">
+          <h2 className="mb-2 text-lg font-semibold">Kalender</h2>
+          <Calendar onChange={setDate} value={date} className="w-full" />
+        </div>
+        <div className="order-3 col-span-2 row-span-1 rounded border border-gray-300 bg-white px-10 py-6 shadow sm:row-span-2 lg:order-3 lg:col-span-1 lg:col-span-3 lg:mt-2 xl:col-span-1">
           <h2 className="mb-4 text-lg font-semibold">
             Penerimaan Kecamatan {year}
           </h2>
           <PieChart labels={chartKecamatan.labels} data={chartKecamatan.data} />
         </div>
-        <div className="order-2 col-span-2 rounded border border-gray-300 bg-white p-6 shadow lg:order-3">
+        <div className="order-2 col-span-2 rounded border border-gray-300 bg-white p-6 shadow lg:order-4 lg:col-span-3">
           <h2 className="mb-4 text-lg font-semibold">
             Grafik Penerimaan Tahun {year}
           </h2>

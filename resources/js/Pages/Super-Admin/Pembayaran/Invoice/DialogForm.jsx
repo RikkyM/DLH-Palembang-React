@@ -33,14 +33,14 @@ const DialogForm = ({
   const { data, setData, errors, processing, clearErrors, post, put } =
     useForm(initialData);
 
-    useEffect(() => {
-      if (data.tarifPerbulan && data.jumlahBulan) {
-        const total = data.tarifPerbulan * data.jumlahBulan
-        setData('totalTagihan', total)
-      } else {
-        setData('totalTagihan', "");
-      }
-    }, [data.tarifPerbulan, data.jumlahBulan])
+  useEffect(() => {
+    if (data.tarifPerbulan && data.jumlahBulan) {
+      const total = data.tarifPerbulan * data.jumlahBulan;
+      setData("totalTagihan", total);
+    } else {
+      setData("totalTagihan", "");
+    }
+  }, [data.tarifPerbulan, data.jumlahBulan]);
 
   useEffect(() => {
     if (isOpen) {
@@ -129,9 +129,9 @@ const DialogForm = ({
                 (opt) => opt.value === value,
               );
 
-              setData('noSkrd', value)
+              setData("noSkrd", value);
               setData("namaObjekRetribusi", selected.namaObjekRetribusi);
-              setData('tarifPerbulan', selected.tagihanPerbulan)
+              setData("tarifPerbulan", selected.tagihanPerbulan);
             }}
             options={retribusiOptions}
             error={errors.noSkrd}
@@ -174,8 +174,13 @@ const DialogForm = ({
             <Label htmlFor="tarifPerbulan">Tarif Perbulan</Label>
             <Input
               id="tarifPerbulan"
-              value={data.tarifPerbulan}
-              onChange={(e) => setData("tarifPerbulan", e.target.value)}
+              value={
+                data.tarifPerbulan
+                  ? new Intl.NumberFormat('id-ID').format(data.tarifPerbulan) : ""}
+              onChange={(e) => {
+                console.log(e.target.value)
+                setData("tarifPerbulan", e.target.value);
+              }}
               readOnly={true}
             />
             {errors.tarifPerbulan && (
@@ -209,15 +214,20 @@ const DialogForm = ({
           </FormInput>
 
           <FormInput className="col-span-2">
-            <Label htmlFor="totalTagihan">Total Tagihan</Label>
+            <Label htmlFor="totalTagihan">Jumlah</Label>
             <Input
               id="totalTagihan"
-              value={data.totalTagihan}
+              value={
+                data.totalTagihan
+                  ? new Intl.NumberFormat("id-ID").format(data.totalTagihan)
+                  : ""
+              }
               onChange={(e) => setData("totalTagihan", e.target.value)}
+              readOnly
             />
-            {errors.tarifPerbulan && (
+            {errors.totalTagihan && (
               <span className="text-xs text-red-500">
-                {errors.tarifPerbulan}
+                {errors.totalTagihan}
               </span>
             )}
           </FormInput>

@@ -22,7 +22,7 @@ class SetoranController extends Controller
      */
     public function create()
     {
-        $skrdOptions = Skrd::select('noSkrd', 'namaObjekRetribusi')
+        $skrdOptions = Skrd::select('noSkrd', 'namaObjekRetribusi', 'alamatObjekRetribusi', 'kecamatanObjekRetribusi', 'kelurahanObjekRetribusi', 'tagihanPerBulanSkrd', 'tagihanPerTahunSkrd', 'jumlahBulan', 'keteranganBulan')
         ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', 1) AS UNSIGNED) ASC")
         ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', -1) AS UNSIGNED) ASC")
         ->whereNotNull('noSkrd')
@@ -31,7 +31,14 @@ class SetoranController extends Controller
                 return [
                     'value' => $skrd->noSkrd,
                     'label' => $skrd->noSkrd,
-                    'namaObjekRetribusi' => $skrd->namaObjekRetribusi
+                    'namaObjekRetribusi' => $skrd->namaObjekRetribusi,
+                    'alamatObjekRetribusi' => $skrd->alamatObjekRetribusi,
+                    'kecamatanObjekRetribusi' => $skrd->kecamatanObjekRetribusi,
+                    'kelurahanObjekRetribusi' => $skrd->kelurahanObjekRetribusi,
+                    'tagihanPerBulanSkrd' => $skrd->tagihanPerBulanSkrd,
+                    'tagihanPerTahunSkrd' => $skrd->tagihanPerTahunSkrd,
+                    'jumlahBulan' => $skrd->jumlahBulan,
+                    'keteranganBulan' => $skrd->keteranganBulan
                 ];
             });
 

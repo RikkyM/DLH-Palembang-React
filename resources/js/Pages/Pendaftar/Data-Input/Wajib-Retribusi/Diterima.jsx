@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
-import { Filter, Search } from "lucide-react";
+import { ChevronDown, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
 import Table from "@/Components/WajibRetribusi/Table";
@@ -224,6 +224,29 @@ const Diterima = ({
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
               <div className="relative flex w-full gap-2 sm:w-max">
+                <label
+                  htmlFor="showData"
+                  className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
+                >
+                  <select
+                    name="showData"
+                    id="showData"
+                    // value={perPage}
+                    // onChange={handlePerPageChange}
+                    className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+                  >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="250">250</option>
+                    <option value="-1">Semua</option>
+                  </select>
+                  <ChevronDown
+                    size={20}
+                    className="pointer-events-none absolute right-1 bg-transparent"
+                  />
+                </label>
                 <button
                   type="button"
                   className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
@@ -235,7 +258,7 @@ const Diterima = ({
                 </button>
                 <div
                   ref={filterRef}
-                  className={`absolute left-0 z-10 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
+                  className={`absolute left-0 top-full z-10 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
                     showFilters
                       ? "pointer-events-auto mt-3 opacity-100"
                       : "pointer-events-none mt-0 opacity-0"
@@ -359,9 +382,11 @@ const Diterima = ({
             </button>
           </div>
         </div>
-        <div className="overflow-x-auto rounded bg-white shadow">
+        <div
+          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+        >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"

@@ -106,7 +106,7 @@ const Sidebar = ({ children }) => {
               <div className="flex flex-1 items-center gap-3">
                 <div className="relative grid size-10 place-content-center overflow-hidden rounded-full bg-gray-300 font-medium">
                   <img
-                    src="/img/KLHK_2024.webp"
+                    src="/img/logo_palembang.webp"
                     alt="gambar"
                     className="absolute h-full w-full object-cover object-center"
                   />
@@ -123,9 +123,9 @@ const Sidebar = ({ children }) => {
             }`}
           >
             <div className="flex w-max items-center gap-3 p-3">
-              <div className="relative grid size-9 place-content-center overflow-hidden rounded-full bg-neutral-300">
+              <div className="relative grid size-9 place-content-center overflow-hidden rounded-full bg-gray-300">
                 <img
-                  src="/img/KLHK_2024.webp"
+                  src="/img/logo_palembang.webp"
                   alt="gambar"
                   className="absolute h-full w-full object-cover object-center"
                 />

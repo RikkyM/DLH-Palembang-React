@@ -318,7 +318,7 @@
         </table>
     </div>
 
-    <div class="footer">
+    {{-- <div class="footer">
         <div class="footer-info">
             <div class="signature-section">
                 <div class="print-info">
@@ -332,7 +332,7 @@
                 <p style="font-size: 9px; color: #6b7280;">NIP: ________________</p>
             </div>
         </div>
-    </div>
+    </div> --}}
 </body>
 
 </html>

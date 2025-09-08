@@ -71,7 +71,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
     <Layout title="PEMOHON">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center w-full gap-2">
             <label
               htmlFor="showData"
               className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"

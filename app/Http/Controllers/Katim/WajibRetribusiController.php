@@ -126,7 +126,7 @@ class WajibRetribusiController extends Controller
         string $view = 'Index',
         ?callable $extraFilter = null
     ) {
-        $getSearch = $request->get('search');
+        $search = $request->get('search');
         $getSortBy = $request->get('sort', 'id');
         $getSortDir = $request->get('direction', 'desc');
         $getPenanggungJawab = $request->get('pj');
@@ -160,7 +160,7 @@ class WajibRetribusiController extends Controller
         // dd($query->get()->toArray());
 
         $this->sortTable($query, $getSortBy, $getSortDir);
-        $this->filterData($query, $getSearch, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, null, $getTahun);
+        $this->filterData($query, $search, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, null, $getTahun);
 
         $penanggungJawab = Pemilik::select('id', 'namaPemilik')->get();
         $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
@@ -188,10 +188,17 @@ class WajibRetribusiController extends Controller
             ->values()
             ->map(fn($t) => ['value' => $t, 'label' => $t]);
 
+        if ($getPage <= 0) {
+            $datas = $query->get();
+        } else {
+            $datas = $query->paginate($getPage)->withQueryString();
+        }
+
         return Inertia::render("Katim/Data-Input/Wajib-Retribusi/{$view}", [
-            'datas' => $query->paginate($getPage)->withQueryString(),
+            // 'datas' => $query->paginate($getPage)->withQueryString(),
+            'datas' => $datas,
             'filters' => [
-                'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
+                'search' => $search && trim($search) !== '' ? $search : null,
                 'sort' => $getSortBy,
                 'direction' => $getSortDir,
                 'penanggungJawab' => $getPenanggungJawab,
@@ -244,7 +251,7 @@ class WajibRetribusiController extends Controller
                 }
 
                 if ($request->get('status') === "Finished") {
-                    $q->where(function($data) {
+                    $q->where(function ($data) {
                         $data->where('status', 'Approved')->whereNull('current_role');
                     })->orWhere('status', 'Finished');
                 }

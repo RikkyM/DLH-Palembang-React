@@ -102,9 +102,6 @@ class InvoiceController extends Controller
      */
     public function store(InvoiceRequest $request)
     {
-        // $request->validated();
-        // dd($request->all());
-
         $skrd = Skrd::where('noSkrd', $request->noSkrd)->firstOrFail();
         $tarifRetribusi = $skrd->tagihanPerBulanSkrd;
 

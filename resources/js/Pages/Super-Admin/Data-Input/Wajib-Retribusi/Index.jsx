@@ -450,7 +450,7 @@ const Index = ({
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_150px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">

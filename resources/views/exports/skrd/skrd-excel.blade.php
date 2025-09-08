@@ -16,7 +16,7 @@
             <th>JUMLAH TERTAGIH</th>
             <th>SISA TERTAGIH</th>
             @for ($bulan = 1; $bulan <= 12; $bulan++)
-                <th>{{ strtoupper(now()->startOfYear()->addMonths($bulan - 1)->format('M')) }}</th>
+                <th>{{ strtoupper(now()->startOfYear()->addMonths($bulan - 1)->locale('id')->translatedFormat('M')) }}</th>
                 <th>TGL BAYAR</th>
             @endfor
             <th>STATUS</th>

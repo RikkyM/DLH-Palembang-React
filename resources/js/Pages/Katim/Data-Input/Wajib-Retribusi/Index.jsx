@@ -244,7 +244,7 @@ const Index = ({
 
   return (
     <Layout title="WAJIB RETRIBUSI">
-      <section className="min-h-screen overflow-hidden p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
@@ -264,6 +264,7 @@ const Index = ({
                   <option value="50">50</option>
                   <option value="100">100</option>
                   <option value="250">250</option>
+                  <option value="-1">Semua</option>
                 </select>
                 <ChevronDown
                   size={20}
@@ -287,8 +288,7 @@ const Index = ({
               >
                 <Download size={20} />
               </button>
-              {console.log(statusList)}
-              <div className="relative flex w-full gap-2 sm:w-max z-10">
+              <div className="relative z-10 flex w-full gap-2 sm:w-max">
                 <button
                   type="button"
                   className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
@@ -442,7 +442,9 @@ const Index = ({
             </button>
           </div>
         </div>
-        <div className="overflow-x-auto rounded bg-white shadow">
+        <div
+          className={`max-h-[calc(100%_-_150px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+        >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
               <svg
@@ -480,15 +482,17 @@ const Index = ({
                     }}
                   />
                 </thead>
+
                 <tbody className="text-xs md:text-sm">
-                  {datas?.data?.length > 0 ? (
-                    datas.data.map((data, index) => (
+                  {(datas.data ?? datas)?.length > 0 ? (
+                    (datas.data ?? datas).map((data, index) => (
                       <tr
-                        key={data.id || index}
-                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                        key={data.id ?? index}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
-                          {(datas.current_page - 1) * datas.per_page +
+                          {((datas.current_page ?? 1) - 1) *
+                            (datas.per_page ?? (datas.data ?? datas).length) +
                             index +
                             1}
                         </td>
@@ -519,9 +523,10 @@ const Index = ({
                           <span
                             className={`select-none rounded py-2 font-medium ${
                               data.status === "Processed" &&
-                              data.current_role == 'ROLE_KATIM'
+                              data.current_role == "ROLE_KATIM"
                                 ? "text-sky-600"
-                                : data.status == "Processed" && data.current_role != 'ROLE_KATIM'
+                                : data.status == "Processed" &&
+                                    data.current_role != "ROLE_KATIM"
                                   ? "text-amber-500"
                                   : data.status == "Rejected"
                                     ? "text-red-500"
@@ -543,7 +548,7 @@ const Index = ({
                           </span>
                         </td>
                         <td
-                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+                          className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
                           <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
                             {/* <Link

@@ -1,4 +1,4 @@
-import { PencilLine, Search } from "lucide-react";
+import { ChevronDown, PencilLine, Search } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useState } from "react";
 import { useProvider } from "@/Context/GlobalContext";
@@ -61,23 +61,50 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
 
   return (
     <Layout title="PEMOHON">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
-          <label
-            htmlFor="search"
-            className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
-          >
-            <Search size={20} />
-            <input
-              autoComplete="off"
-              type="search"
-              id="search"
-              placeholder="Cari nama..."
-              className="flex-1 outline-none"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </label>
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
+            <div className="flex w-full items-center gap-2 sm:w-max">
+              <label
+                htmlFor="showData"
+                className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
+              >
+                <select
+                  name="showData"
+                  id="showData"
+                  // value={perPage}
+                  // onChange={handlePerPageChange}
+                  className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="250">250</option>
+                  <option value="-1">Semua</option>
+                </select>
+                <ChevronDown
+                  size={20}
+                  className="pointer-events-none absolute right-1 bg-transparent"
+                />
+              </label>
+            </div>
+            <label
+              htmlFor="search"
+              className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
+            >
+              <Search size={20} />
+              <input
+                autoComplete="off"
+                type="search"
+                id="search"
+                placeholder="Cari nama..."
+                className="flex-1 outline-none"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </label>
+          </div>
           <button
             onClick={() => {
               openModal("create");
@@ -87,9 +114,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
             <span>Tambah Pemohon</span>
           </button>
         </div>
-        <div className="overflow-x-auto rounded bg-white shadow">
+        <div className="max-h-[calc(100%_-_150px)] overflow-auto rounded">
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500 bg-white shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -130,7 +157,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                     datas.data.map((data, index) => (
                       <tr
                         key={data.id || index}
-                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
                           {(datas.current_page - 1) * datas.per_page +
@@ -169,7 +196,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                               })
                               .replace(/\//g, "-")}
                         </td>
-                        <td className={`space-x-1 text-right md:space-x-2 sticky right-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}>
+                        <td
+                          className={`sticky right-0 space-x-1 text-right md:space-x-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                        >
                           <button
                             type="button"
                             onClick={() => {
@@ -186,7 +215,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                     <tr>
                       <td
                         colSpan="12"
-                        className="py-8 text-center text-gray-500"
+                        className="py-8 text-center text-gray-500 bg-white shadow"
                       >
                         {search
                           ? "Tidak ada data yang ditemukan untuk pencarian tersebut"

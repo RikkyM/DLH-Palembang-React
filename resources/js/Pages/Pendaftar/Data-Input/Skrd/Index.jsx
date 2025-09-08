@@ -1,4 +1,4 @@
-import { FileText, Filter, Search } from "lucide-react";
+import { ChevronDown, FileText, Filter, Search } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -192,6 +192,29 @@ const Index = ({
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 md:flex-row md:items-center md:gap-0">
           <div className="relative flex w-full gap-2 sm:w-max">
+            <label
+              htmlFor="showData"
+              className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
+            >
+              <select
+                name="showData"
+                id="showData"
+                // value={perPage}
+                // onChange={handlePerPageChange}
+                className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="250">250</option>
+                <option value="-1">Semua</option>
+              </select>
+              <ChevronDown
+                size={20}
+                className="pointer-events-none absolute right-1 bg-transparent"
+              />
+            </label>
             <button
               type="button"
               className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
@@ -360,7 +383,9 @@ const Index = ({
                         </td>
                         <td>{data.namaObjekRetribusi}</td>
                         <td>
-                          <div className="w-72">{data.alamatObjekRetribusi}</div>
+                          <div className="w-72">
+                            {data.alamatObjekRetribusi}
+                          </div>
                         </td>
                         <td>{data.kelurahanObjekRetribusi}</td>
                         <td>{data.kecamatanObjekRetribusi}</td>

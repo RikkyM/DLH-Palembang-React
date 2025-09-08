@@ -36,8 +36,13 @@ const Setoran = ({ skrdOptions = [] }) => {
             const selected = skrdOptions.find((item) => item.value === value);
             if (selected) {
               setData("namaObjekRetribusi", selected.namaObjekRetribusi);
-              setData("tarifPerbulan", selected.tarifPerbulan);
-              setData("tarifPertahun", selected.tarifPertahun);
+              setData("alamat", selected.alamatObjekRetribusi);
+              setData("kecamatan", selected.kecamatanObjekRetribusi);
+              setData("kelurahan", selected.kelurahanObjekRetribusi);
+              setData("tarifPerbulan", selected.tagihanPerBulanSkrd);
+              setData("tarifPertahun", selected.tagihanPerTahunSkrd);
+              setData("jumlahBulan", selected.jumlahBulan);
+              setData("keteranganBulan", selected.keteranganBulan);
             }
           }}
           options={skrdOptions}
@@ -45,15 +50,10 @@ const Setoran = ({ skrdOptions = [] }) => {
           required={true}
           valueKey="value"
           labelKey="label"
-          className="col-span-2"
+          className="col-span-2 md:col-span-1"
         />
         <FormInput className="col-span-2">
-          <Label
-            htmlFor="namaObjekRetribusi"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Nama Objek Retribusi
-          </Label>
+          <Label htmlFor="namaObjekRetribusi">Nama Objek Retribusi</Label>
           <Input
             id="namaObjekRetribusi"
             className={`${errors.namaObjekRetribusi && "border border-red-500"}`}
@@ -62,6 +62,7 @@ const Setoran = ({ skrdOptions = [] }) => {
             onChange={(e) =>
               handleInputChange("namaObjekRetribusi", e.target.value)
             }
+            readOnly
           />
           {errors.namaObjekRetribusi && (
             <span className="text-xs text-red-500">
@@ -69,188 +70,212 @@ const Setoran = ({ skrdOptions = [] }) => {
             </span>
           )}
         </FormInput>
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="alamat"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Alamat Objek Retribusi
-          </Label>
-          <Input
-            id="alamat"
-            className={`${errors.alamat && "border border-red-500"}`}
-            placeholder="Alamat Objek Retribusi..."
-            value={data.alamat || ""}
-            onChange={(e) => handleInputChange("alamat", e.target.value)}
-          />
-          {errors.alamat && (
-            <span className="text-xs text-red-500">{errors.alamat}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="kecamatan"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Kecamatan Objek Retribusi
-          </Label>
-          <Input
-            id="kecamatan"
-            className={`${errors.kecamatan && "border border-red-500"}`}
-            placeholder="Kecamatan Objek Retribusi..."
-            value={data.kecamatan || ""}
-            onChange={(e) => handleInputChange("kecamatan", e.target.value)}
-          />
-          {errors.kecamatan && (
-            <span className="text-xs text-red-500">{errors.kecamatan}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="kelurahan"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Kelurahan Objek Retribusi
-          </Label>
-          <Input
-            id="kelurahan"
-            className={`${errors.kelurahan && "border border-red-500"}`}
-            placeholder="Kelurahan Objek Retribusi..."
-            value={data.kelurahan || ""}
-            onChange={(e) => handleInputChange("kelurahan", e.target.value)}
-          />
-          {errors.kelurahan && (
-            <span className="text-xs text-red-500">{errors.kelurahan}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="tarifPerbulan"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Tarif Perbulan
-          </Label>
-          <Input
-            id="tarifPerbulan"
-            className={`${errors.tarifPerbulan && "border border-red-500"}`}
-            placeholder="Tarif Perbulan..."
-            value={data.tarifPerbulan || ""}
-            onChange={(e) => handleInputChange("tarifPerbulan", e.target.value)}
-          />
-          {errors.tarifPerbulan && (
-            <span className="text-xs text-red-500">{errors.tarifPerbulan}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="tarifPertahun"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Tarif Pertahun
-          </Label>
-          <Input
-            id="tarifPertahun"
-            className={`${errors.tarifPertahun && "border border-red-500"}`}
-            placeholder="Tarif Pertahun..."
-            value={data.tarifPertahun || ""}
-            onChange={(e) => handleInputChange("tarifPertahun", e.target.value)}
-          />
-          {errors.tarifPertahun && (
-            <span className="text-xs text-red-500">{errors.tarifPertahun}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="jumlahBulan"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Jumlah Bulan
-          </Label>
-          <Input
-            id="jumlahBulan"
-            className={`${errors.jumlahBulan && "border border-red-500"}`}
-            placeholder="Tarif Pertahun..."
-            value={data.jumlahBulan || ""}
-            onChange={(e) => handleInputChange("jumlahBulan", e.target.value)}
-          />
-          {errors.jumlahBulan && (
-            <span className="text-xs text-red-500">{errors.jumlahBulan}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="keteranganBulan"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Keterangan Bulan
-          </Label>
-          <Input
-            id="keteranganBulan"
-            className={`${errors.keteranganBulan && "border border-red-500"}`}
-            placeholder="Tarif Pertahun..."
-            value={data.keteranganBulan || ""}
-            onChange={(e) =>
-              handleInputChange("keteranganBulan", e.target.value)
-            }
-          />
-          {errors.keteranganBulan && (
-            <span className="text-xs text-red-500">
-              {errors.keteranganBulan}
-            </span>
-          )}
-        </FormInput>
+        <div className="col-span-2 grid gap-3 lg:grid-cols-3">
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label htmlFor="alamat">Alamat Objek Retribusi</Label>
+            <Input
+              id="alamat"
+              className={`${errors.alamat && "border border-red-500"}`}
+              placeholder="Alamat Objek Retribusi..."
+              value={data.alamat || ""}
+              onChange={(e) => handleInputChange("alamat", e.target.value)}
+              readOnly
+            />
+            {errors.alamat && (
+              <span className="text-xs text-red-500">{errors.alamat}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label htmlFor="kecamatan">Kecamatan Objek Retribusi</Label>
+            <Input
+              id="kecamatan"
+              className={`${errors.kecamatan && "border border-red-500"}`}
+              placeholder="Kecamatan Objek Retribusi..."
+              value={data.kecamatan || ""}
+              onChange={(e) => handleInputChange("kecamatan", e.target.value)}
+              readOnly
+            />
+            {errors.kecamatan && (
+              <span className="text-xs text-red-500">{errors.kecamatan}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="kelurahan"
+              // className="after:text-red-500 after:content-['*']"
+            >
+              Kelurahan Objek Retribusi
+            </Label>
+            <Input
+              id="kelurahan"
+              className={`${errors.kelurahan && "border border-red-500"}`}
+              placeholder="Kelurahan Objek Retribusi..."
+              value={data.kelurahan || ""}
+              onChange={(e) => handleInputChange("kelurahan", e.target.value)}
+              readOnly
+            />
+            {errors.kelurahan && (
+              <span className="text-xs text-red-500">{errors.kelurahan}</span>
+            )}
+          </FormInput>
+        </div>
+        <div className="col-span-2 grid gap-5 lg:grid-cols-4">
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="tarifPerbulan"
+              // className="after:text-red-500 after:content-['*']"
+            >
+              Tarif Perbulan
+            </Label>
+            <Input
+              id="tarifPerbulan"
+              className={`${errors.tarifPerbulan && "border border-red-500"}`}
+              placeholder="Tarif Perbulan..."
+              value={
+                data.tarifPerbulan
+                  ? new Intl.NumberFormat("id-ID").format(data.tarifPerbulan)
+                  : ""
+              }
+              onChange={(e) =>
+                handleInputChange("tarifPerbulan", e.target.value)
+              }
+              readOnly
+            />
+            {errors.tarifPerbulan && (
+              <span className="text-xs text-red-500">
+                {errors.tarifPerbulan}
+              </span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="tarifPertahun"
+              // className="after:text-red-500 after:content-['*']"
+            >
+              Tarif Pertahun
+            </Label>
+            <Input
+              id="tarifPertahun"
+              className={`${errors.tarifPertahun && "border border-red-500"}`}
+              placeholder="Tarif Pertahun..."
+              value={
+                data.tarifPertahun
+                  ? new Intl.NumberFormat("id-ID").format(data.tarifPertahun)
+                  : ""
+              }
+              onChange={(e) =>
+                handleInputChange("tarifPertahun", e.target.value)
+              }
+              readOnly
+            />
+            {errors.tarifPertahun && (
+              <span className="text-xs text-red-500">
+                {errors.tarifPertahun}
+              </span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="jumlahBulan"
+              // className="after:text-red-500 after:content-['*']"
+            >
+              Jumlah Bulan
+            </Label>
+            <Input
+              id="jumlahBulan"
+              className={`${errors.jumlahBulan && "border border-red-500"}`}
+              placeholder="Tarif Pertahun..."
+              value={data.jumlahBulan || ""}
+              onChange={(e) => handleInputChange("jumlahBulan", e.target.value)}
+              readOnly
+            />
+            {errors.jumlahBulan && (
+              <span className="text-xs text-red-500">{errors.jumlahBulan}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="keteranganBulan"
+              // className="after:text-red-500 after:content-['*']"
+            >
+              Keterangan Bulan
+            </Label>
+            <Input
+              id="keteranganBulan"
+              className={`${errors.keteranganBulan && "border border-red-500"}`}
+              placeholder="Keterangan Bulan..."
+              value={data.keteranganBulan || ""}
+              onChange={(e) =>
+                handleInputChange("keteranganBulan", e.target.value)
+              }
+              readOnly
+            />
+            {errors.keteranganBulan && (
+              <span className="text-xs text-red-500">
+                {errors.keteranganBulan}
+              </span>
+            )}
+          </FormInput>
+        </div>
         <div className="col-span-2 border border-black"></div>
-        <DropdownInput
-          id="pemohon"
-          label="Metode Bayar"
-          placeholder="Silahkan Metode Bayar..."
-          // value={data.pemilikId}
-          // onChange={(value) => handleInputChange("pemilikId", value)}
-          // options={pemohonOptions}
-          // error={errors.pemilikId}
-          // required={true}
-          valueKey="value"
-          labelKey="label"
-          className="col-span-3"
-        />
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="namaBank"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Nama Bank
-          </Label>
-          <Input
-            id="namaBank"
-            className={`${errors.namaBank && "border border-red-500"}`}
-            placeholder="Nama Bank..."
-            value={data.namaBank || ""}
-            onChange={(e) => handleInputChange("namaBank", e.target.value)}
+        <div className="col-span-2 grid lg:grid-cols-3 gap-5">
+          <DropdownInput
+            id="pemohon"
+            label="Metode Bayar"
+            placeholder="Silahkan Metode Bayar..."
+            // value={data.pemilikId}
+            // onChange={(value) => handleInputChange("pemilikId", value)}
+            // options={pemohonOptions}
+            // error={errors.pemilikId}
+            // required={true}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2 lg:col-span-1"
           />
-          {errors.namaBank && (
-            <span className="text-xs text-red-500">{errors.namaBank}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="tanggalBayar"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Tanggal Bayar
-          </Label>
-          <Input
-            id="tanggalBayar"
-            type="date"
-            className={`${errors.tanggalBayar && "border border-red-500"}`}
-            placeholder="Nama Bank..."
-            value={data.tanggalBayar || new Date()}
-            onChange={(e) => handleInputChange("tanggalBayar", e.target.value)}
-          />
-          {errors.tanggalBayar && (
-            <span className="text-xs text-red-500">{errors.tanggalBayar}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2">
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="namaBank"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Nama Bank
+            </Label>
+            <Input
+              id="namaBank"
+              className={`${errors.namaBank && "border border-red-500"}`}
+              placeholder="Nama Bank..."
+              value={data.namaBank || ""}
+              onChange={(e) => handleInputChange("namaBank", e.target.value)}
+            />
+            {errors.namaBank && (
+              <span className="text-xs text-red-500">{errors.namaBank}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="tanggalBayar"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Tanggal Bayar
+            </Label>
+            <Input
+              id="tanggalBayar"
+              type="date"
+              className={`${errors.tanggalBayar && "border border-red-500"}`}
+              placeholder="Nama Bank..."
+              value={data.tanggalBayar || new Date()}
+              onChange={(e) =>
+                handleInputChange("tanggalBayar", e.target.value)
+              }
+            />
+            {errors.tanggalBayar && (
+              <span className="text-xs text-red-500">
+                {errors.tanggalBayar}
+              </span>
+            )}
+          </FormInput>
+        </div>
+        <div className="col-span-2 grid lg:grid-cols-2 xl:grid-cols-5 gap-5">
+        <FormInput className="col-span-2 lg:col-span-1">
           <Label
             htmlFor="jumlahBayar"
             className="after:text-red-500 after:content-['*']"
@@ -268,7 +293,7 @@ const Setoran = ({ skrdOptions = [] }) => {
             <span className="text-xs text-red-500">{errors.jumlahBayar}</span>
           )}
         </FormInput>
-        <FormInput className="col-span-2">
+        <FormInput className="col-span-2 lg:col-span-1">
           <Label
             htmlFor="jumlahBulanBayar"
             className="after:text-red-500 after:content-['*']"
@@ -290,7 +315,7 @@ const Setoran = ({ skrdOptions = [] }) => {
             </span>
           )}
         </FormInput>
-        <FormInput className="col-span-2">
+        <FormInput className="col-span-2 lg:col-span-1">
           <Label
             htmlFor="noReferensiBank"
             className="after:text-red-500 after:content-['*']"
@@ -312,7 +337,7 @@ const Setoran = ({ skrdOptions = [] }) => {
             </span>
           )}
         </FormInput>
-        <FormInput className="col-span-2">
+        <FormInput className="col-span-2 lg:col-span-1">
           <Label
             htmlFor="namaPengirim"
             className="after:text-red-500 after:content-['*']"
@@ -330,26 +355,7 @@ const Setoran = ({ skrdOptions = [] }) => {
             <span className="text-xs text-red-500">{errors.namaPengirim}</span>
           )}
         </FormInput>
-        <FormInput className="col-span-2">
-          <Label
-            htmlFor="buktiBayar"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Bukti Bayar
-          </Label>
-          <Input
-            id="buktiBayar"
-            type="file"
-            accept="image/*,application/pdf"
-            className={`${errors.buktiBayar && "border border-red-500"}`}
-            value={data.buktiBayar || ""}
-            onChange={(e) => handleInputChange("buktiBayar", e.target.value)}
-          />
-          {errors.buktiBayar && (
-            <span className="text-xs text-red-500">{errors.buktiBayar}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2">
+        <FormInput className="col-span-2 lg:col-span-1">
           <Label
             htmlFor="keteranganBulan"
             className="after:text-red-500 after:content-['*']"
@@ -371,30 +377,76 @@ const Setoran = ({ skrdOptions = [] }) => {
             </span>
           )}
         </FormInput>
+        </div>
+        <FormInput className="col-span-2">
+          <Label
+            htmlFor="buktiBayar"
+            className="after:text-red-500 after:content-['*']"
+          >
+            Bukti Bayar
+          </Label>
+          <Input
+            id="buktiBayar"
+            type="file"
+            accept="image/*,application/pdf"
+            className={`${errors.buktiBayar && "border border-red-500"}`}
+            value={data.buktiBayar || ""}
+            onChange={(e) => handleInputChange("buktiBayar", e.target.value)}
+          />
+          {errors.buktiBayar && (
+            <span className="text-xs text-red-500">{errors.buktiBayar}</span>
+          )}
+        </FormInput>
+
         <div className="col-span-2 border border-black"></div>
-        <div className="col-span-2 w-full">
+        <div className="col-span-2 w-full overflow-x-auto bg-white p-2 rounded shadow">
           <table className="w-full">
             <thead>
               <tr>
                 <th>No.</th>
-                <th>Bulan</th>
+                <th className="text-left">Bulan</th>
                 <th>Tanggal Bayar</th>
-                <th>Jumlah Perbulan</th>
-                <th>Keterangan</th>
+                <th className="text-center">Jumlah Perbulan</th>
+                <th className="">Keterangan</th>
               </tr>
             </thead>
             <tbody>
               {Array.from({ length: 12 }, (_, i) => {
-                const bulan = new Date(0, i).toLocaleString("id-ID", {
+                {
+                  /* const tahun = new Date().getFullYear();
+                const bulan = i; */
+                }
+                const namaBulan = new Date(0, i).toLocaleString("id-ID", {
                   month: "long",
                 });
+
+                {
+                  /* const minDate = new Date(tahun, bulan, 1)
+                  .toISOString()
+                  .split("T")[0];
+                const maxDate = new Date(tahun, bulan + 1, 0)
+                  .toISOString()
+                  .split("T")[0]; */
+                }
+
                 return (
-                  <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td>{bulan}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                  <tr key={i} className="*:py-1.5">
+                    <td className="text-center">{i + 1}</td>
+                    <td>{namaBulan}</td>
+                    <td className="text-center">
+                      <Input
+                        type="date"
+                        // min={minDate}
+                        // max={maxDate}
+                        // defaultValue={minDate}
+                      />
+                    </td>
+                    <td className="text-center">
+                      <Input type="number" />
+                    </td>
+                    <td className="text-left">
+                      <Input className="w-full" />
+                    </td>
                   </tr>
                 );
               })}
