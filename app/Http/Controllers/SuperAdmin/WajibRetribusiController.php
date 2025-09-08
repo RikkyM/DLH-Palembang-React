@@ -525,6 +525,7 @@ class WajibRetribusiController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
 
+            dd($e);
             Log::error('Gagal simpan Wajib Retribusi', [
                 'time' => Carbon::now()->toDateTimeString(),
                 'user_id' => Auth::id(),

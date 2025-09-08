@@ -34,6 +34,7 @@
 
         * {
             padding: 0;
+            margin-bottom: 10px;
             box-sizing: border-box;
             font-family: 'ArialCustom';
         }
@@ -110,7 +111,7 @@
                         <tr>
                             <td>Tanggal</td>
                             <td style="padding: 0 10px;">:</td>
-                            <td>  {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}</td>
+                            <td> {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}</td>
                         </tr>
                     </table>
                     {{-- <br>Tentang: Surat Ketetapan Retribusi Daerah Tahun 2023<br>(Aneka Retribusi Kebersihan) --}}
@@ -186,7 +187,7 @@
     </table>
     <table class="lokasi" style="width: 100%; border-collapse: collapse; font-size: 12px;">
         <tr>
-            <td style="font-weight: 500; font-size: 18px; text-align: center; padding: 5px 0;">SKET LOKASI</td>
+            <td style="font-weight: 500; font-size: 20px; text-align: center; padding: 8px 0;">SKET LOKASI</td>
             <td style=""></td>
         </tr>
         <tr>
@@ -212,7 +213,7 @@
         </tr>
     </table>
     <table
-        style="width: 100%; line-height: 0.6rem; text-align: justify; padding: 10px; border: 1px solid black; margin-top: 20px; font-size: 18px;">
+        style="width: 100%; line-height: 0.6rem; text-align: justify; padding: 10px; border: 1px solid black; margin-top: 20px; font-size: 20px;">
         <tr>
             <td></td>
             <td>Keterangan:</td>
@@ -281,29 +282,28 @@
                 biaya-biaya lainnya sepenuhnya ditanggung oleh wajib retribusi yang bersangkutan</td>
         </tr> --}}
     </table>
-    <div style="border-top: 3px dashed !important; margin-top: 1.4rem; padding-top: 1.4rem;">
+    <div
+        style="border-top: 3px dashed !important;  margin-top: 1.4rem; padding-top: 0.7rem; position: absolute; bottom: 0px; width: 100%; max-height: 6.3cm;">
         <table style="border-collapse: collapse; width: 100%; max-width: 800px;line-height: 0.7rem; font-size: 18px;">
             <tr>
-                <td style="width: 25%; vertical-align: top;">No. SKRD</td>
+                <td style="width: 25%; vertical-align: top;">No. STRD</td>
                 <td style="width: 25%;">: {{ $data->noSkrd }}</td>
-                <td style="width: 25%; padding-left: 120px; background: red;">Diterima Tanggal</td>
+                <td style="width: 25%; padding-left: 120px;">Diterima Tanggal</td>
                 <td style="width: 25%;">:</td>
             </tr>
             <tr>
                 <td style="vertical-align: top;">No. Wajib Retribusi</td>
                 <td>: {{ $data->noWajibRetribusi }}</td>
-                <td style="padding-left: 120px; background: red;">Nama Penerima</td>
+                <td style="padding-left: 120px;">Nama Penerima</td>
                 <td>:</td>
             </tr>
             <tr>
                 <td style="vertical-align: top;">Nama Wajib Retribusi</td>
-                <td style="padding-right: 20px;">
-                    <div style="display: table;">
-                        <div style="display: table-row; background: red;">
+                <td style="padding-right: 20px; text-transform: capitalize;">
+                    <div style="display: inline-table; box-sizing: border-box; padding: 0; margin: 0;">
+                        <div style="display: table-row;">
                             <div style="display: table-cell;">:</div>
-                            <div style="display: table-cell; padding-left: 4px;">
-                                {{ $data->namaObjekRetribusi }}
-                            </div>
+                            <div style="display: table-cell; padding-left: 4px; text-wrap: pretty;">{{ strtolower($data->namaObjekRetribusi) }}</div>
                         </div>
                     </div>
                 </td>
@@ -313,8 +313,8 @@
             <tr>
                 <td style="vertical-align: top;">Tarif Ketetapan / Bulan</td>
                 <td>: {{ $data->tarifPerBulanObjekRetribusi }}</td>
-                <td style="text-align: center;">Penerima</td>
-                <td style="text-align: center;">Penagih</td>
+                <td style="text-align: center; padding-left: 100px;">Penerima</td>
+                <td style="text-align: center; padding-left: 100px;">Penagih</td>
             </tr>
             <tr>
                 <td style="vertical-align: top;">Tarif Ketetapan / Tahun</td>
@@ -330,13 +330,12 @@
             </tr>
             <tr>
                 <td style="vertical-align: top;">Alamat</td>
-                <td style="padding-right: 20px;">
-                    <div style="display: table;">
-                        <div style="display: table-row; background: red;">
+                <td style="padding-right: 20px; text-transform: capitalize;">
+                    <div style="display: inline-table; box-sizing: border-box; padding: 0; margin: 0;">
+                        <div style="display: table-row;">
                             <div style="display: table-cell;">:</div>
-                            <div style="display: table-cell; padding-left: 4px;">
-                                {{ $data->alamatObjekRetribusi }}
-                            </div>
+                            <div style="display: table-cell; padding-left: 4px; text-wrap: pretty;">
+                                {{ strtolower($data->alamatObjekRetribusi) }}</div>
                         </div>
                     </div>
                 </td>
@@ -344,13 +343,13 @@
                 <td></td>
             </tr>
             <tr>
-                <td style="vertical-align: top;">Kel</td>
+                <td style="vertical-align: top;">Kelurahan</td>
                 <td>: {{ $data->kelurahanObjekRetribusi }}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
-                <td style="vertical-align: top;">Kec</td>
+                <td style="vertical-align: top;">Kecamatan</td>
                 <td>: {{ $data->kecamatanObjekRetribusi }}</td>
                 <td></td>
                 <td></td>
@@ -359,8 +358,8 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td style="text-align: center; text-transform: uppercase;">{{ $data->pemilik->namaPemilik }}</td>
-                <td style="text-align: center; text-transform: uppercase;">{{ $data->namaPendaftar }}</td>
+                <td style="text-align: center; text-transform: uppercase; padding-left: 100px;">{{ $data->pemilik->namaPemilik }}</td>
+                <td style="text-align: center; text-transform: uppercase; padding-left: 100px;">{{ $data->namaPendaftar }}</td>
             </tr>
         </table>
     </div>

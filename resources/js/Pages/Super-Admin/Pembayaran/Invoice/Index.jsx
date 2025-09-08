@@ -161,9 +161,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
                     datas.data.map((data, index) => (
                       <tr
                         key={data.id || index}
-                        className={`*:truncate *:p-2 ${
-                          index % 2 === 0 ? "bg-[#F7FBFE]" : ""
-                        }`}
+                        className={`*:truncate *:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
                           {(datas.current_page - 1) * datas.per_page +
@@ -188,27 +186,31 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
                             currency: "IDR",
                           }).format(data.total_retribusi)}
                         </td>
-                        <td className="text-right">
-                          <a
-                            href={route("super-admin.invoice.pdf", {
-                              id: data.id,
-                            })}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5"
-                          >
-                            <FileText size={20} /> Edit
-                          </a>
-                          <a
-                            href={route("super-admin.invoice.pdf", {
-                              id: data.id,
-                            })}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5"
-                          >
-                            <FileText size={20} /> PDF
-                          </a>
+                        <td
+                          className={`sticky right-0 text-right ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                        >
+                          <div className="flex flex-col gap-2 *:rounded *:text-sm *:font-medium">
+                            <a
+                              href={route("super-admin.invoice.pdf", {
+                                id: data.id,
+                              })}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5"
+                            >
+                              <FileText size={20} /> Edit
+                            </a>
+                            <a
+                              href={route("super-admin.invoice.pdf", {
+                                id: data.id,
+                              })}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5"
+                            >
+                              <FileText size={20} /> PDF
+                            </a>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -229,7 +231,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
             </>
           )}
         </div>
-        {!isLoading && <SmartPagination datas={datas} filters={filters}/>}
+        {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
 
       <DialogForm

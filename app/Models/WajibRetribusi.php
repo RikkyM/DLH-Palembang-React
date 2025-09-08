@@ -96,7 +96,25 @@ class WajibRetribusi extends Model
                 ->whereNotNull('noWajibRetribusi')
                 ->where('noWajibRetribusi', '!=', '')
                 ->lockForUpdate()
-                ->orderBy('id', 'desc')
+                ->get()
+                ->map(function ($item) {
+                    $parts = explode('.', $item->noWajibRetribusi);
+
+                    if (count($parts) === 3) {
+                        $nomor = (int) $parts[1];
+                        $tahun = (int) $parts[2];
+                    } else {
+                        $nomor = (int) $parts[0];
+                        $tahun = (int) $parts[1];
+                    }
+
+                    $item->nomor_urut = $nomor;
+                    $item->tahun_urut = $tahun;
+
+                    return $item;
+                })
+                ->sortByDesc('tahun_urut')
+                ->sortByDesc('nomor_urut')
                 ->first();
 
             $lastNumber = 0;
@@ -107,6 +125,7 @@ class WajibRetribusi extends Model
 
             $nextWajib = $lastNumber + 1;
             $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
+            // dd($formatted);
 
             return $formatted . '.' . $tahun;
         });

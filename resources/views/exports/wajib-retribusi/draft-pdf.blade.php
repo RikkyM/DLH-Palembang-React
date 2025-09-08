@@ -170,12 +170,12 @@
                 <td colspan="2" style="witdth: 50%; border: 1px solid black; padding: 4px; padding-left: 20px;">Tarif
                     Retribusi yang harus dibayar/bulan: <br /> Rp
                     {{ number_format($data->tarifPerbulan, 2, ',', '.') }} <br />
-                    <span style="text-transform: uppercase;">{{ terbilang($data->tarifPerbulan) }} rupiah</span>
+                    <span style="text-transform: uppercase;">{{ $data->tarifPerbulan ? terbilang($data->tarifPerbulan) . ' Rupiah' : "-" }}</span>
                 </td>
                 <td colspan="2" style="witdth: 50%; border: 1px solid black; padding: 4px; padding-left: 20px;">
                     Tarif Retribusi yang harus dibayar/tahun:<br />
                     Rp {{ number_format($data->tarifPertahun, 2, ',', '.') }} <br />
-                    <span style="text-transform: uppercase;">{{ terbilang($data->tarifPertahun) }} rupiah</span>
+                    <span style="text-transform: uppercase;">{{ $data->tarifPertahun ? terbilang($data->tarifPertahun) . ' rupiah' : '-' }}</span>
                 </td>
             </tr>
             {{-- <tr style="font-size: 18px;">
@@ -204,16 +204,6 @@
                 </a>
             </td>
             <td style="width: 50%; text-align: center;">
-                {{-- <p style="font-size: 14px; line-height: 0.8rem; width: max-content; margin: 0 auto 110px;">An. Kepala
-                    Dinas
-                    Lingkungan
-                    Hidup<br />Kota Palembang<br />
-                    Kepala Bidang Pengelolaan Sampan dan Limbah B3</p>
-                <p
-                    style="font-size: 14px; line-height: 0.8rem; text-align: left; display: inline-block; margin: 0 auto; width: 230px;">
-                    {{ $kabid->namaLengkap }}
-                    <br />NIP
-                </p> --}}
                 <p
                     style="font-size: 18px; line-height: 0.8rem; width: max-content; margin: 0 auto 110px; text-transform: uppercase">
                     {{ $tandaTangan->jabatan1 }}<br />{{ $tandaTangan->kota }}<br />
@@ -298,23 +288,28 @@
     </table>
     <div
         style="border-top: 3px dashed !important;  margin-top: 1.4rem; padding-top: 0.7rem; position: absolute; bottom: 0px; width: 100%; max-height: 6.3cm;">
-        <table style="border-collapse: collapse; width: 100%; max-width: 800px;line-height: 0.7rem; font-size: 18px;">
+        <table style="border-collapse: collapse; width: 100%; max-width: 800px;     line-height: 0.7rem; font-size: 18px;">
             <tr>
                 <td style="width: 25%; vertical-align: top;">No. STRD</td>
                 <td style="width: 25%;">: {{ $skrd->noSkrd ?? '' }}</td>
-                <td style="width: 25%; padding-left: 10px;">Diterima Tanggal</td>
+                <td style="width: 25%; padding-left: 100px; white-space: nowrap;">Diterima Tanggal</td>
                 <td style="width: 25%;">:</td>
             </tr>
             <tr>
                 <td style="vertical-align: top;">No. Wajib Retribusi</td>
                 <td>: {{ $data->noWajibRetribusi ?? '-' }}</td>
-                <td style="padding-left: 10px;">Nama Penerima</td>
+                <td style="padding-left: 100px; white-space: nowrap;">Nama Penerima</td>
                 <td>:</td>
             </tr>
             <tr>
                 <td style="vertical-align: top;">Nama Wajib Retribusi</td>
                 <td style="text-transform: capitalize;">
-                    : {{ strtolower($data->namaObjekRetribusi) }}
+                    <div style="display: inline-table; box-sizing: border-box; padding: 0; margin: 0;">
+                        <div style="display: table-row;">
+                            <div style="display: table-cell;">:</div>
+                            <div style="display: table-cell; padding-left: 4px; text-wrap: pretty;">{{ strtolower($data->namaObjekRetribusi) }}</div>
+                        </div>
+                    </div>
 
                     {{-- <div style="display: table;">
                         <div style="display: table-row; background: red;">
@@ -331,8 +326,8 @@
             <tr>
                 <td style="vertical-align: top;">Tarif Ketetapan / Bulan</td>
                 <td>: Rp {{ number_format($data->tarifPerbulan, 2, ',', '.') }}</td>
-                <td style="text-align: center;">Penerima</td>
-                <td style="text-align: center;">Penagih</td>
+                <td style="text-align: center; padding-left: 100px;">Penerima</td>
+                <td style="text-align: center; padding-left: 100px;">Penagih</td>
             </tr>
             <tr>
                 <td style="vertical-align: top;">Tarif Ketetapan / Tahun</td>
@@ -342,7 +337,7 @@
             </tr>
             <tr>
                 <td style="vertical-align: top;">Jumlah Bulan</td>
-                <td>: {{ $data->bulan }} Bulan</td>
+                <td>: {{ $data->bulan ? $data->bulan . ' Bulan' : '-' }}</td>
                 <td></td>
                 <td></td>
             </tr>
@@ -376,8 +371,8 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td style="text-align: center; text-transform: uppercase;">{{ $data->pemilik->namaPemilik }}</td>
-                <td style="text-align: center; text-transform: uppercase;">{{ $data->penagih?->nama }}</td>
+                <td style="text-align: center; text-transform: uppercase; padding-left: 100px;">{{ $data->pemilik->namaPemilik }}</td>
+                <td style="text-align: center; text-transform: uppercase; padding-left: 100px;">{{ $data->penagih?->nama }}</td>
             </tr>
         </table>
     </div>
