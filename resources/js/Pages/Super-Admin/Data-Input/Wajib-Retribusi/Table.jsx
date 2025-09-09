@@ -52,26 +52,63 @@ const Table = ({
                   index +
                   1}
               </td>
-              <td>{data.noPendaftaran}</td>
+              {/* <td>{data.noPendaftaran}</td> */}
               <td>{data.noWajibRetribusi ?? "-"}</td>
               <td>{data.pemilik.namaPemilik}</td>
               <td>{data.namaObjekRetribusi}</td>
-              <td className="max-w-sm truncate">{data.alamat}</td>
-              <td>{data.kelurahan.namaKelurahan}</td>
-              <td>{data.kecamatan.namaKecamatan}</td>
+              <td>
+                <div className="w-72">{data.alamat}</div>
+              </td>
+              <td className="whitespace-nowrap">
+                {data.kelurahan.namaKelurahan}
+              </td>
+              <td className="whitespace-nowrap">
+                {data.kecamatan.namaKecamatan}
+              </td>
               <td>{data.kategori.namaKategori}</td>
               <td>{data.sub_kategori.namaSubKategori}</td>
-              <td>{data.uptd.namaUptd}</td>
+              <td className="whitespace-nowrap">{data.uptd.namaUptd}</td>
+              <td>{data.bulan ? `${data.bulan} Bulan` : "-"}</td>
+              <td>{data.bentukBadanUsaha ?? "-"}</td>
+              <td>
+                {data.jenisTarif === "tarif"
+                  ? "Tarif 1"
+                  : data.jenisTarif === "tarif2"
+                    ? "Tarif 2"
+                    : "-"}
+              </td>
+              <td>
+                <div className="w-max">{data.keteranganBulan ?? "-"}</div>
+              </td>
+              <td>{data.unit ?? "-"}</td>
+              <td>{data.m2 ?? "-"}</td>
+              <td>{data.giat ?? "-"}</td>
+              <td>{data.hari ?? "-"}</td>
+              <td>{data.meter ?? "-"}</td>
+              <td className="whitespace-nowrap">
+                {data.tanggalSkrd
+                  ? new Date(data.tanggalSkrd).toLocaleDateString("id-ID", {
+                      // day: "numeric",
+                      // month: "long",
+                      // year: "numeric"
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })
+                  : "-"}
+              </td>
               <td>
                 {new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
+                  minimumFractionDigits: 0,
                 }).format(data.tarifPerbulan) || 0}
               </td>
               <td>
                 {new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
+                  minimumFractionDigits: 0,
                 }).format(data.tarifPertahun) || 0}
               </td>
               <td>{data.user.namaLengkap}</td>

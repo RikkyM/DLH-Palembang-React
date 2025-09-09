@@ -4,9 +4,9 @@ import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import { useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useRef } from "react";
 import DropdownInput from "@/Components/DropdownInput";
-import FormInput from "../../../../Components/FormInput";
-import Label from "../../../../Components/Label";
-import Input from "../../../../Components/Input";
+import FormInput from "@/Components/FormInput";
+import Label from "@/Components/Label";
+import Input from "@/Components/Input";
 
 const DialogForm = ({
   isOpen,

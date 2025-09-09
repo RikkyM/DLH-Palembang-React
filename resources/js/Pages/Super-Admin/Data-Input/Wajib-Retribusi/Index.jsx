@@ -39,11 +39,11 @@ const Index = ({
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    {
-      key: "noPendaftaran",
-      label: "no pendaftaran",
-      align: "text-left truncate",
-    },
+    // {
+    //   key: "noPendaftaran",
+    //   label: "no pendaftaran",
+    //   align: "text-left truncate",
+    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -72,7 +72,25 @@ const Index = ({
       label: "detail rincian",
       align: "text-left truncate",
     },
-    { key: "uptd", label: "uptd", align: "text-left truncate" },
+    { key: "uptd", label: "wilayah uptd", align: "text-left truncate" },
+    { key: "bulan", label: "jumlah bulan", align: "text-left truncate" },
+    {
+      key: "bentukBadanUsaha",
+      label: "bentuk badan usaha",
+      align: "text-left truncate",
+    },
+    { key: "jenisTarif", label: "layanan", align: "text-left truncate" },
+    {
+      key: "keteranganBulan",
+      label: "keterangan bulan",
+      align: "text-left truncate",
+    },
+    { key: "unit", label: "unit", align: "text-left truncate" },
+    { key: "m2", label: "m2", align: "text-left truncate" },
+    { key: "giat", label: "giat", align: "text-left truncate" },
+    { key: "hari", label: "hari", align: "text-left truncate" },
+    { key: "meter", label: "meter", align: "text-left truncate" },
+    { key: "tanggalSkrd", label: "tanggal spkrd", align: "text-left truncate" },
     {
       key: "tarifPerbulan",
       label: "tarif perbulan",
@@ -450,7 +468,7 @@ const Index = ({
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded ${!isLoading && "shadow"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
@@ -502,28 +520,61 @@ const Index = ({
                             index +
                             1}
                         </td>
-                        <td>{data.noPendaftaran}</td>
+                        {/* <td>{data.noPendaftaran}</td> */}
                         <td>{data.noWajibRetribusi ?? "-"}</td>
                         <td>{data.pemilik.namaPemilik}</td>
                         <td>{data.namaObjekRetribusi}</td>
                         <td>
                           <div className="w-72">{data.alamat}</div>
                         </td>
-                        <td>{data.kelurahan.namaKelurahan}</td>
-                        <td>{data.kecamatan.namaKecamatan}</td>
+                        <td className="whitespace-nowrap">
+                          {data.kelurahan.namaKelurahan}
+                        </td>
+                        <td className="whitespace-nowrap">
+                          {data.kecamatan.namaKecamatan}
+                        </td>
                         <td>{data.kategori.namaKategori}</td>
                         <td>{data.sub_kategori.namaSubKategori}</td>
-                        <td>{data.uptd.namaUptd}</td>
+                        <td className="whitespace-nowrap">
+                          {data.uptd.namaUptd}
+                        </td>
+                        <td>{data.bulan ? `${data.bulan} Bulan` : "-"}</td>
+                        <td>{data.bentukBadanUsaha ?? "-"}</td>
+                        <td>
+                          {data.jenisTarif === "tarif"
+                            ? "Tarif 1"
+                            : data.jenisTarif === "tarif2"
+                              ? "Tarif 2"
+                              : "-"}
+                        </td>
+                        <td>
+                          <div className="w-max">{data.keteranganBulan ?? "-"}</div>
+                        </td>
+                        <td>{data.unit ?? "-"}</td>
+                        <td>{data.m2 ?? "-"}</td>
+                        <td>{data.giat ?? "-"}</td>
+                        <td>{data.hari ?? "-"}</td>
+                        <td>{data.meter ?? "-"}</td>
+                        <td className="whitespace-nowrap">{data.tanggalSkrd ? new Date(data.tanggalSkrd).toLocaleDateString('id-ID', {
+                          // day: "numeric",
+                          // month: "long",
+                          // year: "numeric"
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric"
+                        }) : "-"}</td>
                         <td>
                           {new Intl.NumberFormat("id-ID", {
                             style: "currency",
                             currency: "IDR",
+                            minimumFractionDigits: 0,
                           }).format(data.tarifPerbulan) || 0}
                         </td>
                         <td>
                           {new Intl.NumberFormat("id-ID", {
                             style: "currency",
                             currency: "IDR",
+                            minimumFractionDigits: 0,
                           }).format(data.tarifPertahun) || 0}
                         </td>
                         <td>{data.user.namaLengkap}</td>

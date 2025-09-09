@@ -18,8 +18,8 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
     { key: "id", label: "no", align: "text-left" },
     { key: "no_invoice", label: "no invoice", align: "text-center truncate" },
     {
-      key: "noWajibRetribusi",
-      label: "no wajib retribusi",
+      key: "noSkrd",
+      label: "no spkrd",
       align: "text-center truncate",
     },
     {
@@ -82,7 +82,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
 
   return (
     <Layout title="Invoice">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col gap-3 rounded bg-white p-2 lg:flex-row lg:items-start lg:items-center lg:justify-between">
           <label
             htmlFor="search"
@@ -116,9 +116,11 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
             </button>
           </div>
         </div>
-        <div className="overflow-x-auto rounded bg-white shadow">
+        <div
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+        >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -169,10 +171,14 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
                             1}
                         </td>
                         <td>{data.no_invoice}</td>
-                        <td>{data.skrd.noWajibRetribusi}</td>
+                        <td>{data.noSkrd}</td>
                         <td>{data.skrd.namaObjekRetribusi}</td>
                         <td>{data.skrd.alamatObjekRetribusi}</td>
-                        <td className="text-center">{data.jumlah_bulan}</td>
+                        <td className="text-center">
+                          {data.jumlah_bulan
+                            ? `${data.jumlah_bulan} Bulan`
+                            : "-"}
+                        </td>
                         <td>{data.satuan}</td>
                         <td>
                           {new Intl.NumberFormat("id-ID", {

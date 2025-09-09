@@ -35,11 +35,11 @@ const Diterima = ({
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    {
-      key: "noPendaftaran",
-      label: "no pendaftaran",
-      align: "text-left truncate",
-    },
+    // {
+    //   key: "noPendaftaran",
+    //   label: "no pendaftaran",
+    //   align: "text-left truncate",
+    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -68,7 +68,25 @@ const Diterima = ({
       label: "detail rincian",
       align: "text-left truncate",
     },
-    { key: "uptd", label: "uptd", align: "text-left truncate" },
+    { key: "uptd", label: "wilayah uptd", align: "text-left truncate" },
+    { key: "bulan", label: "jumlah bulan", align: "text-left truncate" },
+    {
+      key: "bentukBadanUsaha",
+      label: "bentuk badan usaha",
+      align: "text-left truncate",
+    },
+    { key: "jenisTarif", label: "layanan", align: "text-left truncate" },
+    {
+      key: "keteranganBulan",
+      label: "keterangan bulan",
+      align: "text-left truncate",
+    },
+    { key: "unit", label: "unit", align: "text-left truncate" },
+    { key: "m2", label: "m2", align: "text-left truncate" },
+    { key: "giat", label: "giat", align: "text-left truncate" },
+    { key: "hari", label: "hari", align: "text-left truncate" },
+    { key: "meter", label: "meter", align: "text-left truncate" },
+    { key: "tanggalSkrd", label: "tanggal spkrd", align: "text-left truncate" },
     {
       key: "tarifPerbulan",
       label: "tarif perbulan",
@@ -375,7 +393,7 @@ const Diterima = ({
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_150px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">

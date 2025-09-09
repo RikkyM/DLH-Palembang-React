@@ -14,29 +14,23 @@ export const usePagination = () => {
   const generatePagesToShow = (currentPage, lastPage) => {
     let pagesToShow = [];
 
-    if (lastPage > 0) {
-      pagesToShow.push(1);
-    }
-
-    if (currentPage > 3) {
-      pagesToShow.push("...");
-    }
-
-    for (
-      let i = Math.max(2, currentPage - 1);
-      i <= Math.min(lastPage - 1, currentPage + 1);
-      i++
-    ) {
-      if (!pagesToShow.includes(i)) {
+    if (lastPage <= 5) {
+      // Kalau total halaman <= 5, tampilkan semua
+      for (let i = 1; i <= lastPage; i++) {
         pagesToShow.push(i);
       }
-    }
+    } else {
+      // Selalu tampilkan 1 - 5
+      for (let i = 1; i <= 5; i++) {
+        pagesToShow.push(i);
+      }
 
-    if (currentPage < lastPage - 2) {
-      pagesToShow.push("...");
-    }
+      // Tambahkan "..." kalau lastPage > 6
+      if (lastPage > 6) {
+        pagesToShow.push("...");
+      }
 
-    if (lastPage > 1) {
+      // Tambahkan halaman terakhir
       pagesToShow.push(lastPage);
     }
 
@@ -44,7 +38,6 @@ export const usePagination = () => {
   };
 
   const buildPageUrl = (page, filters = {}) => {
-    // Get current URL parameters
     const currentParams = new URLSearchParams(window.location.search);
 
     // Set the new page number
@@ -55,7 +48,6 @@ export const usePagination = () => {
       if (value && value.toString().trim() !== "") {
         currentParams.set(key, value);
       } else {
-        // Remove parameter if value is empty
         currentParams.delete(key);
       }
     });
@@ -63,7 +55,6 @@ export const usePagination = () => {
     return `${window.location.pathname}?${currentParams.toString()}`;
   };
 
-  // Alternative method using router.get for better Inertia integration
   const navigateToPage = (page, routeName, filters = {}) => {
     const params = { ...filters, page };
 

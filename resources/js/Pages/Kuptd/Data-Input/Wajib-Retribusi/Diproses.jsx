@@ -189,7 +189,7 @@ const Diproses = ({
 
   return (
     <Layout title="WAJIB RETRIBUSI DIPROSES">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
@@ -322,7 +322,9 @@ const Diproses = ({
             </button>
           </div>
         </div>
-        <div className="overflow-x-auto rounded bg-white shadow">
+        <div
+          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+        >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
               <svg
@@ -363,7 +365,7 @@ const Diproses = ({
           )}
         </div>
 
-                {!isLoading && <SmartPagination datas={datas} filters={filters} />}
+        {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
     </Layout>
   );

@@ -39,7 +39,7 @@ const SuperAdminNavigation = () => {
       ],
     },
     {
-      label: "Inbox Selesai (SKRD)",
+      label: "Inbox Selesai (SPKRD)",
       route: "super-admin.skrd.index",
       activeRoute: "super-admin.skrd.*",
     },

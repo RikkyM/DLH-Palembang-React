@@ -219,18 +219,18 @@ const Table = ({
               <td className="text-center">
                 {(datas.current_page - 1) * datas.per_page + index + 1}
               </td>
-              <td>{data.noPendaftaran}</td>
+              {/* <td>{data.noPendaftaran}</td> */}
               <td>{data.noWajibRetribusi ?? "-"}</td>
               <td>{data.pemilik.namaPemilik}</td>
               <td>{data.namaObjekRetribusi}</td>
               <td>
                 <div className="w-72 text-pretty">{data.alamat}</div>
               </td>
-              <td>{data.kelurahan.namaKelurahan}</td>
-              <td>{data.kecamatan.namaKecamatan}</td>
+              <td className="whitespace-nowrap">{data.kelurahan.namaKelurahan}</td>
+              <td className="whitespace-nowrap">{data.kecamatan.namaKecamatan}</td>
               <td>{data.kategori.namaKategori}</td>
               <td>{data.sub_kategori.namaSubKategori}</td>
-              <td>{data.uptd.namaUptd}</td>
+              <td className="whitespace-nowrap">{data.uptd.namaUptd}</td>
               <td>
                 {new Intl.NumberFormat("id-ID", {
                   style: "currency",

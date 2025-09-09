@@ -12,6 +12,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || "");
   const [direction, setDirection] = useState(filters.direction || "asc");
+  const [perPage, setPerPage] = useState(() => {
+    return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   const columns = [
@@ -38,11 +41,12 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
       if (sort && sort !== filters.sort) params.sort = sort;
       if (direction && direction !== filters.direction)
         params.direction = direction;
+      if (perPage && perPage !== 10) params.per_page = perPage;
 
       router.get(route("pendaftar.pemohon.index"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas"],
+        only: ["datas", 'filters'],
         onFinish: () => setIsLoading(false),
       });
     }, 500);
@@ -51,7 +55,11 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
       clearTimeout(timeoutId);
       setIsLoading(false);
     };
-  }, [search, sort, direction]);
+  }, [search, sort, direction, perPage]);
+
+  const handlePerPageChange = (e) => {
+    setPerPage(parseInt(e.target.value));
+  };
 
   const allFilters = {
     search: search || filters.search,
@@ -72,8 +80,8 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                 <select
                   name="showData"
                   id="showData"
-                  // value={perPage}
-                  // onChange={handlePerPageChange}
+                  value={perPage}
+                  onChange={handlePerPageChange}
                   className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                 >
                   <option value="10">10</option>
@@ -88,22 +96,22 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                   className="pointer-events-none absolute right-1 bg-transparent"
                 />
               </label>
+              <label
+                htmlFor="search"
+                className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
+              >
+                <Search size={20} />
+                <input
+                  autoComplete="off"
+                  type="search"
+                  id="search"
+                  placeholder="Cari nama..."
+                  className="flex-1 outline-none"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </label>
             </div>
-            <label
-              htmlFor="search"
-              className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
-            >
-              <Search size={20} />
-              <input
-                autoComplete="off"
-                type="search"
-                id="search"
-                placeholder="Cari nama..."
-                className="flex-1 outline-none"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </label>
           </div>
           <button
             onClick={() => {
@@ -114,9 +122,11 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
             <span>Tambah Pemohon</span>
           </button>
         </div>
-        <div className="max-h-[calc(100%_-_150px)] overflow-auto rounded">
+        <div
+          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+        >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500 bg-white shadow">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -140,8 +150,8 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
             </div>
           ) : (
             <>
-              <table className="min-w-full divide-y divide-gray-300 whitespace-nowrap p-3">
-                <thead>
+              <table className="min-w-full divide-y divide-gray-300 p-3">
+                <thead className="truncate">
                   <TableHead
                     columns={columns}
                     sort={sort}
@@ -153,21 +163,22 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                   />
                 </thead>
                 <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
-                  {datas?.data?.length > 0 ? (
-                    datas.data.map((data, index) => (
+                  {(datas.data ?? datas)?.length > 0 ? (
+                    (datas.data ?? datas).map((data, index) => (
                       <tr
                         key={data.id || index}
                         className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
-                          {(datas.current_page - 1) * datas.per_page +
+                          {((datas.current_page ?? 1) - 1) *
+                            (datas.per_page ?? (datas.data ?? datas).length) +
                             index +
                             1}
                         </td>
                         <td>{data.nik}</td>
                         <td>{data.namaPemilik}</td>
-                        <td className="max-w-72 truncate" title={data.alamat}>
-                          {data.alamat}
+                        <td>
+                          <div className="w-72">{data.alamat}</div>
                         </td>
                         <td>{data.kelurahan.namaKelurahan}</td>
                         <td>{data.kecamatan.namaKecamatan}</td>
@@ -215,7 +226,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                     <tr>
                       <td
                         colSpan="12"
-                        className="py-8 text-center text-gray-500 bg-white shadow"
+                        className="bg-white py-8 text-center text-gray-500 shadow"
                       >
                         {search
                           ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
@@ -229,7 +240,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
           )}
         </div>
 
-        {!isLoading && <SmartPagination datas={datas} filters={allFilters} />}
+        {!isLoading && datas?.links && (
+          <SmartPagination datas={datas} filters={allFilters} />
+        )}
       </section>
       <DialogForm
         isOpen={modalState.type === "create" || modalState.type === "edit"}

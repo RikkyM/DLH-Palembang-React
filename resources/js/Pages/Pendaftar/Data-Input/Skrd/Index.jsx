@@ -352,10 +352,10 @@ const Index = ({
                   >
                     {bulan.map((bulan, i) => (
                       <React.Fragment key={i}>
-                        <th className="cursor-pointer select-none bg-[#F1B174]">
+                        <th className="cursor-pointer select-none bg-[#F1B174] sticky top-0">
                           {bulan}
                         </th>
-                        <th className="cursor-pointer select-none truncate bg-[#F1B174]">
+                        <th className="cursor-pointer select-none truncate bg-[#F1B174] sticky top-0">
                           Tanggal Bayar
                         </th>
                       </React.Fragment>

@@ -209,7 +209,7 @@ const Index = ({
 
   return (
     <Layout title="SKRD">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 md:flex-row md:items-center md:gap-0">
           <div className="relative flex w-full gap-2 sm:w-max">
             <button
@@ -319,7 +319,9 @@ const Index = ({
             </button>
           </div>
         </div>
-        <div className={`overflow-auto rounded bg-white shadow`}>
+        <div
+          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+        >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
               <svg
@@ -358,8 +360,10 @@ const Index = ({
                   >
                     {bulan.map((bulan, i) => (
                       <React.Fragment key={i}>
-                        <th className="cursor-pointer select-none">{bulan}</th>
-                        <th className="cursor-pointer select-none truncate">
+                        <th className="cursor-pointer select-none bg-[#F1B174] sticky top-0">
+                          {bulan}
+                        </th>
+                        <th className="cursor-pointer select-none truncate bg-[#F1B174] sticky top-0">
                           Tanggal Bayar
                         </th>
                       </React.Fragment>
@@ -461,7 +465,7 @@ const Index = ({
                           );
                         })}
                         <td
-                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+                          className={`sticky right-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
                           // onClick={(e) => e.stopPropagation()}
                         >
                           <div className="flex flex-wrap gap-2 *:rounded *:text-xs *:font-medium *:sm:text-sm">

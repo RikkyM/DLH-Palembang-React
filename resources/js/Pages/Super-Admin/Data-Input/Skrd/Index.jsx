@@ -90,12 +90,12 @@ const Index = ({
     },
     {
       key: "tagihanPerBulanSkrd",
-      label: "per bulan",
+      label: "Tarif /bulan",
       align: "text-left truncate",
     },
     {
       key: "tagihanPerTahunSkrd",
-      label: "per tahun",
+      label: "Tarif /tahun",
       align: "text-left truncate",
     },
     {
@@ -110,7 +110,12 @@ const Index = ({
     },
     {
       key: "namaPendaftar",
-      label: "nama petugas",
+      label: "petugas pendaftar",
+      align: "text-left truncate",
+    },
+    {
+      key: "namaPenagih",
+      label: "penagih retribusi",
       align: "text-left truncate",
     },
     { key: "statusLunas", label: "status", align: "text-left truncate" },
@@ -226,80 +231,98 @@ const Index = ({
   return (
     <Layout title="SKRD">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
-        <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 md:flex-row md:items-center md:gap-0">
-          <div className="relative flex w-full gap-2 sm:w-max">
-            <label
-              htmlFor="showData"
-              className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
-            >
-              <select
-                name="showData"
-                id="showData"
-                value={perPage}
-                onChange={handlePerPageChange}
-                className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+        <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center relative">
+            <div className="flex w-full items-center gap-2 sm:w-max">
+              <label
+                htmlFor="showData"
+                className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
               >
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="250">250</option>
-                <option value="-1">Semua</option>
-              </select>
-              <ChevronDown
-                size={20}
-                className="pointer-events-none absolute right-1 bg-transparent"
-              />
-            </label>
-            <button
-              type="button"
-              className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
-              onMouseDown={(e) => e.stopPropagation()}
-              onClick={() => setShowFilters((prev) => !prev)}
-            >
-              <Filter size={20} />
-              <span>Filter</span>
-            </button>
-            <div
-              ref={filterRef}
-              className={`absolute left-0 top-full z-10 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
-                showFilters
-                  ? "pointer-events-auto mt-3 opacity-100"
-                  : "pointer-events-none mt-0 opacity-0"
-              }`}
-            >
-              <SearchableSelect
-                id="kategoriList"
-                options={kategoriList}
-                value={kategori}
-                onChange={(val) => {
-                  setKategori(val);
-                  setSubKategori("");
-                }}
-                placeholder="Pilih Kategori"
-              />
-              <SearchableSelect
-                id="subkategorilist"
-                options={subKategoriList}
-                value={subKategori}
-                onChange={(val) => setSubKategori(val)}
-                placeholder="Pilih Sub Kategori"
-                disabled={!kategori}
-              />
-              <SearchableSelect
-                id="petugaslist"
-                options={petugasList}
-                value={petugas}
-                onChange={(val) => setPetugas(val)}
-                placeholder="Pilih Petugas Pendaftar"
-              />
-              <SearchableSelect
-                id="statusList"
-                options={statusList}
-                value={status}
-                onChange={(val) => setStatus(val)}
-                placeholder="Filter berdasarkan status"
-              />
+                <select
+                  name="showData"
+                  id="showData"
+                  value={perPage}
+                  onChange={handlePerPageChange}
+                  className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="250">250</option>
+                  <option value="-1">Semua</option>
+                </select>
+                <ChevronDown
+                  size={20}
+                  className="pointer-events-none absolute right-1 bg-transparent"
+                />
+              </label>
+              <button
+                type="button"
+                className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
+                onMouseDown={(e) => e.stopPropagation()}
+                onClick={() => setShowFilters((prev) => !prev)}
+              >
+                <Filter size={20} />
+                <span>Filter</span>
+              </button>
+              <div
+                ref={filterRef}
+                className={`absolute left-0 top-full z-10 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
+                  showFilters
+                    ? "pointer-events-auto mt-3 opacity-100"
+                    : "pointer-events-none mt-0 opacity-0"
+                }`}
+              >
+                <SearchableSelect
+                  id="kategoriList"
+                  options={kategoriList}
+                  value={kategori}
+                  onChange={(val) => {
+                    setKategori(val);
+                    setSubKategori("");
+                  }}
+                  placeholder="Pilih Kategori"
+                />
+                <SearchableSelect
+                  id="subkategorilist"
+                  options={subKategoriList}
+                  value={subKategori}
+                  onChange={(val) => setSubKategori(val)}
+                  placeholder="Pilih Sub Kategori"
+                  disabled={!kategori}
+                />
+                <SearchableSelect
+                  id="petugaslist"
+                  options={petugasList}
+                  value={petugas}
+                  onChange={(val) => setPetugas(val)}
+                  placeholder="Pilih Petugas Pendaftar"
+                />
+                <SearchableSelect
+                  id="statusList"
+                  options={statusList}
+                  value={status}
+                  onChange={(val) => setStatus(val)}
+                  placeholder="Filter berdasarkan status"
+                />
+                <SearchableSelect
+                  id="FilterBulan"
+                  // options={statusList}
+                  // value={status}
+                  // onChange={(val) => setStatus(val)}
+                  placeholder="Filter bulan"
+                  disabled
+                />
+                <SearchableSelect
+                  id="FilterTahun"
+                  // options={statusList}
+                  // value={status}
+                  // onChange={(val) => setStatus(val)}
+                  placeholder="Filter tahun"
+                  disabled
+                />
+              </div>
             </div>
             <label
               htmlFor="search"
@@ -358,7 +381,9 @@ const Index = ({
             </button>
           </div>
         </div>
-        <div className={`max-h-[calc(100%_-_150px)] overflow-auto rounded ${!isLoading && "shadow"}`}>
+        <div
+          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+        >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
               <svg
@@ -466,6 +491,7 @@ const Index = ({
                           )}
                         </td>
                         <td>{data.namaPendaftar}</td>
+                        <td></td>
                         <td className="text-left">
                           {data.tagihanPerTahunSkrd -
                             data.pembayaran_sum_jumlah_bayar ===
@@ -500,7 +526,7 @@ const Index = ({
                           );
                         })}
                         <td
-                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                          className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
                           <div className="flex flex-wrap gap-2 *:rounded *:text-xs *:font-medium *:sm:text-sm">
                             {/* <button className="flex items-center gap-1.5 outline-none">

@@ -71,59 +71,63 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
     <Layout title="PEMOHON">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
-          <div className="flex items-center w-full gap-2">
-            <label
-              htmlFor="showData"
-              className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
-            >
-              <select
-                name="showData"
-                id="showData"
-                value={perPage}
-                onChange={handlePerPageChange}
-                className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
+            <div className="flex w-full items-center gap-2 sm:w-max">
+              <label
+                htmlFor="showData"
+                className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
               >
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="250">250</option>
-                <option value="-1">Semua</option>
-              </select>
-              <ChevronDown
-                size={20}
-                className="pointer-events-none absolute right-1 bg-transparent"
-              />
-            </label>
-            <label
-              htmlFor="search"
-              className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
-            >
-              <Search size={20} />
-              <input
-                autoComplete="off"
-                type="search"
-                id="search"
-                placeholder="Cari nama..."
-                className="flex-1 outline-none"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </label>
+                <select
+                  name="showData"
+                  id="showData"
+                  value={perPage}
+                  onChange={handlePerPageChange}
+                  className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="250">250</option>
+                  <option value="-1">Semua</option>
+                </select>
+                <ChevronDown
+                  size={20}
+                  className="pointer-events-none absolute right-1 bg-transparent"
+                />
+              </label>
+              <label
+                htmlFor="search"
+                className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
+              >
+                <Search size={20} />
+                <input
+                  autoComplete="off"
+                  type="search"
+                  id="search"
+                  placeholder="Cari nama..."
+                  className="flex-1 outline-none"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </label>
+            </div>
           </div>
           <button
             onClick={() => {
               openModal("create");
             }}
-            className="flex w-full items-center justify-center gap-1.5 rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:w-auto"
+            className="flex w-full items-center justify-center gap-1.5 whitespace-nowrap rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:w-auto"
           >
-            <span>Tambah Pemohon</span>
+            <span>Tambah Data</span>
           </button>
         </div>
 
-        <div className="max-h-[calc(100%_-_150px)] overflow-auto rounded">
+        <div
+          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+        >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500 bg-white shadow">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -180,8 +184,10 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                         <td>
                           <div className="w-72">{data.alamat}</div>
                         </td>
-                        <td>{data.kelurahan.namaKelurahan}</td>
-                        <td>{data.kecamatan.namaKecamatan}</td>
+                        <td className="whitespace-nowrap">{data.kelurahan.namaKelurahan}</td>
+                        <td>
+                          <div className="w-max whitespace-nowrap">{data.kecamatan.namaKecamatan}</div>
+                        </td>
                         <td>{data.tempatLahir}</td>
                         <td>
                           {data.tanggalLahir &&
@@ -194,8 +200,8 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                               .replace(/\//g, "-")}
                         </td>
 
-                        <td>{data.noHP ?? "-"}</td>
-                        <td>{data.email ?? "-"}</td>
+                        <td className="whitespace-nowrap">{data.noHP ?? "-"}</td>
+                        <td className="whitespace-nowrap">{data.email ?? "-"}</td>
                         {/* <td>{data.jabatan ?? "-"}</td> */}
                         <td className="truncate">
                           {data.created_at &&

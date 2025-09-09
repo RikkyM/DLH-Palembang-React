@@ -851,7 +851,7 @@ const WajibRetribusiCreate = ({
             )}
           </FormInput>
           <FormInput className="col-span-2 md:col-span-1">
-            <Label htmlFor="tanggalSkrd">Tanggal STRD</Label>
+            <Label htmlFor="tanggalSkrd">Tanggal SPKRD</Label>
             <Input
               type="date"
               id="tanggalSkrd"

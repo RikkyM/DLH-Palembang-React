@@ -50,9 +50,9 @@ const Setoran = ({ skrdOptions = [] }) => {
           required={true}
           valueKey="value"
           labelKey="label"
-          className="col-span-2 md:col-span-1"
+          className="col-span-2 lg:col-span-1"
         />
-        <FormInput className="col-span-2">
+        <FormInput className="col-span-2 lg:col-span-1">
           <Label htmlFor="namaObjekRetribusi">Nama Objek Retribusi</Label>
           <Input
             id="namaObjekRetribusi"
@@ -400,7 +400,7 @@ const Setoran = ({ skrdOptions = [] }) => {
 
         <div className="col-span-2 border border-black"></div>
         <div className="col-span-2 w-full overflow-x-auto bg-white p-2 rounded shadow">
-          <table className="w-full">
+          <table className="w-full text-sm">
             <thead>
               <tr>
                 <th>No.</th>
@@ -442,10 +442,10 @@ const Setoran = ({ skrdOptions = [] }) => {
                       />
                     </td>
                     <td className="text-center">
-                      <Input type="number" />
+                      <Input type="number" className="bg-slate-300" />
                     </td>
                     <td className="text-left">
-                      <Input className="w-full" />
+                      <Input className="w-full bg-slate-300" />
                     </td>
                   </tr>
                 );
