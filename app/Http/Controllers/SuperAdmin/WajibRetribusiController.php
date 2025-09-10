@@ -625,8 +625,6 @@ class WajibRetribusiController extends Controller
 
         $tarifPertahun = $request->totalRetribusi;
 
-        // dd($tarifPertahun);
-
         if ($request->filled('variabelValues') || $request->filled('bulan')) {
             $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
 

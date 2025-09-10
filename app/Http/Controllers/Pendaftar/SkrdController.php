@@ -34,6 +34,7 @@ class SkrdController extends Controller
         $getKategori = $request->get('kategori');
         $getSubKategori = $request->get('sub-kategori');
         $getStatus = $request->get('status');
+        $getPage = $request->get('per_page', 10);
 
         $skrd = Skrd::with([
             'user:id,namaLengkap,lokasi',
@@ -78,8 +79,10 @@ class SkrdController extends Controller
             })->select('kodeSubKategori', 'namaSubKategori')->get()
             : collect();
 
+        $datas = $getPage <= 0 ? $skrd->get() : $skrd->paginate($getPage)->withQueryString();
+
         return Inertia::render('Pendaftar/Data-Input/Skrd/Index', [
-            'datas' => $skrd->paginate(10)->withQueryString(),
+            'datas' => $datas,
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
                 'sort' => $getSortBy,

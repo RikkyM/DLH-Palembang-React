@@ -14,6 +14,7 @@ const Index = ({
   kategoriOptions = [],
   subKategoriOptions = [],
   petugasOptions = [],
+  tahunOptions = [],
 }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [kategori, setKategori] = useState(filters.kategori || "");
@@ -22,6 +23,8 @@ const Index = ({
   const [status, setStatus] = useState(filters.status || "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
+  const [bulanFilter, setBulanFilter] = useState(filters.bulan || "");
+  const [tahunFilter, setTahunFilter] = useState(filters.tahun || "");
   const [perPage, setPerPage] = useState(() => {
     return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
   });
@@ -35,6 +38,8 @@ const Index = ({
     subKategori: subKategori || filters.subKategori,
     petugas: petugas || filters.petugas,
     status: status || filters.status,
+    bulan: bulanFilter || filters.bulan,
+    tahun: tahunFilter || filters.tahun,
   };
 
   const [showFilters, setShowFilters] = useState(false);
@@ -121,6 +126,16 @@ const Index = ({
     { key: "statusLunas", label: "status", align: "text-left truncate" },
   ];
 
+  const bulanOptions = useMemo(
+    () => bulan.map((nama, idx) => ({ value: String(idx + 1), label: nama })),
+    [bulan],
+  );
+
+  const tahunList = useMemo(
+    () => tahunOptions.map((t) => ({ value: String(t), label: String(t) })),
+    [tahunOptions],
+  );
+
   const kategoriList = useMemo(
     () =>
       kategoriOptions.map((k) => ({
@@ -168,6 +183,8 @@ const Index = ({
     if (subKategori) params["sub-kategori"] = subKategori;
     if (petugas) params.petugas = petugas;
     if (status) params.status = status;
+    if (bulanFilter) params.bulan = bulanFilter;
+    if (tahunFilter) params.tahun = tahunFilter;
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (sort && sort !== "id") {
       params.sort = sort;
@@ -205,7 +222,7 @@ const Index = ({
       router.get(route("super-admin.skrd.index"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas", "subKategoriOptions", "filters"],
+        only: ["datas", "subKategoriOptions", "filters", "tahunOptions"],
         onFinish: () => setIsLoading(false),
       });
     }, 500);
@@ -222,6 +239,8 @@ const Index = ({
     sort,
     direction,
     status,
+    bulanFilter,
+    tahunFilter,
   ]);
 
   const handlePerPageChange = (e) => {
@@ -232,7 +251,7 @@ const Index = ({
     <Layout title="SKRD">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
-          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center relative">
+          <div className="relative flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
               <label
                 htmlFor="showData"
@@ -308,19 +327,17 @@ const Index = ({
                 />
                 <SearchableSelect
                   id="FilterBulan"
-                  // options={statusList}
-                  // value={status}
-                  // onChange={(val) => setStatus(val)}
+                  options={bulanOptions}
+                  value={bulanFilter}
+                  onChange={(val) => setBulanFilter(val)}
                   placeholder="Filter bulan"
-                  disabled
                 />
                 <SearchableSelect
                   id="FilterTahun"
-                  // options={statusList}
-                  // value={status}
-                  // onChange={(val) => setStatus(val)}
+                  options={tahunList}
+                  value={tahunFilter}
+                  onChange={(val) => setTahunFilter(val)}
                   placeholder="Filter tahun"
-                  disabled
                 />
               </div>
             </div>

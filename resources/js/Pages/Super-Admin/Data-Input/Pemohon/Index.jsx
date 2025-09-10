@@ -70,9 +70,9 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
   return (
     <Layout title="PEMOHON">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
-        <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
+        <div className="mb-3 flex w-full flex-col items-center justify-between gap-2 rounded bg-white p-2 md:flex-row md:flex-wrap ">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
-            <div className="flex w-full items-center gap-2 sm:w-max">
+            <div className="flex w-full items-center gap-2">
               <label
                 htmlFor="showData"
                 className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
@@ -113,14 +113,24 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
               </label>
             </div>
           </div>
-          <button
-            onClick={() => {
-              openModal("create");
-            }}
-            className="flex w-full items-center justify-center gap-1.5 whitespace-nowrap rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:w-auto"
-          >
-            <span>Tambah Data</span>
-          </button>
+          <div className="flex gap-2 flex-row w-full md:w-max">
+            <button
+              onClick={() => {
+                openModal("create");
+              }}
+              className="flex w-full flex-0 order-2 md:order-1 items-center justify-center gap-1.5 whitespace-nowrap rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:w-auto"
+            >
+              <span>Tambah Data</span>
+            </button>
+            <button
+              // onClick={() => {
+              //   openModal("create");
+              // }}
+              className="flex w-full flex-1 order-1 md:order-2 items-center justify-center gap-1.5 whitespace-nowrap rounded bg-green-700 px-5 md:px-3 py-2 text-sm text-white outline-none md:w-auto"
+            >
+              <span>Excel</span>
+            </button>
+          </div>
         </div>
 
         <div
@@ -184,9 +194,13 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                         <td>
                           <div className="w-72">{data.alamat}</div>
                         </td>
-                        <td className="whitespace-nowrap">{data.kelurahan.namaKelurahan}</td>
+                        <td className="whitespace-nowrap">
+                          {data.kelurahan.namaKelurahan}
+                        </td>
                         <td>
-                          <div className="w-max whitespace-nowrap">{data.kecamatan.namaKecamatan}</div>
+                          <div className="w-max whitespace-nowrap">
+                            {data.kecamatan.namaKecamatan}
+                          </div>
                         </td>
                         <td>{data.tempatLahir}</td>
                         <td>
@@ -200,8 +214,12 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                               .replace(/\//g, "-")}
                         </td>
 
-                        <td className="whitespace-nowrap">{data.noHP ?? "-"}</td>
-                        <td className="whitespace-nowrap">{data.email ?? "-"}</td>
+                        <td className="whitespace-nowrap">
+                          {data.noHP ?? "-"}
+                        </td>
+                        <td className="whitespace-nowrap">
+                          {data.email ?? "-"}
+                        </td>
                         {/* <td>{data.jabatan ?? "-"}</td> */}
                         <td className="truncate">
                           {data.created_at &&

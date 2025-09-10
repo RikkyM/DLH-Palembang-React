@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -202,8 +203,10 @@ class WajibRetribusiController extends Controller
             ->values()
             ->map(fn($t) => ['value' => $t, 'label' => $t]);
 
+        $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
+
         return Inertia::render("Pendaftar/Data-Input/Wajib-Retribusi/{$view}", [
-            'datas' => $query->paginate($request->get('per_page', 10))->withQueryString(),
+            'datas' => $datas,
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
                 'sort' => $getSortBy,
@@ -278,8 +281,8 @@ class WajibRetribusiController extends Controller
             null,
             'Diproses',
             fn($q) => $q->where(function ($data) {
-                $data->where('status', 'Processed')
-                    ->where('current_role', '!=', 'ROLE_KUPTD');
+                $data->where('status', 'Processed');
+                // ->where('current_role', '!=', 'ROLE_KUPTD');
             })
         );
     }
@@ -344,7 +347,6 @@ class WajibRetribusiController extends Controller
             });
 
         $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'tarif', 'rumus', 'variabel', 'tarif', 'tarif2')
-
             ->get()
             ->groupBy('kodeKategori')
             ->map(function ($groupedSubKategori) {
@@ -551,6 +553,16 @@ class WajibRetribusiController extends Controller
                 'tarif2' => $sub->tarif2,
             ])->values());
 
+        $penagihOptions = Penagih::select('id', 'nama')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($penagih) {
+                return [
+                    'value' => $penagih->id,
+                    'label' => $penagih->nama
+                ];
+            });
+
         return Inertia::render("Pendaftar/Data-Input/Wajib-Retribusi/Edit", [
             'status' => $status,
             'retribusi' => $retribusi,
@@ -560,6 +572,7 @@ class WajibRetribusiController extends Controller
             'kelurahanOptions' => $kelurahanOptions,
             'kategoriOptions' => $kategoriOptions,
             'subKategoriOptions' => $subKategoriOptions,
+            'penagihOptions' => $penagihOptions
         ]);
     }
 
@@ -609,13 +622,13 @@ class WajibRetribusiController extends Controller
             if ($request->hasFile('fotoBangunan')) {
                 $fileFotoBangunan = $request->file('fotoBangunan');
                 $fotoBangunan = Str::uuid() . '.' . $fileFotoBangunan->getClientOriginalExtension();
-                $pathFotoBangunan = [$fileFotoBangunan->storeAs('foto/bangunan', $fotoBangunan, 'local')];
+                $pathFotoBangunan = [Storage::url($fileFotoBangunan->storeAs('foto/bangunan', $fotoBangunan, 'local'))];
             }
 
             if ($request->hasFile('fotoBerkas')) {
                 $fileFotoBerkas = $request->file('fotoBerkas');
                 $fotoBerkas = Str::uuid() . '.' . $fileFotoBerkas->getClientOriginalExtension();
-                $pathFotoBerkas = [$fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local')];
+                $pathFotoBerkas = [Storage::url($fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local'))];
             }
 
             $uptd = Uptd::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
@@ -627,6 +640,7 @@ class WajibRetribusiController extends Controller
                 'kodeKecamatan' => $request->kodeKecamatan,
                 'uptdId' => $uptd->id,
                 'pemilikId' => $request->pemilikId,
+                'penagihId' => $request->penagihId,
                 'petugasPendaftarId' => Auth::user()->id,
                 'namaObjekRetribusi' => $request->namaObjekRetribusi,
                 'deskripsiUsaha' => $request->deskripsi,
@@ -641,11 +655,13 @@ class WajibRetribusiController extends Controller
                 'longitude' => $request->longitude,
                 'image' => $fotoBangunan,
                 'url_image' => $pathFotoBangunan,
-                'file' => $fotoBerkas,
+                'file' => $fotoBerkas ?? null,
                 'url_file' => $pathFotoBerkas,
                 'linkMap' => $request->linkMap,
                 'jenisTarif' => $request->jenisTarif,
                 'bulan' => $validated['variabelValues']['bulan'],
+                'keteranganBulan' => strtoupper($request->keteranganBulan),
+                'tanggalSkrd' => $request->tanggalSkrd ? Carbon::parse($request->tanggalSkrd)->format('Y-m-d') : null,
                 'unit' => $validated['variabelValues']['unit'] ?? null,
                 'm2' => $validated['variabelValues']['m2'] ?? null,
                 'giat' => $validated['variabelValues']['giat'] ?? null,
@@ -693,6 +709,9 @@ class WajibRetribusiController extends Controller
             'actionDate' => now()->toIso8601String()
         ];
 
+        if (empty($retribusi->noWajibRetribusi)) {
+            $retribusi->noWajibRetribusi = WajibRetribusi::generateNoWajibRetribusi();
+        }
         $retribusi->status = 'Processed';
         $retribusi->historyAction = $history;
         $retribusi->current_role = "ROLE_KUPTD";

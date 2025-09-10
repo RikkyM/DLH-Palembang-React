@@ -19,6 +19,9 @@ const Index = ({
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
   const [status, setStatus] = useState(filters.status || "");
   const [sort, setSort] = useState(filters.sort || null);
+  const [perPage, setPerPage] = useState(() => {
+    return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
+  });
   const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -140,6 +143,7 @@ const Index = ({
     if (kategori) params.kategori = kategori;
     if (subKategori) params["sub-kategori"] = subKategori;
     if (status) params.status = status;
+    if (perPage && perPage !== 10) params.per_page = perPage;
 
     if (sort && sort !== "id") {
       params.sort = sort;
@@ -185,7 +189,11 @@ const Index = ({
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [search, kategori, subKategori, sort, direction, status]);
+  }, [search, kategori, subKategori, sort, direction, perPage, status]);
+
+  const handlePerPageChange = (e) => {
+    setPerPage(parseInt(e.target.value));
+  };
 
   return (
     <Layout title="SKRD">
@@ -199,8 +207,8 @@ const Index = ({
               <select
                 name="showData"
                 id="showData"
-                // value={perPage}
-                // onChange={handlePerPageChange}
+                value={perPage}
+                onChange={handlePerPageChange}
                 className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
               >
                 <option value="10">10</option>
@@ -352,10 +360,10 @@ const Index = ({
                   >
                     {bulan.map((bulan, i) => (
                       <React.Fragment key={i}>
-                        <th className="cursor-pointer select-none bg-[#F1B174] sticky top-0">
+                        <th className="sticky top-0 cursor-pointer select-none bg-[#F1B174]">
                           {bulan}
                         </th>
-                        <th className="cursor-pointer select-none truncate bg-[#F1B174] sticky top-0">
+                        <th className="sticky top-0 cursor-pointer select-none truncate bg-[#F1B174]">
                           Tanggal Bayar
                         </th>
                       </React.Fragment>
@@ -363,14 +371,15 @@ const Index = ({
                   </TableHead>
                 </thead>
                 <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
-                  {datas?.data?.length > 0 ? (
-                    datas.data.map((data, index) => (
+                  {(datas.data ?? datas)?.length > 0 ? (
+                    (datas.data ?? datas).map((data, index) => (
                       <tr
                         key={data.id || index}
                         className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
-                          {(datas.current_page - 1) * datas.per_page +
+                          {((datas.current_page ?? 1) - 1) *
+                            (datas.per_page ?? (datas.data ?? datas).length) +
                             index +
                             1}
                         </td>

@@ -37,6 +37,8 @@ class SkrdController extends Controller
         $subKategoriId = $request->get('sub-kategori');
         $petugasId = $request->get('petugas');
         $status = $request->get('status');
+        $getBulan = $request->get('bulan');
+        $getTahun = $request->get('tahun');
         $getPage = $request->get('per_page', 10);
 
         $skrd = Skrd::with([
@@ -79,15 +81,12 @@ class SkrdController extends Controller
         if ($search && trim($search) !== '') {
             $skrd->where('namaObjekRetribusi', 'like', "%{$search}%");
         }
-
         if ($kategoriId) {
             $skrd->where('namaKategori', $kategoriId);
         }
-
         if ($subKategoriId) {
             $skrd->where('namaSubKategori', $subKategoriId);
         }
-
         if ($petugasId) {
             $skrd->where('namaPendaftar', $petugasId);
         }
@@ -98,6 +97,14 @@ class SkrdController extends Controller
             $skrd->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) > 0');
         }
 
+        if ($getBulan) {
+            $skrd->whereMonth('created_at', (int) $getBulan);
+        }
+
+        if ($getTahun) {
+            $skrd->whereYear('created_at', (int) $getTahun);
+        }
+
         $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
         $subKategori = $kategoriId ?
             SubKategori::whereHas('kategori', function ($query) use ($kategoriId) {
@@ -106,11 +113,10 @@ class SkrdController extends Controller
             : collect();
         $petugas = User::select('id', 'namaLengkap', 'lokasi')->where('role', 'ROLE_PENDAFTAR')->orderBy('namaLengkap')->get();
 
-        if ($getPage <= 0) {
-            $datas = $skrd->get();
-        } else {
-            $datas = $skrd->paginate($getPage)->withQueryString();
-        }
+        $tahunOptions = Skrd::selectRaw('YEAR(created_at) as tahun')
+            ->distinct()->orderByDesc('tahun')->pluck('tahun');
+
+        $datas = $getPage <= 0 ? $skrd->get() : $skrd->paginate($getPage)->withQueryString();
 
         return Inertia::render('Super-Admin/Data-Input/Skrd/Index', [
             'datas' => $datas,
@@ -121,12 +127,16 @@ class SkrdController extends Controller
                 'kategori' => $kategoriId,
                 'subKategori' => $subKategoriId,
                 'petugas' => $petugasId,
-                'status' => $status
+                'status' => $status,
+                'bulan' => $getBulan,
+                'tahun' => $getTahun,
+                'per_page' => $getPage
             ],
             'kategoriOptions' => $kategori,
             'subKategoriOptions' => $subKategori,
             'petugasOptions' => $petugas,
-            'bulan' => $this->getBulan()
+            'bulan' => $this->getBulan(),
+            'tahunOptions' => $tahunOptions
         ]);
     }
 

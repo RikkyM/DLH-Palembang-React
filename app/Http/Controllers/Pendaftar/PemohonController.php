@@ -24,9 +24,9 @@ class PemohonController extends Controller
         $getPage = $request->get('per_page', 10);
 
         $query = Pemilik::with(['kecamatan', 'kelurahan']);
-            // ->whereHas('uptd', function ($q) {
-            //     $q->where('id', Auth::user()->uptdId);
-            // });
+        // ->whereHas('uptd', function ($q) {
+        //     $q->where('id', Auth::user()->uptdId);
+        // });
 
         if ($search && trim($search) !== '') {
             $query->where('namaPemilik', 'like', "%{$search}%");
@@ -157,5 +157,16 @@ class PemohonController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function getKtp($filename)
+    {
+        $path = storage_path('app/private/foto/ktp/' . $filename);
+
+        if (!file_exists($path)) {
+            abort(404);
+        };
+
+        return response()->file($path);
     }
 }

@@ -72,7 +72,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
-            <div className="flex w-full items-center gap-2 sm:w-max">
+            <div className="flex w-full items-center gap-2">
               <label
                 htmlFor="showData"
                 className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
@@ -119,7 +119,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
             }}
             className="flex w-full items-center justify-center gap-1.5 rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:w-auto"
           >
-            <span>Tambah Pemohon</span>
+            <span>Tambah Data</span>
           </button>
         </div>
         <div

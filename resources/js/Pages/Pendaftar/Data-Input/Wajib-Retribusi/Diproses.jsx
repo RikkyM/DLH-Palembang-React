@@ -27,16 +27,19 @@ const Diproses = ({
   const [petugas, setPetugas] = useState(filters.petugas || "");
   const [showFilters, setShowFilters] = useState(false);
   const [pj, setpj] = useState(filters.pj || "");
+  const [perPage, setPerPage] = useState(() => {
+    return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
+  });
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    {
-      key: "noPendaftaran",
-      label: "no pendaftaran",
-      align: "text-left truncate",
-    },
+    // {
+    //   key: "noPendaftaran",
+    //   label: "no pendaftaran",
+    //   align: "text-left truncate",
+    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -65,7 +68,7 @@ const Diproses = ({
       label: "detail rincian",
       align: "text-left truncate",
     },
-    { key: "uptd", label: "uptd", align: "text-left truncate" },
+    { key: "uptd", label: "wilayah uptd", align: "text-left truncate" },
     {
       key: "tarifPerbulan",
       label: "tarif perbulan",
@@ -144,6 +147,7 @@ const Diproses = ({
     if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
     if (petugas) params.petugas = petugas;
+    if (perPage && perPage !== 10) params.per_page = perPage;
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "asc") {
@@ -197,8 +201,13 @@ const Diproses = ({
     kecamatan,
     kelurahan,
     petugas,
+    perPage,
     pj,
   ]);
+
+  const handlePerPageChange = (e) => {
+    setPerPage(parseInt(e.target.value));
+  };
 
   return (
     <Layout title="WAJIB RETRIBUSI DIPROSES">
@@ -214,8 +223,8 @@ const Diproses = ({
                   <select
                     name="showData"
                     id="showData"
-                    // value={perPage}
-                    // onChange={handlePerPageChange}
+                    value={perPage}
+                    onChange={handlePerPageChange}
                     className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                   >
                     <option value="10">10</option>

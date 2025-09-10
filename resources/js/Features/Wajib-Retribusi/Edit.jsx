@@ -22,6 +22,8 @@ const WajibRetribusiEdit = ({
 }) => {
   const [mapReset, setMapReset] = useState(0);
 
+  console.log(penagihOptions)
+
   const roleConfig = {
     ROLE_SUPERADMIN: {
       diterima: "super-admin.wajib-retribusi.diterima",

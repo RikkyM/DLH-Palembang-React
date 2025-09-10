@@ -256,6 +256,8 @@ const Index = ({
     tahun,
   ]);
 
+  console.log(perPage)
+
   const handlePerPageChange = (e) => {
     setPerPage(parseInt(e.target.value));
   };

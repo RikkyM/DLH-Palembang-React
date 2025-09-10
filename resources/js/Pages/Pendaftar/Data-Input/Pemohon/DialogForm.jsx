@@ -52,7 +52,7 @@ const DialogForm = ({
           noHP: pemohon.noHP || "",
           email: pemohon.email || "",
           // jabatan: pemohon.jabatan || "",
-          // ktp: pemohon.ktp || null,
+          ktp: pemohon.ktp || null,
         });
       } else if (!isEditMode) {
         setData(initialData);
@@ -320,14 +320,14 @@ const DialogForm = ({
               ref={fileInputRef}
               type="file"
               id="ktp"
-              accept="image/*"
+              accept="image/*, application/pdf"
               className="text-xs"
               onChange={(e) => handleFileChange("ktp", e.target.files[0])}
             />
             {errors.ktp && (
               <span className="text-xs text-red-500">{errors.ktp}</span>
             )}
-            {pemohon?.ktp && <span className="text-xs">{pemohon?.ktp}</span>}
+            {/* {pemohon?.ktp && <span className="text-xs">{pemohon?.ktp}</span>} */}
           </FormInput>
           {/* <div className="flex flex-col gap-1.5 text-sm">
             <label
@@ -349,21 +349,35 @@ const DialogForm = ({
               <span className="text-xs text-red-500">{errors.jabatan}</span>
             )}
           </div> */}
-          <div className="col-span-3 flex flex-col gap-3 text-sm md:flex-row md:justify-end md:gap-2">
-            <button
-              className="order-1 rounded bg-teal-400 px-3 py-2 font-medium text-white transition-colors hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
-              disabled={processing}
-              type="submit"
-            >
-              {processing ? "Menyimpan..." : "Simpan Data"}
-            </button>
-            <button
-              onClick={handleClose}
-              className="order-2 rounded-md border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 hover:bg-gray-50 md:order-1"
-              type="button"
-            >
-              Batal
-            </button>
+          <div className="col-span-3 flex flex-col gap-3 text-sm md:flex-row md:justify-between md:gap-2">
+            <div className="">
+              {pemohon && pemohon.ktp && (
+                <>
+                  <img
+                    className="md:max-w-96"
+                    src={route("pendaftar.getKtp", pemohon.ktp)}
+                    alt=""
+                  />
+                  <span className="text-xs">{pemohon?.ktp}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col gap-3 md:flex-row md:items-end">
+              <button
+                className="order-1 h-max rounded bg-teal-400 px-3 py-2 font-medium text-white transition-colors hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
+                disabled={processing}
+                type="submit"
+              >
+                {processing ? "Menyimpan..." : "Simpan Data"}
+              </button>
+              <button
+                onClick={handleClose}
+                className="order-2 h-max rounded-md border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 hover:bg-gray-50 md:order-1"
+                type="button"
+              >
+                Batal
+              </button>
+            </div>
           </div>
         </form>
       </div>
