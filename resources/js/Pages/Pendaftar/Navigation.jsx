@@ -1,6 +1,7 @@
 import { Link, usePage } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
 import AccordionItem from "@/Components/AccordionItem";
+import Calendar from "react-calendar";
 
 const PendaftarNavigation = () => {
   const { url } = usePage();
@@ -39,7 +40,7 @@ const PendaftarNavigation = () => {
       ],
     },
     {
-      label: "Inbox Selesai (SKRD)",
+      label: "Inbox Selesai (SPKRD)",
       route: "pendaftar.skrd.index",
       activeRoute: "pendaftar.skrd.*",
     },
@@ -122,6 +123,10 @@ const PendaftarNavigation = () => {
           items={dataInputs}
           defaultOpen={isAccordionActive(dataInputs)}
         />
+
+        <div className="py-3">
+          <Calendar />
+        </div>
 
         {/* <AccordionItem
           title="Settings"

@@ -84,14 +84,16 @@ const Sidebar = ({ children }) => {
               width="256"
               height="80"
               decoding="async"
-              className="w-64 min-w-72 px-7 pt-7 w-full"
+              className="w-64 w-full min-w-72 px-7 pt-7"
             />
           </picture>
-          <p className="uppercase text-xs w-full min-w-72 px-14">sistem informasi retribusi persampahan versi 2</p>
+          <p className="w-full min-w-72 px-14 text-xs uppercase">
+            sistem informasi retribusi persampahan versi 2
+          </p>
         </section>
 
         {/* body */}
-        <section className="flex-1 place-content-start space-y-1.5 overflow-y-auto overflow-x-hidden text-nowrap text-sm [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-0.5">
+        <section className="flex-1 place-content-start space-y-1.5 overflow-y-auto overflow-x-hidden  text-sm [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-0.5">
           {children}
         </section>
 

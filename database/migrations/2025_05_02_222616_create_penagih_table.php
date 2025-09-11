@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('penagih', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('uptdId')->constrained('uptd')->onUpdate('cascade');
-            $table->string('nip');
-            $table->string('nik');
             $table->string('nama');
+            $table->string('jabatan');
+            $table->string('statusPegawai');
             $table->string('wilayah_uptd');
             $table->timestamps();
         });

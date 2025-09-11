@@ -5,7 +5,7 @@ import { router } from "@inertiajs/react";
 import SmartPagination from "@/Components/SmartPagination";
 import { useProvider } from "@/Context/GlobalContext";
 import DialogForm from "./DialogForm";
-import DialogDelete from "./DialogDelete";
+// import DialogDelete from "./DialogDelete";
 
 const Index = ({ datas, kecamatan, filters }) => {
   const { modalState, openModal, closeModal } = useProvider();
@@ -35,7 +35,7 @@ const Index = ({ datas, kecamatan, filters }) => {
 
   return (
     <Layout title="KELURAHAN">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
           <label
             htmlFor="search"
@@ -62,15 +62,15 @@ const Index = ({ datas, kecamatan, filters }) => {
           </button>
         </div>
 
-        <div className="overflow-x-auto rounded bg-white">
+        <div className="overflow-x-auto rounded">
           <table className="min-w-full divide-y divide-gray-300 whitespace-nowrap p-3">
             <thead>
-              <tr className="*:p-2 *:text-sm *:font-medium">
+              <tr className="text-white *:bg-[#F1B174] *:p-2 *:text-sm *:font-medium">
                 <th className="text-center">No</th>
                 <th className="text-left">Kecamatan</th>
                 <th className="text-left">Kode Kelurahan</th>
                 <th className="text-left">Nama Kelurahan</th>
-                <th className="text-right">Aksi</th>
+                <th className="sticky right-0 text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
@@ -105,7 +105,7 @@ const Index = ({ datas, kecamatan, filters }) => {
                 datas.data.map((data, index) => (
                   <tr
                     key={data.id || index}
-                    className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                    className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                   >
                     <td className="text-center">
                       {(datas.current_page - 1) * datas.per_page + index + 1}
@@ -113,7 +113,9 @@ const Index = ({ datas, kecamatan, filters }) => {
                     <td>{data.kecamatan.namaKecamatan}</td>
                     <td>{data.kodeKelurahan}</td>
                     <td>{data.namaKelurahan}</td>
-                    <td className="space-x-1 text-right md:space-x-2">
+                    <td
+                      className={`sticky right-0 space-x-1 text-right md:space-x-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                    >
                       <button
                         type="button"
                         onClick={() => {
@@ -123,7 +125,7 @@ const Index = ({ datas, kecamatan, filters }) => {
                       >
                         <PencilLine size={20} />
                       </button>
-                      <button
+                      {/* <button
                         type="button"
                         onClick={() => {
                           openModal("delete", data);
@@ -131,7 +133,7 @@ const Index = ({ datas, kecamatan, filters }) => {
                         className="rounded-full p-1 outline-none transition-all duration-300 hover:bg-neutral-300"
                       >
                         <Trash size={20} />
-                      </button>
+                      </button> */}
                     </td>
                   </tr>
                 ))
@@ -158,11 +160,11 @@ const Index = ({ datas, kecamatan, filters }) => {
         kecamatan={kecamatan}
       />
 
-      <DialogDelete
+      {/* <DialogDelete
         isOpen={modalState.type === "delete"}
         onClose={closeModal}
         kelurahan={modalState.data}
-      />
+      /> */}
     </Layout>
   );
 };

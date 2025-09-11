@@ -1,6 +1,7 @@
 import { Link, usePage } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
 import AccordionItem from "@/Components/AccordionItem";
+import Calendar from "react-calendar";
 
 const KuptdNavigation = () => {
   const { url } = usePage();
@@ -105,10 +106,14 @@ const KuptdNavigation = () => {
         </Link>
 
         <AccordionItem
-                  title="Data Input"
-                  items={dataInputs}
-                  defaultOpen={isAccordionActive(dataInputs)}
-                />
+          title="Data Input"
+          items={dataInputs}
+          defaultOpen={isAccordionActive(dataInputs)}
+        />
+
+        <div className="py-3">
+          <Calendar />
+        </div>
 
         {/* <AccordionItem
           title="Settings"

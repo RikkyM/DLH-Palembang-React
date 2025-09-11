@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WajibRetribusiRequest;
+use App\Models\BadanUsaha;
 use App\Models\Kategori;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
@@ -386,6 +387,16 @@ class WajibRetribusiController extends Controller
                 })->values();
             });
 
+        $badanUsahaOptions = BadanUsaha::select('id', 'namaBadanUsaha')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($usaha) {
+                return [
+                    'value' => $usaha->namaBadanUsaha,
+                    'label' => $usaha->namaBadanUsaha,
+                ];
+            });
+
         $penagihOptions = Penagih::select('id', 'nama')
             ->orderBy('id')
             ->get()
@@ -402,7 +413,8 @@ class WajibRetribusiController extends Controller
             'kelurahanOptions' => $kelurahanOptions,
             'kategoriOptions' => $kategoriOptions,
             'subKategoriOptions' => $subKategoriOptions,
-            'penagihOptions' => $penagihOptions
+            'penagihOptions' => $penagihOptions,
+            'badanUsahaOptions' => $badanUsahaOptions
         ]);
     }
 
@@ -601,6 +613,16 @@ class WajibRetribusiController extends Controller
                 ];
             });
 
+        $badanUsahaOptions = BadanUsaha::select('id', 'namaBadanUsaha')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($usaha) {
+                return [
+                    'value' => $usaha->namaBadanUsaha,
+                    'label' => $usaha->namaBadanUsaha,
+                ];
+            });
+
         return Inertia::render("Super-Admin/Data-Input/Wajib-Retribusi/Edit", [
             'status' => $status,
             'retribusi' => $retribusi,
@@ -610,7 +632,8 @@ class WajibRetribusiController extends Controller
             'kelurahanOptions' => $kelurahanOptions,
             'kategoriOptions' => $kategoriOptions,
             'subKategoriOptions' => $subKategoriOptions,
-            'penagihOptions' => $penagihOptions
+            'penagihOptions' => $penagihOptions,
+            'badanUsahaOptions' => $badanUsahaOptions
         ]);
     }
 

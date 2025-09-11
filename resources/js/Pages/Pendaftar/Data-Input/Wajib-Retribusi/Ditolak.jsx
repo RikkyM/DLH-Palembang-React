@@ -69,6 +69,24 @@ const Ditolak = ({
       align: "text-left truncate",
     },
     { key: "uptd", label: "wilayah uptd", align: "text-left truncate" },
+    { key: "bulan", label: "jumlah bulan", align: "text-left truncate" },
+    {
+      key: "bentukBadanUsaha",
+      label: "bentuk badan usaha",
+      align: "text-left truncate",
+    },
+    { key: "jenisTarif", label: "layanan", align: "text-left truncate" },
+    {
+      key: "keteranganBulan",
+      label: "keterangan bulan",
+      align: "text-left truncate",
+    },
+    { key: "unit", label: "unit", align: "text-left truncate" },
+    { key: "m2", label: "m2", align: "text-left truncate" },
+    { key: "giat", label: "giat", align: "text-left truncate" },
+    { key: "hari", label: "hari", align: "text-left truncate" },
+    { key: "meter", label: "meter", align: "text-left truncate" },
+    { key: "tanggalSkrd", label: "tanggal spkrd", align: "text-left truncate" },
     {
       key: "tarifPerbulan",
       label: "tarif perbulan",
@@ -211,7 +229,7 @@ const Ditolak = ({
   };
 
   return (
-    <Layout title="WAJIB RETRIBUSI DITOLAK">
+    <Layout title="INBOX DITOLAK">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
@@ -375,7 +393,9 @@ const Ditolak = ({
             </button>
           </div>
         </div>
-        <div className="max-h-[calc(100%_-_150px)] overflow-x-auto rounded bg-white shadow">
+        <div
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
+        >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
               <svg

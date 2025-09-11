@@ -228,7 +228,7 @@ const Diterima = ({
   };
 
   return (
-    <Layout title="WAJIB RETRIBUSI DITERIMA">
+    <Layout title="INBOX DITERIMA">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
@@ -393,7 +393,7 @@ const Diterima = ({
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">

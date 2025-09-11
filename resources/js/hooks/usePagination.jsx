@@ -12,30 +12,47 @@ export const usePagination = () => {
   };
 
   const generatePagesToShow = (currentPage, lastPage) => {
-    let pagesToShow = [];
+    const pages = [];
 
-    if (lastPage <= 5) {
-      // Kalau total halaman <= 5, tampilkan semua
-      for (let i = 1; i <= lastPage; i++) {
-        pagesToShow.push(i);
-      }
-    } else {
-      // Selalu tampilkan 1 - 5
-      for (let i = 1; i <= 5; i++) {
-        pagesToShow.push(i);
-      }
-
-      // Tambahkan "..." kalau lastPage > 6
-      if (lastPage > 6) {
-        pagesToShow.push("...");
-      }
-
-      // Tambahkan halaman terakhir
-      pagesToShow.push(lastPage);
+    // Jika total halaman sedikit, tampilkan semua
+    if (lastPage <= 7) {
+      for (let i = 1; i <= lastPage; i++) pages.push(i);
+      return pages;
     }
 
-    return pagesToShow;
+    const add = (p) => pages.push(p);
+
+    add(1); // selalu tampilkan halaman pertama
+
+    // tentukan window di sekitar currentPage
+    // misal: 2 angka sebelum dan sesudah currentPage
+    let start = Math.max(2, currentPage - 2);
+    let end = Math.min(lastPage - 1, currentPage + 2);
+
+    // rapikan bila currentPage dekat awal
+    if (currentPage <= 4) {
+      start = 2;
+      end = 5; // 1, 2,3,4,5, ..., last
+    }
+
+    // rapikan bila currentPage dekat akhir
+    if (currentPage >= lastPage - 3) {
+      start = lastPage - 4; // 1, ..., last-4,last-3,last-2,last-1,last
+      end = lastPage - 1;
+    }
+
+    // sisipkan "..." jika ada gap dari 1 ke start
+    if (start > 2) add("...");
+
+    for (let i = start; i <= end; i++) add(i);
+
+    // sisipkan "..." jika ada gap dari end ke lastPage
+    if (end < lastPage - 1) add("...");
+
+    add(lastPage); // selalu tampilkan halaman terakhir
+    return pages;
   };
+
 
   const buildPageUrl = (page, filters = {}) => {
     const currentParams = new URLSearchParams(window.location.search);

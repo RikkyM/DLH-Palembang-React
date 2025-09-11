@@ -2,6 +2,7 @@ import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
 import { GlobalProvider } from "./Context/GlobalContext";
 import "../css/app.css";
+import "react-calendar/dist/Calendar.css";
 
 createInertiaApp({
   progress: false,

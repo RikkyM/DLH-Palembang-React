@@ -18,35 +18,84 @@ class DatabaseSeeder extends Seeder
     {
 
         DB::table('penagih')->insert([
+            ['nama' => 'Aan Firmansyah, S.Sos', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Sukarami', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Akmal, S.P.', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Seberang Ulu Satu', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Fahnan Fitriansyah, S.E', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Plaju', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Firmansyah, S.E', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Ilir Barat Dua', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Juhairiah, S.Sos', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Ilir Timur Satu', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Mariyah Ulpa, S.Sos', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Ilir Timur Satu', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Reka Robinsyah, S.Sos', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Gandus', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Riki Azmi Perdana, Se, M.Si', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Ilir Barat Satu', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Sandi Irawan, S.IP., M.Si', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Sukarami', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Supatman, S.E', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Kemuning', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Zulfahmi, S.E', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Kertapati', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Aguscik', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'TPA', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Ahmad Faisal Ridha', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Kemuning', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Ahmad Junaidi', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Seberang Ulu Satu', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Idham Ali', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Alang Alang Lebar', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Muhammad Andi', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Seberang Ulu Satu', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Muhammad Ridho Hizrian', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Bukit Kecil', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Nopran Efendi', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PPPK', 'wilayah_uptd' => 'Ilir Timur Tiga', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Anggi Okta Perdana, S.T', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PHL', 'wilayah_uptd' => 'TPA', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Dodi Yosaktavano', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PHL', 'wilayah_uptd' => 'Ilir Timur Tiga', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Endi Frasmihayati', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PHL', 'wilayah_uptd' => 'Jakabaring', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Salsadila', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PHL', 'wilayah_uptd' => 'Jakabaring', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Hanggara Wibowo, S.Kep/CPNS', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PHL', 'wilayah_uptd' => 'Ilir Barat Satu', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Chelly Monica, S.E', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PHL', 'wilayah_uptd' => 'Ilir Timur Tiga', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'M. Okky Aryansen, S.E', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'PHL', 'wilayah_uptd' => 'Plaju', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Lailatul Adzkia, S.Sos', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'Non Pnsd', 'wilayah_uptd' => 'S. Borang', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Karnila Olivia Siska, S.IP', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'Non Pnsd', 'wilayah_uptd' => 'Ilir Barat Satu', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Novi, S.E', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'Non Pnsd', 'wilayah_uptd' => 'Ilir Barat Dua', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Sibaren Dwyangga, A.Md', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'Non Pnsd', 'wilayah_uptd' => 'Ilir Timur Tiga', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Muhammad Abduh', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'Non Pnsd', 'wilayah_uptd' => 'Kalidoni', 'created_at' => now(), 'updated_at' => now()],
+            ['nama' => 'Erwin, S.Sos', 'jabatan' => 'Penagih Retribusi', 'statusPegawai' => 'Non Pnsd', 'wilayah_uptd' => 'Sako', 'created_at' => now(), 'updated_at' => now()],
+        ]);
+
+        DB::table('badan_usaha')->insert([
             [
-                'nip' => '198701012023011001',
-                'nik' => '3276010101010001',
-                'nama' => 'Boy',
-                'wilayah_uptd' => 'UPTD Selatan',
+                'namaBadanUsaha' => 'Koperasi',
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
-                'nip' => '198702022023011002',
-                'nik' => '3276010202020002',
-                'nama' => 'Joni',
-                'wilayah_uptd' => 'UPTD Utara',
+                'namaBadanUsaha' => 'Perseorangan',
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
-                'nip' => '198703032023011003',
-                'nik' => '3276010303030003',
-                'nama' => 'Ari',
-                'wilayah_uptd' => 'UPTD Barat',
+                'namaBadanUsaha' => 'Firma (Fa)',
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
-                'nip' => '198704042023011004',
-                'nik' => '3276010404040004',
-                'nama' => 'Joko',
-                'wilayah_uptd' => 'UPTD Timur',
+                'namaBadanUsaha' => 'Persekutuan Komanditer (CV)',
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
-                'nip' => '198705052023011005',
-                'nik' => '3276010505050005',
-                'nama' => 'Barok',
-                'wilayah_uptd' => 'UPTD Tengah',
+                'namaBadanUsaha' => 'Perseroan Terbatas',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'namaBadanUsaha' => 'Badan Usaha Milik Negara (BUMN)',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'namaBadanUsaha' => 'Badan Usaha Milik Daerah (BUMD)',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'namaBadanUsaha' => 'Badan Usaha Milik Swasta (BUMS)',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'namaBadanUsaha' => 'Badan Usaha Campuran',
+                'created_at' => now(),
+                'updated_at' => now()
             ],
         ]);
 

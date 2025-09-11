@@ -15,6 +15,7 @@ const WajibRetribusiCreate = ({
   kategoriOptions = [],
   subKategoriOptions = [],
   penagihOptions = [],
+  badanUsahaOptions = [],
   userRole = "ROLE_PENDAFTAR",
   customProps = {},
 }) => {
@@ -90,15 +91,15 @@ const WajibRetribusiCreate = ({
     { value: "SEWA", label: "SEWA" },
   ];
 
-  const bentukUsaha = [
-    { value: "Perorangan", label: "Perorangan" },
-    { value: "CV", label: "CV" },
-    { value: "PT", label: "PT" },
-    { value: "Koperasi", label: "Koperasi" },
-    { value: "BUMN", label: "BUMN" },
-    { value: "Instansi Pemerintah", label: "Instansi Pemerintah" },
-    { value: "FIRMA", label: "FIRMA" },
-  ];
+  // const bentukUsaha = [
+  //   { value: "Perorangan", label: "Perorangan" },
+  //   { value: "CV", label: "CV" },
+  //   { value: "PT", label: "PT" },
+  //   { value: "Koperasi", label: "Koperasi" },
+  //   { value: "BUMN", label: "BUMN" },
+  //   { value: "Instansi Pemerintah", label: "Instansi Pemerintah" },
+  //   { value: "FIRMA", label: "FIRMA" },
+  // ];
 
   const handleLocationChange = useCallback(
     (lat, lng) => {
@@ -443,7 +444,7 @@ const WajibRetribusiCreate = ({
             placeholder="Pilih Bentuk Badan Usaha"
             value={data.bentukUsaha}
             onChange={(value) => handleInputChange("bentukUsaha", value)}
-            options={bentukUsaha}
+            options={badanUsahaOptions}
             error={errors.bentukUsaha}
             required={true}
             valueKey="value"

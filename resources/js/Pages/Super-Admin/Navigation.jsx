@@ -1,6 +1,7 @@
 import { Link, usePage } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
 import AccordionItem from "@/Components/AccordionItem";
+import Calendar from "react-calendar";
 
 const SuperAdminNavigation = () => {
   const { url } = usePage();
@@ -44,7 +45,6 @@ const SuperAdminNavigation = () => {
       activeRoute: "super-admin.skrd.*",
     },
   ];
-
 
   const pembayaranItems = [
     {
@@ -103,7 +103,7 @@ const SuperAdminNavigation = () => {
     },
     {
       label: "Data Penagih / Kolektor",
-      // route: "super-admin.user.index",
+      route: "super-admin.penagih.index",
     },
     {
       label: "Data Kecamatan",
@@ -123,7 +123,7 @@ const SuperAdminNavigation = () => {
     },
     {
       label: "Badan Usaha",
-      // route: "super-admin.sub-kategori.index",
+      route: "super-admin.badan-usaha.index",
     },
   ];
 
@@ -210,6 +210,9 @@ const SuperAdminNavigation = () => {
           items={settingItems}
           defaultOpen={isAccordionActive(settingItems)}
         />
+        <div className="py-3">
+          <Calendar />
+        </div>
       </div>
     </Sidebar>
   );

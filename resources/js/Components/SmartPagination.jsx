@@ -38,9 +38,9 @@ const SmartPagination = ({ datas, className = null, filters = {}, routeName = nu
   };
 
   return (
-    <div className={`border-t border-gray-200 bg-white px-4 py-3 ${className}`}>
+    <div className={`border-t border-gray-200 bg-white overflow-x-auto px-4 py-3 ${className}`}>
       <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
-        <div className="hidden text-sm text-gray-700 md:block">
+        <div className="hidden text-xs text-gray-700 md:block lg:text-sm">
           Menampilkan <span className="font-medium">{datas.from || 0}</span>{" "}
           sampai <span className="font-medium">{datas.to || 0}</span> dari{" "}
           <span className="font-medium">{datas.total}</span>

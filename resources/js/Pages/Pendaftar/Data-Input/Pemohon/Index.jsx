@@ -70,7 +70,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
   return (
     <Layout title="PEMOHON">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
-        <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
+        <div className="mb-3 flex w-full flex-col items-center justify-between gap-2 rounded bg-white p-2 md:flex-row md:flex-wrap">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2">
               <label
@@ -113,17 +113,28 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
               </label>
             </div>
           </div>
-          <button
-            onClick={() => {
-              openModal("create");
-            }}
-            className="flex w-full items-center justify-center gap-1.5 rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:w-auto"
-          >
-            <span>Tambah Data</span>
-          </button>
+          <div className="flex w-full flex-row gap-2 md:w-max">
+            <button
+              onClick={() => {
+                openModal("create");
+              }}
+              className="flex-0 order-2 flex w-full items-center justify-center gap-1.5 whitespace-nowrap rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:order-1 md:w-auto"
+            >
+              <span>Tambah Data</span>
+            </button>
+            <button
+              // onClick={() => {
+              //   openModal("create");
+              // }}
+              className="order-1 flex w-full flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded bg-green-700 px-5 py-2 text-sm text-white outline-none md:order-2 md:w-auto md:px-3"
+            >
+              <span>Excel</span>
+            </button>
+          </div>
         </div>
+
         <div
-          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">

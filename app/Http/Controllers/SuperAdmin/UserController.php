@@ -23,11 +23,23 @@ class UserController extends Controller
         $sortDir = $request->get('direction', 'asc');
 
         $users = User::query()
-            ->when($search && trim($search) !== '', function ($query) use ($search) {
-                $query->where('namaLengkap', 'like', "%{$search}%")
-                    ->orWhere('username', 'like', "%{$search}%")
-                    ->orWhere('nip', 'like', "%{$search}%")
-                    ->orWhere('role', 'like', "%{$search}%");
+            ->whereNotNull('username')
+            ->where('username', '<>', '')
+            ->when($search && trim($search) !== '', function ($q) use ($search) {
+                $q->where(function ($qq) use ($search) {
+                    $qq->where('namaLengkap', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%")
+                        ->orWhere('nip', 'like', "%{$search}%")
+                        ->orWhere('role', 'like', "%{$search}%");
+                });
+            })
+            ->whereNotExists(function ($q) {
+                $q->from('users as u2')
+                    ->whereColumn('u2.namaLengkap', 'users.namaLengkap')
+                    ->whereColumn('u2.role', 'users.role')
+                    ->whereNotNull('u2.username')
+                    ->where('u2.username', '<>', '')
+                    ->whereColumn('u2.id', '>', 'users.id');
             })
             ->orderBy($sortBy, $sortDir)
             ->paginate(10)

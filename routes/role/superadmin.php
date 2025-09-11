@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\SuperAdmin\BadanUsahaController;
 use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\SuperAdmin\InvoiceController;
 use App\Http\Controllers\SuperAdmin\KategoriController;
 use App\Http\Controllers\SuperAdmin\KecamatanController;
 use App\Http\Controllers\SuperAdmin\KelurahanController;
 use App\Http\Controllers\SuperAdmin\PemohonController;
+use App\Http\Controllers\SuperAdmin\PenagihController;
 use App\Http\Controllers\SuperAdmin\PenerimaanRetribusiController;
 use App\Http\Controllers\SuperAdmin\SetoranController;
 use App\Http\Controllers\SuperAdmin\SkrdController;
@@ -49,13 +51,15 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::resource('/data-setoran', SetoranController::class)->only(['index']);
     });
 
-    Route::prefix('settings')->group(function () {
+    Route::prefix('master-data')->group(function () {
         Route::resource('/uptd', UptdController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/user', UserController::class)->only(['index', 'store', 'update']);
+        Route::resource('/penagih', PenagihController::class)->only(['index', 'store', 'update']);
         Route::resource('/kecamatan', KecamatanController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/kelurahan', KelurahanController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/kategori', KategoriController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/sub-kategori', SubKategoriController::class)->only(['index', 'store', 'update', 'destroy']);
+        Route::resource('/badan-usaha', BadanUsahaController::class)->only(['index', 'store', 'update']);
     });
 
 

@@ -2,10 +2,10 @@ import { PencilLine, Search, Trash } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useState } from "react";
 import { router } from "@inertiajs/react";
-import DialogDelete from "./DialogDelete";
 import { useProvider } from "@/Context/GlobalContext";
 import DialogEdit from "./DialogEdit";
 import DialogCreate from "./DialogCreate";
+// import DialogDelete from "./DialogDelete";
 import SmartPagination from "@/Components/SmartPagination";
 
 const Index = ({ datas, filters }) => {
@@ -35,7 +35,7 @@ const Index = ({ datas, filters }) => {
 
   return (
     <Layout title="UPTD">
-      <section className="p-3">
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
           <label
             htmlFor="search"
@@ -62,14 +62,16 @@ const Index = ({ datas, filters }) => {
           </button>
         </div>
 
-        <div className="overflow-x-auto rounded bg-white">
+        <div
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow bg-white"}`}
+        >
           <table className="min-w-full divide-y divide-gray-300 whitespace-nowrap p-3">
             <thead>
-              <tr className="*:p-2 *:text-sm *:font-medium">
+              <tr className="text-white *:bg-[#F1B174] *:p-2 *:text-sm *:font-medium">
                 <th className="w-20 text-center">No</th>
                 <th className="w-80 text-left">Nama Uptd</th>
                 <th className="text-left">Alamat</th>
-                <th className="text-right">Aksi</th>
+                <th className="sticky right-0 text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
@@ -104,14 +106,16 @@ const Index = ({ datas, filters }) => {
                 datas.data.map((data, index) => (
                   <tr
                     key={data.id || index}
-                    className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                    className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                   >
                     <td className="text-center">
                       {(datas.current_page - 1) * datas.per_page + index + 1}
                     </td>
                     <td>{data.namaUptd}</td>
                     <td>{data.alamat}</td>
-                    <td className="space-x-1 text-right md:space-x-2">
+                    <td
+                      className={`sticky right-0 space-x-1 text-right md:space-x-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                    >
                       <button
                         type="button"
                         onClick={() => {
@@ -121,7 +125,7 @@ const Index = ({ datas, filters }) => {
                       >
                         <PencilLine size={20} />
                       </button>
-                      <button
+                      {/* <button
                         type="button"
                         onClick={() => {
                           openModal("delete", data);
@@ -129,7 +133,7 @@ const Index = ({ datas, filters }) => {
                         className="rounded-full p-1 outline-none transition-all duration-300 hover:bg-neutral-300"
                       >
                         <Trash size={20} />
-                      </button>
+                      </button> */}
                     </td>
                   </tr>
                 ))
@@ -161,11 +165,11 @@ const Index = ({ datas, filters }) => {
         uptd={modalState.data}
       />
 
-      <DialogDelete
+      {/* <DialogDelete
         isOpen={modalState.type === "delete"}
         onClose={closeModal}
         uptd={modalState.data}
-      />
+      /> */}
     </Layout>
   );
 };

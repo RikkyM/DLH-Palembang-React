@@ -256,7 +256,7 @@ const Index = ({
     tahun,
   ]);
 
-  console.log(perPage)
+  console.log(perPage);
 
   const handlePerPageChange = (e) => {
     setPerPage(parseInt(e.target.value));
@@ -470,7 +470,7 @@ const Index = ({
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow bg-white"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
@@ -550,21 +550,30 @@ const Index = ({
                               : "-"}
                         </td>
                         <td>
-                          <div className="w-max">{data.keteranganBulan ?? "-"}</div>
+                          <div className="w-max">
+                            {data.keteranganBulan ?? "-"}
+                          </div>
                         </td>
                         <td>{data.unit ?? "-"}</td>
                         <td>{data.m2 ?? "-"}</td>
                         <td>{data.giat ?? "-"}</td>
                         <td>{data.hari ?? "-"}</td>
                         <td>{data.meter ?? "-"}</td>
-                        <td className="whitespace-nowrap">{data.tanggalSkrd ? new Date(data.tanggalSkrd).toLocaleDateString('id-ID', {
-                          // day: "numeric",
-                          // month: "long",
-                          // year: "numeric"
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric"
-                        }) : "-"}</td>
+                        <td className="whitespace-nowrap">
+                          {data.tanggalSkrd
+                            ? new Date(data.tanggalSkrd).toLocaleDateString(
+                                "id-ID",
+                                {
+                                  // day: "numeric",
+                                  // month: "long",
+                                  // year: "numeric"
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                },
+                              )
+                            : "-"}
+                        </td>
                         <td>
                           {new Intl.NumberFormat("id-ID", {
                             style: "currency",
