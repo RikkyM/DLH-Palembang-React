@@ -284,7 +284,7 @@ const Table = ({
               <td>{data.user.namaLengkap}</td>
               {data.status == "Rejected" && <td>{data.keterangan}</td>}
               <td>
-                <span
+                {/* <span
                   className={`select-none rounded py-2 font-medium ${
                     data.status === "Approved" && data.current_role != null
                       ? "text-sky-600"
@@ -302,12 +302,13 @@ const Table = ({
                     : data.status == "Rejected"
                       ? "Ditolak"
                       : "Diproses"}
-                </span>
+                </span> */}
+                {renderStatus(data)}
               </td>
               <td
                 className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
               >
-                <div className="flex h-full w-full flex-col gap-2 p-2 *:rounded *:text-sm *:font-medium">
+                {/* <div className="flex h-full w-full flex-col gap-2 p-2 *:rounded *:text-sm *:font-medium">
                   <button
                     className="flex items-center gap-1.5 whitespace-nowrap"
                     onClick={(e) => {
@@ -358,7 +359,8 @@ const Table = ({
                       </button>
                     </>
                   )}
-                </div>
+                </div> */}
+                {renderActions(data)}
               </td>
             </tr>
           ))

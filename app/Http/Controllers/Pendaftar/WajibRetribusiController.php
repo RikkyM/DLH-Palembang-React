@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pendaftar;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WajibRetribusiRequest;
+use App\Models\BadanUsaha;
 use App\Models\Kategori;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
@@ -373,13 +374,24 @@ class WajibRetribusiController extends Controller
                 ];
             });
 
+        $badanUsahaOptions = BadanUsaha::select('id', 'namaBadanUsaha')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($usaha) {
+                return [
+                    'value' => $usaha->namaBadanUsaha,
+                    'label' => $usaha->namaBadanUsaha,
+                ];
+            });
+
         return Inertia::render('Pendaftar/Data-Input/Wajib-Retribusi/Create', [
             'pemohonOptions' => $pemohonOptions,
             'kecamatanOptions' => $kecamatanOptions,
             'kelurahanOptions' => $kelurahanOptions,
             'kategoriOptions' => $kategoriOptions,
             'subKategoriOptions' => $subKategoriOptions,
-            'penagihOptions' => $penagihOptions
+            'penagihOptions' => $penagihOptions,
+            'badanUsahaOptions' => $badanUsahaOptions
         ]);
     }
 
@@ -563,6 +575,16 @@ class WajibRetribusiController extends Controller
                 ];
             });
 
+        $badanUsahaOptions = BadanUsaha::select('id', 'namaBadanUsaha')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($usaha) {
+                return [
+                    'value' => $usaha->namaBadanUsaha,
+                    'label' => $usaha->namaBadanUsaha,
+                ];
+            });
+
         return Inertia::render("Pendaftar/Data-Input/Wajib-Retribusi/Edit", [
             'status' => $status,
             'retribusi' => $retribusi,
@@ -572,7 +594,8 @@ class WajibRetribusiController extends Controller
             'kelurahanOptions' => $kelurahanOptions,
             'kategoriOptions' => $kategoriOptions,
             'subKategoriOptions' => $subKategoriOptions,
-            'penagihOptions' => $penagihOptions
+            'penagihOptions' => $penagihOptions,
+            'badanUsahaOptions' => $badanUsahaOptions
         ]);
     }
 
