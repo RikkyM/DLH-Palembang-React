@@ -468,7 +468,7 @@ class WajibRetribusiController extends Controller
 
         // dd($dataSkrd);
 
-        $skrd = Skrd::create($dataSkrd);
+        Skrd::create($dataSkrd);
 
         // dd($skrd->noWajibRetribusi);
 
@@ -482,7 +482,6 @@ class WajibRetribusiController extends Controller
         ];
 
         $retribusi->update([
-            'noWajibRetribusi' => $skrd->noWajibRetribusi,
             'status' => 'Finished',
             'historyAction' => $history
         ]);
