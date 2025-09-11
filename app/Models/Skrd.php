@@ -16,6 +16,7 @@ class Skrd extends Model
         "noWajibRetribusi",
         "namaObjekRetribusi",
         "pemilikId",
+        'namaPenagih',
         "deskripsiUsaha",
         "kelurahanObjekRetribusi",
         "kecamatanObjekRetribusi",
@@ -56,39 +57,39 @@ class Skrd extends Model
 
             $model->nomorOnly = $nextNumber;
 
-            $model->noSkrd = sprintf("%s/SPKRD/DLH/%s", $nextNumber, $tahun);
+            // $model->noSkrd = sprintf("%s/SPKRD/DLH/%s", $nextNumber, $tahun);
 
-            $lastWajib = WajibRetribusi::whereYear('created_at', date('Y'))
-                ->get()
-                ->sortByDesc(function ($item) {
-                    $parts = explode('.', $item->noWajibRetribusi);
+            // $lastWajib = WajibRetribusi::whereYear('created_at', date('Y'))
+            //     ->get()
+            //     ->sortByDesc(function ($item) {
+            //         $parts = explode('.', $item->noWajibRetribusi);
 
-                    if (count($parts) === 3) {
-                        return intval($parts[1]);
-                    } else {
-                        return intval($parts[0]);
-                    }
-                })
-                ->first();
+            //         if (count($parts) === 3) {
+            //             return intval($parts[1]);
+            //         } else {
+            //             return intval($parts[0]);
+            //         }
+            //     })
+            //     ->first();
 
-            if ($lastWajib) {
-                $parts = explode('.', $lastWajib->noWajibRetribusi);
-                if (count($parts) === 3) {
-                    $lastNumber = intval($parts[1]);
-                } else {
-                    $lastNumber = intval($parts[0]);
-                }
-                $nextWajib = $lastNumber + 1;
-            } else {
-                $nextWajib = 1;
-            }
+            // if ($lastWajib) {
+            //     $parts = explode('.', $lastWajib->noWajibRetribusi);
+            //     if (count($parts) === 3) {
+            //         $lastNumber = intval($parts[1]);
+            //     } else {
+            //         $lastNumber = intval($parts[0]);
+            //     }
+            //     $nextWajib = $lastNumber + 1;
+            // } else {
+            //     $nextWajib = 1;
+            // }
 
-            $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
-            $noWajibRetribusi = $formatted . '.' . $tahun;
+            // $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
+            // $noWajibRetribusi = $formatted . '.' . $tahun;
 
-            // dd($noWajibRetribusi);
+            // // dd($noWajibRetribusi);
 
-            $model->noWajibRetribusi = $noWajibRetribusi;
+            // $model->noWajibRetribusi = $noWajibRetribusi;
         });
     }
 

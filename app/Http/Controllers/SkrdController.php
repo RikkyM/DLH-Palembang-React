@@ -22,8 +22,8 @@ class SkrdController extends Controller
             ->addSelect([
                 'skrd.*',
                 'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
-                ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
-                ->whereColumn('skrdId', 'skrd.id')
+                    ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
+                    ->whereColumn('skrdId', 'skrd.id')
             ]);
 
         if ($search = $request->search) {
@@ -53,15 +53,15 @@ class SkrdController extends Controller
         $data = $query->get();
 
         $pdf = Pdf::loadView('exports.skrd.skrd-pdf', compact('data'))
-        ->setPaper('a4', 'landscape')
-        ->setOptions([
-            'dpi' => 150,
-            'defaultFont' => 'sans-serif',
-            'isHtml5ParserEnabled' => true,
-            'isPhpEnabled' => true,
-            'isRemoteEnabled' => true,
-            'chroot' => realpath("")
-        ]);
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath("")
+            ]);
 
         $fileName = 'laporan-skrd-' . date('Y-m-d-H-i-s') . '.pdf';
 
@@ -94,7 +94,7 @@ class SkrdController extends Controller
             'tandaTangan' => $tandaTangan
         ])
             ->setPaper($f4, 'portrait')
-        ->setOptions([
+            ->setOptions([
                 'dpi' => 150,
                 'defaultFont' => 'arial',
                 'isHtml5ParserEnabled' => true,
@@ -104,6 +104,11 @@ class SkrdController extends Controller
             ]);
 
         return $pdf->stream("skrd-{$data->noWajibRetribusi}.pdf");
+    }
+
+    public function previewPdfLocal($filename)
+    {
+
     }
 
     public function downloadSingleExcel($id)

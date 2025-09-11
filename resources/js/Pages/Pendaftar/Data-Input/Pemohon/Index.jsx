@@ -29,7 +29,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
     { key: "noHp", label: "Nomor Hp", align: "text-left" },
     { key: "email", label: "Email", align: "text-left" },
     // { key: "jabatan", label: "Jabatan", align: "text-left" },
-    { key: "created_at", label: "create date" },
+    { key: "created_at", label: "create date", align: "text-left" },
   ];
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
       router.get(route("pendaftar.pemohon.index"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas", 'filters'],
+        only: ["datas", "filters"],
         onFinish: () => setIsLoading(false),
       });
     }, 500);
@@ -123,9 +123,18 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
               <span>Tambah Data</span>
             </button>
             <button
-              // onClick={() => {
-              //   openModal("create");
-              // }}
+              onClick={() => {
+                const params = new URLSearchParams();
+
+                if (search) params.append("search", search);
+                if (perPage && perPage !== 10)
+                  params.append("per_page", perPage);
+
+                window.open(
+                  route("export-pemohon") + "?" + params.toString(),
+                  "_blank",
+                );
+              }}
               className="order-1 flex w-full flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded bg-green-700 px-5 py-2 text-sm text-white outline-none md:order-2 md:w-auto md:px-3"
             >
               <span>Excel</span>
@@ -191,8 +200,14 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                         <td>
                           <div className="w-72">{data.alamat}</div>
                         </td>
-                        <td>{data.kelurahan.namaKelurahan}</td>
-                        <td>{data.kecamatan.namaKecamatan}</td>
+                        <td className="whitespace-nowrap">
+                          {data.kelurahan.namaKelurahan}
+                        </td>
+                        <td>
+                          <div className="w-max whitespace-nowrap">
+                            {data.kecamatan.namaKecamatan}
+                          </div>
+                        </td>
                         <td>{data.tempatLahir}</td>
                         <td>
                           {data.tanggalLahir &&

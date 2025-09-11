@@ -208,7 +208,7 @@ const Index = ({
   }, [search, kategori, subKategori, petugas, sort, direction, status]);
 
   return (
-    <Layout title="SKRD">
+    <Layout title="INBOX SELESAI (SPKRD)">
       <section className="p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 md:flex-row md:items-center md:gap-0">
           <div className="relative flex w-full gap-2 sm:w-max">
@@ -358,8 +358,10 @@ const Index = ({
                   >
                     {bulan.map((bulan, i) => (
                       <React.Fragment key={i}>
-                        <th className="cursor-pointer select-none">{bulan}</th>
-                        <th className="cursor-pointer select-none truncate">
+                        <th className="sticky top-0 z-0 cursor-pointer select-none bg-[#F1B174]">
+                          {bulan}
+                        </th>
+                        <th className="sticky top-0 z-0 cursor-pointer select-none truncate bg-[#F1B174]">
                           Tanggal Bayar
                         </th>
                       </React.Fragment>

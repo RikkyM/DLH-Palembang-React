@@ -32,11 +32,11 @@ const Diproses = ({
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    {
-      key: "noPendaftaran",
-      label: "no pendaftaran",
-      align: "text-left truncate",
-    },
+    // {
+    //   key: "noPendaftaran",
+    //   label: "no pendaftaran",
+    //   align: "text-left truncate",
+    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -201,7 +201,7 @@ const Diproses = ({
   ]);
 
   return (
-    <Layout title="WAJIB RETRIBUSI DIPROSES">
+    <Layout title="INBOX DIPROSES">
       <section className="p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">

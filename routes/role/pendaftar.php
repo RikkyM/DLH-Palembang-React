@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('role:ROLE_PENDAFTAR')->prefix('pendaftar')->name('pendaftar.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::prefix('data-input')->group(function () {
-        Route::get('/pemohon/{filename}', [PemohonController::class, 'getKtp'])->name('getKtp');
+        // Route::get('/pemohon/{filename}', [PemohonController::class, 'getKtp'])->name('getKtp');
         Route::resource('/pemohon', PemohonController::class)->only(['index', 'store', 'update']);
         Route::resource('/wajib-retribusi', WajibRetribusiController::class)->only(['index', 'create', 'store'])->parameters([
             'wajib-retribusi' => 'retribusi'

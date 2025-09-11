@@ -147,7 +147,7 @@ const DialogCreate = ({
         </div>
         <form
           onSubmit={handleSubmit}
-          className="space-y-5 px-5 pb-5"
+          className="px-5 pb-5 grid grid-cols-2 gap-3"
           data-modal
         >
           <div className="flex flex-col gap-1.5 text-sm">
@@ -423,7 +423,7 @@ const DialogCreate = ({
               </span>
             )}
           </div>
-          <div className="flex flex-col gap-3 text-sm md:flex-row md:justify-end md:gap-2">
+          <div className="flex flex-col gap-3 text-sm md:flex-row md:justify-end md:gap-2 col-span-2">
             <button
               className="order-1 rounded bg-teal-400 px-3 py-2 font-medium text-white transition-colors hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
               disabled={processing}

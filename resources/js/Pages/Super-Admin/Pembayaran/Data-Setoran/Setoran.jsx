@@ -218,7 +218,7 @@ const Setoran = ({ skrdOptions = [] }) => {
           </FormInput>
         </div>
         <div className="col-span-2 border border-black"></div>
-        <div className="col-span-2 grid lg:grid-cols-3 gap-5">
+        <div className="col-span-2 grid gap-5 lg:grid-cols-3">
           <DropdownInput
             id="pemohon"
             label="Metode Bayar"
@@ -274,109 +274,113 @@ const Setoran = ({ skrdOptions = [] }) => {
             )}
           </FormInput>
         </div>
-        <div className="col-span-2 grid lg:grid-cols-2 xl:grid-cols-5 gap-5">
-        <FormInput className="col-span-2 lg:col-span-1">
-          <Label
-            htmlFor="jumlahBayar"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Jumlah Bayar
-          </Label>
-          <Input
-            id="jumlahBayar"
-            className={`${errors.jumlahBayar && "border border-red-500"}`}
-            placeholder="Jumlah Bayar..."
-            value={data.jumlahBayar || ""}
-            onChange={(e) => handleInputChange("jumlahBayar", e.target.value)}
-          />
-          {errors.jumlahBayar && (
-            <span className="text-xs text-red-500">{errors.jumlahBayar}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 lg:col-span-1">
-          <Label
-            htmlFor="jumlahBulanBayar"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Jumlah Bulan Bayar
-          </Label>
-          <Input
-            id="jumlahBulanBayar"
-            className={`${errors.jumlahBulanBayar && "border border-red-500"}`}
-            placeholder="Jumlah Bulan Bayar..."
-            value={data.jumlahBulanBayar || ""}
-            onChange={(e) =>
-              handleInputChange("jumlahBulanBayar", e.target.value)
-            }
-          />
-          {errors.jumlahBulanBayar && (
-            <span className="text-xs text-red-500">
-              {errors.jumlahBulanBayar}
-            </span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 lg:col-span-1">
-          <Label
-            htmlFor="noReferensiBank"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Nomor Referensi Bank
-          </Label>
-          <Input
-            id="noReferensiBank"
-            className={`${errors.noReferensiBank && "border border-red-500"}`}
-            placeholder="Nomor Referensi Bank..."
-            value={data.noReferensiBank || ""}
-            onChange={(e) =>
-              handleInputChange("noReferensiBank", e.target.value)
-            }
-          />
-          {errors.noReferensiBank && (
-            <span className="text-xs text-red-500">
-              {errors.noReferensiBank}
-            </span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 lg:col-span-1">
-          <Label
-            htmlFor="namaPengirim"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Nama Pengirim / Penyetor
-          </Label>
-          <Input
-            id="namaPengirim"
-            className={`${errors.namaPengirim && "border border-red-500"}`}
-            placeholder="Nomor Referensi Bank..."
-            value={data.namaPengirim || ""}
-            onChange={(e) => handleInputChange("namaPengirim", e.target.value)}
-          />
-          {errors.namaPengirim && (
-            <span className="text-xs text-red-500">{errors.namaPengirim}</span>
-          )}
-        </FormInput>
-        <FormInput className="col-span-2 lg:col-span-1">
-          <Label
-            htmlFor="keteranganBulan"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Keterangan Bulan
-          </Label>
-          <Input
-            id="keteranganBulan"
-            placeholder="Keterangan Bulan..."
-            className={`${errors.keteranganBulan && "border border-red-500"}`}
-            value={data.keteranganBulan || ""}
-            onChange={(e) =>
-              handleInputChange("keteranganBulan", e.target.value)
-            }
-          />
-          {errors.keteranganBulan && (
-            <span className="text-xs text-red-500">
-              {errors.keteranganBulan}
-            </span>
-          )}
-        </FormInput>
+        <div className="col-span-2 grid gap-5 lg:grid-cols-2 xl:grid-cols-5">
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="jumlahBayar"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Jumlah Bayar
+            </Label>
+            <Input
+              id="jumlahBayar"
+              className={`${errors.jumlahBayar && "border border-red-500"}`}
+              placeholder="Jumlah Bayar..."
+              value={data.jumlahBayar || ""}
+              onChange={(e) => handleInputChange("jumlahBayar", e.target.value)}
+            />
+            {errors.jumlahBayar && (
+              <span className="text-xs text-red-500">{errors.jumlahBayar}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="jumlahBulanBayar"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Jumlah Bulan Bayar
+            </Label>
+            <Input
+              id="jumlahBulanBayar"
+              className={`${errors.jumlahBulanBayar && "border border-red-500"}`}
+              placeholder="Jumlah Bulan Bayar..."
+              value={data.jumlahBulanBayar || ""}
+              onChange={(e) =>
+                handleInputChange("jumlahBulanBayar", e.target.value)
+              }
+            />
+            {errors.jumlahBulanBayar && (
+              <span className="text-xs text-red-500">
+                {errors.jumlahBulanBayar}
+              </span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="noReferensiBank"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Nomor Referensi Bank
+            </Label>
+            <Input
+              id="noReferensiBank"
+              className={`${errors.noReferensiBank && "border border-red-500"}`}
+              placeholder="Nomor Referensi Bank..."
+              value={data.noReferensiBank || ""}
+              onChange={(e) =>
+                handleInputChange("noReferensiBank", e.target.value)
+              }
+            />
+            {errors.noReferensiBank && (
+              <span className="text-xs text-red-500">
+                {errors.noReferensiBank}
+              </span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="namaPengirim"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Nama Pengirim / Penyetor
+            </Label>
+            <Input
+              id="namaPengirim"
+              className={`${errors.namaPengirim && "border border-red-500"}`}
+              placeholder="Nomor Referensi Bank..."
+              value={data.namaPengirim || ""}
+              onChange={(e) =>
+                handleInputChange("namaPengirim", e.target.value)
+              }
+            />
+            {errors.namaPengirim && (
+              <span className="text-xs text-red-500">
+                {errors.namaPengirim}
+              </span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 lg:col-span-1">
+            <Label
+              htmlFor="keteranganBulan"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Keterangan Bulan
+            </Label>
+            <Input
+              id="keteranganBulan"
+              placeholder="Keterangan Bulan..."
+              className={`${errors.keteranganBulan && "border border-red-500"}`}
+              value={data.keteranganBulan || ""}
+              onChange={(e) =>
+                handleInputChange("keteranganBulan", e.target.value)
+              }
+            />
+            {errors.keteranganBulan && (
+              <span className="text-xs text-red-500">
+                {errors.keteranganBulan}
+              </span>
+            )}
+          </FormInput>
         </div>
         <FormInput className="col-span-2">
           <Label
@@ -399,15 +403,20 @@ const Setoran = ({ skrdOptions = [] }) => {
         </FormInput>
 
         <div className="col-span-2 border border-black"></div>
-        <div className="col-span-2 w-full overflow-x-auto bg-white p-2 rounded shadow">
+        <div className="col-span-2 w-full overflow-x-auto rounded bg-white p-2 shadow">
+          <div className="p-2 font-semibold text-sm md:text-lg">
+            <h2>Detail Setoran</h2>
+          </div>
           <table className="w-full text-sm">
             <thead>
-              <tr>
+              <tr className="*:whitespace-nowrap *:px-2 *:font-semibold">
                 <th>No.</th>
                 <th className="text-left">Bulan</th>
                 <th>Tanggal Bayar</th>
+                <th>Nomor Referensi Bank</th>
                 <th className="text-center">Jumlah Perbulan</th>
-                <th className="">Keterangan</th>
+                <th>Keterangan</th>
+                <th>Bukti Bayar</th>
               </tr>
             </thead>
             <tbody>
@@ -441,11 +450,23 @@ const Setoran = ({ skrdOptions = [] }) => {
                         // defaultValue={minDate}
                       />
                     </td>
-                    <td className="text-center">
-                      <Input type="number" className="bg-slate-300" />
+                    <td className="px-1 text-center">
+                      <Input type="number" className="w-full bg-slate-300" />
                     </td>
-                    <td className="text-left">
-                      <Input className="w-full bg-slate-300" />
+                    <td className="px-1 text-center">
+                      <Input
+                        type="number"
+                        className="w-full max-w-40 bg-slate-300"
+                      />
+                    </td>
+                    <td className="px-1 text-left">
+                      <Input className="w-full min-w-52 bg-slate-300" />
+                    </td>
+                    <td className="px-1 text-left">
+                      <Input
+                        type="file"
+                        className="w-full min-w-52 bg-slate-300"
+                      />
                     </td>
                   </tr>
                 );

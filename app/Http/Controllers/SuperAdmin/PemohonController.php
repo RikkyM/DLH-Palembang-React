@@ -156,14 +156,14 @@ class PemohonController extends Controller
         //
     }
 
-    public function getKtp($filename)
-    {
-        $path = storage_path('app/private/foto/ktp/' . $filename);
+    // public function getKtp($filename)
+    // {
+    //     $path = storage_path('app/private/foto/ktp/' . $filename);
 
-        if (!file_exists($path)) {
-            abort(404);
-        };
+    //     if (!file_exists($path)) {
+    //         abort(404);
+    //     };
 
-        return response()->file($path);
-    }
+    //     return response()->file($path);
+    // }
 }

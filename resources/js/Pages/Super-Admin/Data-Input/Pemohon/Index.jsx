@@ -123,9 +123,18 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
               <span>Tambah Data</span>
             </button>
             <button
-              // onClick={() => {
-              //   openModal("create");
-              // }}
+              onClick={() => {
+                const params = new URLSearchParams();
+
+                if (search) params.append("search", search);
+                if (perPage && perPage !== 10)
+                  params.append("per_page", perPage);
+
+                window.open(
+                  route("export-pemohon") + "?" + params.toString(),
+                  "_blank",
+                );
+              }}
               className="order-1 flex w-full flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded bg-green-700 px-5 py-2 text-sm text-white outline-none md:order-2 md:w-auto md:px-3"
             >
               <span>Excel</span>

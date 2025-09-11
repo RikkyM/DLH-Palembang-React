@@ -23,7 +23,7 @@ const WajibRetribusiEdit = ({
 }) => {
   const [mapReset, setMapReset] = useState(0);
 
-  console.log(penagihOptions)
+  console.log(penagihOptions);
 
   const roleConfig = {
     ROLE_SUPERADMIN: {
@@ -50,6 +50,8 @@ const WajibRetribusiEdit = ({
   const initialData = {
     _method: "PUT",
     namaObjekRetribusi: retribusi.namaObjekRetribusi || "",
+    noSkrd: retribusi.noSkrd || "",
+    noWajibRetribusi: retribusi.noWajibRetribusi || "",
     pemilikId: retribusi.pemilikId || "",
     penagihId: retribusi.penagihId || "",
     alamatObjekRetribusi: retribusi.alamat || "",
@@ -342,29 +344,84 @@ const WajibRetribusiEdit = ({
         onSubmit={handleSubmit}
         className="grid grid-cols-1 gap-5 md:grid-cols-2"
       >
-        <div className="col-span-2 flex flex-col gap-1.5 text-sm">
-          <label
-            htmlFor="namaObjekRetribusi"
-            className="after:text-red-500 after:content-['*']"
-          >
-            Nama Objek Retribusi
-          </label>
-          <input
-            className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.namaObjekRetribusi && "border border-red-500"}`}
-            type="text"
-            id="namaObjekRetribusi"
-            autoComplete="off"
-            placeholder="Nama Objek Retribusi..."
-            value={data.namaObjekRetribusi}
-            onChange={(e) =>
-              handleInputChange("namaObjekRetribusi", e.target.value)
-            }
-          />
-          {errors.namaObjekRetribusi && (
-            <span className="text-xs text-red-500">
-              {errors.namaObjekRetribusi}
-            </span>
-          )}
+        <div className="grid gap-5 md:col-span-3 md:grid-cols-4">
+          <div className="col-span-2 md:col-span-1 flex flex-col gap-1.5 text-sm">
+            <label
+              htmlFor="namaObjekRetribusi"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Nama Objek Retribusi
+            </label>
+            <input
+              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.namaObjekRetribusi && "border border-red-500"}`}
+              type="text"
+              id="namaObjekRetribusi"
+              autoComplete="off"
+              placeholder="Nama Objek Retribusi..."
+              value={data.namaObjekRetribusi}
+              onChange={(e) =>
+                handleInputChange("namaObjekRetribusi", e.target.value)
+              }
+            />
+            {errors.namaObjekRetribusi && (
+              <span className="text-xs text-red-500">
+                {errors.namaObjekRetribusi}
+              </span>
+            )}
+          </div>
+          <FormInput className="col-span-3 md:col-span-1">
+            <Label
+              htmlFor="noWajibRetribusi"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Nomor Objek Retribusi
+            </Label>
+            <Input
+              id="noWajibRetribusi"
+              className={`${errors.noWajibRetribusi && "border border-red-500"}`}
+              placeholder="Nomor Objek Retribusi..."
+              value={data.noWajibRetribusi}
+              onChange={(e) =>
+                handleInputChange("noWajibRetribusi", e.target.value)
+              }
+            />
+            {errors.noWajibRetribusi && (
+              <span className="text-xs text-red-500">
+                {errors.noWajibRetribusi}
+              </span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-3 md:col-span-1">
+            <Label
+              htmlFor="noSkrd"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Nomor SPKRD
+            </Label>
+            <Input
+              id="noSkrd"
+              className={`${errors.noSkrd && "border border-red-500"}`}
+              placeholder="Nomor SPKRD..."
+              value={data.noSkrd}
+              onChange={(e) => handleInputChange("noSkrd", e.target.value)}
+            />
+            {errors.noSkrd && (
+              <span className="text-xs text-red-500">{errors.noSkrd}</span>
+            )}
+          </FormInput>
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label htmlFor="tanggalSkrd">Tanggal SPKRD</Label>
+            <Input
+              type="date"
+              id="tanggalSkrd"
+              className={`${errors.tanggalSkrd && "border border-red-500"}`}
+              value={data.tanggalSkrd}
+              onChange={(e) => handleInputChange("tanggalSkrd", e.target.value)}
+            />
+            {errors.tanggalSkrd && (
+              <span className="text-xs text-red-500">{errors.tanggalSkrd}</span>
+            )}
+          </FormInput>
         </div>
         <DropdownInput
           id="pemohon"
@@ -797,7 +854,7 @@ const WajibRetribusiEdit = ({
             )}
           </FormInput>
         </div>
-        <div className="col-span-2 grid gap-5 lg:grid-cols-4">
+        <div className="col-span-2 grid gap-5 lg:grid-cols-3">
           <FormInput className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
             <Label
               htmlFor="latitude"
@@ -888,7 +945,7 @@ const WajibRetribusiEdit = ({
               <span className="text-xs text-red-500">{errors.linkMap}</span>
             )}
           </FormInput>
-          <FormInput className="col-span-2 md:col-span-1">
+          {/* <FormInput className="col-span-2 md:col-span-1">
             <Label htmlFor="tanggalSkrd">Tanggal SPKRD</Label>
             <Input
               type="date"
@@ -901,7 +958,7 @@ const WajibRetribusiEdit = ({
             {errors.tanggalSkrd && (
               <span className="text-xs text-red-500">{errors.tanggalSkrd}</span>
             )}
-          </FormInput>
+          </FormInput> */}
         </div>
         <div className="z-0 col-span-2 flex flex-col gap-1.5 text-sm">
           <MapPicker

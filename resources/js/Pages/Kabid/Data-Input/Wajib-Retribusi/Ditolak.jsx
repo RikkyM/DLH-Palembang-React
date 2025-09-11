@@ -32,11 +32,11 @@ const Ditolak = ({
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    {
-      key: "noPendaftaran",
-      label: "no pendaftaran",
-      align: "text-left truncate",
-    },
+    // {
+    //   key: "noPendaftaran",
+    //   label: "no pendaftaran",
+    //   align: "text-left truncate",
+    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -65,7 +65,25 @@ const Ditolak = ({
       label: "detail rincian",
       align: "text-left truncate",
     },
-    { key: "uptd", label: "uptd", align: "text-left truncate" },
+    { key: "uptd", label: "wilayah uptd", align: "text-left truncate" },
+    { key: "bulan", label: "jumlah bulan", align: "text-left truncate" },
+    {
+      key: "bentukBadanUsaha",
+      label: "bentuk badan usaha",
+      align: "text-left truncate",
+    },
+    { key: "jenisTarif", label: "layanan", align: "text-left truncate" },
+    {
+      key: "keteranganBulan",
+      label: "keterangan bulan",
+      align: "text-left truncate",
+    },
+    { key: "unit", label: "unit", align: "text-left truncate" },
+    { key: "m2", label: "m2", align: "text-left truncate" },
+    { key: "giat", label: "giat", align: "text-left truncate" },
+    { key: "hari", label: "hari", align: "text-left truncate" },
+    { key: "meter", label: "meter", align: "text-left truncate" },
+    { key: "tanggalSkrd", label: "tanggal spkrd", align: "text-left truncate" },
     {
       key: "tarifPerbulan",
       label: "tarif perbulan",
@@ -202,7 +220,7 @@ const Ditolak = ({
   ]);
 
   return (
-    <Layout title="WAJIB RETRIBUSI DITOLAK">
+    <Layout title="INBOX DITOLAK">
       <section className="p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">

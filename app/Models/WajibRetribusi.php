@@ -12,6 +12,7 @@ class WajibRetribusi extends Model
 
     protected $fillable = [
         'noWajibRetribusi',
+        'noSkrd',
         'noPendaftaran',
         'kodeKategori',
         'kodeSubKategori',
@@ -80,7 +81,7 @@ class WajibRetribusi extends Model
 
             $model->noPendaftaran = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-            $model->noWajibRetribusi = self::generateNoWajibRetribusi();
+            // $model->noWajibRetribusi = self::generateNoWajibRetribusi();
         });
     }
 

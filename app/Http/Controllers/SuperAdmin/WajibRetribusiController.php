@@ -425,6 +425,8 @@ class WajibRetribusiController extends Controller
     {
         $validated = $request->validated();
 
+        // dd($validated);
+
         $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
 
         $jenisTarif = $validated['jenisTarif'] ?? "tarif";
@@ -473,6 +475,8 @@ class WajibRetribusiController extends Controller
             $uptd = Uptd::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
 
             $dataToSave = [
+                'noWajibRetribusi' => $request->noWajibRetribusi,
+                'noSkrd' => $request->noSkrd,
                 'kodeKategori' => $request->kodeKategori,
                 'kodeSubKategori' => $request->kodeSubKategori,
                 'kodeKelurahan' => $request->kodeKelurahan,
@@ -695,6 +699,8 @@ class WajibRetribusiController extends Controller
             $uptd = Uptd::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
 
             $dataToUpdate = [
+                'noWajibRetribusi' => $request->noWajibRetribusi,
+                'noSkrd' => $request->noSkrd,
                 'kodeKategori' => $request->kodeKategori,
                 'kodeSubKategori' => $request->kodeSubKategori,
                 'kodeKelurahan' => $request->kodeKelurahan,

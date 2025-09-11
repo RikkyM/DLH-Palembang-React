@@ -355,7 +355,7 @@ const DialogForm = ({
                 <>
                   <img
                     className="md:max-w-96"
-                    src={route("super-admin.getKtp", pemohon.ktp)}
+                    src={route("getKtp", pemohon.ktp)}
                     alt=""
                   />
                   <span className="text-xs">{pemohon?.ktp}</span>

@@ -21,7 +21,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('data-input')->group(function () {
-        Route::get('/pemohon/{filename}', [PemohonController::class, 'getKtp'])->name('getKtp');
+        // Route::get('/pemohon/{filename}', [PemohonController::class, 'getKtp'])->name('getKtp');
         Route::resource('/pemohon', PemohonController::class)->only(['index', 'store', 'update']);
         Route::controller(WajibRetribusiController::class)->name('wajib-retribusi.')->prefix('wajib-retribusi')->group(function () {
             Route::get('/diterima', 'diterima')->name('diterima');

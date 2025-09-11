@@ -9,12 +9,16 @@ use App\Models\Kelurahan;
 use App\Models\Pemilik;
 use App\Models\Skrd;
 use App\Models\SubKategori;
+use App\Models\TandaTangan;
 use App\Models\User;
 use App\Models\WajibRetribusi;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class WajibRetribusiController extends Controller
 {
@@ -402,45 +406,16 @@ class WajibRetribusiController extends Controller
 
     public function createSkrd(WajibRetribusi $retribusi)
     {
-        // $lastWajib = WajibRetribusi::whereYear('created_at', date('Y'))
-        //     ->get()
-        //     ->sortByDesc(function ($item) {
-        //         $parts = explode('.', $item->noWajibRetribusi);
-
-        //         if (count($parts) === 3) {
-        //             return intval($parts[1]);
-        //         } else {
-        //             return intval($parts[0]);
-        //         }
-        //     })
-        //     ->first();
-
-        // if ($lastWajib) {
-        //     $parts = explode('.', $lastWajib->noWajibRetribusi);
-        //     if (count($parts) === 3) {
-        //         $lastNumber = intval($parts[1]);
-        //     } else {
-        //         $lastNumber = intval($parts[0]);
-        //     }
-        //     $nextWajib = $lastNumber + 1;
-        // } else {
-        //     $nextWajib = 1;
-        // }
-
-        // $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
-        // $noWajibRetribusi = $formatted . '.' . date('Y');
-
-        // dd($noWajibRetribusi);
-        // dd($formatted);
-        // dd($nextWajib);
-        // dd($parts);
-        // dd($lastWajib);
+        $retribusi->load(['penagih']);
 
         $dataSkrd = [
+            'noWajibRetribusi' => $retribusi->noWajibRetribusi,
+            'noSkrd' => $retribusi->noSkrd,
             'uptdId' => $retribusi->uptdId,
             'namaPendaftar' => $retribusi->user->namaLengkap,
             'namaObjekRetribusi' => $retribusi->namaObjekRetribusi,
             'pemilikId' => $retribusi->pemilikId,
+            'namaPenagih' => $retribusi->penagih->nama,
             'deskripsiUsaha' => $retribusi->deskripsiUsaha,
             'kelurahanObjekRetribusi' => $retribusi->kelurahan->namaKelurahan,
             'kecamatanObjekRetribusi' => $retribusi->kecamatan->namaKecamatan,
@@ -466,9 +441,35 @@ class WajibRetribusiController extends Controller
             'url_image' => json_encode($retribusi->url_image),
         ];
 
-        // dd($dataSkrd);
+        $skrd = Skrd::create($dataSkrd);
+        $tandaTangan = TandaTangan::first();
 
-        Skrd::create($dataSkrd);
+        $tanggal = now()->format('d-m-Y');
+        $noSkrdSafe = Str::of($skrd->noSkrd)->replace(['/', '\\', ' '], '-');
+        $filename = "skrd-{$noSkrdSafe}-{$tanggal}.pdf";
+        $relativePath = "skrd/{$filename}";
+
+        Storage::disk('local')->makeDirectory('skrd');
+
+        $f4 = [0, 0, 595.276, 935.433];
+
+        $pdf = Pdf::loadView('exports.skrd.skrd-single-pdf', ['data' => $skrd, 'tandaTangan' => $tandaTangan])
+            ->setPaper($f4, 'portrait')
+            ->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'arial',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath("")
+            ]);
+
+        Storage::disk('local')->put($relativePath, $pdf->output());
+
+        $skrd->update([
+            'fileSkrd' => $filename,
+            'url_fileSkrd' => [$relativePath]
+        ]);
 
         // dd($skrd->noWajibRetribusi);
 

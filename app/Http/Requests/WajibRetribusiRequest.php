@@ -23,6 +23,8 @@ class WajibRetribusiRequest extends FormRequest
     {
         $isEdit = $this->isMethod('put') || $this->isMethod('patch');
         $rules = [
+            'noWajibRetribusi' => 'required',
+            'noSkrd' => 'required',
             'namaObjekRetribusi' => 'required|string',
             'pemilikId' => 'required',
             'penagihId' => 'required',

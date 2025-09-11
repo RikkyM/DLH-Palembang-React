@@ -657,6 +657,8 @@ class WajibRetribusiController extends Controller
             $uptd = Uptd::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
 
             $dataToUpdate = [
+                'noWajibRetribusi' => $request->noWajibRetribusi,
+                'noSkrd' => $request->noSkrd,
                 'kodeKategori' => $request->kodeKategori,
                 'kodeSubKategori' => $request->kodeSubKategori,
                 'kodeKelurahan' => $request->kodeKelurahan,

@@ -23,6 +23,11 @@ class Pemilik extends Model
         'ktp'
     ];
 
+    protected $casts = [
+        'nik' => 'string',
+        'noHP' => 'string'
+    ];
+
     /**
      * Mutator untuk namaPemilik
      */

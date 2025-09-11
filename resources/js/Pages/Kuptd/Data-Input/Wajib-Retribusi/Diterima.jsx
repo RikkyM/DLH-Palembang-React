@@ -33,11 +33,11 @@ const Diterima = ({
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    {
-      key: "noPendaftaran",
-      label: "no pendaftaran",
-      align: "text-left truncate",
-    },
+    // {
+    //   key: "noPendaftaran",
+    //   label: "no pendaftaran",
+    //   align: "text-left truncate",
+    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -209,7 +209,7 @@ const Diterima = ({
   };
 
   return (
-    <Layout title="WAJIB RETRIBUSI DITERIMA">
+    <Layout title="INBOX DITERIMA">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
