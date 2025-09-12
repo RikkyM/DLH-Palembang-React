@@ -19,24 +19,17 @@ const Table = ({
   setDirection,
   role,
 }) => {
-    const { openModal } = useProvider();
-  
-  const handleSend = (e, id) => {
-    e.preventDefault();
-
-    router.put(
-      route("pendaftar.wajib-retribusi.send", id),
-      {},
-      {
-        preserveScroll: true,
-        onError: () => {
-          console.error("Terjadi kesalahan ketika mengirim");
-        },
-      },
-    );
-  };
+  const { openModal } = useProvider();
 
   const roleConfig = {
+    ROLE_SUPERADMIN: {
+      edit: "super-admin.wajib-retribusi.edit",
+      send: "pendaftar.wajib-retribusi.send",
+    },
+    ROLE_PENDAFTAR: {
+      edit: "pendaftar.wajib-retribusi.edit",
+      send: "super-admin.wajib-retribusi.send",
+    },
     ROLE_KUPTD: {
       show: "kuptd.wajib-retribusi.show",
     },
@@ -49,6 +42,21 @@ const Table = ({
   };
 
   const routeConfig = roleConfig[role];
+
+  const handleSend = (e, id) => {
+    e.preventDefault();
+
+    router.put(
+      route(routeConfig.send, id),
+      {},
+      {
+        preserveScroll: true,
+        onError: () => {
+          console.error("Terjadi kesalahan ketika mengirim");
+        },
+      },
+    );
+  };
 
   const renderStatus = (data) => {
     if (role === "ROLE_PENDAFTAR") {
@@ -98,9 +106,9 @@ const Table = ({
   };
 
   const renderActions = (data) => {
-    if (role === "ROLE_PENDAFTAR") {
+    if (role === "ROLE_PENDAFTAR" || role === "ROLE_SUPERADMIN") {
       return (
-        <div className="flex flex-col gap-2 *:rounded *:text-sm *:font-medium">
+        <div className="flex flex-col gap-2 *:rounded *:text-xs *:font-medium *:md:text-sm">
           <button
             className="flex items-center gap-1.5 whitespace-nowrap"
             onClick={(e) => {
@@ -118,7 +126,7 @@ const Table = ({
           {data.status === "Approved" && (
             <>
               <Link
-                href={route("pendaftar.wajib-retribusi.edit", {
+                href={route(routeConfig.edit, {
                   status: "diterima",
                   retribusi: data.id,
                 })}
@@ -137,7 +145,7 @@ const Table = ({
           {data.status === "Rejected" && (
             <>
               <Link
-                href={route("pendaftar.wajib-retribusi.edit", {
+                href={route(routeConfig.edit, {
                   status: "ditolak",
                   retribusi: data.id,
                 })}

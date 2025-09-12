@@ -38,7 +38,7 @@ const Index = ({
   const filterRef = useRef(null);
 
   const columns = [
-    { key: "id", label: "No", align: "text-center truncate" },
+    { key: "id", label: "No", align: "text-center" },
     // {
     //   key: "noPendaftaran",
     //   label: "no pendaftaran",
@@ -59,9 +59,9 @@ const Index = ({
       label: "nama objek retribusi",
       align: "text-left truncate",
     },
-    { key: "alamat", label: "alamat", align: "text-left" },
-    { key: "kelurahan", label: "kelurahan", align: "text-left" },
-    { key: "kecamatan", label: "kecamatan", align: "text-left" },
+    { key: "alamat", label: "alamat", align: "text-left truncate" },
+    { key: "kelurahan", label: "kelurahan", align: "text-left truncate" },
+    { key: "kecamatan", label: "kecamatan", align: "text-left truncate" },
     {
       key: "rincian",
       label: "rincian layanan",
@@ -260,6 +260,16 @@ const Index = ({
     setPerPage(parseInt(e.target.value));
   };
 
+  const handleKategoriChange = (val) => {
+    setKategori(val);
+    setSubKategori("");
+    router.reload({
+      only: ["subKategoriOptions"],
+      data: { kategori: val },
+      preserveState: true,
+    });
+  };
+
   return (
     <Layout title="WAJIB RETRIBUSI">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
@@ -309,7 +319,7 @@ const Index = ({
               <div className="relative flex w-full gap-2 sm:w-max">
                 <button
                   type="button"
-                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
+                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max text-sm"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => setShowFilters((prev) => !prev)}
                 >
@@ -318,7 +328,7 @@ const Index = ({
                 </button>
                 <div
                   ref={filterRef}
-                  className={`absolute right-0 top-full z-10 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
+                  className={`absolute right-0 top-full z-20 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
                     showFilters
                       ? "pointer-events-auto mt-3 opacity-100"
                       : "pointer-events-none mt-0 opacity-0"
@@ -328,10 +338,7 @@ const Index = ({
                     id="kategoriList"
                     options={kategoriList}
                     value={kategori}
-                    onChange={(val) => {
-                      setKategori(val);
-                      setSubKategori("");
-                    }}
+                    onChange={handleKategoriChange}
                     placeholder="Pilih Kategori"
                   />
                   <SearchableSelect
@@ -407,7 +414,7 @@ const Index = ({
               />
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start *:text-xs *:md:text-sm">
             <Link
               href={route("pendaftar.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
@@ -459,7 +466,7 @@ const Index = ({
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "bg-white shadow"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
@@ -486,7 +493,7 @@ const Index = ({
             </div>
           ) : (
             <>
-              <table className="w-full touch-pan-y divide-y divide-gray-300 p-3">
+              <table className="min-w-full divide-y divide-gray-300 p-3">
                 <thead>
                   <TableHead
                     columns={columns}
@@ -613,7 +620,7 @@ const Index = ({
                         <td
                           className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
-                          <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
+                          <div className="flex gap-2 *:rounded *:text-xs *:md:text-sm *:font-medium">
                             {/* <Link
                               href={route("super-admin.wajib-retribusi.edit", {
                                 retribusi: data.noPendaftaran,

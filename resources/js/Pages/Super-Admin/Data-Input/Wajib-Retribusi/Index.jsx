@@ -256,8 +256,6 @@ const Index = ({
     tahun,
   ]);
 
-  console.log(perPage);
-
   const handlePerPageChange = (e) => {
     setPerPage(parseInt(e.target.value));
   };
@@ -321,7 +319,7 @@ const Index = ({
               <div className="relative flex w-full gap-2 sm:w-max">
                 <button
                   type="button"
-                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
+                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max text-sm"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => setShowFilters((prev) => !prev)}
                 >
@@ -330,7 +328,7 @@ const Index = ({
                 </button>
                 <div
                   ref={filterRef}
-                  className={`absolute right-0 top-full z-10 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
+                  className={`absolute right-0 top-full z-20 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
                     showFilters
                       ? "pointer-events-auto mt-3 opacity-100"
                       : "pointer-events-none mt-0 opacity-0"
@@ -370,7 +368,7 @@ const Index = ({
                     disabled={!kecamatan}
                   />
                   <SearchableSelect
-                    id="petugaslist"
+                    id="petugasList"
                     options={petugasList}
                     value={petugas}
                     onChange={(val) => setPetugas(val)}
@@ -416,7 +414,7 @@ const Index = ({
               />
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start *:text-xs *:md:text-sm">
             <Link
               href={route("super-admin.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
@@ -470,7 +468,7 @@ const Index = ({
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow bg-white"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "bg-white shadow"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
@@ -624,7 +622,7 @@ const Index = ({
                         <td
                           className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
-                          <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
+                          <div className="flex gap-2 *:rounded *:text-xs *:font-medium *:md:text-sm">
                             {/* <Link
                               href={route("super-admin.wajib-retribusi.edit", {
                                 retribusi: data.noPendaftaran,

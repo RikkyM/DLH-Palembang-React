@@ -446,20 +446,22 @@ class WajibRetribusiController extends Controller
 
             if (!empty($request->file('fotoBerkas'))) {
                 $fotoBerkas = Str::uuid() . '.' . $fileFotoBerkas->getClientOriginalExtension();
-                $pathFotoBerkas = $fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local');
+                $pathFotoBerkas = [$fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local')];
             }
 
             $uptd = Uptd::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
 
             $dataToSave = [
+                'noWajibRetribusi' => $request->noWajibRetribusi,
+                'noSkrd' => $request->noSkrd,
                 'kodeKategori' => $request->kodeKategori,
                 'kodeSubKategori' => $request->kodeSubKategori,
                 'kodeKelurahan' => $request->kodeKelurahan,
                 'kodeKecamatan' => $request->kodeKecamatan,
                 'uptdId' => $uptd->id,
                 'pemilikId' => $request->pemilikId,
-                'petugasPendaftarId' => Auth::id(),
                 'penagihId' => $request->penagihId,
+                'petugasPendaftarId' => Auth::user()->id,
                 'namaObjekRetribusi' => $request->namaObjekRetribusi,
                 'deskripsiUsaha' => $request->deskripsi,
                 'bentukBadanUsaha' => $request->bentukUsaha,
@@ -474,10 +476,14 @@ class WajibRetribusiController extends Controller
                 'image' => $fotoBangunan,
                 'url_image' => [$pathFotoBangunan],
                 'file' => $fotoBerkas ?? null,
-                'url_file' => [$pathFotoBerkas ?? null] ?? [],
+                'url_file' => !empty($pathFotoBerkas) ? array_map(function ($path) {
+                    return Storage::url($path);
+                }, $pathFotoBerkas) : [],
                 'linkMap' => $request->linkMap,
                 'jenisTarif' => $request->jenisTarif,
                 'bulan' => $validated['variabelValues']['bulan'],
+                'keteranganBulan' => strtoupper($request->keteranganBulan),
+                'tanggalSkrd' => $request->tanggalSkrd,
                 'unit' => $validated['variabelValues']['unit'] ?? null,
                 'm2' => $validated['variabelValues']['m2'] ?? null,
                 'giat' => $validated['variabelValues']['giat'] ?? null,

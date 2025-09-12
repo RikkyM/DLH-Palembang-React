@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
-
 import { ChevronDown, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
-import Table from "./Table";
+import Table from "@/Components/WajibRetribusi/Table";
+// import Table from "./Table";
 
 const Diterima = ({
   datas,
@@ -311,7 +311,7 @@ const Diterima = ({
                     disabled={!kecamatan}
                   />
                   <SearchableSelect
-                    id="petugaslist"
+                    id="petugasList"
                     options={petugasList}
                     value={petugas}
                     onChange={(val) => setPetugas(val)}
@@ -429,6 +429,7 @@ const Diterima = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
+                role="ROLE_SUPERADMIN"
               />
             </>
           )}

@@ -16,7 +16,7 @@ const TableHead = ({
   };
 
   return (
-    <tr className="text-white *:p-2 *:text-sm *:font-medium *:uppercase">
+    <tr className="text-white *:p-2 *:text-xs *:md:text-sm *:font-medium *:uppercase">
       {columns.map((col) => (
         <th
           key={col.key}
