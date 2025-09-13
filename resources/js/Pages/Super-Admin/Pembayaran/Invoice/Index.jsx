@@ -16,6 +16,11 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
 
   const columns = [
     { key: "id", label: "no", align: "text-left" },
+    {
+      key: "tanggal_terbit",
+      label: "tanggal invoice",
+      align: "text-center truncate",
+    },
     { key: "no_invoice", label: "no invoice", align: "text-center truncate" },
     {
       key: "noSkrd",
@@ -29,7 +34,17 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
     },
     {
       key: "alamatObjekRetribusi",
-      label: "alamat layanan",
+      label: "alamat",
+      align: "text-left truncate",
+    },
+    {
+      key: "kelurahanObjekRetribusi",
+      label: "kelurahan",
+      align: "text-left truncate",
+    },
+    {
+      key: "kecamatanObjekRetribusi",
+      label: "kecamatan",
       align: "text-left truncate",
     },
     {
@@ -37,7 +52,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
       label: "jumlah bulan",
       align: "text-center truncate",
     },
-    { key: "satuan", label: "satuan", align: "text-left" },
+    { key: "satuan", label: "keterangan bulan", align: "text-left truncate" },
     {
       key: "tagihanPerBulanSkrd",
       label: "tarif retribusi",
@@ -144,7 +159,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
             </div>
           ) : (
             <>
-              <table className="min-w-full divide-y divide-gray-300 p-3">
+              <table className="min-w-full divide-y divide-gray-300 bg-white p-3">
                 <thead>
                   <TableHead
                     columns={columns}
@@ -163,17 +178,43 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
                     datas.data.map((data, index) => (
                       <tr
                         key={data.id || index}
-                        className={`*:truncate *:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
                           {(datas.current_page - 1) * datas.per_page +
                             index +
                             1}
                         </td>
+                        <td>
+                          {data.tanggal_terbit
+                            ? new Date(data.tanggal_terbit).toLocaleDateString(
+                                "id-ID",
+                                {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                },
+                              )
+                            : "-"}
+                        </td>
                         <td>{data.no_invoice}</td>
                         <td>{data.noSkrd}</td>
-                        <td>{data.skrd.namaObjekRetribusi}</td>
-                        <td>{data.skrd.alamatObjekRetribusi}</td>
+                        <td>
+                          <div className="w-60">
+                            {data.skrd.namaObjekRetribusi}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="w-72">
+                            {data.skrd.alamatObjekRetribusi}
+                          </div>
+                        </td>
+                        <td className="whitespace-nowrap">
+                          {data.skrd.kelurahanObjekRetribusi}
+                        </td>
+                        <td className="whitespace-nowrap">
+                          {data.skrd.kecamatanObjekRetribusi}
+                        </td>
                         <td className="text-center">
                           {data.jumlah_bulan
                             ? `${data.jumlah_bulan} Bulan`
@@ -184,19 +225,21 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
                           {new Intl.NumberFormat("id-ID", {
                             style: "currency",
                             currency: "IDR",
+                            minimumFractionDigits: 0,
                           }).format(data.skrd.tagihanPerBulanSkrd)}
                         </td>
                         <td>
                           {new Intl.NumberFormat("id-ID", {
                             style: "currency",
                             currency: "IDR",
+                            minimumFractionDigits: 0,
                           }).format(data.total_retribusi)}
                         </td>
                         <td
                           className={`sticky right-0 text-right ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
                           <div className="flex flex-col gap-2 *:rounded *:text-sm *:font-medium">
-                            <a
+                            {/* <a
                               href={route("super-admin.invoice.pdf", {
                                 id: data.id,
                               })}
@@ -205,7 +248,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
                               className="inline-flex items-center gap-1.5"
                             >
                               <FileText size={20} /> Edit
-                            </a>
+                            </a> */}
                             <a
                               href={route("super-admin.invoice.pdf", {
                                 id: data.id,

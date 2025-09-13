@@ -6,19 +6,22 @@ import Calendar from "react-calendar";
 const PendaftarNavigation = () => {
   const { url } = usePage();
 
-  const dataInputs = [
+  const permohonanItems = [
     {
       label: "Pemohon",
       route: "pendaftar.pemohon.index",
     },
     {
-      label: "Data Wajib Retribusi",
+      label: "Wajib Retribusi",
       route: "pendaftar.wajib-retribusi.index",
       activeRoute: [
         "pendaftar.wajib-retribusi.index",
         "pendaftar.wajib-retribusi.create",
       ],
     },
+  ];
+
+  const inboxItems = [
     {
       label: "Inbox Diterima",
       route: "pendaftar.wajib-retribusi.diterima",
@@ -119,9 +122,14 @@ const PendaftarNavigation = () => {
         /> */}
 
         <AccordionItem
-          title="Data Input"
-          items={dataInputs}
-          defaultOpen={isAccordionActive(dataInputs)}
+          title="Permohonan"
+          items={permohonanItems}
+          defaultOpen={isAccordionActive(permohonanItems)}
+        />
+        <AccordionItem
+          title="Inbox Data"
+          items={inboxItems}
+          defaultOpen={isAccordionActive(inboxItems)}
         />
 
         <div className="py-3">

@@ -6,15 +6,18 @@ import Calendar from "react-calendar";
 const KuptdNavigation = () => {
   const { url } = usePage();
 
-  const dataInputs = [
+  const permohonanItems = [
     {
-      label: "Data Wajib Retribusi",
+      label: "Wajib Retribusi",
       route: "kuptd.wajib-retribusi.index",
       activeRoute: [
         "kuptd.wajib-retribusi.index",
         "kuptd.wajib-retribusi.create",
       ],
     },
+  ];
+
+  const inboxItems = [
     {
       label: "Inbox Diterima",
       route: "kuptd.wajib-retribusi.diterima",
@@ -33,7 +36,7 @@ const KuptdNavigation = () => {
       activeRoute: "kuptd.wajib-retribusi.ditolak",
     },
     {
-      label: "Inbox Selesai (SKRD)",
+      label: "Inbox Selesai (SPKRD)",
       route: "kuptd.skrd.index",
       activeRoute: "kuptd.skrd.*",
     },
@@ -97,7 +100,7 @@ const KuptdNavigation = () => {
         <Link
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("kuptd.dashboard")
-              ? "bg-teal-400 font-medium text-white"
+              ? "bg-[#B3CEAF] font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
           }`}
           href={route("kuptd.dashboard")}
@@ -106,9 +109,14 @@ const KuptdNavigation = () => {
         </Link>
 
         <AccordionItem
-          title="Data Input"
-          items={dataInputs}
-          defaultOpen={isAccordionActive(dataInputs)}
+          title="Permohonan"
+          items={permohonanItems}
+          defaultOpen={isAccordionActive(permohonanItems)}
+        />
+        <AccordionItem
+          title="Inbox Data"
+          items={inboxItems}
+          defaultOpen={isAccordionActive(inboxItems)}
         />
 
         <div className="py-3">

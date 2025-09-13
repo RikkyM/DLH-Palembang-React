@@ -382,7 +382,9 @@ const Diproses = ({
                 params.append("status", "Processed");
 
                 window.open(
-                  route("wajib-retribusi.export") + "?" + params.toString(),
+                  route("wajib-retribusi.export") +
+                  "?" +
+                  params.toString(),
                   "_blank",
                 );
               }}

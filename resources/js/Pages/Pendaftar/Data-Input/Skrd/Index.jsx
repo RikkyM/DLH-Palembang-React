@@ -442,7 +442,7 @@ const Index = ({
                           )}
                         </td>
                         <td>{data.namaPendaftar}</td>
-                        <td>-</td>
+                        <td>{data.namaPenagih ?? "-"}</td>
                         <td className="text-left">
                           {data.tagihanPerTahunSkrd -
                             data.pembayaran_sum_jumlah_bayar ===
@@ -477,7 +477,7 @@ const Index = ({
                           );
                         })}
                         <td
-                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                          className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
                           <div className="flex flex-wrap gap-2 *:rounded *:text-xs *:font-medium *:sm:text-sm">
                             {/* <button className="flex items-center gap-1.5 outline-none">

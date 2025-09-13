@@ -24,11 +24,11 @@ const Table = ({
   const roleConfig = {
     ROLE_SUPERADMIN: {
       edit: "super-admin.wajib-retribusi.edit",
-      send: "pendaftar.wajib-retribusi.send",
+      send: "super-admin.wajib-retribusi.send",
     },
     ROLE_PENDAFTAR: {
       edit: "pendaftar.wajib-retribusi.edit",
-      send: "super-admin.wajib-retribusi.send",
+      send: "pendaftar.wajib-retribusi.send",
     },
     ROLE_KUPTD: {
       show: "kuptd.wajib-retribusi.show",
@@ -59,7 +59,7 @@ const Table = ({
   };
 
   const renderStatus = (data) => {
-    if (role === "ROLE_PENDAFTAR") {
+    if (role === 'ROLE_SUPERADMIN' || role === "ROLE_PENDAFTAR") {
       return (
         <span
           className={`select-none rounded py-2 font-medium ${

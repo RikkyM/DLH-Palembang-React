@@ -30,10 +30,18 @@ class InvoiceController extends Controller
         $query = Invoice::query()
             ->select('invoices.*')
             ->join('skrd', 'invoices.noSkrd', '=', 'skrd.noSkrd')
-            ->with(['skrd:noSkrd,noWajibRetribusi,namaObjekRetribusi,alamatObjekRetribusi,tagihanPerBulanSkrd']);
+            ->with(['skrd:noSkrd,noWajibRetribusi,namaObjekRetribusi,alamatObjekRetribusi,kelurahanObjekRetribusi,kecamatanObjekRetribusi,tagihanPerBulanSkrd']);
 
         if ($getSearch && trim($getSearch) !== '') {
-            $query->whereRelation('skrd', 'namaObjekRetribusi', 'like', "%{$getSearch}%");
+            // $query->whereRelation('skrd', function($q) {
+
+            // })
+            $query->whereHas('skrd', function($q) use ($getSearch) {
+                $q->where('noSkrd', 'like', "%{$getSearch}%")
+                    ->orWhere('namaObjekRetribusi', 'like', "%{$getSearch}%")
+                    ->orWhere('alamatObjekRetribusi', 'like', "%{$getSearch}%");
+            })
+                ->orWhere('no_invoice', 'like', "%{$getSearch}%");
         }
 
         switch ($getSortBy) {
@@ -62,7 +70,7 @@ class InvoiceController extends Controller
                 $parts = explode('/', $item->noSkrd);
 
                 $nomorAwal = (int) $parts[0];
-                $tahun = (int) end ($parts);
+                $tahun = (int) end($parts);
 
                 return ([$nomorAwal, $tahun]);
             })
@@ -76,7 +84,7 @@ class InvoiceController extends Controller
                 ];
             });
 
-            // dd($skrd->toArray());
+        // dd($skrd->toArray());
 
         return Inertia::render('Super-Admin/Pembayaran/Invoice/Index', [
             'datas' => $invoices,

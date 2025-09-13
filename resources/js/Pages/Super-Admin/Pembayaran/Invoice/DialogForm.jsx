@@ -121,8 +121,8 @@ const DialogForm = ({
         >
           <DropdownInput
             id="noSkrd"
-            label="Nomor STRD"
-            placeholder="Pilih Nomor STRD..."
+            label="Nomor SPKRD"
+            placeholder="Pilih Nomor SPKRD..."
             value={data.noSkrd}
             onChange={(value) => {
               const selected = retribusiOptions.find(
@@ -176,9 +176,11 @@ const DialogForm = ({
               id="tarifPerbulan"
               value={
                 data.tarifPerbulan
-                  ? new Intl.NumberFormat('id-ID').format(data.tarifPerbulan) : ""}
+                  ? new Intl.NumberFormat("id-ID").format(data.tarifPerbulan)
+                  : ""
+              }
               onChange={(e) => {
-                console.log(e.target.value)
+                console.log(e.target.value);
                 setData("tarifPerbulan", e.target.value);
               }}
               readOnly={true}

@@ -6,19 +6,22 @@ import Calendar from "react-calendar";
 const SuperAdminNavigation = () => {
   const { url } = usePage();
 
-  const dataInputs = [
+  const permohonanItems = [
     {
       label: "Pemohon",
       route: "super-admin.pemohon.index",
     },
     {
-      label: "Data Wajib Retribusi",
+      label: "Wajib Retribusi",
       route: "super-admin.wajib-retribusi.index",
       activeRoute: [
         "super-admin.wajib-retribusi.index",
         "super-admin.wajib-retribusi.create",
       ],
     },
+  ];
+
+  const inboxItems = [
     {
       label: "Inbox Diterima",
       route: "super-admin.wajib-retribusi.diterima",
@@ -46,48 +49,82 @@ const SuperAdminNavigation = () => {
     },
   ];
 
-  const pembayaranItems = [
+  const tagihanItems = [
     {
-      label: "Invoice",
-      route: "super-admin.invoice.index",
+      label: "Surat Tagihan",
+      // route: "super-admin.invoice.index",
     },
     {
-      label: "Input Setoran",
+      label: "Data Surat Tagihan",
+      // route: "super-admin.input-setoran",
+    },
+    // {
+    //   label: "History Setoran",
+    //   // route: "super-admin.laporan.piutang-retribusi",
+    // },
+    // {
+    //   label: "Penerimaan Retribusi",
+    //   route: "super-admin.penerimaan-retribusi.index",
+    // },
+    // {
+    //   label: "Piutang Retribusi",
+    //   // route: "super-admin.laporan.piutang-retribusi",
+    // },
+  ];
+
+  const penerimaanItems = [
+    {
+      label: "Input Pembayaran",
       route: "super-admin.input-setoran",
     },
     {
-      label: "History Setoran",
-      // route: "super-admin.laporan.piutang-retribusi",
-    },
-    {
-      label: "Penerimaan Retribusi",
-      route: "super-admin.penerimaan-retribusi.index",
-    },
-    {
-      label: "Piutang Retribusi",
+      label: "Data Pembayaran",
       // route: "super-admin.laporan.piutang-retribusi",
     },
   ];
 
-  const laporanItems = [
+  // const pembayaranItems = [
+  //   {
+  //     label: "Invoice",
+  //     route: "super-admin.invoice.index",
+  //   },
+  //   {
+  //     label: "Input Setoran",
+  //     route: "super-admin.input-setoran",
+  //   },
+  //   {
+  //     label: "History Setoran",
+  //     // route: "super-admin.laporan.piutang-retribusi",
+  //   },
+  //   {
+  //     label: "Penerimaan Retribusi",
+  //     route: "super-admin.penerimaan-retribusi.index",
+  //   },
+  //   {
+  //     label: "Piutang Retribusi",
+  //     // route: "super-admin.laporan.piutang-retribusi",
+  //   },
+  // ];
+
+  const rekapitulasiItems = [
     {
-      label: "Rekap Penanggung Jawab",
+      label: "Pemohon",
       // route: "super-admin.laporan.piutang-retribusi",
     },
     {
-      label: "Rekap Wajib Retribusi",
+      label: "Wajib Retribusi",
       // route: "super-admin.laporan.penerimaan-retribusi",
     },
     {
-      label: "Rekap SKRD",
+      label: "SPKRD",
       // route: "super-admin.laporan.piutang-retribusi",
     },
     {
-      label: "Rekap Penerimaan Retribusi",
+      label: "Penerimaan",
       // route: "super-admin.laporan.piutang-retribusi",
     },
     {
-      label: "Rekap Piutang Retribusi",
+      label: "Piutang",
       // route: "super-admin.laporan.piutang-retribusi",
     },
   ];
@@ -186,19 +223,34 @@ const SuperAdminNavigation = () => {
         </Link>
 
         <AccordionItem
-          title="Data Input"
-          items={dataInputs}
-          defaultOpen={isAccordionActive(dataInputs)}
+          title="Permohonan"
+          items={permohonanItems}
+          defaultOpen={isAccordionActive(permohonanItems)}
         />
         <AccordionItem
+          title="Inbox Data"
+          items={inboxItems}
+          defaultOpen={isAccordionActive(inboxItems)}
+        />
+        <AccordionItem
+          title="Tagihan"
+          items={tagihanItems}
+          defaultOpen={isAccordionActive(tagihanItems)}
+        />
+        <AccordionItem
+          title="Penerimaan"
+          items={penerimaanItems}
+          defaultOpen={isAccordionActive(penerimaanItems)}
+        />
+        {/* <AccordionItem
           title="Pembayaran"
           items={pembayaranItems}
           defaultOpen={isAccordionActive(pembayaranItems)}
-        />
+        /> */}
         <AccordionItem
-          title="Laporan"
-          items={laporanItems}
-          defaultOpen={isAccordionActive(laporanItems)}
+          title="Rekapitulasi Data"
+          items={rekapitulasiItems}
+          defaultOpen={isAccordionActive(rekapitulasiItems)}
         />
         <AccordionItem
           title="Master Data"

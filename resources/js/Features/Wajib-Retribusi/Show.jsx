@@ -460,23 +460,31 @@ const WajibRetribusiShow = ({
         </div>
         <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
           <h2>Berkas</h2>
-          {retribusi.file.toLowerCase().endsWith(".pdf") ? (
-            <iframe
-              className="h-[600px]"
-              src={route("private.file", {
-                type: "file",
-                filename: retribusi.file,
-              })}
-              alt="berkas pdf"
-            />
+          {retribusi.file ? (
+            <>
+              {retribusi.file.toLowerCase().endsWith(".pdf") ? (
+                <iframe
+                  className="h-[600px]"
+                  src={route("private.file", {
+                    type: "file",
+                    filename: retribusi.file,
+                  })}
+                  alt="berkas pdf"
+                />
+              ) : (
+                <img
+                  src={route("private.file", {
+                    type: "file",
+                    filename: retribusi.file,
+                  })}
+                  alt="berkas gambar"
+                />
+              )}
+            </>
           ) : (
-            <img
-              src={route("private.file", {
-                type: "file",
-                filename: retribusi.file,
-              })}
-              alt="berkas gambar"
-            />
+            <>
+              <h2 className="text-sm">Tidak ada Berkas</h2>
+            </>
           )}
         </div>
       </div>

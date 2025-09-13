@@ -1,19 +1,23 @@
 import { Link, usePage } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
 import AccordionItem from "@/Components/AccordionItem";
+import Calendar from "react-calendar";
 
 const KatimNavigation = () => {
   const { url } = usePage();
 
-  const dataInputs = [
+  const permohonanItems = [
     {
-      label: "Data Wajib Retribusi",
+      label: "Wajib Retribusi",
       route: "katim.wajib-retribusi.index",
       activeRoute: [
         "katim.wajib-retribusi.index",
         "katim.wajib-retribusi.create",
       ],
     },
+  ];
+
+  const inboxItems = [
     {
       label: "Inbox Diterima",
       route: "katim.wajib-retribusi.diterima",
@@ -32,7 +36,7 @@ const KatimNavigation = () => {
       activeRoute: "katim.wajib-retribusi.ditolak",
     },
     {
-      label: "Inbox Selesai (SKRD)",
+      label: "Inbox Selesai (SPKRD)",
       route: "katim.skrd.index",
       activeRoute: "katim.skrd.*",
     },
@@ -96,7 +100,7 @@ const KatimNavigation = () => {
         <Link
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("katim.dashboard")
-              ? "bg-teal-400 font-medium text-white"
+              ? "bg-[#B3CEAF] font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
           }`}
           href={route("katim.dashboard")}
@@ -105,10 +109,18 @@ const KatimNavigation = () => {
         </Link>
 
         <AccordionItem
-          title="Data Input"
-          items={dataInputs}
-          defaultOpen={isAccordionActive(dataInputs)}
+          title="Permohonan"
+          items={permohonanItems}
+          defaultOpen={isAccordionActive(permohonanItems)}
         />
+        <AccordionItem
+          title="Inbox Data"
+          items={inboxItems}
+          defaultOpen={isAccordionActive(inboxItems)}
+        />
+        <div className="py-3">
+          <Calendar />
+        </div>
 
         {/* <AccordionItem
           title="Settings"
