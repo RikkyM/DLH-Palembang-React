@@ -15,6 +15,7 @@ const DashboardPages = ({
   const handleChangeYear = (y) => {
     router.get(route(rute), { year: y }, { preserveState: true });
   };
+  console.log(year);
   return (
     <section className="relative min-h-screen overflow-hidden p-3">
       <div>

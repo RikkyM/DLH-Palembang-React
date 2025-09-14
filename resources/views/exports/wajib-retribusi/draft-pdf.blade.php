@@ -94,7 +94,7 @@
             </td>
             <td class="judul-container">
                 <h2 style="margin-top: 10px; text-align: center; font-size: 20px;">
-                    Surat Tagihan Retribusi Daerah<br>
+                    Surat Pemberitahuan Ketetapan Retribusi Daerah<br>
                     Jasa Umum Pelayanan Persampahan/Kebersihan
                 </h2>
                 {{-- <span style="font-size: 18px;">Dasar:</span> --}}
@@ -104,9 +104,9 @@
                     No. 4 Tahun 2023<br>Tentang Pajak Daerah dan Retribusi Daerah<br />
                     <table>
                         <tr>
-                            <td>Nomor STRD</td>
+                            <td>Nomor SPKRD</td>
                             <td style="padding: 0 10px;">:</td>
-                            <td>{{ $data->noSkrd }}</td>
+                            <td>{{ $data->noSkrd ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Tanggal</td>
@@ -261,7 +261,7 @@
                 jatuh tempo pembayaran sampai dengan tanggal
                 pembayaran, untuk jangka waktu paling lama 24
                 (dua puluh empat) bulan dan ditagih dengan
-                menggunakan STRD;</td>
+                menggunakan SPKRD;</td>
             {{-- <td>Penyetoran dan pembayaran retribusi kebersihan dapat juga dilakukan langsung oleh wajib
                 retribusi melalui rekening Bank Sumsse Babel Cabang Kolonel
                 Atmo dengan nomor rekening 150.30.0000.5 A/n. Pemerintah Kota Palembang, disertai narasi
@@ -290,8 +290,8 @@
         style="border-top: 3px dashed !important;  margin-top: 1.4rem; padding-top: 0.7rem; position: absolute; bottom: 0px; width: 100%; max-height: 6.3cm;">
         <table style="border-collapse: collapse; width: 100%; max-width: 800px;     line-height: 0.7rem; font-size: 18px;">
             <tr>
-                <td style="width: 25%; vertical-align: top;">No. STRD</td>
-                <td style="width: 25%;">: {{ $skrd->noSkrd ?? '' }}</td>
+                <td style="width: 25%; vertical-align: top;">No. SPKRD</td>
+                <td style="width: 25%;">: {{ $skrd->noSkrd ?? '-' }}</td>
                 <td style="width: 25%; padding-left: 100px; white-space: nowrap;">Diterima Tanggal</td>
                 <td style="width: 25%;">:</td>
             </tr>
