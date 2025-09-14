@@ -740,9 +740,9 @@ class WajibRetribusiController extends Controller
             'actionDate' => now()->toIso8601String()
         ];
 
-        if (empty($retribusi->noWajibRetribusi)) {
-            $retribusi->noWajibRetribusi = WajibRetribusi::generateNoWajibRetribusi();
-        }
+        // if (empty($retribusi->noWajibRetribusi)) {
+        //     $retribusi->noWajibRetribusi = WajibRetribusi::generateNoWajibRetribusi();
+        // }
         $retribusi->status = 'Processed';
         $retribusi->historyAction = $history;
         $retribusi->current_role = "ROLE_KUPTD";

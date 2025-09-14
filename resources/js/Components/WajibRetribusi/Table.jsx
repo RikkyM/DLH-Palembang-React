@@ -59,7 +59,7 @@ const Table = ({
   };
 
   const renderStatus = (data) => {
-    if (role === 'ROLE_SUPERADMIN' || role === "ROLE_PENDAFTAR") {
+    if (role === "ROLE_SUPERADMIN" || role === "ROLE_PENDAFTAR") {
       return (
         <span
           className={`select-none rounded py-2 font-medium ${
@@ -106,7 +106,7 @@ const Table = ({
   };
 
   const renderActions = (data) => {
-    if (role === "ROLE_PENDAFTAR" || role === "ROLE_SUPERADMIN") {
+    if (role === "ROLE_SUPERADMIN" || role === "ROLE_PENDAFTAR") {
       return (
         <div className="flex flex-col gap-2 *:rounded *:text-xs *:font-medium *:md:text-sm">
           <button
@@ -135,7 +135,10 @@ const Table = ({
                 <PencilLine size={20} /> Edit
               </Link>
               <button
-                onClick={(e) => handleSend(e, data.id)}
+                onClick={(e) => {
+                  // handleSend(e, data.id);
+                  openModal("diterima", data);
+                }}
                 className="flex items-center gap-1.5 whitespace-nowrap"
               >
                 <Send size={20} /> Kirim
@@ -154,7 +157,7 @@ const Table = ({
                 <Pencil size={20} /> Edit
               </Link>
               <button
-                onClick={(e) => handleSend(e, data.id)}
+                onClick={(e) => openModal("ditolak", data)}
                 className="flex items-center gap-1.5 whitespace-nowrap"
               >
                 <Send size={20} /> Kirim

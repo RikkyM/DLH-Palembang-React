@@ -2,10 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
 import { ChevronDown, Filter, Search } from "lucide-react";
+import { useProvider } from "@/Context/GlobalContext";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
 import Table from "@/Components/WajibRetribusi/Table";
-// import Table from "./Table";
+import DialogForm from "@/Components/WajibRetribusi/DialogForm";
 
 const Diterima = ({
   datas,
@@ -16,7 +17,9 @@ const Diterima = ({
   kecamatanOptions = [],
   kelurahanOptions = [],
   petugasOptions = [],
+  user = "ROLE_SUPERADMIN",
 }) => {
+  const { modalState, closeModal } = useProvider();
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
@@ -429,7 +432,7 @@ const Diterima = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
-                role="ROLE_SUPERADMIN"
+                role={user}
               />
             </>
           )}
@@ -437,6 +440,12 @@ const Diterima = ({
 
         {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
+      <DialogForm
+        isOpen={modalState.type === "diterima"}
+        onClose={closeModal}
+        retribusi={modalState.data}
+        user={user}
+      />
     </Layout>
   );
 };

@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
-
 import { ChevronDown, Filter, Search } from "lucide-react";
+import { useProvider } from "@/Context/GlobalContext";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
-import Table from "./Table";
+import Table from "@/Components/WajibRetribusi/Table";
+import DialogForm from "@/Components/WajibRetribusi/DialogForm";
 
 const Ditolak = ({
   datas,
@@ -16,7 +17,9 @@ const Ditolak = ({
   kecamatanOptions = [],
   kelurahanOptions = [],
   petugasOptions = [],
+  user = "ROLE_SUPERADMIN",
 }) => {
+  const { modalState, closeModal } = useProvider();
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
@@ -312,7 +315,7 @@ const Ditolak = ({
                     disabled={!kecamatan}
                   />
                   <SearchableSelect
-                    id="petugaslist"
+                    id="petugasList"
                     options={petugasList}
                     value={petugas}
                     onChange={(val) => setPetugas(val)}
@@ -356,10 +359,10 @@ const Ditolak = ({
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (petugas) params.append("petugas", petugas);
 
-                params.append("status", "Approved");
+                params.append("status", "Rejected");
 
                 window.open(
-                  route("super-admin.wajib-retribusi.download-pdf") +
+                  route("wajib-retribusi.download-pdf") +
                     "?" +
                     params.toString(),
                   "_blank",
@@ -380,12 +383,10 @@ const Ditolak = ({
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (petugas) params.append("petugas", petugas);
 
-                params.append("status", "Approved");
+                params.append("status", "Rejected");
 
                 window.open(
-                  route("super-admin.wajib-retribusi.export") +
-                    "?" +
-                    params.toString(),
+                  route("wajib-retribusi.export") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -424,6 +425,7 @@ const Ditolak = ({
           ) : (
             <>
               <Table
+                search={search}
                 datas={datas}
                 columns={columns}
                 sort={sort}
@@ -431,6 +433,7 @@ const Ditolak = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
+                role={user}
               />
             </>
           )}
@@ -438,6 +441,12 @@ const Ditolak = ({
 
         {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
+      <DialogForm
+        isOpen={modalState.type === "ditolak"}
+        onClose={closeModal}
+        retribusi={modalState.data}
+        user={user}
+      />
     </Layout>
   );
 };

@@ -63,6 +63,7 @@ class SkrdController extends Controller
                 'namaPendaftar',
                 'tagihanPerTahunSkrd',
                 'created_at',
+                'fileSkrd'
             ])
             ->addSelect([
                 'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')

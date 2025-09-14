@@ -19,9 +19,6 @@ class DashboardController extends Controller
 {
     public function index(Request $request, DashboardService $dashboardService)
     {
-
-        $year = $request->input('year', now()->year);
-
         // $years = WajibRetribusi::selectRaw('YEAR(created_at) as year')
         //     ->union(Skrd::selectRaw('YEAR(created_at) as year'))
         //     ->distinct()
@@ -76,6 +73,10 @@ class DashboardController extends Controller
         //     $labels[] = Carbon::create()->month($i)->locale('id')->monthName;
         //     $data[] = $bayaranPerbulan[$i];
         // }
+
+        $lastYear = $dashboardService->getLastYear();
+
+        $year = $request->input('year', $lastYear[count($lastYear) - 1]);
 
         return Inertia::render('Super-Admin/Dashboard', [
             'rute' => 'super-admin.dashboard',

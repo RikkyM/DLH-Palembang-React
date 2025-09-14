@@ -53,7 +53,7 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
     <div>
       <button
         onClick={handleToggle}
-        className="flex w-full items-center justify-between rounded px-3 py-2 outline-none transition-all duration-300 hover:bg-neutral-200 text-nowrap"
+        className="flex w-full items-center justify-between text-nowrap rounded px-3 py-2 outline-none transition-all duration-300 hover:bg-neutral-200"
       >
         <span>{title}</span>
         <ChevronDown
@@ -62,7 +62,7 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
         />
       </button>
       <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out text-nowrap ${
+        className={`overflow-hidden text-nowrap transition-all duration-300 ease-in-out ${
           isOpen ? "max-h-96" : "max-h-0"
         }`}
       >
@@ -73,13 +73,15 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
                 {item.route ? (
                   <Link
                     href={route(item.route)}
-                    className={`inline-block w-full rounded p-2 transition-all duration-300 ${
+                    className={`inline-flex w-full justify-between rounded p-2 transition-all duration-300 ${
                       isItemActive(item)
                         ? "bg-[#B3CEAF] font-medium text-white"
                         : "hover:bg-neutral-100"
                     }`}
                   >
                     {item.label}
+                    {item.label === "Inbox Diterima" && <span className="text-red-500 font-bold">1</span>} 
+                    {/* tambah notif nanti */}
                   </Link>
                 ) : (
                   <span className="inline-block w-full rounded p-2 text-neutral-500">

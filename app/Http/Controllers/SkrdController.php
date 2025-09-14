@@ -108,7 +108,13 @@ class SkrdController extends Controller
 
     public function previewPdfLocal($filename)
     {
+        $path = storage_path('app/private/skrd/' . $filename);
 
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path);
     }
 
     public function downloadSingleExcel($id)

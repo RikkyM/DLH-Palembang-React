@@ -2,9 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
 import { ChevronDown, Filter, Search } from "lucide-react";
+import { useProvider } from "@/Context/GlobalContext";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
 import Table from "@/Components/WajibRetribusi/Table";
+import DialogForm from "@/Components/WajibRetribusi/DialogForm";
 
 const Diterima = ({
   datas,
@@ -15,7 +17,9 @@ const Diterima = ({
   kecamatanOptions = [],
   kelurahanOptions = [],
   petugasOptions = [],
+  user = "ROLE_PENDAFTAR"
 }) => {
+  const { modalState, closeModal } = useProvider();
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
@@ -226,23 +230,23 @@ const Diterima = ({
     setPerPage(parseInt(e.target.value));
   };
 
-  const handleSendDiterima = (e, id) => {
-    e.preventDefault();
+  // const handleSendDiterima = (e, id) => {
+  //   e.preventDefault();
 
-    router.put(
-      route("pendaftar.wajib-retribusi-send-diterima", id),
-      {},
-      {
-        preserveScroll: true,
-        onSuccess: () => {
-          console.log("Retribusi berhasil dikirim.");
-        },
-        onError: (errors) => {
-          console.error("Terjadi kesalahan ketika mengirim");
-        },
-      },
-    );
-  };
+  //   router.put(
+  //     route("pendaftar.wajib-retribusi-send-diterima", id),
+  //     {},
+  //     {
+  //       preserveScroll: true,
+  //       onSuccess: () => {
+  //         console.log("Retribusi berhasil dikirim.");
+  //       },
+  //       onError: (errors) => {
+  //         console.error("Terjadi kesalahan ketika mengirim");
+  //       },
+  //     },
+  //   );
+  // };
 
   return (
     <Layout title="INBOX DITERIMA">
@@ -446,8 +450,7 @@ const Diterima = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
-                handleSendDiterima={handleSendDiterima}
-                role="ROLE_PENDAFTAR"
+                role={user}
               />
             </>
           )}
@@ -455,6 +458,12 @@ const Diterima = ({
 
         {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
+      <DialogForm
+        isOpen={modalState.type === "diterima"}
+        onClose={closeModal}
+        retribusi={modalState.data}
+        user={user}
+      />
     </Layout>
   );
 };

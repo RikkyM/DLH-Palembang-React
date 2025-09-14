@@ -12,7 +12,8 @@ class DashboardController extends Controller
 {
     public function index(Request $request, DashboardService $dashboardService)
     {
-        $year = $request->input('year', now()->year);
+        $lastYear = $dashboardService->getLastYear();
+        $year = $request->input('year', $lastYear[count($lastYear) - 1]);
         return Inertia::render('Kabid/Dashboard', [
             'rute' => 'kabid.dashboard',
             'year' => $year,

@@ -10,6 +10,15 @@ use Carbon\Carbon;
 
 class DashboardService
 {
+    public function getLastYear()
+    {
+        return Skrd::pluck('created_at')
+            ->map(fn($date) => Carbon::parse($date)->year)
+            ->unique()
+            ->values()
+            ->sort();
+    }
+
     public function getYears()
     {
         return WajibRetribusi::selectRaw('YEAR(created_at) as year')

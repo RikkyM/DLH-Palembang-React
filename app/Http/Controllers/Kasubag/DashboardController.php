@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Kuptd;
+namespace App\Http\Controllers\Kasubag;
 
 use App\Http\Controllers\Controller;
 use App\Services\DashboardService;
@@ -13,8 +13,8 @@ class DashboardController extends Controller
     {
         $lastYear = $dashboardService->getLastYear();
         $year = $request->input('year', $lastYear[count($lastYear) - 1]);
-        return Inertia::render('Kuptd/Dashboard', [
-            'rute' => 'kuptd.dashboard',
+        return Inertia::render('Kasubag/Dashboard', [
+            'rute' => 'kasubag.dashboard',
             'year' => $year,
             'years' => $dashboardService->getYears(),
             'stats' => $dashboardService->getStats($year),

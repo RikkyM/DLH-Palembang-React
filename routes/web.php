@@ -24,7 +24,7 @@ Route::prefix('sirep')->group(function () {
             Route::get('/download-pdf', 'downloadPdf')->name('skrd.download-pdf');
             Route::get('/download-excel', 'downloadExcel')->name('skrd.download-excel');
             Route::get('/{id}/skrd', 'downloadSinglePdf')->name('skrd.download-data-pdf');
-            Route::get('/{filename}/skrd', 'previewPdfLocal')->name('skrd.preview-pdf');
+            Route::get('/skrd/{filename}', 'previewPdfLocal')->name('skrd.pdf');
             Route::get('/{id}/download-data-excel', 'downloadSingleExcel')->name('skrd.download-data-excel');
         });
 
@@ -38,5 +38,6 @@ Route::prefix('sirep')->group(function () {
         require __DIR__ . '/role/kuptd.php';
         require __DIR__ . '/role/katim.php';
         require __DIR__ . '/role/kabid.php';
+        require __DIR__ . '/role/kasubag.php';
     });
 });

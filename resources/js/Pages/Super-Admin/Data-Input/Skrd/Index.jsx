@@ -100,7 +100,7 @@ const Index = ({
     },
     {
       key: "tagihanPerTahunSkrd",
-      label: "Tarif /tahun",
+      label: "Tarif /Tahun",
       align: "text-left truncate",
     },
     {
@@ -402,7 +402,7 @@ const Index = ({
           className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
         >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -439,10 +439,10 @@ const Index = ({
                   >
                     {bulan.map((bulan, i) => (
                       <React.Fragment key={i}>
-                        <th className="sticky top-0 z-0 cursor-pointer select-none bg-[#F1B174]">
+                        <th className="sticky top-0 cursor-pointer select-none bg-[#F1B174]">
                           {bulan}
                         </th>
-                        <th className="sticky top-0 z-0 cursor-pointer select-none truncate bg-[#F1B174]">
+                        <th className="sticky top-0 cursor-pointer select-none truncate bg-[#F1B174]">
                           Tanggal Bayar
                         </th>
                       </React.Fragment>
@@ -470,7 +470,11 @@ const Index = ({
                             .replace(/\//g, "-")}
                         </td>
                         <td>{data.namaObjekRetribusi}</td>
-                        <td>{data.alamatObjekRetribusi}</td>
+                        <td>
+                          <div className="w-72">
+                            {data.alamatObjekRetribusi}
+                          </div>
+                        </td>
                         <td>{data.kelurahanObjekRetribusi}</td>
                         <td>{data.kecamatanObjekRetribusi}</td>
                         <td>{data.namaKategori}</td>
@@ -508,7 +512,7 @@ const Index = ({
                           )}
                         </td>
                         <td>{data.namaPendaftar}</td>
-                        <td>-</td>
+                        <td>{data.namaPenagih ?? "-"}</td>
                         <td className="text-left">
                           {data.tagihanPerTahunSkrd -
                             data.pembayaran_sum_jumlah_bayar ===
@@ -554,8 +558,8 @@ const Index = ({
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               onClick={(e) => {
                                 window.open(
-                                  route("skrd.download-data-pdf", {
-                                    id: data.id,
+                                  route("skrd.pdf", {
+                                    filename: data.fileSkrd,
                                   }),
                                   "_blank",
                                 );
@@ -565,7 +569,7 @@ const Index = ({
                             </button>
                             <button
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
-                              onClick={(e) => {
+                              onClick={() => {
                                 window.open(
                                   route("skrd.download-data-excel", {
                                     id: data.id,

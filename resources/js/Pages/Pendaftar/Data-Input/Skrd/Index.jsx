@@ -13,16 +13,21 @@ const Index = ({
   bulan,
   kategoriOptions = [],
   subKategoriOptions = [],
+  petugasOptions = [],
+  tahunOptions = [],
 }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [kategori, setKategori] = useState(filters.kategori || "");
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
+  const [petugas, setPetugas] = useState(filters.petugas || "");
   const [status, setStatus] = useState(filters.status || "");
   const [sort, setSort] = useState(filters.sort || null);
+  const [direction, setDirection] = useState(filters.direction || null);
+  const [bulanFilter, setBulanFilter] = useState(filters.bulan || "");
+  const [tahunFilter, setTahunFilter] = useState(filters.tahun || "");
   const [perPage, setPerPage] = useState(() => {
     return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
   });
-  const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
 
   const allFilters = {
@@ -31,7 +36,10 @@ const Index = ({
     direction: direction || filters.direction,
     kategori: kategori || filters.kategori,
     subKategori: subKategori || filters.subKategori,
+    petugas: petugas || filters.petugas,
     status: status || filters.status,
+    bulan: bulanFilter || filters.bulan,
+    tahun: tahunFilter || filters.tahun,
   };
 
   const [showFilters, setShowFilters] = useState(false);
@@ -118,6 +126,16 @@ const Index = ({
     { key: "statusLunas", label: "status", align: "text-left truncate" },
   ];
 
+  const bulanOptions = useMemo(
+    () => bulan.map((nama, idx) => ({ value: String(idx + 1), label: nama })),
+    [bulan],
+  );
+
+  // const tahunList = useMemo(
+  //   () => tahunOptions.map((t) => ({ value: String(t), label: String(t) })),
+  //   [tahunOptions],
+  // );
+
   const kategoriList = useMemo(
     () =>
       kategoriOptions.map((k) => ({
@@ -148,20 +166,21 @@ const Index = ({
     if (kategori) params.kategori = kategori;
     if (subKategori) params["sub-kategori"] = subKategori;
     if (status) params.status = status;
+    if (bulanFilter) params.bulan = bulanFilter;
+    if (tahunFilter) params.tahun = tahunFilter;
     if (perPage && perPage !== 10) params.per_page = perPage;
-
     if (sort && sort !== "id") {
       params.sort = sort;
-      if (direction && direction.toLowerCase() === "desc") {
-        params.direction = "desc";
+      if (direction && direction.toLowerCase() === "asc") {
+        params.direction = "asc";
       }
     } else if (
       sort === "id" &&
       direction &&
-      direction.toLowerCase() === "desc"
+      direction.toLowerCase() === "asc"
     ) {
       params.sort = sort;
-      params.direction = "desc";
+      params.direction = "asc";
     }
 
     return params;
@@ -186,7 +205,7 @@ const Index = ({
       router.get(route("pendaftar.skrd.index"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas", "subKategoriOptions", "filters"],
+        only: ["datas", "subKategoriOptions", "filters", "tahunOptions"],
         onFinish: () => setIsLoading(false),
       });
     }, 500);
@@ -194,7 +213,18 @@ const Index = ({
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [search, kategori, subKategori, sort, direction, perPage, status]);
+  }, [
+    search,
+    kategori,
+    subKategori,
+    petugas,
+    perPage,
+    sort,
+    direction,
+    status,
+    bulanFilter,
+    tahunFilter,
+  ]);
 
   const handlePerPageChange = (e) => {
     setPerPage(parseInt(e.target.value));
@@ -270,6 +300,20 @@ const Index = ({
                   value={status}
                   onChange={(val) => setStatus(val)}
                   placeholder="Filter berdasarkan status"
+                />
+                <SearchableSelect
+                  id="FilterBulan"
+                  options={bulanOptions}
+                  value={bulanFilter}
+                  onChange={(val) => setBulanFilter(val)}
+                  placeholder="Filter bulan"
+                />
+                <SearchableSelect
+                  id="FilterTahun"
+                  // options={tahunList}
+                  // value={tahunFilter}
+                  onChange={(val) => setTahunFilter(val)}
+                  placeholder="Filter tahun"
                 />
               </div>
             </div>
@@ -489,8 +533,8 @@ const Index = ({
                               onClick={(e) => {
                                 // e.stopPropagation();
                                 window.open(
-                                  route("skrd.download-data-pdf", {
-                                    id: data.id,
+                                  route("skrd.pdf", {
+                                    filename: data.fileSkrd,
                                   }),
                                   "_blank",
                                 );
@@ -500,8 +544,7 @@ const Index = ({
                             </button>
                             <button
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
-                              onClick={(e) => {
-                                // e.stopPropagation();
+                              onClick={() => {
                                 window.open(
                                   route("skrd.download-data-excel", {
                                     id: data.id,

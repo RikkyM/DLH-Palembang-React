@@ -444,9 +444,8 @@ class WajibRetribusiController extends Controller
         $skrd = Skrd::create($dataSkrd);
         $tandaTangan = TandaTangan::first();
 
-        $tanggal = now()->format('d-m-Y');
         $noSkrdSafe = Str::of($skrd->noSkrd)->replace(['/', '\\', ' '], '-');
-        $filename = "skrd-{$noSkrdSafe}-{$tanggal}.pdf";
+        $filename = "skrd-{$noSkrdSafe}.pdf";
         $relativePath = "skrd/{$filename}";
 
         Storage::disk('local')->makeDirectory('skrd');

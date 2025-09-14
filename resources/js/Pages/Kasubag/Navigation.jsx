@@ -1,46 +1,52 @@
-import { Link, usePage } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
 import AccordionItem from "@/Components/AccordionItem";
 import Calendar from "react-calendar";
 
-const KabidNavigation = () => {
-  const { url } = usePage();
+const KasubagNavigation = () => {
 
-  const permohonanItems = [
-    {
-      label: "Wajib Retribusi",
-      route: "kabid.wajib-retribusi.index",
-      activeRoute: [
-        "kabid.wajib-retribusi.index",
-        "kabid.wajib-retribusi.create",
-      ],
-    },
-  ];
+//   const permohonanItems = [
+//     {
+//       label: "Pemohon",
+//       route: "kasubag.pemohon.index",
+//     },
+//     {
+//       label: "Wajib Retribusi",
+//       route: "kasubag.wajib-retribusi.index",
+//       activeRoute: [
+//         "kasubag.wajib-retribusi.index",
+//         "kasubag.wajib-retribusi.create",
+//       ],
+//     },
+//   ];
 
-  const inboxInputs = [
-    {
-      label: "Inbox Diterima",
-      route: "kabid.wajib-retribusi.diterima",
-      activeRoute: [
-        "kabid.wajib-retribusi.diterima",
-        "kabid.wajib-retribusi.show",
-      ],
-    },
-    // {
-    //   label: "Inbox Diproses",
-    //   route: "kabid.wajib-retribusi.diproses",
-    // },
-    {
-      label: "Inbox Ditolak",
-      route: "kabid.wajib-retribusi.ditolak",
-      activeRoute: "kabid.wajib-retribusi.ditolak",
-    },
-    {
-      label: "Inbox Selesai (SPKRD)",
-      route: "kabid.skrd.index",
-      activeRoute: "kabid.skrd.*",
-    },
-  ];
+//   const inboxItems = [
+//     {
+//       label: "Inbox Diterima",
+//       route: "kasubag.wajib-retribusi.diterima",
+//       activeRoute: [
+//         "kasubag.wajib-retribusi.diterima",
+//         "kasubag.wajib-retribusi.edit",
+//       ],
+//     },
+//     {
+//       label: "Inbox Diproses",
+//       route: "kasubag.wajib-retribusi.diproses",
+//     },
+//     {
+//       label: "Inbox Ditolak",
+//       route: "kasubag.wajib-retribusi.ditolak",
+//       activeRoute: [
+//         "kasubag.wajib-retribusi.ditolak",
+//         "kasubag.wajib-retribusi.edit",
+//       ],
+//     },
+//     {
+//       label: "Inbox Selesai (SPKRD)",
+//       route: "kasubag.skrd.index",
+//       activeRoute: "kasubag.skrd.*",
+//     },
+//   ];
 
   // const settingItems = [
   //   {
@@ -70,7 +76,7 @@ const KabidNavigation = () => {
       if (item.activeRoute) {
         if (Array.isArray(item.activeRoute)) {
           return item.activeRoute.some((r) => {
-            if (r === "kabid.wajib-retribusi.show") {
+            if (r === "kasubag.wajib-retribusi.edit") {
               const params = route().params;
               if (
                 item.label.toLowerCase().includes("diterima") &&
@@ -99,39 +105,33 @@ const KabidNavigation = () => {
       <div className="space-y-1.5 p-3">
         <Link
           className={`block rounded px-3 py-2 transition-all duration-300 ${
-            route().current("kabid.dashboard")
+            route().current("kasubag.dashboard")
               ? "bg-[#B3CEAF] font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
           }`}
-          href={route("kabid.dashboard")}
+          href={route("kasubag.dashboard")}
         >
           Dashboard
         </Link>
 
-        <AccordionItem
+        {/* <AccordionItem
           title="Permohonan"
           items={permohonanItems}
           defaultOpen={isAccordionActive(permohonanItems)}
         />
-
         <AccordionItem
           title="Inbox Data"
-          items={inboxInputs}
-          defaultOpen={isAccordionActive(inboxInputs)}
-        />
+          items={inboxItems}
+          defaultOpen={isAccordionActive(inboxItems)}
+        /> */}
 
         <div className="py-3">
           <Calendar />
         </div>
-
-        {/* <AccordionItem
-          title="Settings"
-          items={settingItems}
-          isRouteActive={isRouteActive}
-        /> */}
+        
       </div>
     </Sidebar>
   );
 };
 
-export default KabidNavigation;
+export default KasubagNavigation;

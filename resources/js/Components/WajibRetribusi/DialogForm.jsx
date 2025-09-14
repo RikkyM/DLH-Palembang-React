@@ -1,13 +1,19 @@
 import Dialog from "@/Components/Dialog";
 import { X } from "lucide-react";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { useEffect } from "react";
 
 const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
   const firstInputRef = useAutoFocusInput(isOpen, true);
 
   const roleConfig = {
+    ROLE_SUPERADMIN: {
+      send: "super-admin.wajib-retribusi.send",
+    },
+    ROLE_PENDAFTAR: {
+      send: "pendaftar.wajib-retribusi.send",
+    },
     ROLE_KUPTD: {
       submit: "kuptd.wajib-retribusi.update",
     },
@@ -38,6 +44,24 @@ const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
     }
   }, [isOpen, retribusi]);
 
+  const handleSend = (e, id) => {
+    e.preventDefault();
+
+    console.log(id);
+
+    router.put(
+      route(currentConfig.send, id),
+      {},
+      {
+        preserveScroll: true,
+        onSuccess: () => onClose(),
+        onError: () => {
+          console.error("Terjadi kesalahan ketika mengirim");
+        },
+      },
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -47,8 +71,6 @@ const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
       console.error("Role tidak dikenali");
       return;
     }
-
-    console.log(currentConfig.skrd)
 
     if (data.status === "Finished") {
       post(route(currentConfig.skrd, retribusi.id), {
@@ -67,23 +89,47 @@ const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
     }
   };
 
-  return (
-    <Dialog isOpen={isOpen} onClose={onClose}>
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className={`h-max max-h-full w-full max-w-lg overflow-auto rounded bg-white transition-all duration-300 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-1 ${isOpen ? "scale-100" : "scale-95"}`}
-      >
-        <div className="flex items-center justify-between p-5">
-          <h3 className="text-lg font-medium">Wajib Retribusi</h3>
-          <button type="button" onClick={onClose}>
-            <X size={20} />
-          </button>
-        </div>
+  const renderDialog = (data) => {
+    if (user === "ROLE_SUPERADMIN" || user === "ROLE_PENDAFTAR") {
+      return (
+        <>
+          <div className="px-5 pb-5">
+            Apakah anda yakin ingin mengirim data retribusi ?
+          </div>
+          <div className="px-5 pb-3">
+            <div className="flex flex-col gap-3 text-sm md:flex-row md:justify-end md:gap-2">
+              <button
+                className="order-1 rounded bg-green-500 px-3 py-2 font-medium text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
+                disabled={processing}
+                onClick={(e) => {
+                  console.log(data);
+                  handleSend(e, retribusi.id);
+                }}
+              >
+                {processing ? "Proses..." : "Kirim"}
+              </button>
+              <button
+                onClick={onClose}
+                className="order-2 rounded-md border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 hover:bg-gray-50 md:order-1"
+                type="button"
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <>
         <div className="grid grid-cols-2 px-5 pb-5">
           <div>Penanggung Jawab</div>
           <div>: {retribusi?.pemilik?.namaPemilik}</div>
           <div>Nama Objek Retribusi</div>
           <div>: {retribusi?.namaObjekRetribusi}</div>
+          <div>Status</div>
+          <div>: {retribusi?.status}</div>
         </div>
         <form onSubmit={handleSubmit} className="space-y-5 px-5 pb-5">
           <div className="flex flex-col gap-1.5 text-sm">
@@ -134,6 +180,23 @@ const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
             </button>
           </div>
         </form>
+      </>
+    );
+  };
+
+  return (
+    <Dialog isOpen={isOpen} onClose={onClose}>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={`h-max max-h-full w-full max-w-lg overflow-auto rounded bg-white transition-all duration-300 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-1 ${isOpen ? "scale-100" : "scale-95"}`}
+      >
+        <div className="flex items-center justify-between p-5">
+          <h3 className="text-lg font-medium">Wajib Retribusi</h3>
+          <button type="button" onClick={onClose}>
+            <X size={20} />
+          </button>
+        </div>
+        {renderDialog(data)}
       </div>
     </Dialog>
   );
