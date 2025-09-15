@@ -103,7 +103,7 @@ class SkrdController extends Controller
                 'chroot' => realpath("")
             ]);
 
-        return $pdf->stream("skrd-{$data->noWajibRetribusi}.pdf");
+        return $pdf->stream("SPKRD-{$data->noWajibRetribusi}.pdf");
     }
 
     public function previewPdfLocal($filename)

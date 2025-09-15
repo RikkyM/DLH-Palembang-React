@@ -74,11 +74,15 @@ const SuperAdminNavigation = () => {
 
   const penerimaanItems = [
     {
-      label: "Input Pembayaran",
+      label: "Input Setoran",
       route: "super-admin.input-setoran",
     },
     {
-      label: "Data Pembayaran",
+      label: "Data Setoran",
+      // route: "super-admin.laporan.piutang-retribusi",
+    },
+    {
+      label: "Detail Setoran",
       // route: "super-admin.laporan.piutang-retribusi",
     },
   ];

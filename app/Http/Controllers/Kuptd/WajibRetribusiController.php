@@ -316,12 +316,11 @@ class WajibRetribusiController extends Controller
     {
         return $this->renderWajibRetribusi(
             $request,
-            "Processed",
+            null,
             "Diproses",
             fn($q) => $q->where(function ($q) {
                 $q->where('current_role', '!=', 'ROLE_KUPTD')
-                    ->where('status', "Processed")
-                    ->orWhereNull('current_role');
+                    ->where('status', "Processed");
             })
         );
     }

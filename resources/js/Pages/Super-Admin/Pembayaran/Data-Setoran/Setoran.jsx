@@ -25,6 +25,9 @@ const Setoran = ({ skrdOptions = [] }) => {
   return (
     <Layout title="Input Setoran">
       <form onSubmit={null} className="grid touch-pan-y grid-cols-2 gap-3 p-3">
+      <div className="col-span-2">
+        Pilih Data Existing
+      </div>
         <DropdownInput
           id="noSkrd"
           label="Pilih Nomor SKRD"
@@ -218,6 +221,7 @@ const Setoran = ({ skrdOptions = [] }) => {
           </FormInput>
         </div>
         <div className="col-span-2 border border-black"></div>
+        <div className="">Input Pembayaran</div>
         <div className="col-span-2 grid gap-5 lg:grid-cols-3">
           <DropdownInput
             id="pemohon"
@@ -414,29 +418,16 @@ const Setoran = ({ skrdOptions = [] }) => {
                 <th className="text-left">Bulan</th>
                 <th>Tanggal Bayar</th>
                 <th>Nomor Referensi Bank</th>
-                <th className="text-center">Jumlah Perbulan</th>
+                <th className="text-center">Jumlah Bayar Perbulan</th>
                 <th>Keterangan</th>
                 <th>Bukti Bayar</th>
               </tr>
             </thead>
             <tbody>
               {Array.from({ length: 12 }, (_, i) => {
-                {
-                  /* const tahun = new Date().getFullYear();
-                const bulan = i; */
-                }
                 const namaBulan = new Date(0, i).toLocaleString("id-ID", {
                   month: "long",
                 });
-
-                {
-                  /* const minDate = new Date(tahun, bulan, 1)
-                  .toISOString()
-                  .split("T")[0];
-                const maxDate = new Date(tahun, bulan + 1, 0)
-                  .toISOString()
-                  .split("T")[0]; */
-                }
 
                 return (
                   <tr key={i} className="*:py-1.5">
@@ -445,9 +436,6 @@ const Setoran = ({ skrdOptions = [] }) => {
                     <td className="text-center">
                       <Input
                         type="date"
-                        // min={minDate}
-                        // max={maxDate}
-                        // defaultValue={minDate}
                       />
                     </td>
                     <td className="px-1 text-center">
