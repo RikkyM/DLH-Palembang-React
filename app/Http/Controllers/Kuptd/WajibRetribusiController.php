@@ -132,9 +132,8 @@ class WajibRetribusiController extends Controller
         $getPenanggungJawab = $request->get('pj');
         $getKategori = $request->get('kategori');
         $getSubKategori = $request->get('sub-kategori');
-        $getKecamatan = $request->get('kecamatan', Kecamatan::whereHas('uptd', function ($q) {
-            $q->where('id', Auth::user()->uptdId);
-        })->first()->kodeKecamatan);
+        $getKecamatan = $request->get('kecamatan', Auth::user()->uptd->kecamatan->kodeKecamatan);
+        // dd(Auth::user()->uptd->kecamatan->kodeKecamatan);
         $getKelurahan = $request->get('kelurahan');
         $getPetugas = $request->get('petugas');
         $getStatus = $request->get('status');
@@ -149,7 +148,11 @@ class WajibRetribusiController extends Controller
             'user:id,namaLengkap',
             'pemilik',
             'uptd'
-        ])->where('wajib_retribusi.uptdId', Auth::user()->uptdId);
+        ])->where('uptdId', Auth::user()->uptdId);
+
+        // dd($query->where('status', 'Processed')->get());
+
+        // dd($query->get());
 
         if ($status) {
             $query->where('status', $status);
@@ -159,7 +162,9 @@ class WajibRetribusiController extends Controller
             $extraFilter($query);
         }
 
-        // dd($query->get()->toArray());
+        if ($status && $view !== 'Index') {
+            $query->where('status', $status)->whereNull('noWajibRetribusi');
+        }
 
         $this->sortTable($query, $getSortBy, $getSortDir);
         $this->filterData($query, $getSearch, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, null, $getTahun);
@@ -197,11 +202,11 @@ class WajibRetribusiController extends Controller
             ->values()
             ->map(fn($t) => ['value' => $t, 'label' => $t]);
 
-        // dd($query->whereNotNull('current_role')->get());
+        $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
 
         return Inertia::render("Kuptd/Data-Input/Wajib-Retribusi/{$view}", [
-            'datas' => $query->paginate($getPage)->withQueryString(),
+            'datas' => $datas,
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
                 'sort' => $getSortBy,
@@ -213,7 +218,7 @@ class WajibRetribusiController extends Controller
                 'kelurahan' => $getKelurahan,
                 'petugas' => $getPetugas,
                 'per_page' => (int) $getPage,
-                'status' => $getStatus,
+                'status' => $getStatus && trim($getStatus) !== '' ? $getStatus : null,
                 'tahun' => $getTahun
             ],
             'pjOptions' => $penanggungJawab,
@@ -222,7 +227,7 @@ class WajibRetribusiController extends Controller
             'kecamatanOptions' => $kecamatan,
             'kelurahanOptions' => $kelurahan,
             'statusOptions' => $statusOptions,
-            'tahunOptions' => $tahunOptions
+            'tahunOptions' => $tahunOptions,
         ]);
     }
 
@@ -301,9 +306,9 @@ class WajibRetribusiController extends Controller
     {
         return $this->renderWajibRetribusi(
             $request,
-            "Processed",
+            null,
             "Diterima",
-            fn($q) => $q->where('current_role', 'ROLE_KUPTD')
+            fn($q) => $q->where('status', 'Processed')->where('current_role', 'ROLE_KUPTD')
         );
     }
 

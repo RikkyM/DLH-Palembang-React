@@ -61,4 +61,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function uptd()
+    {
+        return $this->belongsTo(Uptd::class, 'uptdId', 'id');
+    }
 }

@@ -16,6 +16,7 @@ const Diproses = ({
   kecamatanOptions = [],
   kelurahanOptions = [],
   petugasOptions = [],
+  user = "ROLE_PENDAFTAR"
 }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
@@ -382,9 +383,7 @@ const Diproses = ({
                 params.append("status", "Processed");
 
                 window.open(
-                  route("wajib-retribusi.export") +
-                  "?" +
-                  params.toString(),
+                  route("wajib-retribusi.export") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -431,7 +430,7 @@ const Diproses = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
-                role="ROLE_PENDAFTAR"
+                role={user}
               />
             </>
           )}

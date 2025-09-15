@@ -24,6 +24,31 @@ use Inertia\Inertia;
 
 class WajibRetribusiController extends Controller
 {
+
+    private function rumus($validated)
+    {
+        $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
+
+        $tarif = $sub->tarif;
+        $rumus = $sub->rumus ?? '';
+
+        if (!empty($validated['variabelValues']) && $rumus) {
+            foreach ($validated['variabelValues'] as $key => $value) {
+                $rumus = preg_replace('/\b' . preg_quote($key) . '\b/', $value, $rumus);
+            }
+
+            try {
+                $nilaiRumus = 0;
+                eval("\$nilaiRumus = $rumus;");
+                return $tarif * $nilaiRumus;
+            } catch (\Throwable $e) {
+                return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
+            }
+        }
+
+        return $tarif;
+    }
+
     private function sortTable($query, $sortBy, $sortDir)
     {
         switch ($sortBy) {
@@ -325,7 +350,6 @@ class WajibRetribusiController extends Controller
             });
 
         $kelurahanOptions = Kelurahan::select('kodeKelurahan', 'namaKelurahan', 'kodeKecamatan')
-            ->orderBy('namaKelurahan')
             ->get()
             ->groupBy('kodeKecamatan')
             ->map(function ($groupedKelurahan) {
@@ -338,7 +362,6 @@ class WajibRetribusiController extends Controller
             });
 
         $kategoriOptions = Kategori::select('kodeKategori', 'namaKategori')
-            ->orderBy('namaKategori')
             ->get()
             ->map(function ($kategori) {
                 return [

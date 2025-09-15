@@ -34,6 +34,8 @@ const Diterima = ({
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
 
+  console.log(datas)
+
   const columns = [
     { key: "id", label: "No", align: "text-center" },
     // {

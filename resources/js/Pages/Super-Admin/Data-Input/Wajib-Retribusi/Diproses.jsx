@@ -5,17 +5,19 @@ import { router } from "@inertiajs/react";
 import { ChevronDown, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
-import Table from "./Table";
+import Table from "@/Components/WajibRetribusi/Table";
+// import Table from "./Table";
 
 const Diproses = ({
   datas,
   filters,
-  pjOptions,
-  kategoriOptions,
-  subKategoriOptions,
-  kecamatanOptions,
-  kelurahanOptions,
+  pjOptions = [],
+  kategoriOptions = [],
+  subKategoriOptions = [],
+  kecamatanOptions = [],
+  kelurahanOptions = [],
   petugasOptions = [],
+  user = "ROLE_SUPERADMIN"
 }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
@@ -29,7 +31,7 @@ const Diproses = ({
   const [pj, setpj] = useState(filters.pj || "");
   const [perPage, setPerPage] = useState(() => {
     return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
-  })
+  });
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
 
@@ -223,9 +225,9 @@ const Diproses = ({
     pj,
   ]);
 
-  const handlePerPageChange = e => {
-    setPerPage(parseInt(e.target.value))
-  }
+  const handlePerPageChange = (e) => {
+    setPerPage(parseInt(e.target.value));
+  };
 
   return (
     <Layout title="INBOX DIPROSES">
@@ -311,7 +313,7 @@ const Diproses = ({
                     disabled={!kecamatan}
                   />
                   <SearchableSelect
-                    id="petugaslist"
+                    id="petugasList"
                     options={petugasList}
                     value={petugas}
                     onChange={(val) => setPetugas(val)}
@@ -382,9 +384,7 @@ const Diproses = ({
                 params.append("status", "Processed");
 
                 window.open(
-                  route("super-admin.wajib-retribusi.export") +
-                    "?" +
-                    params.toString(),
+                  route("wajib-retribusi.export") + "?" + params.toString(),
                   "_blank",
                 );
               }}
@@ -431,6 +431,7 @@ const Diproses = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
+                role={user}
               />
             </>
           )}

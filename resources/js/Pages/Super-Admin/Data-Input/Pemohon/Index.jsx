@@ -114,14 +114,14 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
             </div>
           </div>
           <div className="flex w-full flex-row gap-2 md:w-max">
-            <button
+            {/* <button
               onClick={() => {
                 openModal("create");
               }}
               className="flex-0 order-2 flex w-full items-center justify-center gap-1.5 whitespace-nowrap rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:order-1 md:w-auto"
             >
               <span>Tambah Data</span>
-            </button>
+            </button> */}
             <button
               onClick={() => {
                 const params = new URLSearchParams();

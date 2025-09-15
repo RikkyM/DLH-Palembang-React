@@ -226,11 +226,7 @@ class WajibRetribusiController extends Controller
             ->values()
             ->map(fn($t) => ['value' => $t, 'label' => $t]);
 
-        if ($getPage <= 0) {
-            $datas = $query->get();
-        } else {
-            $datas = $query->paginate($getPage)->withQueryString();
-        }
+        $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render("Super-Admin/Data-Input/Wajib-Retribusi/{$view}", [
             'datas' => $datas,
@@ -316,14 +312,12 @@ class WajibRetribusiController extends Controller
 
     public function ditolak(Request $request)
     {
-        return $this->renderWajibRetribusi(
-            $request,
-            null,
-            'Ditolak',
-            fn($q) => $q->where(function ($data) {
-                $data->where('status', 'Rejected');
-            })
-        );
+        return $this->renderWajibRetribusi($request, 'Rejected', 'Ditolak');
+        // return $this->renderWajibRetribusi($request, 'Rejected', 'Ditolak',
+        //     // fn($q) => $q->where(function ($data) {
+        //     //     $data->where('status', 'Rejected');
+        //     // })
+        // );
     }
 
     /**
@@ -472,7 +466,15 @@ class WajibRetribusiController extends Controller
                 $pathFotoBerkas = [$fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local')];
             }
 
-            $uptd = Uptd::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
+            $kecamatan = Kecamatan::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
+            $uptd = Uptd::where('namaUptd', $kecamatan->namaKecamatan)->where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
+
+            // dd([
+            //     'uptd' => $uptd->id,
+            //     'kode kecamatan' => $request->kodeKecamatan,
+            //     'nama uptd' => $uptd->namaUptd,
+            //     'nama kecamatan' => $kecamatan->namaKecamatan
+            // ]);
 
             $dataToSave = [
                 'noWajibRetribusi' => $request->noWajibRetribusi,
@@ -696,7 +698,8 @@ class WajibRetribusiController extends Controller
                 $pathFotoBerkas = [Storage::url($fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local'))];
             }
 
-            $uptd = Uptd::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
+            $kecamatan = Kecamatan::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
+            $uptd = Uptd::where('namaUptd', $kecamatan->namaKecamatan)->where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
 
             $dataToUpdate = [
                 'noWajibRetribusi' => $request->noWajibRetribusi,

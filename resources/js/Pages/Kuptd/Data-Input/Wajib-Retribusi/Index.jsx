@@ -464,8 +464,8 @@ const Index = ({
                   />
                 </thead>
                 <tbody className="text-xs md:text-sm">
-                  {datas?.data?.length > 0 ? (
-                    datas.data.map((data, index) => (
+                  {(datas.data ?? datas)?.length > 0 ? (
+                    (datas.data ?? datas).map((data, index) => (
                       <tr
                         key={data.id || index}
                         className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}

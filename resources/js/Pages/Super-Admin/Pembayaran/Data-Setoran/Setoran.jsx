@@ -347,7 +347,7 @@ const Setoran = ({ skrdOptions = [] }) => {
             <Input
               id="namaPengirim"
               className={`${errors.namaPengirim && "border border-red-500"}`}
-              placeholder="Nomor Referensi Bank..."
+              placeholder="Nama Pengirim..."
               value={data.namaPengirim || ""}
               onChange={(e) =>
                 handleInputChange("namaPengirim", e.target.value)
