@@ -1,8 +1,8 @@
 <table>
     <thead>
         <tr>
-            <th>NO WAJIB RETRIBUSI</th>
             <th>NOMOR SKRD</th>
+            <th>NO WAJIB RETRIBUSI</th>
             <th>TGL. SKRD</th>
             <th>NAMA OBJEK RETRIBUSI</th>
             <th>ALAMAT</th>
@@ -25,8 +25,8 @@
     <tbody>
         @foreach ($data as $index => $item)
             <tr>
-                <td>{{ $item->noWajibRetribusi }}</td>
                 <td>{{ $item->noSkrd }}</td>
+                <td>{{ $item->noWajibRetribusi }}</td>
                 <td>{{ $item->created_at ? $item->created_at->format('d-m-Y') : '-' }}</td>
                 <td>{{ $item->namaObjekRetribusi ?? '-' }}</td>
                 <td>{{ $item->alamatObjekRetribusi }}</td>
