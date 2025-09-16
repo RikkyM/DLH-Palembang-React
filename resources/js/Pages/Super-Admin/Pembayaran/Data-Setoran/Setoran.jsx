@@ -21,7 +21,7 @@ const Setoran = ({ skrdOptions = [] }) => {
     keteranganBulan: "",
 
     // namaBank: "",
-    // tanggalBayar: "",
+     tanggalBayar: new Date().toISOString().slice(0, 10),
   };
 
   const { data, setData, errors, post, setError, clearErrors } =
@@ -145,7 +145,7 @@ const Setoran = ({ skrdOptions = [] }) => {
         </div>
 
         {step === 1 && (
-          <div className="space-y-3 rounded px-3 py-5">
+          <div className="space-y-3 rounded bg-white px-3 py-5">
             <h2 className="font-semibold">Pilih Data Existing</h2>
             <div className="grid w-full gap-3 md:grid-cols-2">
               <DropdownInput
@@ -390,7 +390,10 @@ const Setoran = ({ skrdOptions = [] }) => {
                     className={`${errors.namaBank && "border border-red-500"}`}
                     placeholder="Nama Bank..."
                     value={data.namaBank || ""}
-                    onChange={(e) => setData("namaBank", e.target.value)}
+                    onChange={(e) => {
+                      setData("namaBank", e.target.value);
+                      clearErrors("namaBank");
+                    }}
                   />
                   {errors.namaBank && (
                     <span className="text-xs text-red-500">
@@ -410,8 +413,13 @@ const Setoran = ({ skrdOptions = [] }) => {
                     type="date"
                     className={`${errors.tanggalBayar && "border border-red-500"}`}
                     placeholder="Nama Bank..."
-                    value={data.tanggalBayar || new Date()}
-                    onChange={(e) => setData("tanggalBayar", e.target.value)}
+                    value={
+                      data.tanggalBayar || ""
+                    }
+                    onChange={(e) => {
+                      setData("tanggalBayar", e.target.value);
+                      clearErrors("tanggalBayar");
+                    }}
                   />
                   {errors.tanggalBayar && (
                     <span className="text-xs text-red-500">
@@ -433,9 +441,10 @@ const Setoran = ({ skrdOptions = [] }) => {
                     className={`${errors.jumlahBayar && "border border-red-500"}`}
                     placeholder="Jumlah Bayar..."
                     value={data.jumlahBayar || ""}
-                    onChange={(e) =>
-                      setData("jumlahBayar", e.target.value.replace(/\D/g, ""))
-                    }
+                    onChange={(e) => {
+                      setData("jumlahBayar", e.target.value.replace(/\D/g, ""));
+                      clearErrors("jumlahBayar");
+                    }}
                   />
                   {errors.jumlahBayar && (
                     <span className="text-xs text-red-500">
@@ -460,6 +469,7 @@ const Setoran = ({ skrdOptions = [] }) => {
 
                       if (value.length <= 2) {
                         setData("jumlahBulanBayar", value);
+                        clearErrors("jumlahBulanBayar");
                       }
                     }}
                   />
@@ -481,7 +491,10 @@ const Setoran = ({ skrdOptions = [] }) => {
                     className={`${errors.noReferensiBank && "border border-red-500"}`}
                     placeholder="Nomor Referensi Bank..."
                     value={data.noReferensiBank || ""}
-                    onChange={(e) => setData("noReferensiBank", e.target.value)}
+                    onChange={(e) => {
+                      setData("noReferensiBank", e.target.value);
+                      clearErrors("noReferensiBank");
+                    }}
                   />
                   {errors.noReferensiBank && (
                     <span className="text-xs text-red-500">
@@ -501,7 +514,10 @@ const Setoran = ({ skrdOptions = [] }) => {
                     className={`${errors.namaPengirim && "border border-red-500"}`}
                     placeholder="Nama Pengirim..."
                     value={data.namaPengirim || ""}
-                    onChange={(e) => setData("namaPengirim", e.target.value)}
+                    onChange={(e) => {
+                      setData("namaPengirim", e.target.value);
+                      clearErrors("namaPengirim");
+                    }}
                   />
                   {errors.namaPengirim && (
                     <span className="text-xs text-red-500">
@@ -521,9 +537,10 @@ const Setoran = ({ skrdOptions = [] }) => {
                     placeholder="Keterangan Bulan..."
                     className={`${errors.keteranganBulanInput && "border border-red-500"}`}
                     value={data.keteranganBulanInput || ""}
-                    onChange={(e) =>
-                      setData("keteranganBulanInput", e.target.value)
-                    }
+                    onChange={(e) => {
+                      setData("keteranganBulanInput", e.target.value);
+                      clearErrors("keteranganBulanInput");
+                    }}
                   />
                   {errors.keteranganBulanInput && (
                     <span className="text-xs text-red-500">
@@ -545,7 +562,10 @@ const Setoran = ({ skrdOptions = [] }) => {
                   accept="image/*,application/pdf"
                   className={`${errors.buktiBayar && "border border-red-500"}`}
                   value={data.buktiBayar || ""}
-                  onChange={(e) => setData("buktiBayar", e.target.value)}
+                  onChange={(e) => {
+                    setData("buktiBayar", e.target.value);
+                    clearErrors("buktiBayar");
+                  }}
                 />
                 {errors.buktiBayar && (
                   <span className="text-xs text-red-500">
@@ -554,6 +574,20 @@ const Setoran = ({ skrdOptions = [] }) => {
                 )}
               </FormInput>
             </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="space-y-3 rounded bg-white px-3 py-5">
+            Sedang Dikerjakan
+            <br />
+            <a
+              href="https://v0.app/chat/ui-modernization-advice-gTN8dJzUkJ3?b=v0-preview-b_PIDp1h0nMJh&f=1&path=%2F"
+              target="_blank"
+              className="font-semibold text-blue-400 transition-colors duration-500 hover:text-blue-700"
+            >
+              Klik Disini Contoh Tampilannya
+            </a>
           </div>
         )}
 
@@ -576,20 +610,16 @@ const Setoran = ({ skrdOptions = [] }) => {
                 Selanjutnya
               </button>
             )}
-            {step === 3 && <button type="submit">Simpan Data</button>}
-            {/* {step < 3 ? (
-              <button type="button" onClick={nextStep}>
-                Selanjutnya
+            {step === 3 && (
+              <button
+                type="submit"
+                className="rounded border bg-white px-3 py-1.5 text-sm shadow"
+              >
+                Simpan Data
               </button>
-            ) : (
-              <button type="submit">Simpan Data</button>
-            )} */}
+            )}
           </div>
         </div>
-        {/* <form
-          onSubmit={null}
-          className="grid touch-pan-y grid-cols-2 gap-3 p-3"
-        ></form> */}
       </form>
     </Layout>
   );
