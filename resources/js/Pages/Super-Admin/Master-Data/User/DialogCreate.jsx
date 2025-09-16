@@ -147,7 +147,7 @@ const DialogCreate = ({
         </div>
         <form
           onSubmit={handleSubmit}
-          className="px-5 pb-5 grid grid-cols-2 gap-3"
+          className="grid grid-cols-2 gap-3 px-5 pb-5"
           data-modal
         >
           <div className="flex flex-col gap-1.5 text-sm">
@@ -187,25 +187,26 @@ const DialogCreate = ({
                   ? "Username tidak dapat diubah"
                   : "Masukkan username..."
               }
-              className={`rounded px-3 py-2 outline-none ${
-                isEditMode && user?.username
-                  ? "cursor-not-allowed bg-gray-100 text-gray-500"
-                  : "bg-gray-200"
-              }`}
+              className={`rounded bg-gray-200 px-3 py-2 outline-none`}
+              // ${
+              //   isEditMode && user?.username
+              //     ? "cursor-not-allowed bg-gray-100 text-gray-500"
+              //     : "bg-gray-200"
+              // }
               value={data.username}
               onChange={(e) => {
-                if (!(isEditMode && user?.username)) {
-                  setData("username", e.target.value);
-                }
+                // if (!(isEditMode && user?.username)) {
+                setData("username", e.target.value);
+                // }
               }}
-              readOnly={isEditMode && user?.username}
-              disabled={isEditMode && user?.username}
+              // readOnly={isEditMode && user?.username}
+              // disabled={isEditMode && user?.username}
             />
-            {isEditMode && user?.username && (
+            {/* {isEditMode && user?.username && (
               <span className="text-xs text-gray-500">
                 Username sudah ada dan tidak dapat diubah
               </span>
-            )}
+            )} */}
             {errors.username && (
               <span className="text-sm text-red-500">{errors.username}</span>
             )}
@@ -423,7 +424,7 @@ const DialogCreate = ({
               </span>
             )}
           </div>
-          <div className="flex flex-col gap-3 text-sm md:flex-row md:justify-end md:gap-2 col-span-2">
+          <div className="col-span-2 flex flex-col gap-3 text-sm md:flex-row md:justify-end md:gap-2">
             <button
               className="order-1 rounded bg-teal-400 px-3 py-2 font-medium text-white transition-colors hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
               disabled={processing}
