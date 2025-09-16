@@ -24,7 +24,7 @@ const Table = ({
   const roleConfig = {
     ROLE_SUPERADMIN: {
       edit: "super-admin.wajib-retribusi.edit",
-      send: "super-admin.wajib-retribusi.send",
+      show: "super-admin.wajib-retribusi.show",
     },
     ROLE_PENDAFTAR: {
       edit: "pendaftar.wajib-retribusi.edit",
@@ -106,7 +106,7 @@ const Table = ({
   };
 
   const renderActions = (data) => {
-    if (role === "ROLE_SUPERADMIN" || role === "ROLE_PENDAFTAR") {
+    if (role === "ROLE_PENDAFTAR") {
       return (
         <div className="flex flex-col gap-2 *:rounded *:text-xs *:font-medium *:md:text-sm">
           <button
@@ -184,17 +184,17 @@ const Table = ({
         >
           <FileText size={20} /> Draft SKRD
         </button>
+        <Link
+          href={route(routeConfig.show, {
+            status: data.status === "Approved" ? "diterima" : data.status === "Rejected" ? "ditolak" : "diproses",
+            retribusi: data.id,
+          })}
+          className="flex items-center gap-1.5"
+        >
+          <TableOfContents size={20} /> Lihat
+        </Link>
         {data.status === "Processed" && data.current_role == role && (
           <>
-            <Link
-              href={route(routeConfig.show, {
-                status: "diterima",
-                retribusi: data.id,
-              })}
-              className="flex items-center gap-1.5"
-            >
-              <TableOfContents size={20} /> Lihat
-            </Link>
             <button
               onClick={() => openModal("diterima", data)}
               className="flex items-center gap-1.5 whitespace-nowrap"

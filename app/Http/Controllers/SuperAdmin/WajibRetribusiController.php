@@ -323,246 +323,293 @@ class WajibRetribusiController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    // public function create()
+    // {
+    //     $pemohonOptions = Pemilik::select('id', 'namaPemilik')
+    //         ->orderBy('namaPemilik')
+    //         ->get()
+    //         ->map(function ($pemohon) {
+    //             return [
+    //                 'value' => $pemohon->id,
+    //                 'label' => $pemohon->namaPemilik
+    //             ];
+    //         });
+
+    //     $kecamatanOptions = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
+    //         ->get()
+    //         ->map(function ($kecamatan) {
+    //             return [
+    //                 'value' => $kecamatan->kodeKecamatan,
+    //                 'label' => $kecamatan->namaKecamatan
+    //             ];
+    //         });
+
+    //     $kelurahanOptions = Kelurahan::select('kodeKelurahan', 'namaKelurahan', 'kodeKecamatan')
+    //         ->get()
+    //         ->groupBy('kodeKecamatan')
+    //         ->map(function ($groupedKelurahan) {
+    //             return $groupedKelurahan->map(function ($kelurahan) {
+    //                 return [
+    //                     'value' => $kelurahan->kodeKelurahan,
+    //                     'label' => $kelurahan->namaKelurahan
+    //                 ];
+    //             })->values();
+    //         });
+
+    //     $kategoriOptions = Kategori::select('kodeKategori', 'namaKategori')
+    //         ->get()
+    //         ->map(function ($kategori) {
+    //             return [
+    //                 'value' => $kategori->kodeKategori,
+    //                 'label' => $kategori->namaKategori
+    //             ];
+    //         });
+
+    //     $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'rumus', 'variabel', 'tarif', 'tarif2')
+    //         ->get()
+    //         ->groupBy('kodeKategori')
+    //         ->map(function ($groupedSubKategori) {
+    //             return $groupedSubKategori->map(function ($subKategori) {
+    //                 return [
+    //                     'value' => $subKategori->kodeSubKategori,
+    //                     'label' => $subKategori->namaSubKategori,
+    //                     'rumus' => $subKategori->rumus,
+    //                     'variabel' => $subKategori->variabel,
+    //                     'tarif' => $subKategori->tarif,
+    //                     'tarif2' => $subKategori->tarif2
+    //                 ];
+    //             })->values();
+    //         });
+
+    //     $badanUsahaOptions = BadanUsaha::select('id', 'namaBadanUsaha')
+    //         ->orderBy('id')
+    //         ->get()
+    //         ->map(function ($usaha) {
+    //             return [
+    //                 'value' => $usaha->namaBadanUsaha,
+    //                 'label' => $usaha->namaBadanUsaha,
+    //             ];
+    //         });
+
+    //     $penagihOptions = Penagih::select('id', 'nama')
+    //         ->orderBy('id')
+    //         ->get()
+    //         ->map(function ($penagih) {
+    //             return [
+    //                 'value' => $penagih->id,
+    //                 'label' => $penagih->nama
+    //             ];
+    //         });
+
+    //     return Inertia::render('Super-Admin/Data-Input/Wajib-Retribusi/Create', [
+    //         'pemohonOptions' => $pemohonOptions,
+    //         'kecamatanOptions' => $kecamatanOptions,
+    //         'kelurahanOptions' => $kelurahanOptions,
+    //         'kategoriOptions' => $kategoriOptions,
+    //         'subKategoriOptions' => $subKategoriOptions,
+    //         'penagihOptions' => $penagihOptions,
+    //         'badanUsahaOptions' => $badanUsahaOptions
+    //     ]);
+    // }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    // public function store(WajibRetribusiRequest $request)
+    // {
+    //     $validated = $request->validated();
+
+    //     // dd($validated);
+
+    //     $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
+
+    //     $jenisTarif = $validated['jenisTarif'] ?? "tarif";
+    //     $tarif = $sub->{$jenisTarif} ?? 0;
+    //     $rumus = $sub->rumus ?? '';
+
+    //     $tarifPertahun = $tarif;
+
+    //     if (!empty($validated['variabelValues']) && $rumus) {
+    //         // $validated['variabelValues']['bulan'] = $request->input('bulan');
+    //         // dd($validated);
+    //         foreach ($validated['variabelValues'] as $key => $value) {
+    //             $rumus = preg_replace('/\b' . preg_quote($key) . '\b/', $value, $rumus);
+    //         }
+
+    //         // dd($rumus);
+
+    //         try {
+    //             $nilaiRumus = 0;
+    //             eval("\$nilaiRumus = $rumus;");
+    //             $tarifPertahun = $validated['variabelValues']['bulan'] * $tarif * $nilaiRumus;
+
+    //             // dd($tarifPertahun);
+    //         } catch (\Throwable $e) {
+    //             return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
+    //         }
+    //     } else {
+    //         $tarifPertahun = $validated['variabelValues']['bulan'] * $tarif;
+    //     }
+
+
+    //     DB::beginTransaction();
+
+    //     try {
+    //         $fileFotoBangunan = $request->file('fotoBangunan');
+    //         $fileFotoBerkas = $request->file('fotoBerkas');
+
+    //         $fotoBangunan = Str::uuid() . '.' . $fileFotoBangunan->getClientOriginalExtension();
+    //         $pathFotoBangunan = $fileFotoBangunan->storeAs('foto/bangunan', $fotoBangunan, 'local');
+
+    //         if (!empty($request->file('fotoBerkas'))) {
+    //             $fotoBerkas = Str::uuid() . '.' . $fileFotoBerkas->getClientOriginalExtension();
+    //             $pathFotoBerkas = [$fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local')];
+    //         }
+
+    //         $kecamatan = Kecamatan::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
+    //         $uptd = Uptd::where('namaUptd', $kecamatan->namaKecamatan)->where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
+
+    //         // dd([
+    //         //     'uptd' => $uptd->id,
+    //         //     'kode kecamatan' => $request->kodeKecamatan,
+    //         //     'nama uptd' => $uptd->namaUptd,
+    //         //     'nama kecamatan' => $kecamatan->namaKecamatan
+    //         // ]);
+
+    //         $dataToSave = [
+    //             'noWajibRetribusi' => $request->noWajibRetribusi,
+    //             'noSkrd' => $request->noSkrd,
+    //             'kodeKategori' => $request->kodeKategori,
+    //             'kodeSubKategori' => $request->kodeSubKategori,
+    //             'kodeKelurahan' => $request->kodeKelurahan,
+    //             'kodeKecamatan' => $request->kodeKecamatan,
+    //             'uptdId' => $uptd->id,
+    //             'pemilikId' => $request->pemilikId,
+    //             'penagihId' => $request->penagihId,
+    //             'petugasPendaftarId' => Auth::user()->id,
+    //             'namaObjekRetribusi' => $request->namaObjekRetribusi,
+    //             'deskripsiUsaha' => $request->deskripsi,
+    //             'bentukBadanUsaha' => $request->bentukUsaha,
+    //             'alamat' => $request->alamatObjekRetribusi,
+    //             'rt' => $request->rt,
+    //             'rw' => $request->rw,
+    //             'kota' => 'Palembang',
+    //             'provinsi' => 'Sumatera Selatan',
+    //             'statusTempat' => $request->statusTempat,
+    //             'latitude' => $request->latitude,
+    //             'longitude' => $request->longitude,
+    //             'image' => $fotoBangunan,
+    //             'url_image' => [$pathFotoBangunan],
+    //             'file' => $fotoBerkas ?? null,
+    //             'url_file' => !empty($pathFotoBerkas) ? array_map(function ($path) {
+    //                 return Storage::url($path);
+    //             }, $pathFotoBerkas) : [],
+    //             'linkMap' => $request->linkMap,
+    //             'jenisTarif' => $request->jenisTarif,
+    //             'bulan' => $validated['variabelValues']['bulan'],
+    //             'keteranganBulan' => strtoupper($request->keteranganBulan),
+    //             'tanggalSkrd' => $request->tanggalSkrd,
+    //             'unit' => $validated['variabelValues']['unit'] ?? null,
+    //             'm2' => $validated['variabelValues']['m2'] ?? null,
+    //             'giat' => $validated['variabelValues']['giat'] ?? null,
+    //             'hari' => $validated['variabelValues']['hari'] ?? null,
+    //             'meter' => $validated['variabelValues']['meter'] ?? null,
+    //             'tarifPerbulan' => $request->tarifRetribusi,
+    //             'tarifPertahun' => $tarifPertahun,
+    //             'jumlahBangunan' => $request->jBangunan,
+    //             'jumlahLantai' => $request->jLantai,
+    //             'maksud' => "Wajib Retribusi Baru",
+    //             'status' => "Approved",
+    //             "current_role" => "ROLE_PENDAFTAR",
+    //             'createdThisYear' => now()->year == now()->year ? 't' : 'f',
+    //             'historyAction' => [
+    //                 [
+    //                     'role' => Auth::user()->role,
+    //                     'action' => 'Submited',
+    //                     'userId' => Auth::id(),
+    //                     'actionDate' => now()->toIso8601String()
+    //                 ]
+    //             ]
+    //         ];
+
+    //         // dd($dataToSave);
+
+    //         // dd($dataToSave, $request->all());
+
+    //         WajibRetribusi::create($dataToSave);
+
+    //         DB::commit();
+    //         return redirect()->route('super-admin.wajib-retribusi.index')->with('success', 'Data berhasil disimpan.');
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+
+    //         dd($e);
+    //         Log::error('Gagal simpan Wajib Retribusi', [
+    //             'time' => Carbon::now()->toDateTimeString(),
+    //             'user_id' => Auth::id(),
+    //             'route' => request()->path(),
+    //             'error' => $e->getMessage(),
+    //             'file' => $e->getFile(),
+    //             'line' => $e->getLine()
+    //         ]);
+
+    //         return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.']);
+    //     }
+    // }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($status, WajibRetribusi $retribusi)
     {
+        $retribusi->load(['pemilik', 'kelurahan', 'kecamatan', 'kategori', 'subKategori', 'uptd']);
+
         $pemohonOptions = Pemilik::select('id', 'namaPemilik')
-            ->orderBy('namaPemilik')
-            ->get()
-            ->map(function ($pemohon) {
-                return [
-                    'value' => $pemohon->id,
-                    'label' => $pemohon->namaPemilik
-                ];
-            });
+        ->orderBy('namaPemilik')
+        ->get()
+            ->map(fn($pemohon) => ['value' => $pemohon->id, 'label' => $pemohon->namaPemilik]);
 
         $kecamatanOptions = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
-            ->get()
-            ->map(function ($kecamatan) {
-                return [
-                    'value' => $kecamatan->kodeKecamatan,
-                    'label' => $kecamatan->namaKecamatan
-                ];
-            });
+        ->orderBy('namaKecamatan')
+        ->get()
+            ->map(fn($kecamatan) => ['value' => $kecamatan->kodeKecamatan, 'label' => $kecamatan->namaKecamatan]);
 
         $kelurahanOptions = Kelurahan::select('kodeKelurahan', 'namaKelurahan', 'kodeKecamatan')
-            ->get()
+        ->orderBy('namaKelurahan')
+        ->get()
             ->groupBy('kodeKecamatan')
-            ->map(function ($groupedKelurahan) {
-                return $groupedKelurahan->map(function ($kelurahan) {
-                    return [
-                        'value' => $kelurahan->kodeKelurahan,
-                        'label' => $kelurahan->namaKelurahan
-                    ];
-                })->values();
-            });
+            ->map(fn($grouped) => $grouped->map(fn($kelurahan) => [
+                'value' => $kelurahan->kodeKelurahan,
+                'label' => $kelurahan->namaKelurahan
+            ])->values());
 
         $kategoriOptions = Kategori::select('kodeKategori', 'namaKategori')
-            ->get()
-            ->map(function ($kategori) {
-                return [
-                    'value' => $kategori->kodeKategori,
-                    'label' => $kategori->namaKategori
-                ];
-            });
+        ->orderBy('namaKategori')
+        ->get()
+            ->map(fn($kategori) => ['value' => $kategori->kodeKategori, 'label' => $kategori->namaKategori]);
 
         $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'rumus', 'variabel', 'tarif', 'tarif2')
-            ->get()
+        ->orderBy('namaSubKategori')
+        ->get()
             ->groupBy('kodeKategori')
-            ->map(function ($groupedSubKategori) {
-                return $groupedSubKategori->map(function ($subKategori) {
-                    return [
-                        'value' => $subKategori->kodeSubKategori,
-                        'label' => $subKategori->namaSubKategori,
-                        'rumus' => $subKategori->rumus,
-                        'variabel' => $subKategori->variabel,
-                        'tarif' => $subKategori->tarif,
-                        'tarif2' => $subKategori->tarif2
-                    ];
-                })->values();
-            });
+            ->map(fn($grouped) => $grouped->map(fn($sub) => [
+                'value' => $sub->kodeSubKategori,
+                'label' => $sub->namaSubKategori,
+                'rumus' => $sub->rumus,
+                'variabel' => $sub->variabel,
+                'tarif' => $sub->tarif,
+                'tarif2' => $sub->tarif2
+            ])->values());
 
-        $badanUsahaOptions = BadanUsaha::select('id', 'namaBadanUsaha')
-            ->orderBy('id')
-            ->get()
-            ->map(function ($usaha) {
-                return [
-                    'value' => $usaha->namaBadanUsaha,
-                    'label' => $usaha->namaBadanUsaha,
-                ];
-            });
-
-        $penagihOptions = Penagih::select('id', 'nama')
-            ->orderBy('id')
-            ->get()
-            ->map(function ($penagih) {
-                return [
-                    'value' => $penagih->id,
-                    'label' => $penagih->nama
-                ];
-            });
-
-        return Inertia::render('Super-Admin/Data-Input/Wajib-Retribusi/Create', [
+        return Inertia::render("Super-Admin/Data-Input/Wajib-Retribusi/Show", [
+            'status' => $status,
+            'retribusi' => $retribusi,
             'pemohonOptions' => $pemohonOptions,
             'kecamatanOptions' => $kecamatanOptions,
             'kelurahanOptions' => $kelurahanOptions,
             'kategoriOptions' => $kategoriOptions,
             'subKategoriOptions' => $subKategoriOptions,
-            'penagihOptions' => $penagihOptions,
-            'badanUsahaOptions' => $badanUsahaOptions
         ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(WajibRetribusiRequest $request)
-    {
-        $validated = $request->validated();
-
-        // dd($validated);
-
-        $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
-
-        $jenisTarif = $validated['jenisTarif'] ?? "tarif";
-        $tarif = $sub->{$jenisTarif} ?? 0;
-        $rumus = $sub->rumus ?? '';
-
-        $tarifPertahun = $tarif;
-
-        if (!empty($validated['variabelValues']) && $rumus) {
-            // $validated['variabelValues']['bulan'] = $request->input('bulan');
-            // dd($validated);
-            foreach ($validated['variabelValues'] as $key => $value) {
-                $rumus = preg_replace('/\b' . preg_quote($key) . '\b/', $value, $rumus);
-            }
-
-            // dd($rumus);
-
-            try {
-                $nilaiRumus = 0;
-                eval("\$nilaiRumus = $rumus;");
-                $tarifPertahun = $validated['variabelValues']['bulan'] * $tarif * $nilaiRumus;
-
-                // dd($tarifPertahun);
-            } catch (\Throwable $e) {
-                return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
-            }
-        } else {
-            $tarifPertahun = $validated['variabelValues']['bulan'] * $tarif;
-        }
-
-
-        DB::beginTransaction();
-
-        try {
-            $fileFotoBangunan = $request->file('fotoBangunan');
-            $fileFotoBerkas = $request->file('fotoBerkas');
-
-            $fotoBangunan = Str::uuid() . '.' . $fileFotoBangunan->getClientOriginalExtension();
-            $pathFotoBangunan = $fileFotoBangunan->storeAs('foto/bangunan', $fotoBangunan, 'local');
-
-            if (!empty($request->file('fotoBerkas'))) {
-                $fotoBerkas = Str::uuid() . '.' . $fileFotoBerkas->getClientOriginalExtension();
-                $pathFotoBerkas = [$fileFotoBerkas->storeAs('foto/berkas', $fotoBerkas, 'local')];
-            }
-
-            $kecamatan = Kecamatan::where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
-            $uptd = Uptd::where('namaUptd', $kecamatan->namaKecamatan)->where('kodeKecamatan', $request->kodeKecamatan)->firstOrFail();
-
-            // dd([
-            //     'uptd' => $uptd->id,
-            //     'kode kecamatan' => $request->kodeKecamatan,
-            //     'nama uptd' => $uptd->namaUptd,
-            //     'nama kecamatan' => $kecamatan->namaKecamatan
-            // ]);
-
-            $dataToSave = [
-                'noWajibRetribusi' => $request->noWajibRetribusi,
-                'noSkrd' => $request->noSkrd,
-                'kodeKategori' => $request->kodeKategori,
-                'kodeSubKategori' => $request->kodeSubKategori,
-                'kodeKelurahan' => $request->kodeKelurahan,
-                'kodeKecamatan' => $request->kodeKecamatan,
-                'uptdId' => $uptd->id,
-                'pemilikId' => $request->pemilikId,
-                'penagihId' => $request->penagihId,
-                'petugasPendaftarId' => Auth::user()->id,
-                'namaObjekRetribusi' => $request->namaObjekRetribusi,
-                'deskripsiUsaha' => $request->deskripsi,
-                'bentukBadanUsaha' => $request->bentukUsaha,
-                'alamat' => $request->alamatObjekRetribusi,
-                'rt' => $request->rt,
-                'rw' => $request->rw,
-                'kota' => 'Palembang',
-                'provinsi' => 'Sumatera Selatan',
-                'statusTempat' => $request->statusTempat,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-                'image' => $fotoBangunan,
-                'url_image' => [$pathFotoBangunan],
-                'file' => $fotoBerkas ?? null,
-                'url_file' => !empty($pathFotoBerkas) ? array_map(function ($path) {
-                    return Storage::url($path);
-                }, $pathFotoBerkas) : [],
-                'linkMap' => $request->linkMap,
-                'jenisTarif' => $request->jenisTarif,
-                'bulan' => $validated['variabelValues']['bulan'],
-                'keteranganBulan' => strtoupper($request->keteranganBulan),
-                'tanggalSkrd' => $request->tanggalSkrd,
-                'unit' => $validated['variabelValues']['unit'] ?? null,
-                'm2' => $validated['variabelValues']['m2'] ?? null,
-                'giat' => $validated['variabelValues']['giat'] ?? null,
-                'hari' => $validated['variabelValues']['hari'] ?? null,
-                'meter' => $validated['variabelValues']['meter'] ?? null,
-                'tarifPerbulan' => $request->tarifRetribusi,
-                'tarifPertahun' => $tarifPertahun,
-                'jumlahBangunan' => $request->jBangunan,
-                'jumlahLantai' => $request->jLantai,
-                'maksud' => "Wajib Retribusi Baru",
-                'status' => "Approved",
-                "current_role" => "ROLE_PENDAFTAR",
-                'createdThisYear' => now()->year == now()->year ? 't' : 'f',
-                'historyAction' => [
-                    [
-                        'role' => Auth::user()->role,
-                        'action' => 'Submited',
-                        'userId' => Auth::id(),
-                        'actionDate' => now()->toIso8601String()
-                    ]
-                ]
-            ];
-
-            // dd($dataToSave);
-
-            // dd($dataToSave, $request->all());
-
-            WajibRetribusi::create($dataToSave);
-
-            DB::commit();
-            return redirect()->route('super-admin.wajib-retribusi.index')->with('success', 'Data berhasil disimpan.');
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            dd($e);
-            Log::error('Gagal simpan Wajib Retribusi', [
-                'time' => Carbon::now()->toDateTimeString(),
-                'user_id' => Auth::id(),
-                'route' => request()->path(),
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-
-            return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.']);
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**

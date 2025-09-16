@@ -33,7 +33,10 @@ const KuptdNavigation = () => {
     {
       label: "Inbox Ditolak",
       route: "kuptd.wajib-retribusi.ditolak",
-      activeRoute: "kuptd.wajib-retribusi.ditolak",
+      activeRoute: [
+        "kuptd.wajib-retribusi.ditolak",
+        "kuptd.wajib-retribusi.show",
+      ],
     },
     {
       label: "Inbox Selesai (SPKRD)",

@@ -106,16 +106,16 @@ class PemohonController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PemohonRequest $request)
-    {
-        try {
-            $request->handle();
+    // public function store(PemohonRequest $request)
+    // {
+    //     try {
+    //         $request->handle();
 
-            return back();
-        } catch (Exception $e) {
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data');
-        }
-    }
+    //         return back();
+    //     } catch (Exception $e) {
+    //         return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data');
+    //     }
+    // }
 
     /**
      * Display the specified resource.

@@ -13,12 +13,13 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
 
   const handleToggle = () => setIsOpen((prev) => !prev);
 
-  // 🔹 fungsi general untuk cek apakah item sedang aktif
   const isItemActive = (item) => {
     if (Array.isArray(item.activeRoute)) {
       return item.activeRoute.some((r) => {
-        // fleksibel: cek kalau route edit wajib retribusi apapun role-nya
-        if (r.endsWith(".wajib-retribusi.edit")) {
+        if (
+          r.endsWith(".wajib-retribusi.edit") ||
+          r.endsWith(".wajib-retribusi.show")
+        ) {
           const params = route().params;
           if (
             item.label.toLowerCase().includes("diterima") &&
@@ -26,6 +27,13 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
           ) {
             return route().current(r);
           }
+          if (
+            item.label.toLowerCase().includes("diproses") &&
+            params.status === "diproses"
+          ) {
+            return route().current(r);
+          }
+
           if (
             item.label.toLowerCase().includes("ditolak") &&
             params.status === "ditolak"

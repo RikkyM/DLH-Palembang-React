@@ -30,10 +30,13 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
             Route::get('/{status}/{retribusi}/edit', 'edit')
                 ->where(['status' => 'diterima|ditolak'])
                 ->name('edit');
+            Route::get('/{status}/{retribusi}/show', 'show')
+                ->where(['status' => 'diterima|diproses|ditolak'])
+                ->name('show');
             Route::put('/{id}/send', 'send')->name('send');
         });
         Route::resource('/wajib-retribusi', WajibRetribusiController::class)
-            ->except(['destroy', 'edit'])
+            ->except(['destroy', 'edit', 'show'])
             ->parameters([
                 'wajib-retribusi' => 'retribusi'
             ]);

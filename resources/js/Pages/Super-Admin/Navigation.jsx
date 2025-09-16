@@ -27,19 +27,23 @@ const SuperAdminNavigation = () => {
       route: "super-admin.wajib-retribusi.diterima",
       activeRoute: [
         "super-admin.wajib-retribusi.diterima",
-        "super-admin.wajib-retribusi.edit",
+        "super-admin.wajib-retribusi.show",
       ],
     },
     {
       label: "Inbox Diproses",
       route: "super-admin.wajib-retribusi.diproses",
+      activeRoute: [
+        "super-admin.wajib-retribusi.diproses",
+        "super-admin.wajib-retribusi.show",
+      ],
     },
     {
       label: "Inbox Ditolak",
       route: "super-admin.wajib-retribusi.ditolak",
       activeRoute: [
         "super-admin.wajib-retribusi.ditolak",
-        "super-admin.wajib-retribusi.edit",
+        "super-admin.wajib-retribusi.show",
       ],
     },
     {
@@ -50,13 +54,13 @@ const SuperAdminNavigation = () => {
   ];
 
   const tagihanItems = [
-    {
-      label: "Surat Tagihan",
-      // route: "super-admin.invoice.index",
-    },
+    // {
+    //   label: "Surat Tagihan",
+    //   // route: "super-admin.invoice.index",
+    // },
     {
       label: "Data Surat Tagihan",
-      // route: "super-admin.input-setoran",
+      route: "super-admin.invoice.index",
     },
     // {
     //   label: "History Setoran",
@@ -188,11 +192,17 @@ const SuperAdminNavigation = () => {
       if (item.activeRoute) {
         if (Array.isArray(item.activeRoute)) {
           return item.activeRoute.some((r) => {
-            if (r === "super-admin.wajib-retribusi.edit") {
+            if (r === "super-admin.wajib-retribusi.show") {
               const params = route().params;
               if (
                 item.label.toLowerCase().includes("diterima") &&
                 params.status === "diterima"
+              ) {
+                return route().current(r);
+              }
+              if (
+                item.label.toLowerCase().includes("diproses") &&
+                params.status === "diproses"
               ) {
                 return route().current(r);
               }
