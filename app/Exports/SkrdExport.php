@@ -36,8 +36,8 @@ class SkrdExport implements FromArray, ShouldAutoSize, WithStyles
             ->findOrFail($this->id);
 
         $header = [
-            'NO WAJIB RETRIBUSI',
             'NOMOR SKRD',
+            'NO WAJIB RETRIBUSI',
             'TGL. SKRD',
             'NAMA OBJEK RETRIBUSI',
             'ALAMAT',
@@ -60,8 +60,8 @@ class SkrdExport implements FromArray, ShouldAutoSize, WithStyles
         $header[] = 'STATUS';
 
         $row = [
-            $data->noWajibRetribusi,
             $data->noSkrd,
+            $data->noWajibRetribusi,
             $data->created_at ? $data->created_at->format('d-m-Y') : '-',
             $data->namaObjekRetribusi ?? '-',
             $data->alamatObjekRetribusi,

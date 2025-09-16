@@ -16,7 +16,8 @@
             <th>JUMLAH TERTAGIH</th>
             <th>SISA TERTAGIH</th>
             @for ($bulan = 1; $bulan <= 12; $bulan++)
-                <th>{{ strtoupper(now()->startOfYear()->addMonths($bulan - 1)->locale('id')->translatedFormat('M')) }}</th>
+                <th>{{ strtoupper(now()->startOfYear()->addMonths($bulan - 1)->locale('id')->translatedFormat('M')) }}
+                </th>
                 <th>TGL BAYAR</th>
             @endfor
             <th>STATUS</th>
@@ -40,24 +41,25 @@
                 <td>{{ $item->pembayaran_sum_jumlah_bayar }}</td>
                 <td>{{ $item->tagihanPerTahunSkrd - $item->pembayaran_sum_jumlah_bayar }}</td>
                 @for ($bulan = 1; $bulan <= 12; $bulan++)
-                @php
-                    $pembayaranBulan = $item->pembayaran->filter(function($pembayaran) use ($bulan) {
-                        $bulanArray = json_decode($pembayaran->pembayaranBulan, true);
-                        return is_array($bulanArray) && in_array($bulan, $bulanArray);
-                    });
-                    
-                    $totalBayarBulan = $pembayaranBulan->sum(function($pembayaran) {
-                        $bulanArray = json_decode($pembayaran->pembayaranBulan, true);
-                        $jumlahBulan = count($bulanArray);
-                        return $jumlahBulan > 0 ? $pembayaran->jumlahBayar / $jumlahBulan : 0;
-                    });
-                    
-                    $tanggalBayarBulan = $pembayaranBulan->first() ? 
-                        \Carbon\Carbon::parse($pembayaranBulan->first()->tanggalBayar)->format('d-m-Y') : '-';
-                @endphp
-                <td>{{ $totalBayarBulan > 0 ? $bulan : '-' }}</td>
-                <td>{{ $tanggalBayarBulan }}</td>
-            @endfor
+                    @php
+                        $pembayaranBulan = $item->pembayaran->filter(function ($pembayaran) use ($bulan) {
+                            $bulanArray = json_decode($pembayaran->pembayaranBulan, true);
+                            return is_array($bulanArray) && in_array($bulan, $bulanArray);
+                        });
+
+                        $totalBayarBulan = $pembayaranBulan->sum(function ($pembayaran) {
+                            $bulanArray = json_decode($pembayaran->pembayaranBulan, true);
+                            $jumlahBulan = count($bulanArray);
+                            return $jumlahBulan > 0 ? $pembayaran->jumlahBayar / $jumlahBulan : 0;
+                        });
+
+                        $tanggalBayarBulan = $pembayaranBulan->first()
+                            ? \Carbon\Carbon::parse($pembayaranBulan->first()->tanggalBayar)->format('d-m-Y')
+                            : '-';
+                    @endphp
+                    <td>{{ $totalBayarBulan > 0 ? $bulan : '-' }}</td>
+                    <td>{{ $tanggalBayarBulan }}</td>
+                @endfor
                 <td>
                     @if ($item->tagihanPerTahunSkrd - $item->pembayaran_sum_jumlah_bayar == 0)
                         Lunas
