@@ -232,53 +232,55 @@ const Step2 = ({ data, setData, previewData, errors, clearErrors }) => {
           <div className="p-2 text-sm font-semibold md:text-lg">
             <h2>Detail Input Setoran</h2>
           </div>
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th className="text-left">Bulan</th>
-                <th>Tanggal Bayar</th>
-                <th>Nomor Referensi Bank</th>
-                <th className="text-center">Jumlah Bayar Perbulan</th>
-                <th>Keterangan</th>
-                <th>Bukti Bayar</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.from({ length: previewData.jumlahBulan }, (_, i) => {
-                const namaBulan = new Date(0, i).toLocaleString("id-ID", {
-                  month: "long",
-                });
-                return (
-                  <tr key={i} className="*:py-1.5">
-                    <td className="text-center">{i + 1}</td>
-                    <td>{namaBulan}</td>
-                    <td className="text-center">
-                      <Input type="date" />
-                    </td>
-                    <td className="px-1 text-center">
-                      <Input type="number" className="w-full bg-slate-300" />
-                    </td>
-                    <td className="px-1 text-center">
-                      <Input
-                        type="number"
-                        className="w-full max-w-40 bg-slate-300"
-                      />
-                    </td>
-                    <td className="px-1 text-left">
-                      <Input className="w-full min-w-52 bg-slate-300" />
-                    </td>
-                    <td className="px-1 text-left">
-                      <Input
-                        type="file"
-                        className="w-full min-w-52 bg-slate-300"
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="w-full overflow-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="*:text-sm *:truncate *:px-2">
+                  <th>No.</th>
+                  <th className="text-left">Bulan</th>
+                  <th>Tanggal Bayar</th>
+                  <th>Nomor Referensi Bank</th>
+                  <th className="text-center">Jumlah Bayar Perbulan</th>
+                  <th>Keterangan</th>
+                  <th>Bukti Bayar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: previewData.jumlahBulan }, (_, i) => {
+                  const namaBulan = new Date(0, i).toLocaleString("id-ID", {
+                    month: "long",
+                  });
+                  return (
+                    <tr key={i} className="*:py-1.5">
+                      <td className="text-center">{i + 1}</td>
+                      <td>{namaBulan}</td>
+                      <td className="text-center">
+                        <Input type="date" />
+                      </td>
+                      <td className="px-1 text-center">
+                        <Input type="number" className="w-full bg-slate-300" />
+                      </td>
+                      <td className="px-1 text-center">
+                        <Input
+                          type="number"
+                          className="w-full max-w-40 bg-slate-300"
+                        />
+                      </td>
+                      <td className="px-1 text-left">
+                        <Input className="w-full min-w-52 bg-slate-300" />
+                      </td>
+                      <td className="px-1 text-left">
+                        <Input
+                          type="file"
+                          className="w-full min-w-52 bg-slate-300"
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
