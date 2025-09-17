@@ -2,8 +2,69 @@ import DropdownInput from "@/Components/DropdownInput";
 import FormInput from "@/Components/FormInput";
 import Label from "@/Components/Label";
 import Input from "@/Components/Input";
+import { useEffect } from "react";
 
-const Step2 = ({ data, setData, previewData, errors, clearErrors }) => {
+const namaBulanID = (i) =>
+  new Date(0, i).toLocaleString("id-ID", { month: "long" });
+
+const Step2 = ({ data, setData, errors, clearErrors }) => {
+  useEffect(() => {
+    if (
+      !Array.isArray(data.detailSetoran) ||
+      data.detailSetoran.length !== 12
+    ) {
+      setData(
+        "detailSetoran",
+        Array.from({ length: 12 }, (_, i) => ({
+          bulan: i,
+          aktif: false,
+          tanggalBayar: "",
+          jumlah: "",
+          keterangan: "",
+        })),
+      );
+    }
+  }, []);
+
+  const toggleBulan = (index) => {
+    const next = [...data.detailSetoran];
+    if (next[index]?.locked) return;
+    const aktifBaru = !next[index].aktif;
+    next[index] = {
+      ...next[index],
+      aktif: aktifBaru,
+      ...(aktifBaru ? {} : { tanggalBayar: "", jumlah: "", keterangan: "" }),
+    };
+    setData("detailSetoran", next);
+  };
+
+  const updateBulan = (index, field, value) => {
+    const next = [...data.detailSetoran];
+    if (field === "jumlah") {
+      value = String(value ?? "")
+        .replace(/\D/g, "")
+        .replace(/^0+/, "");
+    }
+    next[index] = { ...next[index], [field]: value };
+    setData("detailSetoran", next);
+  };
+
+  const aktifkanSemua = () => {
+    const next = data.detailSetoran.map((r) => ({ ...r, aktif: true }));
+    setData("detailSetoran", next);
+  };
+
+  const nonaktifkanSemua = () => {
+    const next = data.detailSetoran.map((r) => ({
+      ...r,
+      aktif: false,
+      tanggalBayar: "",
+      jumlah: "",
+      keterangan: "",
+    }));
+    setData("detailSetoran", next);
+  };
+
   return (
     <div className="space-y-3 rounded bg-white px-3 py-5">
       <h2 className="font-semibold">Input Setoran</h2>
@@ -229,50 +290,125 @@ const Step2 = ({ data, setData, previewData, errors, clearErrors }) => {
           )}
         </FormInput>
         <div className="lg:col-span-2">
-          <div className="p-2 text-sm font-semibold md:text-lg">
-            <h2>Detail Input Setoran</h2>
+          <div className="flex items-center justify-between p-2">
+            <div className="text-sm font-semibold md:text-lg">
+              <h2>Detail Input Setoran</h2>
+            </div>
+            {/* <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={aktifkanSemua}
+                className="rounded border bg-white px-2 py-1 text-xs shadow"
+              >
+                Aktifkan semua
+              </button>
+              <button
+                type="button"
+                onClick={nonaktifkanSemua}
+                className="rounded border bg-white px-2 py-1 text-xs shadow"
+              >
+                Nonaktifkan semua
+              </button>
+            </div> */}
           </div>
+
           <div className="w-full overflow-auto">
             <table className="w-full">
               <thead>
-                <tr className="*:text-sm *:truncate *:px-2">
+                <tr className="*:truncate *:px-2 *:text-sm">
                   <th>No.</th>
+                  <th>Toggle</th>
                   <th className="text-left">Bulan</th>
-                  <th>Tanggal Bayar</th>
-                  <th>Nomor Referensi Bank</th>
+                  <th className="text-center">Tanggal Bayar</th>
                   <th className="text-center">Jumlah Bayar Perbulan</th>
-                  <th>Keterangan</th>
-                  <th>Bukti Bayar</th>
+                  <th className="text-left">Keterangan</th>
                 </tr>
               </thead>
               <tbody>
-                {Array.from({ length: previewData.jumlahBulan }, (_, i) => {
-                  const namaBulan = new Date(0, i).toLocaleString("id-ID", {
-                    month: "long",
-                  });
+                {Array.from({ length: 12 }, (_, i) => {
+                  const row = data.detailSetoran?.[i] ?? {
+                    aktif: false,
+                    tanggalBayar: "",
+                    jumlah: "",
+                    keterangan: "",
+                    locked: false,
+                  };
+                  const locked = !!row.locked;
+                  const disabledInputs = locked || !row.aktif;
+
                   return (
                     <tr key={i} className="*:py-1.5">
                       <td className="text-center">{i + 1}</td>
-                      <td>{namaBulan}</td>
                       <td className="text-center">
-                        <Input type="date" />
+                        <button
+                          type="button"
+                          onClick={() => toggleBulan(i)}
+                          disabled={locked}
+                          className={`rounded border px-2 py-0.5 text-xs shadow ${
+                            locked
+                              ? "cursor-not-allowed border-slate-300 bg-slate-300 text-slate-600"
+                              : row.aktif
+                                ? "border-[#B3CEAF] bg-[#B3CEAF]/20 text-[#2b5d22]"
+                                : "border-slate-300 bg-slate-200 text-slate-600"
+                          }`}
+                          title={
+                            locked
+                              ? "Sudah dibayar (terkunci)"
+                              : row.aktif
+                                ? "Nonaktifkan"
+                                : "Aktifkan"
+                          }
+                        >
+                          {locked ? "Sudah" : row.aktif ? "Aktif" : "Nonaktif"}
+                        </button>
                       </td>
-                      <td className="px-1 text-center">
-                        <Input type="number" className="w-full bg-slate-300" />
-                      </td>
+
+                      <td>{namaBulanID(i)}</td>
+
                       <td className="px-1 text-center">
                         <Input
-                          type="number"
-                          className="w-full max-w-40 bg-slate-300"
+                          type="date"
+                          disabled={disabledInputs}
+                          readOnly={locked}
+                          value={row.tanggalBayar}
+                          onChange={(e) =>
+                            updateBulan(i, "tanggalBayar", e.target.value)
+                          }
+                          className={`${disabledInputs ? "bg-slate-200" : "bg-slate-50"}`}
                         />
                       </td>
-                      <td className="px-1 text-left">
-                        <Input className="w-full min-w-52 bg-slate-300" />
+
+                      <td className="px-1 text-center">
+                        <Input
+                          disabled={disabledInputs}
+                          readOnly={locked}
+                          value={
+                            row.jumlah
+                              ? Intl.NumberFormat("id-ID", {
+                                style: "currency",
+                                currency: "IDR",
+                                minimumFractionDigits: 0
+                              }).format(row.jumlah)
+                              : ""
+                          }
+                          onChange={(e) => {
+                            console.log(row.jumlah);
+                            updateBulan(i, "jumlah", e.target.value);
+                          }
+                          }
+                          className={`w-full ${disabledInputs ? "bg-slate-200" : "bg-slate-50"}`}
+                        />
                       </td>
+
                       <td className="px-1 text-left">
                         <Input
-                          type="file"
-                          className="w-full min-w-52 bg-slate-300"
+                          disabled={disabledInputs}
+                          readOnly={locked}
+                          value={row.keterangan}
+                          onChange={(e) =>
+                            updateBulan(i, "keterangan", e.target.value)
+                          }
+                          className={`w-full min-w-52 ${disabledInputs ? "bg-slate-200" : "bg-slate-50"}`}
                         />
                       </td>
                     </tr>
@@ -280,6 +416,17 @@ const Step2 = ({ data, setData, previewData, errors, clearErrors }) => {
                 })}
               </tbody>
             </table>
+            {errors.detailSetoran && (
+              <div className="mt-2 text-xs text-red-500">
+                {errors.detailSetoran}
+              </div>
+            )}
+
+            {/* Info kecil jumlah bulan aktif */}
+            <div className="mt-2 text-xs text-slate-600">
+              Bulan aktif:{" "}
+              {data.detailSetoran?.filter?.((r) => r.aktif).length ?? 0} / 12
+            </div>
           </div>
         </div>
       </div>

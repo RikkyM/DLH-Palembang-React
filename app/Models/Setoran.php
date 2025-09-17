@@ -39,4 +39,13 @@ class Setoran extends Model
             $setoran->nomorNota = "{$nextNumber}/NP-RET/DLH/{$year}";
         });
     }
+
+    public function skrd() {
+        return $this->belongsTo(Skrd::class, 'skrdId', 'id');
+    }
+
+    public function detailSetoran()
+    {
+        return $this->hasMany(DetailSetoran::class, 'nomorNota', 'nomorNota');
+    }
 }

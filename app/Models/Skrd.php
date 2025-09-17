@@ -93,6 +93,16 @@ class Skrd extends Model
         });
     }
 
+    public function setoran()
+    {
+        return $this->hasMany(Setoran::class, 'skrdId');
+    }
+
+    public function detailSetoran()
+    {
+        return $this->hasMany(DetailSetoran::class, 'skrdId');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

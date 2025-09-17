@@ -3,6 +3,29 @@ import FormInput from "@/Components/FormInput";
 import Label from "@/Components/Label";
 import Input from "@/Components/Input";
 
+const monthNameToIndex = (m) => {
+  if (typeof m === "number")
+    return m >= 1 && m <= 12 ? m - 1 : m >= 0 && m <= 11 ? m : null;
+  const n = parseInt(m, 10);
+  if (!isNaN(n))
+    return n >= 1 && n <= 12 ? n - 1 : n >= 0 && n <= 11 ? n : null;
+  const map = {
+    januari: 0,
+    februari: 1,
+    maret: 2,
+    april: 3,
+    mei: 4,
+    juni: 5,
+    juli: 6,
+    agustus: 7,
+    september: 8,
+    oktober: 9,
+    november: 10,
+    desember: 11,
+  };
+  return map[String(m ?? "").toLowerCase()] ?? null;
+};
+
 const Step1 = ({
   data,
   setData,
@@ -25,6 +48,8 @@ const Step1 = ({
             clearErrors();
             setData("noSkrd", value);
 
+            // console.log(value)
+
             const selected = skrdOptions.find((item) => item.value === value);
             if (selected) {
               setPreviewData({
@@ -37,6 +62,30 @@ const Step1 = ({
                 jumlahBulan: selected.jumlahBulan,
                 keteranganBulan: selected.keteranganBulan,
               });
+
+              const base = Array.from({ length: 12 }, (_, i) => ({
+                bulan: i,
+                aktif: false,
+                tanggalBayar: "",
+                jumlah: "",
+                keterangan: "",
+                locked: false, // <— default tidak terkunci
+              }));
+
+              (selected.detailSetoran ?? []).forEach((d) => {
+                const idx = monthNameToIndex(d.namaBulan);
+                if (idx != null && base[idx]) {
+                  base[idx] = {
+                    ...base[idx],
+                    aktif: false,
+                    locked: true, // <— TERKUNCI
+                    tanggalBayar: d.tanggalBayar || "",
+                    jumlah: d.jumlahBayar != null ? String(d.jumlahBayar) : "",
+                    keterangan: d.keterangan || "",
+                  };
+                }
+              });
+              setData("detailSetoran", base);
             }
           }}
           options={skrdOptions}

@@ -51,7 +51,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::resource('/penerimaan-retribusi', PenerimaanRetribusiController::class);
         // Route::resource('/input-setoran', SetoranController::class)->only(['index', 'create']);
         Route::get('/input-setoran', [SetoranController::class, 'create'])->name('input-setoran');
-        Route::resource('/data-setoran', SetoranController::class)->only(['index']);
+        Route::resource('/data-setoran', SetoranController::class)->only(['index', 'store']);
     });
 
     Route::prefix('master-data')->group(function () {

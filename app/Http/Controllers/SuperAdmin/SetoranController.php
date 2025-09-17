@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\DetailSetoran;
+use App\Models\Setoran;
 use App\Models\Skrd;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class SetoranController extends Controller
@@ -22,14 +25,14 @@ class SetoranController extends Controller
      */
     public function create()
     {
-        $skrdOptions = Skrd::select('noSkrd', 'namaObjekRetribusi', 'alamatObjekRetribusi', 'kecamatanObjekRetribusi', 'kelurahanObjekRetribusi', 'tagihanPerBulanSkrd', 'tagihanPerTahunSkrd', 'jumlahBulan', 'keteranganBulan')
-        ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', 1) AS UNSIGNED) ASC")
-        ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', -1) AS UNSIGNED) ASC")
-        ->whereNotNull('noSkrd')
+        $skrdOptions = Skrd::with('detailSetoran')->select('id', 'noSkrd', 'namaObjekRetribusi', 'alamatObjekRetribusi', 'kecamatanObjekRetribusi', 'kelurahanObjekRetribusi', 'tagihanPerBulanSkrd', 'tagihanPerTahunSkrd', 'jumlahBulan', 'keteranganBulan')
+            ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', 1) AS UNSIGNED) ASC")
+            ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', -1) AS UNSIGNED) ASC")
+            ->whereNotNull('noSkrd')
             ->get()
             ->map(function ($skrd) {
                 return [
-                    'value' => $skrd->noSkrd,
+                    'value' => $skrd->id,
                     'label' => $skrd->noSkrd,
                     'namaObjekRetribusi' => $skrd->namaObjekRetribusi,
                     'alamatObjekRetribusi' => $skrd->alamatObjekRetribusi,
@@ -38,7 +41,17 @@ class SetoranController extends Controller
                     'tagihanPerBulanSkrd' => $skrd->tagihanPerBulanSkrd,
                     'tagihanPerTahunSkrd' => $skrd->tagihanPerTahunSkrd,
                     'jumlahBulan' => $skrd->jumlahBulan,
-                    'keteranganBulan' => $skrd->keteranganBulan
+                    'keteranganBulan' => $skrd->keteranganBulan,
+                    'detailSetoran' => $skrd->detailSetoran->map(function ($detailSetoran) {
+                        return [
+                            'skrdId' => $detailSetoran->skrdId,
+                            'nomorNota' => $detailSetoran->nomorNota,
+                            'namaBulan' => $detailSetoran->namaBulan,
+                            'tanggalBayar' => $detailSetoran->tanggalBayar,
+                            'jumlahBayar' => $detailSetoran->jumlahBayar,
+                            'keterangan' => $detailSetoran->keterangan
+                        ];
+                    })
                 ];
             });
 
@@ -52,7 +65,57 @@ class SetoranController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
+
+        $fileBuktiBayar = $request->file('buktiBayar');
+        $namaFileBuktiBayar = Str::uuid() . '.' . $fileBuktiBayar->getClientOriginalExtension();
+
+
+        $dataSave = [
+            'skrdId' => $request->noSkrd,
+            'noRef' => $request->noReferensiBank,
+            'tanggalBayar' => $request->tanggalBayar,
+            'jumlahBayar' => $request->jumlahBayar,
+            'namaPenyetor' => $request->namaPengirim,
+            'keteranganBulan' => $request->keteranganBulan,
+            'buktiBayar' => $namaFileBuktiBayar,
+            // 'detailSetoran' => $request->detailSetoran
+        ];
+
+        // $p = [];
+
+        // $q = [];
+
+        // if ($request->detailSetoran) {
+        //     foreach ($request->detailSetoran as $detailSetoran) {
+        //         $p[] = $detailSetoran;
+        //         // foreach ($detailSetoran as $data) {
+        //         //     $q[] = $data;
+        //         // }
+        //     }
+        // }
+
+        // dd($q);
+        // dd($p);
+
+        // dd($dataSave);
+
+        $setoran = Setoran::create($dataSave);
+
+        // dd($setoran);
+
+        if ($request->detailSetoran) {
+            foreach ($request->detailSetoran as $detailSetoran) {
+                DetailSetoran::create([
+                    'skrdId' => $request->noSkrd,
+                    'nomorNota' => $setoran->nomorNota,
+                    'namaBulan' => $detailSetoran['bulan'],
+                    'tanggalBayar' => $detailSetoran['tanggalBayar'],
+                    'jumlahBayar' => $detailSetoran['jumlah'],
+                    'keterangan' => $detailSetoran['keterangan'],
+                ]);
+            }
+        }
     }
 
     /**

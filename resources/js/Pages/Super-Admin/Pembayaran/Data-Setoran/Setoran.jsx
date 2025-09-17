@@ -1,10 +1,14 @@
 import Layout from "../../Layout";
 import { useForm } from "@inertiajs/react";
-import { lazy, useMemo, useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
 import { CreditCard, FileText, User } from "lucide-react";
 const Step1 = lazy(() => import("./Step1"));
 const Step2 = lazy(() => import("./Step2"));
 const Step3 = lazy(() => import("./Step3"));
+
+const parseIntIDR = (v) => Number(String(v ?? "").replace(/\D/g, "")) || 0;
+const namaBulanID = (i) =>
+  new Date(0, i).toLocaleString("id-ID", { month: "long" });
 
 const Setoran = ({ skrdOptions = [] }) => {
   const [step, setStep] = useState(1);
@@ -20,13 +24,28 @@ const Setoran = ({ skrdOptions = [] }) => {
   });
   const initialData = {
     noSkrd: "",
-
-    // namaBank: "",
     tanggalBayar: new Date().toISOString().slice(0, 10),
+
+    detailSetoran: Array.from({ length: 12 }, (_, i) => ({
+      bulan: i,
+      aktif: false,
+      tanggalBayar: "",
+      jumlah: "",
+      keterangan: "",
+      locked: false,
+    })),
   };
 
-  const { data, setData, errors, processing, post, setError, clearErrors } =
-    useForm(initialData);
+  const {
+    data,
+    setData,
+    errors,
+    processing,
+    post,
+    setError,
+    clearErrors,
+    transform,
+  } = useForm(initialData);
 
   const steps = useMemo(
     () => [
@@ -56,7 +75,6 @@ const Setoran = ({ skrdOptions = [] }) => {
           <Step2
             data={data}
             setData={setData}
-            previewData={previewData}
             errors={errors}
             clearErrors={clearErrors}
           />
@@ -131,8 +149,6 @@ const Setoran = ({ skrdOptions = [] }) => {
         hasError = true;
       }
 
-      console.log(previewData.tarifPertahun, jmlBayar);
-
       if (
         previewData.tarifPertahun &&
         jmlBayar > Number(previewData.tarifPertahun)
@@ -152,6 +168,100 @@ const Setoran = ({ skrdOptions = [] }) => {
         hasError = true;
       }
 
+      const rows = Array.isArray(data.detailSetoran) ? data.detailSetoran : [];
+      const activeRows = rows.filter((r) => r && r.aktif && !r.locked);
+      const lockedCount = rows.filter((r) => r && r.locked).length;
+      const allowedTotal = Number(previewData.jumlahBulan || 0);
+
+      if (allowedTotal > 0) {
+        const remainingAllowed = Math.max(allowedTotal - lockedCount, 0);
+
+        // STRICT: harus persis sama
+        if (activeRows.length !== remainingAllowed) {
+          setError(
+            "detailSetoran",
+            `Jumlah bulan aktif (${activeRows.length}) tidak sesuai. 
+      SKRD (${allowedTotal} bulan) - sudah dibayar (${lockedCount}) = sisa ${remainingAllowed} bulan yang harus dipilih.`,
+          );
+          hasError = true;
+        }
+      }
+
+      // Harus ada minimal 1 baris aktif
+      if (activeRows.length === 0) {
+        setError("detailSetoran", "Minimal aktifkan 1 bulan pada tabel.");
+        hasError = true;
+      } else {
+        clearErrors("detailSetoran");
+      }
+
+      // Cek isi setiap baris aktif
+      for (let i = 0; i < activeRows.length; i++) {
+        const r = activeRows[i];
+        const bulanName = namaBulanID(r.bulan ?? i);
+
+        const jumlahNum = parseIntIDR(r.jumlah);
+
+        if (!r.tanggalBayar) {
+          setError(
+            "detailSetoran",
+            `Tanggal bayar bulan ${bulanName} wajib diisi.`,
+          );
+          hasError = true;
+          break;
+        }
+        if (!(jumlahNum > 0)) {
+          setError(
+            "detailSetoran",
+            `Jumlah pada bulan ${bulanName} harus lebih dari 0.`,
+          );
+          hasError = true;
+          break;
+        }
+      }
+
+      const totalBulanan = activeRows.reduce(
+        (acc, r) => acc + parseIntIDR(r.jumlah),
+        0,
+      );
+      const jmlBulanInput = Number(data.jumlahBulanBayar || 0);
+      const jmlBayarTotal = parseIntIDR(data.jumlahBayar || 0);
+
+      if (activeRows.length !== jmlBulanInput) {
+        setError(
+          "jumlahBulanBayar",
+          `Jumlah Bulan Bayar (${jmlBulanInput}) harus sama dengan baris aktif (${activeRows.length}).`,
+        );
+        setError(
+          "detailSetoran",
+          "Periksa kembali jumlah baris aktif pada tabel.",
+        );
+        hasError = true;
+      } else {
+        clearErrors("jumlahBulanBayar");
+      }
+
+      if (totalBulanan !== jmlBayarTotal) {
+        const fmt = (n) =>
+          Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+          }).format(n);
+
+        setError(
+          "jumlahBayar",
+          `Total per-bulan (${fmt(totalBulanan)}) harus sama dengan Jumlah Bayar (${fmt(jmlBayarTotal)}).`,
+        );
+        setError(
+          "detailSetoran",
+          "Total pada tabel tidak sesuai dengan Jumlah Bayar.",
+        );
+        hasError = true;
+      } else {
+        clearErrors("jumlahBayar");
+      }
+
       if (hasError) return;
     }
 
@@ -166,7 +276,25 @@ const Setoran = ({ skrdOptions = [] }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(data);
+    const namaBulanID = (i) =>
+      new Date(0, i).toLocaleString("id-ID", { month: "long" });
+
+    const filledRows = (data.detailSetoran ?? [])
+      .filter((r) => r.aktif && (r.tanggalBayar || r.jumlah || r.keterangan))
+      .map((r) => ({
+        bulan: namaBulanID(r.bulan),
+        tanggalBayar: r.tanggalBayar,
+        jumlah: r.jumlah ? Number(String(r.jumlah).replace(/\D/g, "")) : 0,
+        keterangan: r.keterangan?.trim() || null,
+      }))
+      .filter((r) => r.jumlah > 0 || r.tanggalBayar || r.keterangan);
+
+    transform((d) => ({
+      ...d,
+      detailSetoran: filledRows,
+    }));
+
+    post(route("super-admin.data-setoran.store"));
   };
 
   return (
@@ -206,7 +334,7 @@ const Setoran = ({ skrdOptions = [] }) => {
           })}
         </div>
 
-        {renderStep}
+        <Suspense fallback={<div>Memuat...</div>}>{renderStep}</Suspense>
 
         <div className="flex justify-between font-semibold">
           <button
