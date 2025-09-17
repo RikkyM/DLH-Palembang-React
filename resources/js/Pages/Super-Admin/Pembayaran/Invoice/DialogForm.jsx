@@ -110,7 +110,7 @@ const DialogForm = ({
         className={`h-max max-h-full w-full max-w-lg overflow-auto rounded bg-white transition-all duration-300 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-1 ${isOpen ? "scale-100" : "scale-95"}`}
       >
         <div className="flex items-center justify-between p-5">
-          <h3 className="text-lg font-medium">Form Invoice</h3>
+          <h3 className="text-lg font-medium">Surat Tagihan</h3>
           <button type="button" onClick={onClose}>
             <X size={20} />
           </button>
