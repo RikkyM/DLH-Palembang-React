@@ -43,7 +43,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
     });
 
-    Route::prefix('pembayaran')->group(function () {
+    Route::prefix('setoran')->group(function () {
         Route::resource('/invoice', InvoiceController::class)->only(['index', 'show', 'store', 'update']);
         // Route::get('/invoice/pdf/{filename}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
         Route::get('/invoice/pdf/{invoice}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');

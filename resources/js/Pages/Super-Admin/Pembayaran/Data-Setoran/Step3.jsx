@@ -124,12 +124,16 @@ const Step3 = ({ data, previewData }) => {
               </td>
             </tr>
             <tr>
-              <td className="whitespace-nowrap align-top">Jumlah Bulan Bayar</td>
+              <td className="whitespace-nowrap align-top">
+                Jumlah Bulan Bayar
+              </td>
               <td className="px-1.5 align-top">:</td>
               <td className="align-top">{data.jumlahBulanBayar} Bulan</td>
             </tr>
             <tr>
-              <td className="whitespace-nowrap align-top">Nomor Referensi Bank</td>
+              <td className="whitespace-nowrap align-top">
+                Nomor Referensi Bank
+              </td>
               <td className="px-1.5 align-top">:</td>
               <td className="align-top">{data.noReferensiBank}</td>
             </tr>
@@ -144,6 +148,33 @@ const Step3 = ({ data, previewData }) => {
               <td className="align-top">{data.keteranganBulan ?? "-"}</td>
             </tr>
           </table>
+        </div>
+        <div className="lg:col-span-2">
+          <h2
+            className={`py-0.5 font-semibold ${data.buktiBayar && data.buktiBayar.type.startsWith("image/") ? "text-center" : "text-left"}`}
+          >
+            Bukti Bayar
+          </h2>
+          {data.buktiBayar ? (
+            data.buktiBayar.type.startsWith("image/") ? (
+              <img
+                src={URL.createObjectURL(data.buktiBayar)}
+                alt="Bukti Bayar"
+                className="mx-auto max-h-72"
+              />
+            ) : (
+              <a
+                href={URL.createObjectURL(data.buktiBayar)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-blue-500 hover:underline"
+              >
+                Lihat Bukti Bayar
+              </a>
+            )
+          ) : (
+            "-"
+          )}
         </div>
       </div>
     </div>

@@ -25,7 +25,7 @@ const Setoran = ({ skrdOptions = [] }) => {
     tanggalBayar: new Date().toISOString().slice(0, 10),
   };
 
-  const { data, setData, errors, post, setError, clearErrors } =
+  const { data, setData, errors, processing, post, setError, clearErrors } =
     useForm(initialData);
 
   const steps = useMemo(
@@ -56,6 +56,7 @@ const Setoran = ({ skrdOptions = [] }) => {
           <Step2
             data={data}
             setData={setData}
+            previewData={previewData}
             errors={errors}
             clearErrors={clearErrors}
           />
@@ -96,7 +97,7 @@ const Setoran = ({ skrdOptions = [] }) => {
       must("jumlahBulanBayar", "Jumlah bulan bayar wajib diisi.");
       must("noReferensiBank", "Nomor referensi bank wajib diisi.");
       must("namaPengirim", "Nama pengirim wajib diisi.");
-      must("keteranganBulanInput", "Keterangan bulan wajib diisi.");
+      must("keteranganBulan", "Keterangan bulan wajib diisi.");
       if (!data.buktiBayar) {
         setError("buktiBayar", "Bukti bayar wajib diunggah.");
         hasError = true;
@@ -119,8 +120,35 @@ const Setoran = ({ skrdOptions = [] }) => {
         hasError = true;
       }
 
-      if (data.jumlahBulan && jmlBulanBayar > Number(data.jumlahBulan)) {
-        setError("jumlahBulanBayar", `Maksimal ${data.jumlahBulan} bulan.`);
+      if (
+        previewData.jumlahBulan &&
+        jmlBulanBayar > Number(previewData.jumlahBulan)
+      ) {
+        setError(
+          "jumlahBulanBayar",
+          `Maksimal ${previewData.jumlahBulan} bulan.`,
+        );
+        hasError = true;
+      }
+
+      console.log(previewData.tarifPertahun, jmlBayar);
+
+      if (
+        previewData.tarifPertahun &&
+        jmlBayar > Number(previewData.tarifPertahun)
+      ) {
+        setError(
+          "jumlahBayar",
+          `Maksimal ${Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(previewData.tarifPertahun)} tahun.`,
+        );
+        hasError = true;
+      }
+
+      if (
+        previewData.tarifPerbulan &&
+        jmlBayar < Number(previewData.tarifPerbulan)
+      ) {
+        setError("jumlahBayar", `Tidak boleh kurang dari tarif perbulan`);
         hasError = true;
       }
 
@@ -204,7 +232,7 @@ const Setoran = ({ skrdOptions = [] }) => {
                 type="submit"
                 className="rounded border bg-white px-3 py-1.5 text-sm shadow"
               >
-                Simpan Data
+                {processing ? "Menyimpan..." : "Simpan Data"}
               </button>
             )}
           </div>
