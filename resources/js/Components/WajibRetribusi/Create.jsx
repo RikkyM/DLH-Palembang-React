@@ -363,7 +363,7 @@ const WajibRetribusiCreate = ({
               <span className="text-xs text-red-500">{errors.noSkrd}</span>
             )}
           </FormInput>
-          <FormInput className="lg:col-span-1">
+          <FormInput className="lg:col-span-1 w-full">
             <Label htmlFor="tanggalSkrd">Tanggal SPKRD</Label>
             <Input
               type="date"
