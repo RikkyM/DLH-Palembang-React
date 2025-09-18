@@ -363,12 +363,12 @@ const WajibRetribusiCreate = ({
               <span className="text-xs text-red-500">{errors.noSkrd}</span>
             )}
           </FormInput>
-          <FormInput className="lg:col-span-1 w-full">
+          <FormInput className="lg:col-span-1">
             <Label htmlFor="tanggalSkrd">Tanggal SPKRD</Label>
             <Input
               type="date"
               id="tanggalSkrd"
-              className={`${errors.tanggalSkrd && "border border-red-500"}`}
+              className={`w-full ${errors.tanggalSkrd && "border border-red-500"}`}
               value={data.tanggalSkrd}
               onChange={(e) => handleInputChange("tanggalSkrd", e.target.value)}
             />
