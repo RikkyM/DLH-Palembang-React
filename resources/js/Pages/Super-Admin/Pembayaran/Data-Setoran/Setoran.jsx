@@ -168,99 +168,99 @@ const Setoran = ({ skrdOptions = [] }) => {
         hasError = true;
       }
 
-      const rows = Array.isArray(data.detailSetoran) ? data.detailSetoran : [];
-      const activeRows = rows.filter((r) => r && r.aktif && !r.locked);
-      const lockedCount = rows.filter((r) => r && r.locked).length;
-      const allowedTotal = Number(previewData.jumlahBulan || 0);
+      // const rows = Array.isArray(data.detailSetoran) ? data.detailSetoran : [];
+      // const activeRows = rows.filter((r) => r && r.aktif && !r.locked);
+      // const lockedCount = rows.filter((r) => r && r.locked).length;
+      // const allowedTotal = Number(previewData.jumlahBulan || 0);
 
-      if (allowedTotal > 0) {
-        const remainingAllowed = Math.max(allowedTotal - lockedCount, 0);
+      // if (allowedTotal > 0) {
+      //   const remainingAllowed = Math.max(allowedTotal - lockedCount, 0);
 
-        // STRICT: harus persis sama
-        if (activeRows.length !== remainingAllowed) {
-          setError(
-            "detailSetoran",
-            `Jumlah bulan aktif (${activeRows.length}) tidak sesuai. 
-      SKRD (${allowedTotal} bulan) - sudah dibayar (${lockedCount}) = sisa ${remainingAllowed} bulan yang harus dipilih.`,
-          );
-          hasError = true;
-        }
-      }
+      //   // STRICT: harus persis sama
+      //   if (activeRows.length !== remainingAllowed) {
+      //     setError(
+      //       "detailSetoran",
+      //       `Jumlah bulan aktif (${activeRows.length}) tidak sesuai. 
+      // SKRD (${allowedTotal} bulan) - sudah dibayar (${lockedCount}) = sisa ${remainingAllowed} bulan yang harus dipilih.`,
+      //     );
+      //     hasError = true;
+      //   }
+      // }
 
-      // Harus ada minimal 1 baris aktif
-      if (activeRows.length === 0) {
-        setError("detailSetoran", "Minimal aktifkan 1 bulan pada tabel.");
-        hasError = true;
-      } else {
-        clearErrors("detailSetoran");
-      }
+      // // Harus ada minimal 1 baris aktif
+      // if (activeRows.length === 0) {
+      //   setError("detailSetoran", "Minimal aktifkan 1 bulan pada tabel.");
+      //   hasError = true;
+      // } else {
+      //   clearErrors("detailSetoran");
+      // }
 
-      // Cek isi setiap baris aktif
-      for (let i = 0; i < activeRows.length; i++) {
-        const r = activeRows[i];
-        const bulanName = namaBulanID(r.bulan ?? i);
+      // // Cek isi setiap baris aktif
+      // for (let i = 0; i < activeRows.length; i++) {
+      //   const r = activeRows[i];
+      //   const bulanName = namaBulanID(r.bulan ?? i);
 
-        const jumlahNum = parseIntIDR(r.jumlah);
+      //   const jumlahNum = parseIntIDR(r.jumlah);
 
-        if (!r.tanggalBayar) {
-          setError(
-            "detailSetoran",
-            `Tanggal bayar bulan ${bulanName} wajib diisi.`,
-          );
-          hasError = true;
-          break;
-        }
-        if (!(jumlahNum > 0)) {
-          setError(
-            "detailSetoran",
-            `Jumlah pada bulan ${bulanName} harus lebih dari 0.`,
-          );
-          hasError = true;
-          break;
-        }
-      }
+      //   if (!r.tanggalBayar) {
+      //     setError(
+      //       "detailSetoran",
+      //       `Tanggal bayar bulan ${bulanName} wajib diisi.`,
+      //     );
+      //     hasError = true;
+      //     break;
+      //   }
+      //   if (!(jumlahNum > 0)) {
+      //     setError(
+      //       "detailSetoran",
+      //       `Jumlah pada bulan ${bulanName} harus lebih dari 0.`,
+      //     );
+      //     hasError = true;
+      //     break;
+      //   }
+      // }
 
-      const totalBulanan = activeRows.reduce(
-        (acc, r) => acc + parseIntIDR(r.jumlah),
-        0,
-      );
-      const jmlBulanInput = Number(data.jumlahBulanBayar || 0);
-      const jmlBayarTotal = parseIntIDR(data.jumlahBayar || 0);
+      // const totalBulanan = activeRows.reduce(
+      //   (acc, r) => acc + parseIntIDR(r.jumlah),
+      //   0,
+      // );
+      // const jmlBulanInput = Number(data.jumlahBulanBayar || 0);
+      // const jmlBayarTotal = parseIntIDR(data.jumlahBayar || 0);
 
-      if (activeRows.length !== jmlBulanInput) {
-        setError(
-          "jumlahBulanBayar",
-          `Jumlah Bulan Bayar (${jmlBulanInput}) harus sama dengan baris aktif (${activeRows.length}).`,
-        );
-        setError(
-          "detailSetoran",
-          "Periksa kembali jumlah baris aktif pada tabel.",
-        );
-        hasError = true;
-      } else {
-        clearErrors("jumlahBulanBayar");
-      }
+      // if (activeRows.length !== jmlBulanInput) {
+      //   setError(
+      //     "jumlahBulanBayar",
+      //     `Jumlah Bulan Bayar (${jmlBulanInput}) harus sama dengan baris aktif (${activeRows.length}).`,
+      //   );
+      //   setError(
+      //     "detailSetoran",
+      //     "Periksa kembali jumlah baris aktif pada tabel.",
+      //   );
+      //   hasError = true;
+      // } else {
+      //   clearErrors("jumlahBulanBayar");
+      // }
 
-      if (totalBulanan !== jmlBayarTotal) {
-        const fmt = (n) =>
-          Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
-            minimumFractionDigits: 0,
-          }).format(n);
+      // if (totalBulanan !== jmlBayarTotal) {
+      //   const fmt = (n) =>
+      //     Intl.NumberFormat("id-ID", {
+      //       style: "currency",
+      //       currency: "IDR",
+      //       minimumFractionDigits: 0,
+      //     }).format(n);
 
-        setError(
-          "jumlahBayar",
-          `Total per-bulan (${fmt(totalBulanan)}) harus sama dengan Jumlah Bayar (${fmt(jmlBayarTotal)}).`,
-        );
-        setError(
-          "detailSetoran",
-          "Total pada tabel tidak sesuai dengan Jumlah Bayar.",
-        );
-        hasError = true;
-      } else {
-        clearErrors("jumlahBayar");
-      }
+      //   setError(
+      //     "jumlahBayar",
+      //     `Total per-bulan (${fmt(totalBulanan)}) harus sama dengan Jumlah Bayar (${fmt(jmlBayarTotal)}).`,
+      //   );
+      //   setError(
+      //     "detailSetoran",
+      //     "Total pada tabel tidak sesuai dengan Jumlah Bayar.",
+      //   );
+      //   hasError = true;
+      // } else {
+      //   clearErrors("jumlahBayar");
+      // }
 
       if (hasError) return;
     }
