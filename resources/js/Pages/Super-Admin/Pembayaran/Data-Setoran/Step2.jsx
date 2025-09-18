@@ -49,21 +49,21 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
     setData("detailSetoran", next);
   };
 
-  const aktifkanSemua = () => {
-    const next = data.detailSetoran.map((r) => ({ ...r, aktif: true }));
-    setData("detailSetoran", next);
-  };
+  // const aktifkanSemua = () => {
+  //   const next = data.detailSetoran.map((r) => ({ ...r, aktif: true }));
+  //   setData("detailSetoran", next);
+  // };
 
-  const nonaktifkanSemua = () => {
-    const next = data.detailSetoran.map((r) => ({
-      ...r,
-      aktif: false,
-      tanggalBayar: "",
-      jumlah: "",
-      keterangan: "",
-    }));
-    setData("detailSetoran", next);
-  };
+  // const nonaktifkanSemua = () => {
+  //   const next = data.detailSetoran.map((r) => ({
+  //     ...r,
+  //     aktif: false,
+  //     tanggalBayar: "",
+  //     jumlah: "",
+  //     keterangan: "",
+  //   }));
+  //   setData("detailSetoran", next);
+  // };
 
   return (
     <div className="space-y-3 rounded bg-white px-3 py-5">
@@ -72,8 +72,8 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
         <div className="col-span-2 grid gap-5 lg:grid-cols-3">
           <DropdownInput
             id="pemohon"
-            label="Metode Bayar"
-            placeholder="Silahkan Metode Bayar..."
+            label="Metode Setor"
+            placeholder="Pilih Metode Setor..."
             value={data.metodeBayar}
             onChange={(value) => {
               setData("metodeBayar", value);
@@ -142,7 +142,7 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
               htmlFor="jumlahBayar"
               className="after:text-red-500 after:content-['*']"
             >
-              Jumlah Bayar
+              Jumlah Setor
             </Label>
             <Input
               id="jumlahBayar"
@@ -174,7 +174,7 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
               htmlFor="jumlahBulanBayar"
               className="after:text-red-500 after:content-['*']"
             >
-              Jumlah Bulan Bayar
+              Jumlah Bulan
             </Label>
             <Input
               id="jumlahBulanBayar"
@@ -225,7 +225,7 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
               htmlFor="namaPengirim"
               className="after:text-red-500 after:content-['*']"
             >
-              Nama Pengirim / Penyetor
+              Pengirim / Penyetor
             </Label>
             <Input
               id="namaPengirim"
@@ -252,7 +252,7 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
             </Label>
             <Input
               id="keteranganBulan"
-              placeholder="Keterangan Bulan..."
+              placeholder="ex. Januari s.d Des"
               className={`${errors.keteranganBulan && "border border-red-500"}`}
               value={data.keteranganBulan || ""}
               onChange={(e) => {
@@ -289,7 +289,7 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
             <span className="text-xs text-red-500">{errors.buktiBayar}</span>
           )}
         </FormInput>
-        <div className="lg:col-span-2">
+        <div className="col-span-2">
           <div className="flex items-center justify-between p-2">
             <div className="text-sm font-semibold md:text-lg">
               <h2>Detail Input Setoran</h2>
@@ -315,12 +315,12 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
           <div className="w-full overflow-auto">
             <table className="w-full">
               <thead>
-                <tr className="*:truncate *:px-2 *:text-sm">
+                <tr className="*:truncate *:px-2 *:text-xs *:lg:text-sm">
                   <th>No.</th>
                   <th>Toggle</th>
                   <th className="text-left">Bulan</th>
                   <th className="text-center">Tanggal Bayar</th>
-                  <th className="text-center">Jumlah Bayar Perbulan</th>
+                  <th className="text-center">Jumlah Bayar</th>
                   <th className="text-left">Keterangan</th>
                 </tr>
               </thead>
@@ -339,7 +339,7 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
                   return (
                     <tr key={i} className="*:py-1.5">
                       <td className="text-center">{i + 1}</td>
-                      <td className="text-center">
+                      <td className="text-center px-2">
                         <button
                           type="button"
                           onClick={() => toggleBulan(i)}
@@ -363,7 +363,7 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
                         </button>
                       </td>
 
-                      <td>{namaBulanID(i)}</td>
+                      <td className="pr-5 text-sm lg:text-base">{namaBulanID(i)}</td>
 
                       <td className="px-1 text-center">
                         <Input
@@ -374,11 +374,11 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
                           onChange={(e) =>
                             updateBulan(i, "tanggalBayar", e.target.value)
                           }
-                          className={`${disabledInputs ? "bg-slate-200" : "bg-slate-50"}`}
+                          className={`w-full text-sm ${disabledInputs ? "bg-slate-200" : "bg-slate-50"}`}
                         />
                       </td>
 
-                      <td className="px-1 text-center">
+                      <td className="px-1 text-center text-sm">
                         <Input
                           disabled={disabledInputs}
                           readOnly={locked}
@@ -392,7 +392,6 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
                               : ""
                           }
                           onChange={(e) => {
-                            console.log(row.jumlah);
                             updateBulan(i, "jumlah", e.target.value);
                           }
                           }
@@ -400,7 +399,7 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
                         />
                       </td>
 
-                      <td className="px-1 text-left">
+                      <td className="px-1 text-left text-sm">
                         <Input
                           disabled={disabledInputs}
                           readOnly={locked}

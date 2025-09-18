@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('namaBulan');
             $table->date('tanggalBayar');
             $table->integer('jumlahBayar');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
 
             $table->foreign('nomorNota')->references('nomorNota')->on('setoran')->onUpdate('cascade')->onDelete('cascade');

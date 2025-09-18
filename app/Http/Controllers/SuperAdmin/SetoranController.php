@@ -25,7 +25,7 @@ class SetoranController extends Controller
      */
     public function create()
     {
-        $skrdOptions = Skrd::with('detailSetoran')->select('id', 'noSkrd', 'namaObjekRetribusi', 'alamatObjekRetribusi', 'kecamatanObjekRetribusi', 'kelurahanObjekRetribusi', 'tagihanPerBulanSkrd', 'tagihanPerTahunSkrd', 'jumlahBulan', 'keteranganBulan')
+        $skrdOptions = Skrd::with('detailSetoran')->select('id', 'noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'alamatObjekRetribusi', 'kecamatanObjekRetribusi', 'kelurahanObjekRetribusi', 'tagihanPerBulanSkrd', 'tagihanPerTahunSkrd', 'jumlahBulan', 'keteranganBulan')
             ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', 1) AS UNSIGNED) ASC")
             ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', -1) AS UNSIGNED) ASC")
             ->whereNotNull('noSkrd')
@@ -34,6 +34,7 @@ class SetoranController extends Controller
                 return [
                     'value' => $skrd->id,
                     'label' => $skrd->noSkrd,
+                    'noWajibRetribusi' => $skrd->noWajibRetribusi,
                     'namaObjekRetribusi' => $skrd->namaObjekRetribusi,
                     'alamatObjekRetribusi' => $skrd->alamatObjekRetribusi,
                     'kecamatanObjekRetribusi' => $skrd->kecamatanObjekRetribusi,
@@ -79,30 +80,9 @@ class SetoranController extends Controller
             'namaPenyetor' => $request->namaPengirim,
             'keteranganBulan' => $request->keteranganBulan,
             'buktiBayar' => $namaFileBuktiBayar,
-            // 'detailSetoran' => $request->detailSetoran
         ];
 
-        // $p = [];
-
-        // $q = [];
-
-        // if ($request->detailSetoran) {
-        //     foreach ($request->detailSetoran as $detailSetoran) {
-        //         $p[] = $detailSetoran;
-        //         // foreach ($detailSetoran as $data) {
-        //         //     $q[] = $data;
-        //         // }
-        //     }
-        // }
-
-        // dd($q);
-        // dd($p);
-
-        // dd($dataSave);
-
         $setoran = Setoran::create($dataSave);
-
-        // dd($setoran);
 
         if ($request->detailSetoran) {
             foreach ($request->detailSetoran as $detailSetoran) {

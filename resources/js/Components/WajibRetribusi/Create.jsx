@@ -298,10 +298,10 @@ const WajibRetribusiCreate = ({
     <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 gap-5 md:grid-cols-3"
+        className="grid gap-5 grid-cols-3"
       >
-        <div className="grid gap-5 md:col-span-3 md:grid-cols-4">
-          <FormInput className="col-span-3 md:col-span-1">
+        <div className="grid w-full lg:col-span-3 lg:grid-cols-4 gap-5 col-span-3">
+          <FormInput className="lg:col-span-1">
             <Label
               htmlFor="namaObjekRetribusi"
               className="after:text-red-500 after:content-['*']"
@@ -323,7 +323,7 @@ const WajibRetribusiCreate = ({
               </span>
             )}
           </FormInput>
-          <FormInput className="col-span-3 md:col-span-1">
+          <FormInput className="lg:col-span-1">
             <Label
               htmlFor="noWajibRetribusi"
               className="after:text-red-500 after:content-['*']"
@@ -345,7 +345,7 @@ const WajibRetribusiCreate = ({
               </span>
             )}
           </FormInput>
-          <FormInput className="col-span-3 md:col-span-1">
+          <FormInput className="lg:col-span-1">
             <Label
               htmlFor="noSkrd"
               className="after:text-red-500 after:content-['*']"
@@ -363,7 +363,7 @@ const WajibRetribusiCreate = ({
               <span className="text-xs text-red-500">{errors.noSkrd}</span>
             )}
           </FormInput>
-          <FormInput className="col-span-2 md:col-span-1">
+          <FormInput className="lg:col-span-1">
             <Label htmlFor="tanggalSkrd">Tanggal SPKRD</Label>
             <Input
               type="date"
@@ -646,7 +646,7 @@ const WajibRetribusiCreate = ({
             )}
           </FormInput>
         </div>
-        <FormInput className="lg:col-span-3">
+        <FormInput className="col-span-3">
           <Label
             htmlFor="keteranganBulan"
             className="after:text-red-500 after:content-['*']"

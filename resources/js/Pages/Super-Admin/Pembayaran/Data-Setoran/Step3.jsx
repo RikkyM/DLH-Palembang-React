@@ -27,33 +27,38 @@ const Step3 = ({ data, previewData }) => {
             <tr>
               <td className="whitespace-nowrap align-top">Nomor SPKRD</td>
               <td className="px-1.5 align-top">:</td>
-              <td>{data.noSkrd}</td>
+              <td>{previewData?.noSkrd}</td>
+            </tr>
+            <tr>
+              <td className="whitespace-nowrap align-top">Nomor Objek Retribusi</td>
+              <td className="px-1.5 align-top">:</td>
+              <td>{previewData?.noWajibRetribusi}</td>
             </tr>
             <tr>
               <td className="whitespace-nowrap align-top">
                 Nama Objek Retribusi
               </td>
               <td className="px-1.5 align-top">:</td>
-              <td className="align-top">{previewData.namaObjekRetribusi}</td>
+              <td className="align-top">{previewData?.namaObjekRetribusi}</td>
             </tr>
             <tr>
               <td className="whitespace-nowrap align-top">
                 Alamat Objek Retribusi
               </td>
               <td className="px-1.5 align-top">:</td>
-              <td className="align-top">{previewData.alamat}</td>
+              <td className="align-top">{previewData?.alamat}</td>
             </tr>
             <tr>
               <td className="whitespace-nowrap align-top">
                 Kecamatan Objek Retribusi
               </td>
               <td className="px-1.5 align-top">:</td>
-              <td className="align-top">{previewData.kecamatan}</td>
+              <td className="align-top">{previewData?.kecamatan}</td>
             </tr>
             <tr>
               <td className="whitespace-nowrap align-top">Kelurahan</td>
               <td className="px-1.5 align-top">:</td>
-              <td className="align-top">{previewData.kelurahan}</td>
+              <td className="align-top">{previewData?.kelurahan}</td>
             </tr>
             <tr>
               <td className="whitespace-nowrap align-top">Tarif Perbulan</td>
@@ -63,7 +68,7 @@ const Step3 = ({ data, previewData }) => {
                   style: "currency",
                   currency: "IDR",
                   minimumFractionDigits: 0,
-                }).format(previewData.tarifPerbulan)}
+                }).format(previewData?.tarifPerbulan)}
               </td>
             </tr>
             <tr>
@@ -74,14 +79,14 @@ const Step3 = ({ data, previewData }) => {
                   style: "currency",
                   currency: "IDR",
                   minimumFractionDigits: 0,
-                }).format(previewData.tarifPertahun)}
+                }).format(previewData?.tarifPertahun)}
               </td>
             </tr>
             <tr>
               <td className="whitespace-nowrap align-top">Keterangan Bulan</td>
               <td className="px-1.5 align-top">:</td>
               <td className="align-top">
-                {previewData.keteranganBulan ?? "-"}
+                {previewData?.keteranganBulan ?? "-"}
               </td>
             </tr>
           </table>
@@ -175,6 +180,9 @@ const Step3 = ({ data, previewData }) => {
           ) : (
             "-"
           )}
+        </div>
+        <div>
+          {console.log(data)}
         </div>
       </div>
     </div>

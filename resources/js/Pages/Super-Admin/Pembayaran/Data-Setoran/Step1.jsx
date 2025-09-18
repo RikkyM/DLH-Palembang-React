@@ -45,14 +45,34 @@ const Step1 = ({
           placeholder="Silahkan Pilih Nomor SKRD..."
           value={data.noSkrd}
           onChange={(value) => {
+            const base = Array.from({ length: 12 }, (_, i) => ({
+              bulan: i,
+              aktif: false,
+              tanggalBayar: "",
+              jumlah: "",
+              keterangan: "",
+              locked: false,
+            }));
+
             clearErrors();
             setData("noSkrd", value);
 
-            // console.log(value)
+            setData('metodeBayar', "");
+            setData("namaBank", '');
+            setData("tanggalBayar", new Date().toISOString().slice(0, 10));
+            setData('jumlahBayar', '');
+            setData('jumlahBulanBayar', '');
+            setData('noReferensiBank', '');
+            setData('namaPengirim', '');
+            setData('keteranganBulan', '');
+            setData('buktiBayar', '');
+            setData('detailSetoran', base);
 
             const selected = skrdOptions.find((item) => item.value === value);
             if (selected) {
               setPreviewData({
+                noSkrd: selected.label,
+                noWajibRetribusi: selected.noWajibRetribusi,
                 namaObjekRetribusi: selected.namaObjekRetribusi,
                 alamat: selected.alamatObjekRetribusi,
                 kecamatan: selected.kecamatanObjekRetribusi,
@@ -62,15 +82,6 @@ const Step1 = ({
                 jumlahBulan: selected.jumlahBulan,
                 keteranganBulan: selected.keteranganBulan,
               });
-
-              const base = Array.from({ length: 12 }, (_, i) => ({
-                bulan: i,
-                aktif: false,
-                tanggalBayar: "",
-                jumlah: "",
-                keterangan: "",
-                locked: false, // <— default tidak terkunci
-              }));
 
               (selected.detailSetoran ?? []).forEach((d) => {
                 const idx = monthNameToIndex(d.namaBulan);
@@ -164,7 +175,6 @@ const Step1 = ({
           <FormInput className="col-span-2 lg:col-span-1">
             <Label
               htmlFor="tarifPerbulan"
-              // className="after:text-red-500 after:content-['*']"
             >
               Tarif Perbulan
             </Label>
@@ -174,7 +184,11 @@ const Step1 = ({
               placeholder="Tarif Perbulan..."
               value={
                 previewData.tarifPerbulan
-                  ? new Intl.NumberFormat("id-ID").format(
+                  ? new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0
+                  }).format(
                       previewData.tarifPerbulan,
                     )
                   : ""
@@ -191,7 +205,6 @@ const Step1 = ({
           <FormInput className="col-span-2 lg:col-span-1">
             <Label
               htmlFor="tarifPertahun"
-              // className="after:text-red-500 after:content-['*']"
             >
               Tarif Pertahun
             </Label>
@@ -201,7 +214,11 @@ const Step1 = ({
               placeholder="Tarif Pertahun..."
               value={
                 previewData.tarifPertahun
-                  ? new Intl.NumberFormat("id-ID").format(
+                  ? new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0
+                  }).format(
                       previewData.tarifPertahun,
                     )
                   : ""
