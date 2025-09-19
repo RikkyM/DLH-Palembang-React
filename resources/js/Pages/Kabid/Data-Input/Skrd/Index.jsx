@@ -578,9 +578,7 @@ const Index = ({
                             </button>
                             <button
                               onClick={() =>
-                                router.get(
-                                  route("kabid.skrd.show", data.id),
-                                )
+                                router.get(route("kabid.skrd.show", data.id))
                               }
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               // onClick={(e) => {

@@ -33,7 +33,10 @@ const KabidNavigation = () => {
     {
       label: "Inbox Ditolak",
       route: "kabid.wajib-retribusi.ditolak",
-      activeRoute: "kabid.wajib-retribusi.ditolak",
+      activeRoute: [
+        "kabid.wajib-retribusi.ditolak",
+        "kabid.wajib-retribusi.show",
+      ],
     },
     {
       label: "Inbox Selesai (SPKRD)",

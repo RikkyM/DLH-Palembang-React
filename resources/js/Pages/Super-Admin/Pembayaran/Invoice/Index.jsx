@@ -96,7 +96,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
   };
 
   return (
-    <Layout title="Invoice">
+    <Layout title="Data Surat Tagihan">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col gap-3 rounded bg-white p-2 lg:flex-row lg:items-start lg:items-center lg:justify-between">
           <label
@@ -266,12 +266,12 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
                   ) : (
                     <tr>
                       <td
-                        colSpan={10}
+                        colSpan={13}
                         className="py-8 text-center text-gray-500"
                       >
                         {search
                           ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
-                          : "Belum ada data invoice"}
+                          : "Belum ada data surat tagihan"}
                       </td>
                     </tr>
                   )}

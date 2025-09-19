@@ -175,12 +175,10 @@ const Setoran = ({ skrdOptions = [] }) => {
       const activeRows = rows.filter((r) => r && r.aktif && !r.locked);
       const lockedCount = rows.filter((r) => r && r.locked).length;
       const allowedTotal = Number(previewData.jumlahBulan || 0);
-      console.log(allowedTotal);
 
       if (allowedTotal > 0) {
         const remainingAllowed = Math.max(allowedTotal - lockedCount, 0);
 
-        console.log(activeRows.length, remainingAllowed);
 
         if (activeRows.length > remainingAllowed) {
           setError(
@@ -247,42 +245,60 @@ const Setoran = ({ skrdOptions = [] }) => {
       const jmlBulanInput = Number(data.jumlahBulanBayar || 0);
       const jmlBayarTotal = parseIntIDR(data.jumlahBayar || 0);
 
-      console.log(jmlBulanInput, jmlBayarTotal);
+      console.log(jmlBulanInput, jmlBayarTotal, previewData.tarifPertahun);
 
-      if (activeRows.length !== jmlBulanInput) {
-        setError(
-          "jumlahBulanBayar",
-          `Jumlah Bulan Bayar (${jmlBulanInput}) harus sama dengan baris aktif (${activeRows.length}).`,
-        );
-        setError(
-          "detailSetoran",
-          "Periksa kembali jumlah baris aktif pada tabel.",
-        );
-        hasError = true;
-      } else {
-        clearErrors("jumlahBulanBayar");
-      }
-
-      if (totalBulanan !== jmlBayarTotal) {
-        const fmt = (n) =>
-          Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
-            minimumFractionDigits: 0,
-          }).format(n);
-
+      if (jmlBayarTotal > previewData.tarifPertahun) {
         setError(
           "jumlahBayar",
-          `Total per-bulan (${fmt(totalBulanan)}) harus sama dengan Jumlah Bayar (${fmt(jmlBayarTotal)}).`,
+          `Jumlah setor tidak boleh lebih dari tarif pertahun (${Intl.NumberFormat(
+            "id-ID",
+            {
+              style: "currency",
+              currency: "IDR",
+              minimumFractionDigits: 0,
+            },
+          ).format(previewData.tarifPertahun)})`,
         );
-        setError(
-          "detailSetoran",
-          "Total pada tabel tidak sesuai dengan Jumlah Bayar.",
-        );
-        hasError = true;
-      } else {
-        clearErrors("jumlahBayar");
       }
+
+      if (data.jumlahBulanBayar > previewData.jumlahBulan) {
+        setError("jumlahBulanBayar", `Jumlah bulan tidak boleh melebihi jumlah bulan dari SPKRD (${previewData.jumlahBulan} Bulan)`);
+      }
+
+      // if (activeRows.length !== jmlBulanInput) {
+      //   setError(
+      //     "jumlahBulanBayar",
+      //     `Jumlah Bulan Bayar (${jmlBulanInput}) harus sama dengan baris aktif (${activeRows.length}).`,
+      //   );
+      //   setError(
+      //     "detailSetoran",
+      //     "Periksa kembali jumlah baris aktif pada tabel.",
+      //   );
+      //   hasError = true;
+      // } else {
+      //   clearErrors("jumlahBulanBayar");
+      // }
+
+      // if (totalBulanan !== jmlBayarTotal) {
+      //   const fmt = (n) =>
+      //     Intl.NumberFormat("id-ID", {
+      //       style: "currency",
+      //       currency: "IDR",
+      //       minimumFractionDigits: 0,
+      //     }).format(n);
+
+      //   setError(
+      //     "jumlahBayar",
+      //     `Total per-bulan (${fmt(totalBulanan)}) harus sama dengan Jumlah Bayar (${fmt(jmlBayarTotal)}).`,
+      //   );
+      //   setError(
+      //     "detailSetoran",
+      //     "Total pada tabel tidak sesuai dengan Jumlah Bayar.",
+      //   );
+      //   hasError = true;
+      // } else {
+      //   clearErrors("jumlahBayar");
+      // }
 
       if (hasError) return;
     }
@@ -378,7 +394,7 @@ const Setoran = ({ skrdOptions = [] }) => {
 
         <Suspense fallback={<div>Memuat...</div>}>{renderStep}</Suspense>
 
-        <div className="flex justify-between font-semibold">
+        <div className="flex justify-between font-semibold sticky bottom-0 bg-white p-2 border shadow">
           <button
             type="button"
             onClick={prevStep}

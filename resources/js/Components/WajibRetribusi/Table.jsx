@@ -43,20 +43,20 @@ const Table = ({
 
   const routeConfig = roleConfig[role];
 
-  const handleSend = (e, id) => {
-    e.preventDefault();
+  // const handleSend = (e, id) => {
+  //   e.preventDefault();
 
-    router.put(
-      route(routeConfig.send, id),
-      {},
-      {
-        preserveScroll: true,
-        onError: () => {
-          console.error("Terjadi kesalahan ketika mengirim");
-        },
-      },
-    );
-  };
+  //   router.put(
+  //     route(routeConfig.send, id),
+  //     {},
+  //     {
+  //       preserveScroll: true,
+  //       onError: () => {
+  //         console.error("Terjadi kesalahan ketika mengirim");
+  //       },
+  //     },
+  //   );
+  // };
 
   const renderStatus = (data) => {
     if (role === "ROLE_SUPERADMIN" || role === "ROLE_PENDAFTAR") {
@@ -184,9 +184,11 @@ const Table = ({
         >
           <FileText size={20} /> Draft SKRD
         </button>
+        {/* {console.log(routeConfig.show)} */}
         <Link
           href={route(routeConfig.show, {
-            status: data.status === "Approved" ? "diterima" : data.status === "Rejected" ? "ditolak" : "diproses",
+            // status: data.status === "Approved" ? "diterima" : data.status === "Rejected" ? "ditolak" : "diproses",
+            status: data.status === "Processed" ? "diterima" : "ditolak",
             retribusi: data.id,
           })}
           className="flex items-center gap-1.5"

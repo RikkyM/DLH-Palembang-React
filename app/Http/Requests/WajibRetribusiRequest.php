@@ -44,6 +44,8 @@ class WajibRetribusiRequest extends FormRequest
             'latitude' => 'required',
             'longitude' => 'required',
             'jenisTarif' => 'required|in:tarif,tarif2',
+            'variabelValues.bulan' => 'required',
+            'variabelValues.*' => 'sometimes',
             // 'fotoBangunan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             // 'fotoBerkas' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'fotoBangunan' => [
@@ -53,11 +55,10 @@ class WajibRetribusiRequest extends FormRequest
                 'max:5120'
             ],
             'fotoBerkas' => 'sometimes|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'variabelValues' => 'sometimes|array',
             'keteranganBulan' => 'required',
             'tanggalSkrd' => 'required|date',
             'tarifRetribusi' => 'required|numeric|min:1',
-            'totalRetribusi' => 'required|numeric|min:1'
+            'totalRetribusi' => 'required|numeric|min:1',
         ];
 
         if ($this->isMethod('post')) {
@@ -97,6 +98,7 @@ class WajibRetribusiRequest extends FormRequest
             'linkMap.url' => 'Link peta lokasi harus berupa URL yang valid.',
             'latitude.required' => 'Latitude koordinat lokasi wajib diisi.',
             'longitude.required' => 'Longitude koordinat lokasi wajib diisi.',
+            'variabelValues.bulan.required' => 'Bulan wajib diisi.',
             'fotoBangunan.required' => 'Foto bangunan wajib diunggah.',
             'fotoBangunan.file' => 'Foto bangunan harus berupa file.',
             'fotoBangunan.mimes' => 'Foto bangunan harus berformat PDF, JPG, JPEG, atau PNG.',

@@ -450,8 +450,7 @@ const Diterima = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
-                handleSendDiterima={handleSendDiterima}
-                role="ROLE_KATIM"
+                role={user}
               />
             </>
           )}

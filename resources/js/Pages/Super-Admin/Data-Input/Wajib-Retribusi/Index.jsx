@@ -304,6 +304,8 @@ const Index = ({
                   const params = new URLSearchParams();
 
                   if (perPage) params.append("per_page", perPage);
+                  if (status) params.append("status", status);
+                  if (tahun) params.append("tahun", tahun);
 
                   window.open(
                     route("wajib-retribusi.download-pdf") +
@@ -319,7 +321,7 @@ const Index = ({
               <div className="relative flex w-full gap-2 sm:w-max">
                 <button
                   type="button"
-                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max text-sm"
+                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 text-sm shadow sm:w-max"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => setShowFilters((prev) => !prev)}
                 >
@@ -414,7 +416,7 @@ const Index = ({
               />
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start *:text-xs *:md:text-sm">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm">
             {/* <Link
               href={route("super-admin.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
@@ -511,7 +513,7 @@ const Index = ({
                   {(datas.data ?? datas)?.length > 0 ? (
                     (datas.data ?? datas).map((data, index) => (
                       <tr
-                        key={data.id || index}
+                        key={data.id ?? index}
                         className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">

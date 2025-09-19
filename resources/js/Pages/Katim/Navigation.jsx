@@ -33,7 +33,10 @@ const KatimNavigation = () => {
     {
       label: "Inbox Ditolak",
       route: "katim.wajib-retribusi.ditolak",
-      activeRoute: "katim.wajib-retribusi.ditolak",
+      activeRoute: [
+        "katim.wajib-retribusi.ditolak",
+        "katim.wajib-retribusi.show",
+      ],
     },
     {
       label: "Inbox Selesai (SPKRD)",

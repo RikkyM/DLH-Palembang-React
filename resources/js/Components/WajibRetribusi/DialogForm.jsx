@@ -47,19 +47,15 @@ const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
   const handleSend = (e, id) => {
     e.preventDefault();
 
-    console.log(id);
-
-    router.put(
-      route(currentConfig.send, id),
-      {},
-      {
-        preserveScroll: true,
-        onSuccess: () => onClose(),
-        onError: () => {
-          console.error("Terjadi kesalahan ketika mengirim");
-        },
+    put(route(currentConfig.send, id), {
+      preserveScroll: true,
+      onSuccess: () => {
+        onClose();
       },
-    );
+      onError: () => {
+        console.error("Terjadi kesalahan ketika mengirim");
+      },
+    });
   };
 
   const handleSubmit = (e) => {
@@ -90,10 +86,10 @@ const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
   };
 
   const renderDialog = (data) => {
-    if (user === "ROLE_SUPERADMIN" || user === "ROLE_PENDAFTAR") {
+    if (user === "ROLE_PENDAFTAR") {
       return (
         <>
-          <div className="px-5 pb-5">
+          <div className="px-5 pb-5 text-sm">
             Apakah anda yakin ingin mengirim data retribusi ?
           </div>
           <div className="px-5 pb-3">
@@ -102,7 +98,6 @@ const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
                 className="order-1 rounded bg-green-500 px-3 py-2 font-medium text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
                 disabled={processing}
                 onClick={(e) => {
-                  console.log(data);
                   handleSend(e, retribusi.id);
                 }}
               >

@@ -37,11 +37,11 @@ const Index = ({
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    {
-      key: "noPendaftaran",
-      label: "no pendaftaran",
-      align: "text-left truncate",
-    },
+    // {
+    //   key: "noPendaftaran",
+    //   label: "no pendaftaran",
+    //   align: "text-left truncate",
+    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -70,7 +70,25 @@ const Index = ({
       label: "detail rincian",
       align: "text-left truncate",
     },
-    { key: "uptd", label: "uptd", align: "text-left truncate" },
+    { key: "uptd", label: "wilayah uptd", align: "text-left truncate" },
+    { key: "bulan", label: "jumlah bulan", align: "text-left truncate" },
+    {
+      key: "bentukBadanUsaha",
+      label: "bentuk badan usaha",
+      align: "text-left truncate",
+    },
+    { key: "jenisTarif", label: "layanan", align: "text-left truncate" },
+    {
+      key: "keteranganBulan",
+      label: "keterangan bulan",
+      align: "text-left truncate",
+    },
+    { key: "unit", label: "unit", align: "text-left truncate" },
+    { key: "m2", label: "m2", align: "text-left truncate" },
+    { key: "giat", label: "giat", align: "text-left truncate" },
+    { key: "hari", label: "hari", align: "text-left truncate" },
+    { key: "meter", label: "meter", align: "text-left truncate" },
+    { key: "tanggalSkrd", label: "tanggal spkrd", align: "text-left truncate" },
     {
       key: "tarifPerbulan",
       label: "tarif perbulan",
@@ -229,6 +247,16 @@ const Index = ({
     setPerPage(parseInt(e.target.value));
   };
 
+  const handleKategoriChange = (val) => {
+    setKategori(val);
+    setSubKategori("");
+    router.reload({
+      only: ["subKategoriOptions"],
+      data: { kategori: val },
+      preserveState: true,
+    });
+  };
+
   return (
     <Layout title="WAJIB RETRIBUSI">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
@@ -237,7 +265,7 @@ const Index = ({
             <div className="flex w-full items-center gap-2 sm:w-max">
               <label
                 htmlFor="showData"
-                className="relative flex w-full min-w-14 max-w-16 cursor-pointer items-center gap-1.5 text-sm"
+                className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
               >
                 <select
                   name="showData"
@@ -251,6 +279,7 @@ const Index = ({
                   <option value="50">50</option>
                   <option value="100">100</option>
                   <option value="250">250</option>
+                  <option value="-1">Semua</option>
                 </select>
                 <ChevronDown
                   size={20}
@@ -280,7 +309,7 @@ const Index = ({
               <div className="relative flex w-full gap-2 sm:w-max">
                 <button
                   type="button"
-                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
+                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 text-sm shadow sm:w-max"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => setShowFilters((prev) => !prev)}
                 >
@@ -289,7 +318,7 @@ const Index = ({
                 </button>
                 <div
                   ref={filterRef}
-                  className={`absolute right-0 top-full grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
+                  className={`absolute right-0 top-full z-20 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
                     showFilters
                       ? "pointer-events-auto mt-3 opacity-100"
                       : "pointer-events-none mt-0 opacity-0"
@@ -299,10 +328,7 @@ const Index = ({
                     id="kategoriList"
                     options={kategoriList}
                     value={kategori}
-                    onChange={(val) => {
-                      setKategori(val);
-                      setSubKategori("");
-                    }}
+                    onChange={handleKategoriChange}
                     placeholder="Pilih Kategori"
                   />
                   <SearchableSelect
@@ -371,7 +397,7 @@ const Index = ({
               />
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm">
             {/* <Link
               href={route("kuptd.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
@@ -388,6 +414,7 @@ const Index = ({
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (status) params.append("status", status);
+                if (tahun) params.append("tahun", tahun);
 
                 window.open(
                   route("wajib-retribusi.download-pdf") +
@@ -424,10 +451,10 @@ const Index = ({
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_180px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "bg-white shadow"}`}
         >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -467,34 +494,79 @@ const Index = ({
                   {(datas.data ?? datas)?.length > 0 ? (
                     (datas.data ?? datas).map((data, index) => (
                       <tr
-                        key={data.id || index}
-                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#F7FBFE]" : ""}`}
+                        key={data.id ?? index}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
-                          {(datas.current_page - 1) * datas.per_page +
+                          {((datas.current_page ?? 1) - 1) *
+                            (datas.per_page ?? (datas.data ?? datas).length) +
                             index +
                             1}
                         </td>
-                        <td>{data.noPendaftaran}</td>
+                        {/* <td>{data.noPendaftaran}</td> */}
                         <td>{data.noWajibRetribusi ?? "-"}</td>
-                        <td className="">{data.pemilik.namaPemilik}</td>
+                        <td>{data.pemilik.namaPemilik}</td>
                         <td>{data.namaObjekRetribusi}</td>
-                        <td className="max-w-sm truncate">{data.alamat}</td>
-                        <td>{data.kelurahan.namaKelurahan}</td>
-                        <td>{data.kecamatan.namaKecamatan}</td>
+                        <td>
+                          <div className="w-72">{data.alamat}</div>
+                        </td>
+                        <td className="whitespace-nowrap">
+                          {data.kelurahan.namaKelurahan}
+                        </td>
+                        <td className="whitespace-nowrap">
+                          {data.kecamatan.namaKecamatan}
+                        </td>
                         <td>{data.kategori.namaKategori}</td>
                         <td>{data.sub_kategori.namaSubKategori}</td>
-                        <td>{data.uptd.namaUptd}</td>
+                        <td className="whitespace-nowrap">
+                          {data.uptd.namaUptd}
+                        </td>
+                        <td>{data.bulan ? `${data.bulan} Bulan` : "-"}</td>
+                        <td>{data.bentukBadanUsaha ?? "-"}</td>
+                        <td>
+                          {data.jenisTarif === "tarif"
+                            ? "Tarif 1"
+                            : data.jenisTarif === "tarif2"
+                              ? "Tarif 2"
+                              : "-"}
+                        </td>
+                        <td>
+                          <div className="w-max">
+                            {data.keteranganBulan ?? "-"}
+                          </div>
+                        </td>
+                        <td>{data.unit ?? "-"}</td>
+                        <td>{data.m2 ?? "-"}</td>
+                        <td>{data.giat ?? "-"}</td>
+                        <td>{data.hari ?? "-"}</td>
+                        <td>{data.meter ?? "-"}</td>
+                        <td className="whitespace-nowrap">
+                          {data.tanggalSkrd
+                            ? new Date(data.tanggalSkrd).toLocaleDateString(
+                                "id-ID",
+                                {
+                                  // day: "numeric",
+                                  // month: "long",
+                                  // year: "numeric"
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                },
+                              )
+                            : "-"}
+                        </td>
                         <td>
                           {new Intl.NumberFormat("id-ID", {
                             style: "currency",
                             currency: "IDR",
+                            minimumFractionDigits: 0,
                           }).format(data.tarifPerbulan) || 0}
                         </td>
                         <td>
                           {new Intl.NumberFormat("id-ID", {
                             style: "currency",
                             currency: "IDR",
+                            minimumFractionDigits: 0,
                           }).format(data.tarifPertahun) || 0}
                         </td>
                         <td>{data.user.namaLengkap}</td>
@@ -527,9 +599,9 @@ const Index = ({
                           </span>
                         </td>
                         <td
-                          className={`sticky right-0 top-0 ${index % 2 === 0 ? "bg-[#F7FBFE]" : "bg-white"}`}
+                          className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
-                          <div className="flex gap-2 *:rounded *:text-sm *:font-medium">
+                          <div className="flex gap-2 *:rounded *:text-xs *:font-medium *:md:text-sm">
                             {/* <Link
                               href={route("kuptd.wajib-retribusi.edit", {
                                 retribusi: data.noPendaftaran,

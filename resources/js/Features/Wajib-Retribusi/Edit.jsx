@@ -23,8 +23,6 @@ const WajibRetribusiEdit = ({
 }) => {
   const [mapReset, setMapReset] = useState(0);
 
-  console.log(penagihOptions);
-
   const roleConfig = {
     ROLE_SUPERADMIN: {
       diterima: "super-admin.wajib-retribusi.diterima",
@@ -262,7 +260,6 @@ const WajibRetribusiEdit = ({
       try {
         let result = Function(`"use strict"; return (${formula})`)();
 
-        // selalu kalikan bulan kalau ada
         const bulan = parseInt(data.variabelValues?.bulan || 0);
         if (bulan > 0) result *= bulan;
 
@@ -340,23 +337,18 @@ const WajibRetribusiEdit = ({
         <ArrowLeft size={20} />
         <span>Kembali</span>
       </Link>
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 gap-5 md:grid-cols-2"
-      >
-        <div className="grid gap-5 md:col-span-3 md:grid-cols-4">
-          <div className="col-span-2 md:col-span-1 flex flex-col gap-1.5 text-sm">
-            <label
+      <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-5">
+        <div className="col-span-3 grid w-full gap-5 lg:col-span-3 lg:grid-cols-4">
+          <FormInput className="lg:col-span-1">
+            <Label
               htmlFor="namaObjekRetribusi"
               className="after:text-red-500 after:content-['*']"
             >
               Nama Objek Retribusi
-            </label>
-            <input
-              className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.namaObjekRetribusi && "border border-red-500"}`}
-              type="text"
+            </Label>
+            <Input
               id="namaObjekRetribusi"
-              autoComplete="off"
+              className={`${errors.namaObjekRetribusi && "border border-red-500"}`}
               placeholder="Nama Objek Retribusi..."
               value={data.namaObjekRetribusi}
               onChange={(e) =>
@@ -368,8 +360,8 @@ const WajibRetribusiEdit = ({
                 {errors.namaObjekRetribusi}
               </span>
             )}
-          </div>
-          <FormInput className="col-span-3 md:col-span-1">
+          </FormInput>
+          <FormInput className="lg:col-span-1">
             <Label
               htmlFor="noWajibRetribusi"
               className="after:text-red-500 after:content-['*']"
@@ -391,7 +383,7 @@ const WajibRetribusiEdit = ({
               </span>
             )}
           </FormInput>
-          <FormInput className="col-span-3 md:col-span-1">
+          <FormInput className="lg:col-span-1">
             <Label
               htmlFor="noSkrd"
               className="after:text-red-500 after:content-['*']"
@@ -409,12 +401,12 @@ const WajibRetribusiEdit = ({
               <span className="text-xs text-red-500">{errors.noSkrd}</span>
             )}
           </FormInput>
-          <FormInput className="col-span-2 md:col-span-1">
+          <FormInput className="lg:col-span-1">
             <Label htmlFor="tanggalSkrd">Tanggal SPKRD</Label>
             <Input
               type="date"
               id="tanggalSkrd"
-              className={`${errors.tanggalSkrd && "border border-red-500"}`}
+              className={`w-full ${errors.tanggalSkrd && "border border-red-500"}`}
               value={data.tanggalSkrd}
               onChange={(e) => handleInputChange("tanggalSkrd", e.target.value)}
             />
@@ -434,21 +426,19 @@ const WajibRetribusiEdit = ({
           required={true}
           valueKey="value"
           labelKey="label"
-          className="col-span-2"
+          className="col-span-3"
         />
-        <div className="col-span-2 flex flex-col gap-1.5 text-sm">
-          <label
+        <FormInput className="col-span-3">
+          <Label
             htmlFor="alamatObjekRetribusi"
             className="after:text-red-500 after:content-['*']"
           >
             Alamat Objek Retribusi
-          </label>
-          <input
-            className={`rounded bg-gray-200 px-3 py-2 outline-none ${errors.alamatObjekRetribusi && "border border-red-500"}`}
-            type="text"
+          </Label>
+          <Input
             id="alamatObjekRetribusi"
-            autoComplete="off"
-            placeholder="contoh: Jalan Srikandi Nomor 16/ Lorong Asahan Nomor 38"
+            className={`${errors.alamatObjekRetribusi && "border border-red-500"}`}
+            placeholder="Alamat Objek Retribusi..."
             value={data.alamatObjekRetribusi}
             onChange={(e) =>
               handleInputChange("alamatObjekRetribusi", e.target.value)
@@ -459,8 +449,8 @@ const WajibRetribusiEdit = ({
               {errors.alamatObjekRetribusi}
             </span>
           )}
-        </div>
-        <div className="col-span-2 grid gap-5 lg:grid-cols-4">
+        </FormInput>
+        <div className="col-span-3 grid gap-5 lg:grid-cols-4">
           <FormInput className="col-span-2 md:col-span-1">
             <Label
               htmlFor="rt"
@@ -482,7 +472,7 @@ const WajibRetribusiEdit = ({
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
                 if (value.length <= 3) {
-                  setData("rt", value);
+                  handleInputChange("rt", value);
                 }
               }}
             />
@@ -511,7 +501,7 @@ const WajibRetribusiEdit = ({
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
                 if (value.length <= 3) {
-                  setData("rw", value);
+                  handleInputChange("rw", value);
                 }
               }}
             />
@@ -547,7 +537,7 @@ const WajibRetribusiEdit = ({
             className="col-span-2 md:col-span-1"
           />
         </div>
-        <div className="col-span-2 grid gap-5 lg:grid-cols-2">
+        <div className="col-span-3 grid gap-5 lg:grid-cols-2">
           <DropdownInput
             id="bentukUsaha"
             label="Bentuk Badan Usaha"
@@ -571,7 +561,7 @@ const WajibRetribusiEdit = ({
             <Input
               id="deskripsi"
               className={`${errors.deskripsi && "border border-red-500"}`}
-              placeholder="Deskripsi Usaha..."
+              placeholder="Deskripsi Usaha Contoh: warung nasi / toko sepatu / warung gado-gado..."
               value={data.deskripsi}
               onChange={(e) => handleInputChange("deskripsi", e.target.value)}
             />
@@ -580,7 +570,7 @@ const WajibRetribusiEdit = ({
             )}
           </FormInput>
         </div>
-        <div className="col-span-2 grid gap-5 lg:grid-cols-3">
+        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
           <DropdownInput
             id="jenisTarif"
             label="Pilih Layanan"
@@ -656,7 +646,12 @@ const WajibRetribusiEdit = ({
             )}
           </FormInput>
           <FormInput className="col-span-2 md:col-span-1">
-            <Label htmlFor="tarifRetribusi">Tarif Retribusi</Label>
+            <Label
+              htmlFor="tarifRetribusi"
+              className="after:text-red-500 after:content-['*']"
+            >
+              Tarif Retribusi
+            </Label>
             <Input
               id="tarifRetribusi"
               className={`${errors.tarifRetribusi && "border border-red-500"}`}
@@ -665,7 +660,6 @@ const WajibRetribusiEdit = ({
                 new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
-                  // minimumFractionDigits: 0
                 }).format(data.tarifRetribusi) || 0
               }
               readOnly
@@ -676,7 +670,7 @@ const WajibRetribusiEdit = ({
               </span>
             )}
           </FormInput>
-          <FormInput className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
+          <FormInput className="col-span-2 md:col-span-1">
             <Label htmlFor="total">Total Retribusi</Label>
             <Input
               id="total"
@@ -695,7 +689,7 @@ const WajibRetribusiEdit = ({
             )}
           </FormInput>
         </div>
-        <FormInput className="col-span-2">
+        <FormInput className="col-span-3">
           <Label
             htmlFor="keteranganBulan"
             className="after:text-red-500 after:content-['*']"
@@ -708,10 +702,9 @@ const WajibRetribusiEdit = ({
             className={`${errors.keteranganBulan && "border border-red-500"}`}
             placeholder="Contoh: Bulan (Jan s.d Des)"
             value={data.keteranganBulan}
-            onChange={(e) => {
-              handleInputChange("keteranganBulan", e.target.value);
-              console.log(data.keteranganBulan);
-            }}
+            onChange={(e) =>
+              handleInputChange("keteranganBulan", e.target.value)
+            }
           />
           {errors.keteranganBulan && (
             <span className="text-xs text-red-500">
@@ -719,75 +712,71 @@ const WajibRetribusiEdit = ({
             </span>
           )}
         </FormInput>
-        <div className="col-span-2">
-          {(() => {
-            const selectedSubKategori = getSelectedSubKategori();
+        {(() => {
+          const selectedSubKategori = getSelectedSubKategori();
 
-            let variabelArray = [];
+          let variabelArray = [];
 
-            if (selectedSubKategori && selectedSubKategori.variabel) {
-              variabelArray = Array.isArray(selectedSubKategori.variabel)
-                ? selectedSubKategori.variabel
-                : JSON.parse(selectedSubKategori.variabel || "[]");
-            }
+          if (selectedSubKategori && selectedSubKategori.variabel) {
+            variabelArray = Array.isArray(selectedSubKategori.variabel)
+              ? selectedSubKategori.variabel
+              : JSON.parse(selectedSubKategori.variabel || "[]");
+          }
 
-            const inputFields = ["unit", "m2", "giat", "hari", "meter"];
+          const inputFields = ["unit", "m2", "giat", "hari", "meter"];
 
-            return (
-              <div className="col-span-3 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-                {inputFields.map((field, index) => {
-                  const isEnabled = variabelArray.includes(field);
-                  return (
-                    <div
-                      key={`variabel-${field}-${index}`}
-                      className="flex flex-col gap-1.5 text-sm"
+          return (
+            <div className="col-span-3 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              {inputFields.map((field, index) => {
+                const isEnabled = variabelArray.includes(field);
+                return (
+                  <FormInput
+                    key={`variabel-${field}-${index}`}
+                    className="flex flex-col gap-1.5 text-sm"
+                  >
+                    <Label
+                      htmlFor={`variabel-${field}`}
+                      className={`capitalize ${isEnabled && "after:text-red-500 after:content-['*']"}`}
                     >
-                      <label
-                        htmlFor={`variabel-${field}`}
-                        className={`capitalize ${isEnabled && "after:text-red-500 after:content-['*']"}`}
-                      >
-                        {field}
-                      </label>
-                      <input
-                        className={`px-3 py-2 outline-none ${
-                          isEnabled
-                            ? "bg-gray-200"
-                            : "cursor-not-allowed bg-slate-300"
-                        }`}
-                        type="number"
-                        id={`variabel-${field}`}
-                        autoComplete="off"
-                        placeholder={`Masukkan nilai ${field}...`}
-                        value={data.variabelValues[field] || ""}
-                        onKeyDown={(e) => {
-                          if (!isAllowedKey(e)) {
-                            e.preventDefault();
-                          }
-                        }}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, "");
+                      {field}
+                    </Label>
+                    <Input
+                      id={`variabel-${field}`}
+                      className={`${isEnabled ? "bg-gray-200" : "cursor-not-allowed bg-slate-300"} ${errors[`variabelValues.${field}`] && "border border-red-500"}`}
+                      type="number"
+                      placeholder={
+                        field === "giat"
+                          ? "Jumlah kegiatan 1 atau 2 atau 3"
+                          : `Masukkan nilai ${field}...`
+                      }
+                      value={data.variabelValues[field] || ""}
+                      onKeyDown={(e) => {
+                        if (!isAllowedKey(e)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
 
-                          if (value >= 0 && value.length <= 10) {
-                            handleVariabelChange(field, value);
-                          }
-                        }}
-                        required
-                        disabled={!isEnabled}
-                      />
-                      {errors[`variabelValues.${field}`] && (
-                        <span className="text-xs text-red-500">
-                          {errors[`variabelValues.${field}`]}
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })()}
-        </div>
-
-        <div className="col-span-2 grid gap-5 lg:grid-cols-3">
+                        if (value >= 0 && value.length <= 10) {
+                          handleVariabelChange(field, value);
+                        }
+                      }}
+                      required
+                      disabled={!isEnabled}
+                    />
+                    {errors[`variabelValues.${field}`] && (
+                      <span className="text-xs text-red-500">
+                        {errors[`variabelValues.${field}`]}
+                      </span>
+                    )}
+                  </FormInput>
+                );
+              })}
+            </div>
+          );
+        })()}
+        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
           <DropdownInput
             id="statusTempat"
             label="Status Tempat"
@@ -801,7 +790,6 @@ const WajibRetribusiEdit = ({
             labelKey="label"
             className="col-span-2 md:col-span-1"
           />
-
           <FormInput className="col-span-2 md:col-span-1">
             <Label
               htmlFor="jBangunan"
@@ -821,7 +809,10 @@ const WajibRetribusiEdit = ({
                 }
               }}
               onChange={(e) =>
-                setData("jBangunan", e.target.value.replace(/\D/g, ""))
+                handleInputChange(
+                  "jBangunan",
+                  e.target.value.replace(/\D/g, ""),
+                )
               }
             />
             {errors.jBangunan && (
@@ -846,7 +837,7 @@ const WajibRetribusiEdit = ({
                 }
               }}
               onChange={(e) =>
-                setData("jLantai", e.target.value.replace(/\D/g, ""))
+                handleInputChange("jLantai", e.target.value.replace(/\D/g, ""))
               }
             />
             {errors.jLantai && (
@@ -854,8 +845,8 @@ const WajibRetribusiEdit = ({
             )}
           </FormInput>
         </div>
-        <div className="col-span-2 grid gap-5 lg:grid-cols-3">
-          <FormInput className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
+        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
+          <FormInput className="col-span-2 md:col-span-1">
             <Label
               htmlFor="latitude"
               className="after:text-red-500 after:content-['*']"
@@ -886,14 +877,14 @@ const WajibRetribusiEdit = ({
                   value = value.replace("-", "");
                 }
 
-                setData("latitude", value);
+                handleInputChange("latitude", value);
               }}
             />
             {errors.latitude && (
               <span className="text-xs text-red-500">{errors.latitude}</span>
             )}
           </FormInput>
-          <FormInput className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
+          <FormInput className="col-span-2 md:col-span-1">
             <Label
               htmlFor="longitude"
               className="after:text-red-500 after:content-['*']"
@@ -924,14 +915,14 @@ const WajibRetribusiEdit = ({
                   value = value.replace("-", "");
                 }
 
-                setData("longitude", value);
+                handleInputChange("longitude", value);
               }}
             />
             {errors.longitude && (
               <span className="text-xs text-red-500">{errors.longitude}</span>
             )}
           </FormInput>
-          <FormInput className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
+          <FormInput className="col-span-2 md:col-span-1">
             <Label htmlFor="linkMap">Link Map</Label>
             <Input
               type="url"
@@ -960,7 +951,7 @@ const WajibRetribusiEdit = ({
             )}
           </FormInput> */}
         </div>
-        <div className="z-0 col-span-2 flex flex-col gap-1.5 text-sm">
+        <FormInput className="z-0 col-span-3">
           <MapPicker
             latitude={data.latitude || ""}
             longitude={data.longitude || ""}
@@ -969,9 +960,9 @@ const WajibRetribusiEdit = ({
             height="400px"
             resetTrigger={mapReset}
           />
-        </div>
-        <div className="col-span-2 grid gap-5 lg:grid-cols-3">
-          <FormInput className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
+        </FormInput>
+        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
+          <FormInput className="col-span-2 md:col-span-1">
             <Label
               htmlFor="fotoBangunan"
               className="after:text-red-500 after:content-['*']"
@@ -979,13 +970,13 @@ const WajibRetribusiEdit = ({
               Upload Foto Bangunan
             </Label>
             <Input
-              className="bg-gray-200 px-3 py-2 outline-none"
               type="file"
               id="fotoBangunan"
               accept="image/*"
               onChange={(e) =>
                 handleFileChange("fotoBangunan", e.target.files[0])
               }
+              // required
             />
             {errors.fotoBangunan && (
               <span className="text-xs text-red-500">
@@ -1013,12 +1004,11 @@ const WajibRetribusiEdit = ({
               </span>
             )}
           </FormInput>
-          <FormInput className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
-            <Label htmlFor="fotoBerkas">Upload Foto Berkas Persyaratan</Label>
+          <FormInput className="col-span-2 md:col-span-1">
+            <Label htmlFor="fotoBerkas">Upload Foto Berkas</Label>
             <Input
-              className="bg-gray-200 px-3 py-2 outline-none"
               type="file"
-              accept="image/*, application/pdf"
+              accept="image/*,application/pdf"
               id="fotoBerkas"
               onChange={(e) =>
                 handleFileChange("fotoBerkas", e.target.files[0])
@@ -1062,7 +1052,7 @@ const WajibRetribusiEdit = ({
             className="col-span-2 md:col-span-1"
           />
         </div>
-        <div className="col-span-2 flex flex-col gap-1.5 text-sm md:flex-row md:justify-end md:gap-4">
+        <div className="col-span-3 flex flex-col gap-1.5 text-sm md:flex-row md:justify-end md:gap-4">
           {/* <button
               type="button"
               onClick={handleClearForm}

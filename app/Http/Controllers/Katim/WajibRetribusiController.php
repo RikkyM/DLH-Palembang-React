@@ -188,11 +188,7 @@ class WajibRetribusiController extends Controller
             ->values()
             ->map(fn($t) => ['value' => $t, 'label' => $t]);
 
-        if ($getPage <= 0) {
-            $datas = $query->get();
-        } else {
-            $datas = $query->paginate($getPage)->withQueryString();
-        }
+        $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render("Katim/Data-Input/Wajib-Retribusi/{$view}", [
             // 'datas' => $query->paginate($getPage)->withQueryString(),

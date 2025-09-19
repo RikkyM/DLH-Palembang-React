@@ -12,7 +12,7 @@ Route::middleware('role:ROLE_KABID')->prefix('kabid')->name('kabid.')->group(fun
             Route::get('/diterima', 'diterima')->name('diterima');
             Route::get('/ditolak', 'ditolak')->name('ditolak');
             Route::get('/{status}/{retribusi}/show', 'show')
-                ->where(['status' => 'diterima'])
+                ->where(['status' => 'diterima|ditolak'])
                 ->name('show');
             Route::post('/{retribusi}/create-skrd', 'createSkrd')->name('create-skrd');
         });

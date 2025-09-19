@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import { router } from "@inertiajs/react";
-
 import { ChevronDown, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
@@ -16,6 +15,7 @@ const Ditolak = ({
   kecamatanOptions = [],
   kelurahanOptions = [],
   petugasOptions = [],
+  user = "ROLE_KATIM"
 }) => {
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
@@ -427,7 +427,7 @@ const Ditolak = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
-                role="ROLE_KATIM"
+                role={user}
               />
             </>
           )}

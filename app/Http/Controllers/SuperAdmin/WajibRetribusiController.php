@@ -26,29 +26,29 @@ use Inertia\Inertia;
 class WajibRetribusiController extends Controller
 {
 
-    private function rumus($validated)
-    {
-        $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
+    // private function rumus($validated)
+    // {
+    //     $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
 
-        $tarif = $sub->tarif;
-        $rumus = $sub->rumus ?? '';
+    //     $tarif = $sub->tarif;
+    //     $rumus = $sub->rumus ?? '';
 
-        if (!empty($validated['variabelValues']) && $rumus) {
-            foreach ($validated['variabelValues'] as $key => $value) {
-                $rumus = preg_replace('/\b' . preg_quote($key) . '\b/', $value, $rumus);
-            }
+    //     if (!empty($validated['variabelValues']) && $rumus) {
+    //         foreach ($validated['variabelValues'] as $key => $value) {
+    //             $rumus = preg_replace('/\b' . preg_quote($key) . '\b/', $value, $rumus);
+    //         }
 
-            try {
-                $nilaiRumus = 0;
-                eval("\$nilaiRumus = $rumus;");
-                return $tarif * $nilaiRumus;
-            } catch (\Throwable $e) {
-                return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
-            }
-        }
+    //         try {
+    //             $nilaiRumus = 0;
+    //             eval("\$nilaiRumus = $rumus;");
+    //             return $tarif * $nilaiRumus;
+    //         } catch (\Throwable $e) {
+    //             return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
+    //         }
+    //     }
 
-        return $tarif;
-    }
+    //     return $tarif;
+    // }
 
     private function sortTable($query, $sortBy, $sortDir)
     {

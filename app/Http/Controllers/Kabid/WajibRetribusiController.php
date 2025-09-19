@@ -193,8 +193,10 @@ class WajibRetribusiController extends Controller
             ->values()
             ->map(fn($t) => ['value' => $t, 'label' => $t]);
 
+            $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
+
         return Inertia::render("Kabid/Data-Input/Wajib-Retribusi/{$view}", [
-            'datas' => $query->paginate($getPage)->withQueryString(),
+            'datas' => $datas,
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
                 'sort' => $getSortBy,
@@ -407,6 +409,8 @@ class WajibRetribusiController extends Controller
     public function createSkrd(WajibRetribusi $retribusi)
     {
         $retribusi->load(['penagih']);
+
+        dd($retribusi->tarifPertahun);
 
         $dataSkrd = [
             'noWajibRetribusi' => $retribusi->noWajibRetribusi,
