@@ -4,7 +4,8 @@ import AccordionItem from "@/Components/AccordionItem";
 import Calendar from "react-calendar";
 
 const PendaftarNavigation = () => {
-  const { url } = usePage();
+  const { props } = usePage();
+  const { inbox } = props[0];
 
   const permohonanItems = [
     {
@@ -29,10 +30,18 @@ const PendaftarNavigation = () => {
         "pendaftar.wajib-retribusi.diterima",
         "pendaftar.wajib-retribusi.edit",
       ],
+      badge:
+        inbox
+          .filter((i) => i.status === "Approved")
+          .filter((i) => i.current_role === "ROLE_PENDAFTAR").length || "",
     },
     {
       label: "Inbox Diproses",
       route: "pendaftar.wajib-retribusi.diproses",
+      badge:
+        inbox
+          .filter((i) => i.status === "Processed")
+          .filter((i) => i.current_role !== "ROLE_PENDAFTAR").length || "",
     },
     {
       label: "Inbox Ditolak",
@@ -41,6 +50,7 @@ const PendaftarNavigation = () => {
         "pendaftar.wajib-retribusi.ditolak",
         "pendaftar.wajib-retribusi.edit",
       ],
+      badge: inbox.filter((i) => i.status === "Rejected").length || "",
     },
     {
       label: "Inbox Selesai (SPKRD)",

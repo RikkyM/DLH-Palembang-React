@@ -489,8 +489,6 @@ class WajibRetribusiController extends Controller
 
         DB::beginTransaction();
 
-        dd($request->keteranganBulan);
-
         try {
             $fileFotoBangunan = $request->file('fotoBangunan');
             $fileFotoBerkas = $request->file('fotoBerkas');

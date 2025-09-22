@@ -4,7 +4,12 @@ import AccordionItem from "@/Components/AccordionItem";
 import Calendar from "react-calendar";
 
 const KuptdNavigation = () => {
-  const { url } = usePage();
+  const { props } = usePage();
+  const { auth, inbox } = props[0];
+
+  let data = inbox.filter(
+    (i) => i.kodeKecamatan === auth.user?.uptd?.kecamatan?.kodeKecamatan,
+  );
 
   const permohonanItems = [
     {
@@ -25,10 +30,22 @@ const KuptdNavigation = () => {
         "kuptd.wajib-retribusi.diterima",
         "kuptd.wajib-retribusi.show",
       ],
+      badge:
+        data
+          .filter((i) => i.status === "Processed")
+          .filter((i) => i.current_role === "ROLE_KUPTD").length || "",
     },
     {
       label: "Inbox Diproses",
       route: "kuptd.wajib-retribusi.diproses",
+      activeRoute: [
+        "kuptd.wajib-retribusi.diproses",
+        "kuptd.wajib-retribusi.show",
+      ],
+      badge:
+        data
+          .filter((i) => i.status === "Processed")
+          .filter((i) => i.current_role !== "ROLE_KUPTD").length || "",
     },
     {
       label: "Inbox Ditolak",
@@ -37,6 +54,7 @@ const KuptdNavigation = () => {
         "kuptd.wajib-retribusi.ditolak",
         "kuptd.wajib-retribusi.show",
       ],
+      badge: data.filter((i) => i.status === "Rejected").length || "",
     },
     {
       label: "Inbox Selesai (SPKRD)",
@@ -78,6 +96,12 @@ const KuptdNavigation = () => {
               if (
                 item.label.toLowerCase().includes("diterima") &&
                 params.status === "diterima"
+              ) {
+                return route().current(r);
+              }
+              if (
+                item.label.toLowerCase().includes("diproses") &&
+                params.status === "diproses"
               ) {
                 return route().current(r);
               }

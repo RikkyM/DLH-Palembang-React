@@ -13,7 +13,7 @@ Route::middleware('role:ROLE_KATIM')->prefix('katim')->name('katim.')->group(fun
             Route::get('/diproses', 'diproses')->name('diproses');
             Route::get('/ditolak', 'ditolak')->name('ditolak');
             Route::get('/{status}/{retribusi}/show', 'show')
-            ->where(['status' => 'diterima|ditolak'])
+            ->where(['status' => 'diterima|diproses|ditolak'])
             ->name('show');
         });
         Route::resource('/wajib-retribusi', WajibRetribusiController::class)->except(['edit', 'show', 'destroy'])->parameters([

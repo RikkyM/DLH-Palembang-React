@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\WajibRetribusi;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -39,9 +40,9 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             [
                 'auth' => [
-                    'user' => $request->user()
+                    'user' => $request->user()?->loadMissing(['uptd.kecamatan'])
                 ],
-                ''
+                'inbox' => fn() => WajibRetribusi::with(['kecamatan', 'uptd.kecamatan'])->get()
             ]
         ];
     }

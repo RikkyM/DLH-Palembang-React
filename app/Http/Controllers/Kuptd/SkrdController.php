@@ -77,6 +77,8 @@ class SkrdController extends Controller
                 $query->where('namaKategori', $getKategori);
             })->select('kodeSubKategori', 'namaSubKategori')->get()
             : collect();
+        $tahunOptions = Skrd::selectRaw('YEAR(created_at) as tahun')
+        ->distinct()->orderByDesc('tahun')->pluck('tahun');
 
         return Inertia::render('Kuptd/Data-Input/Skrd/Index', [
             'datas' => $skrd->paginate(10)->withQueryString(),
@@ -90,7 +92,8 @@ class SkrdController extends Controller
             ],
             'kategoriOptions' => $kategori,
             'subKategoriOptions' => $subKategori,
-            'bulan' => $this->getBulan()
+            'bulan' => $this->getBulan(),
+            'tahunOptions' => $tahunOptions
         ]);
     }
 

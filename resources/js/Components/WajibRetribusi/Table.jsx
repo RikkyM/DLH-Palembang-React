@@ -106,6 +106,19 @@ const Table = ({
   };
 
   const renderActions = (data) => {
+    const statusParams =
+      role === "ROLE_SUPERADMIN"
+        ? data.status === "Approved"
+          ? "diterima"
+          : data.status === "Rejected"
+            ? "ditolak"
+            : "diproses"
+        : data.status === "Processed"
+          ? data.current_role === role
+            ? "diterima"
+            : "diproses"
+          : "ditolak";
+
     if (role === "ROLE_PENDAFTAR") {
       return (
         <div className="flex flex-col gap-2 *:rounded *:text-xs *:font-medium *:md:text-sm">
@@ -184,11 +197,10 @@ const Table = ({
         >
           <FileText size={20} /> Draft SKRD
         </button>
-        {/* {console.log(routeConfig.show)} */}
         <Link
           href={route(routeConfig.show, {
-            // status: data.status === "Approved" ? "diterima" : data.status === "Rejected" ? "ditolak" : "diproses",
-            status: data.status === "Processed" ? "diterima" : "ditolak",
+            status: statusParams,
+
             retribusi: data.id,
           })}
           className="flex items-center gap-1.5"

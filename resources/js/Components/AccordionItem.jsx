@@ -87,8 +87,14 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
                         : "hover:bg-neutral-100"
                     }`}
                   >
-                    {item.label}
-                    {item.label === "Inbox Diterima" && <span className="text-red-500 font-bold">1</span>} 
+                    <span>{item.label}</span>
+                    {item.badge && (
+                      <span
+                        className={`font-semibold ${isItemActive(item) ? "" : "text-blue-500"}`}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
                     {/* tambah notif nanti */}
                   </Link>
                 ) : (

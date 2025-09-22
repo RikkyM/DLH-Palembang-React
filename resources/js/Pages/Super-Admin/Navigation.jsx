@@ -4,7 +4,8 @@ import AccordionItem from "@/Components/AccordionItem";
 import Calendar from "react-calendar";
 
 const SuperAdminNavigation = () => {
-  const { url } = usePage();
+  const { props } = usePage();
+  const { inbox } = props[0];
 
   const permohonanItems = [
     {
@@ -29,6 +30,10 @@ const SuperAdminNavigation = () => {
         "super-admin.wajib-retribusi.diterima",
         "super-admin.wajib-retribusi.show",
       ],
+      badge:
+        inbox
+          .filter((i) => i.status == "Approved")
+          .filter((i) => i.current_role === "ROLE_PENDAFTAR").length || "",
     },
     {
       label: "Inbox Diproses",
@@ -37,6 +42,10 @@ const SuperAdminNavigation = () => {
         "super-admin.wajib-retribusi.diproses",
         "super-admin.wajib-retribusi.show",
       ],
+      badge:
+        inbox
+          .filter((i) => i.status === "Processed")
+          .filter((i) => i.current_role !== "ROLE_PENDAFTAR").length || "",
     },
     {
       label: "Inbox Ditolak",
@@ -45,6 +54,7 @@ const SuperAdminNavigation = () => {
         "super-admin.wajib-retribusi.ditolak",
         "super-admin.wajib-retribusi.show",
       ],
+      badge: inbox.filter((i) => i.status === "Rejected").length || "",
     },
     {
       label: "Inbox Selesai (SPKRD)",
@@ -249,6 +259,7 @@ const SuperAdminNavigation = () => {
           title="Inbox Data"
           items={inboxItems}
           defaultOpen={isAccordionActive(inboxItems)}
+          badge="diterima"
         />
         <AccordionItem
           title="Tagihan"
