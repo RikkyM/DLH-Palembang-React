@@ -410,8 +410,6 @@ class WajibRetribusiController extends Controller
     {
         $retribusi->load(['penagih']);
 
-        dd($retribusi->tarifPertahun);
-
         $dataSkrd = [
             'noWajibRetribusi' => $retribusi->noWajibRetribusi,
             'noSkrd' => $retribusi->noSkrd,
@@ -426,7 +424,9 @@ class WajibRetribusiController extends Controller
             'alamatObjekRetribusi' => $retribusi->alamat,
             'namaKategori' => $retribusi->kategori->namaKategori,
             'namaSubKategori' => $retribusi->subKategori->namaSubKategori,
+            'tanggalSkrd' => $retribusi->tanggalSkrd,
             'jumlahBulan' => $retribusi->bulan,
+            'keteranganBulan' => $retribusi->keteranganBulan,
             'tagihanPerBulanSkrd' => $retribusi->tarifPerbulan,
             'tagihanPerTahunSkrd' => $retribusi->tarifPertahun,
             'tarifPerBulanObjekRetribusi' => "Rp " . number_format($retribusi->tarifPerbulan, 2, ',', '.'),

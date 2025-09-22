@@ -80,11 +80,7 @@ class PemohonController extends Controller
                 })->values();
             });
 
-        if ($getPage <= 0) {
-            $pemohon = $query->get();
-        } else {
-            $pemohon = $query->paginate($getPage)->withQueryString();
-        }
+        $pemohon = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render('Pendaftar/Data-Input/Pemohon/Index', [
             'datas' => $pemohon,

@@ -21,7 +21,7 @@ class SkrdController extends Controller
 
         return collect(range(1, 12))
             ->map(function ($i) {
-                return strtoupper(Carbon::create()->month($i)->translatedFormat('M'));
+                return strtoupper(Carbon::create()->month($i)->translatedFormat('F'));
             });
     }
 
@@ -43,7 +43,9 @@ class SkrdController extends Controller
 
         $skrd = Skrd::with([
             'user:id,namaLengkap,lokasi',
-            'pembayaran' => function ($q) {
+            'pembayaran',
+            'setoran',
+            'detailSetoran' => function ($q) {
                 $q->orderBy('tanggalBayar');
             }
         ])
@@ -61,20 +63,36 @@ class SkrdController extends Controller
                 'namaKategori',
                 'namaSubKategori',
                 'namaPendaftar',
-                'tagihanPerTahunSkrd',
                 'created_at',
                 'fileSkrd'
             ])
             ->addSelect([
                 'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
                     ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
+                    ->whereColumn('skrdId', 'skrd.id'),
+                'setoran_sum_jumlah' => DB::table('setoran')
+                    ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
                     ->whereColumn('skrdId', 'skrd.id')
             ]);
 
+        // dd($skrd->where('noSkrd', 'asd/DLH/2025')->first());
+        $paidEfektif = "CASE WHEN COALESCE(pembayaran_sum_jumlah_bayar,0) > 0
+                    THEN COALESCE(pembayaran_sum_jumlah_bayar,0)
+                    ELSE COALESCE(setoran_sum_jumlah,0)
+                    END";
+
+        // if ($sortBy === 'sisa_tertagih') {
+        //     $skrd->orderByRaw("(tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) {$sortDir}");
+        // } elseif ($sortBy === 'statusLunas') {
+        //     $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) = 0 THEN 0 ELSE 1 END {$sortDir}");
+        // } else {
+        //     $skrd->orderBy($sortBy, $sortDir);
+        // }
         if ($sortBy === 'sisa_tertagih') {
-            $skrd->orderByRaw("(tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) {$sortDir}");
+            $skrd->orderByRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) {$sortDir}");
         } elseif ($sortBy === 'statusLunas') {
-            $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) = 0 THEN 0 ELSE 1 END {$sortDir}");
+            // 0 untuk lunas, 1 untuk belum lunas
+            $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - ({$paidEfektif})) = 0 THEN 0 ELSE 1 END {$sortDir}");
         } else {
             $skrd->orderBy($sortBy, $sortDir);
         }
@@ -92,10 +110,17 @@ class SkrdController extends Controller
             $skrd->where('namaPendaftar', $petugasId);
         }
 
+        // if ($status === 'lunas') {
+        //     $skrd->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) = 0');
+        //     // dd($skrd);
+        // } elseif ($status === 'belum_lunas') {
+        //     $skrd->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) > 0');
+        // }
+
         if ($status === 'lunas') {
-            $skrd->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) = 0');
+            $skrd->havingRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) = 0");
         } elseif ($status === 'belum_lunas') {
-            $skrd->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) > 0');
+            $skrd->havingRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) > 0");
         }
 
         if ($getBulan) {
@@ -163,9 +188,8 @@ class SkrdController extends Controller
     public function show(Skrd $skrd)
     {
 
-
         return Inertia::render('Super-Admin/Data-Input/Skrd/Show/Index', [
-            'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd']),
+            'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd', 'setoran', 'detailSetoran.setoran']),
             'bulan' => $this->getBulan()
         ]);
     }

@@ -123,8 +123,8 @@ const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
           <div>: {retribusi?.pemilik?.namaPemilik}</div>
           <div>Nama Objek Retribusi</div>
           <div>: {retribusi?.namaObjekRetribusi}</div>
-          <div>Status</div>
-          <div>: {retribusi?.status}</div>
+          {/* <div>Status</div>
+          <div>: {retribusi?.status}</div> */}
         </div>
         <form onSubmit={handleSubmit} className="space-y-5 px-5 pb-5">
           <div className="flex flex-col gap-1.5 text-sm">

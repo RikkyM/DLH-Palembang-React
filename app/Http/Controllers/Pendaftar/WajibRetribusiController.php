@@ -435,23 +435,28 @@ class WajibRetribusiController extends Controller
 
         // replace variabel (termasuk 'bulan' kalau ada)
         $formula = $rumus;
-        foreach ($validated['variabelValues'] as $k => $v) {
-            $formula = preg_replace('/\b' . preg_quote($k, '/') . '\b/', (string)(int)$v, $formula);
+        // dd($formula);
+        $tarifPertahun = $request->totalRetribusi;
+
+        if (!empty($validated['variabelValues']) && $rumus) {
+            foreach ($validated['variabelValues'] as $k => $v) {
+                $formula = preg_replace('/\b' . preg_quote($k, '/') . '\b/', (string)(int)$v, $formula);
+            }
+
+            $nilaiRumus = 0;
+            try {
+                eval("\$nilaiRumus = $formula;");
+            } catch (\Throwable $e) {
+                return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
+            }
+
+            if (!$formulaHasBulan) {
+                $nilaiRumus *= (int) data_get($validated, 'variabelValues.bulan', 0);
+            }
+            $tarifPertahun = $tarif * $nilaiRumus;
         }
 
-        $nilaiRumus = 0;
-        try {
-            eval("\$nilaiRumus = $formula;");
-        } catch (\Throwable $e) {
-            return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
-        }
 
-        // kalau rumus TIDAK mengandung 'bulan', kalikan bulan di luar
-        if (!$formulaHasBulan) {
-            $nilaiRumus *= (int) data_get($validated, 'variabelValues.bulan', 0);
-        }
-
-        $tarifPertahun = $tarif * $nilaiRumus;
 
         // if (!empty($validated['variabelValues']) && $rumus) {
         //     // $validated['variabelValues']['bulan'] = $request->input('bulan');
@@ -483,6 +488,8 @@ class WajibRetribusiController extends Controller
 
 
         DB::beginTransaction();
+
+        dd($request->keteranganBulan);
 
         try {
             $fileFotoBangunan = $request->file('fotoBangunan');

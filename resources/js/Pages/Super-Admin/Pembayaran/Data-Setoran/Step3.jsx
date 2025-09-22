@@ -100,7 +100,7 @@ const Step3 = ({ data, previewData }) => {
           </h2>
           <table className="table w-full table-auto border-collapse text-xs">
             <tr>
-              <td className="whitespace-nowrap align-top">Metode Bayar</td>
+              <td className="whitespace-nowrap align-top">Metode Setor</td>
               <td className="px-1.5 align-top">:</td>
               <td className="align-top">{data.metodeBayar}</td>
             </tr>
@@ -123,7 +123,7 @@ const Step3 = ({ data, previewData }) => {
               </td>
             </tr>
             <tr>
-              <td className="whitespace-nowrap align-top">Jumlah Bayar</td>
+              <td className="whitespace-nowrap align-top">Jumlah Setor</td>
               <td className="px-1.5 align-top">:</td>
               <td>
                 {Intl.NumberFormat("id-ID", {
@@ -135,7 +135,7 @@ const Step3 = ({ data, previewData }) => {
             </tr>
             <tr>
               <td className="whitespace-nowrap align-top">
-                Jumlah Bulan Bayar
+                Jumlah Bulan
               </td>
               <td className="px-1.5 align-top">:</td>
               <td className="align-top">{data.jumlahBulanBayar} Bulan</td>

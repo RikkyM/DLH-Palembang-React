@@ -104,28 +104,62 @@ const Index = ({ data, bulan }) => {
             <p>Per Tahun :</p>
             <p>{data.tarifPerTahunObjekRetribusi}</p>
           </div>
-          <div className="grid w-max grid-cols-1 gap-2 text-sm">
+          <div className="grid grid-cols-1 gap-2 text-sm">
             <h2 className="font-bold">
               Pembayaran Tahun {new Date(data.created_at).getFullYear()}:
             </h2>
-            {bulan.map((bulan, i) => {
-              const pembayaranBulan = data.pembayaran.find((item) =>
-                item.pembayaranBulan.includes(i + 1),
-              );
-              return (
-                <div key={i} className="grid grid-cols-3">
-                  <span>{bulan} </span>
-                  <span>:</span>
-                  <span>
-                    {pembayaranBulan
-                      ? new Date(
-                          pembayaranBulan.tanggalBayar,
-                        ).toLocaleDateString("id-ID")
-                      : "-"}
-                  </span>
-                </div>
-              );
-            })}
+            <table className="w-full">
+              <tbody className="w-full">
+                {bulan.map((bulan, i) => {
+                  const pembayaranBulan =
+                    data.pembayaran.find((item) =>
+                      item.pembayaranBulan.includes(i + 1),
+                    ) ??
+                    data.detail_setoran.find(
+                      (d) => d.namaBulan.toLowerCase() === bulan.toLowerCase(),
+                    );
+
+                  return (
+                    <tr key={i} className="w-full">
+                      <td>{bulan}</td>
+                      <td>:</td>
+                      <td>
+                        {pembayaranBulan
+                          ? new Date(
+                              pembayaranBulan.tanggalBayar,
+                            ).toLocaleDateString("id-ID", {
+                              day: 'numeric',
+                              month: "long",
+                              year: "numeric"
+                            })
+                          : "-"}
+                      </td>
+                      <td>
+                        {pembayaranBulan &&
+                        pembayaranBulan?.setoran?.buktiBayar ? (
+                          <a
+                            href={route("super-admin.bukti-bayar", {
+                              filename: pembayaranBulan?.setoran?.buktiBayar,
+                            })}
+                            target="_blank"
+                            rel="noopener"
+                            className="hover:underline"
+                          >
+                            Lihat Bukti Bayar
+                          </a>
+                        ) : (
+                          "-"
+                        )}
+                        {/* <>{console.log(pembayaranBulan)}</>
+                    {pembayaranBulan && pembayaranBulan.setoran.length > 0 && (
+                      <>{console.log(pembayaranBulan.setoran.buktiBayar)}</>
+                    )} */}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
           {/* <div className="grid grid-cols-2 col-span-2 text-sm overflow-x-auto mt-5">
                         <table className="w-full col-span-2 divide-y divide-gray-300">

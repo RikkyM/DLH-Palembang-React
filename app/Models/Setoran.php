@@ -16,8 +16,11 @@ class Setoran extends Model
         'noRef',
         'tanggalBayar',
         'jumlahBayar',
+        'jumlahBulan',
         'namaPenyetor',
         'keteranganBulan',
+        'metodeBayar',
+        'namaBank',
         'buktiBayar'
     ];
 

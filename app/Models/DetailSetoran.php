@@ -16,4 +16,9 @@ class DetailSetoran extends Model
         'jumlahBayar',
         'keterangan'
     ];
+
+    public function setoran()
+    {
+        return $this->belongsTo(Setoran::class, 'nomorNota', 'nomorNota');
+    }
 }

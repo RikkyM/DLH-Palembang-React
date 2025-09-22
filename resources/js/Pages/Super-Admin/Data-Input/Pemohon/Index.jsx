@@ -186,7 +186,7 @@ const Index = ({ datas, filters, kecamatanOptions, kelurahanOptions }) => {
                   {(datas.data ?? datas)?.length > 0 ? (
                     (datas.data ?? datas).map((data, index) => (
                       <tr
-                        key={data.id || index}
+                        key={data.id ?? index}
                         className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">

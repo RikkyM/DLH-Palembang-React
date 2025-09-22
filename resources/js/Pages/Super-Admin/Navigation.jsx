@@ -83,12 +83,16 @@ const SuperAdminNavigation = () => {
     },
     {
       label: "Data Setoran",
-      // route: "super-admin.laporan.piutang-retribusi",
+      route: "super-admin.data-setoran.index",
+      activeRoute: [
+        "super-admin.data-setoran.index",
+        "super-admin.data-setoran.show",
+      ],
     },
-    {
-      label: "Detail Setoran",
-      // route: "super-admin.laporan.piutang-retribusi",
-    },
+    // {
+    //   label: "Detail Setoran",
+    //   // route: "super-admin.laporan.piutang-retribusi",
+    // },
   ];
 
   // const pembayaranItems = [
@@ -181,10 +185,10 @@ const SuperAdminNavigation = () => {
       label: "Data Instansi",
       // route: "super-admin.user.index",
     },
-    // {
-    //   label: "Template Dokumen",
-    //   // route: "super-admin.kecamatan.index",
-    // },
+    {
+      label: "Informasi",
+      // route: "super-admin.kecamatan.index",
+    },
   ];
 
   const isAccordionActive = (items) =>
@@ -277,7 +281,7 @@ const SuperAdminNavigation = () => {
           defaultOpen={isAccordionActive(settingItems)}
         />
         <div className="py-3">
-          <Calendar />
+          <Calendar className="border-none" />
         </div>
       </div>
     </Sidebar>

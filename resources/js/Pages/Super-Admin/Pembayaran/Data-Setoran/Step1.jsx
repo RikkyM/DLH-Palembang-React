@@ -36,7 +36,7 @@ const Step1 = ({
   skrdOptions,
 }) => {
   return (
-    <div className="space-y-3 rounded bg-white px-3 py-5">
+    <div className="space-y-3 rounded bg-white px-3 py-5 shadow border">
       <h2 className="font-semibold">Pilih Data Existing</h2>
       <div className="grid w-full gap-3 lg:grid-cols-2">
         <div className="grid w-full gap-3 lg:col-span-2 lg:grid-cols-3">
