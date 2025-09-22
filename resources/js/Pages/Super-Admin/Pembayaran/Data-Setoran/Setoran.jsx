@@ -1,6 +1,6 @@
 import Layout from "../../Layout";
 import { useForm } from "@inertiajs/react";
-import { lazy, Suspense, useMemo, useState } from "react";
+import { act, lazy, Suspense, useMemo, useState } from "react";
 import { CreditCard, FileText, User } from "lucide-react";
 const Step1 = lazy(() => import("./Step1"));
 const Step2 = lazy(() => import("./Step2"));
@@ -77,6 +77,7 @@ const Setoran = ({ skrdOptions = [] }) => {
             setData={setData}
             errors={errors}
             clearErrors={clearErrors}
+            previewData={previewData}
           />
         );
       case 3:
@@ -179,6 +180,7 @@ const Setoran = ({ skrdOptions = [] }) => {
       if (allowedTotal > 0) {
         const remainingAllowed = Math.max(allowedTotal - lockedCount, 0);
 
+        console.log(remainingAllowed, activeRows.length, allowedTotal);
 
         if (activeRows.length > remainingAllowed) {
           setError(
@@ -187,21 +189,27 @@ const Setoran = ({ skrdOptions = [] }) => {
           );
           hasError = true;
         }
-      }
 
-      if (activeRows.length === 0) {
-        setError("detailSetoran", "Minimal aktifkan 1 bulan pada tabel.");
-        hasError = true;
-      } else {
-        clearErrors("detailSetoran");
+        // if (
+        //   remainingAllowed > 0 &&
+        //   parseInt(data.jumlahBulanBayar) != activeRows.length
+        // ) {
+        //   setError("detailSetoran", "Minimal aktifkan 1 bulan pada tabel.");
+        //   hasError = true;
+        // }
+
+        if (activeRows.length === 0 && remainingAllowed != 0) {
+          setError("detailSetoran", "Minimal aktifkan 1 bulan pada tabel.");
+          hasError = true;
+        } else {
+          clearErrors("detailSetoran");
+        }
       }
 
       for (let i = 0; i < activeRows.length; i++) {
         const r = activeRows[i];
         const bulanName = namaBulanID(r.bulan ?? i);
-
         const jumlahNum = parseIntIDR(r.jumlah);
-
         if (!r.tanggalBayar) {
           setError(
             "detailSetoran",
@@ -218,7 +226,6 @@ const Setoran = ({ skrdOptions = [] }) => {
           hasError = true;
           break;
         }
-
         if (jumlahNum > previewData.tarifPerbulan) {
           setError(
             "detailSetoran",
@@ -227,7 +234,6 @@ const Setoran = ({ skrdOptions = [] }) => {
           hasError = true;
           break;
         }
-
         if (jumlahNum !== previewData.tarifPerbulan) {
           setError(
             "detailSetoran",
@@ -242,10 +248,36 @@ const Setoran = ({ skrdOptions = [] }) => {
         (acc, r) => acc + parseIntIDR(r.jumlah),
         0,
       );
+
+      // console.log(totalBulanan, lockedCount);
       const jmlBulanInput = Number(data.jumlahBulanBayar || 0);
       const jmlBayarTotal = parseIntIDR(data.jumlahBayar || 0);
 
-      console.log(jmlBulanInput, jmlBayarTotal, previewData.tarifPertahun);
+      // console.log(
+      //   jmlBulanInput,
+      //   jmlBayarTotal,
+      //   previewData.tarifPertahun,
+      //   previewData.tarifPerbulan,
+      //   lockedCount,
+      //   activeRows.length,
+      //   lockedCount + activeRows.length,
+      //   allowedTotal
+      // );
+
+      if (jmlBayarTotal != jmlBulanInput * previewData.tarifPerbulan) {
+        setError(
+          "jumlahBayar",
+          `Jumlah setor tidak sesuai dengan jumlah bulan ${Intl.NumberFormat(
+            "id-ID",
+            {
+              style: "currency",
+              currency: "IDR",
+              minimumFractionDigits: 0,
+            },
+          ).format(previewData.tarifPerbulan)}`,
+        );
+        hasError = true;
+      }
 
       if (jmlBayarTotal > previewData.tarifPertahun) {
         setError(
@@ -259,10 +291,15 @@ const Setoran = ({ skrdOptions = [] }) => {
             },
           ).format(previewData.tarifPertahun)})`,
         );
+        hasError = true;
       }
 
       if (data.jumlahBulanBayar > previewData.jumlahBulan) {
-        setError("jumlahBulanBayar", `Jumlah bulan tidak boleh melebihi jumlah bulan dari SPKRD (${previewData.jumlahBulan} Bulan)`);
+        setError(
+          "jumlahBulanBayar",
+          `Jumlah bulan tidak boleh melebihi jumlah bulan dari SPKRD (${previewData.jumlahBulan} Bulan)`,
+        );
+        hasError = true;
       }
 
       // if (activeRows.length !== jmlBulanInput) {
@@ -394,7 +431,7 @@ const Setoran = ({ skrdOptions = [] }) => {
 
         <Suspense fallback={<div>Memuat...</div>}>{renderStep}</Suspense>
 
-        <div className="flex justify-between font-semibold sticky bottom-0 bg-white p-2 border shadow">
+        <div className="sticky bottom-0 flex justify-between border bg-white p-2 font-semibold shadow">
           <button
             type="button"
             onClick={prevStep}

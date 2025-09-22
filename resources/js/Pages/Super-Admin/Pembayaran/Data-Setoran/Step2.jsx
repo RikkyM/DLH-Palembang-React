@@ -7,7 +7,7 @@ import { useEffect } from "react";
 const namaBulanID = (i) =>
   new Date(0, i).toLocaleString("id-ID", { month: "long" });
 
-const Step2 = ({ data, setData, errors, clearErrors }) => {
+const Step2 = ({ data, setData, errors, clearErrors, previewData }) => {
   useEffect(() => {
     if (
       !Array.isArray(data.detailSetoran) ||
@@ -165,8 +165,18 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
                 clearErrors("jumlahBayar");
               }}
             />
-            {errors.jumlahBayar && (
+            {errors?.jumlahBayar ? (
               <span className="text-xs text-red-500">{errors.jumlahBayar}</span>
+            ) : (
+              previewData?.tarifPerbulan && (
+                <span className="text-xs text-neutral-700">
+                  Tarif Perbulan: {Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0,
+                  }).format(previewData.tarifPerbulan)}
+                </span>
+              )
             )}
           </FormInput>
           <FormInput className="col-span-2 lg:col-span-1">
@@ -339,7 +349,7 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
                   return (
                     <tr key={i} className="*:py-1.5">
                       <td className="text-center">{i + 1}</td>
-                      <td className="text-center px-2">
+                      <td className="px-2 text-center">
                         <button
                           type="button"
                           onClick={() => toggleBulan(i)}
@@ -363,7 +373,9 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
                         </button>
                       </td>
 
-                      <td className="pr-5 text-sm lg:text-base">{namaBulanID(i)}</td>
+                      <td className="pr-5 text-sm lg:text-base">
+                        {namaBulanID(i)}
+                      </td>
 
                       <td className="px-1 text-center">
                         <Input
@@ -385,16 +397,15 @@ const Step2 = ({ data, setData, errors, clearErrors }) => {
                           value={
                             row.jumlah
                               ? Intl.NumberFormat("id-ID", {
-                                style: "currency",
-                                currency: "IDR",
-                                minimumFractionDigits: 0
-                              }).format(row.jumlah)
+                                  style: "currency",
+                                  currency: "IDR",
+                                  minimumFractionDigits: 0,
+                                }).format(row.jumlah)
                               : ""
                           }
                           onChange={(e) => {
                             updateBulan(i, "jumlah", e.target.value);
-                          }
-                          }
+                          }}
                           className={`w-full ${disabledInputs ? "bg-slate-200" : "bg-slate-50"}`}
                         />
                       </td>
