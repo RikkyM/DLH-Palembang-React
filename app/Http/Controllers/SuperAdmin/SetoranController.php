@@ -14,6 +14,15 @@ use Inertia\Inertia;
 
 class SetoranController extends Controller
 {
+    private function getMetodeBayar()
+    {
+        $metode = ['Transfer', 'Tunai', 'Qris'];
+        return collect($metode)->map(fn($s) => [
+            'value' => $s,
+            'label' => $s
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -23,6 +32,8 @@ class SetoranController extends Controller
         $sortBy = $request->get('sort', 'nomorNota');
         $sortDir = $request->get('direction', 'desc');
         $getPage = $request->get('per_page', 10);
+        $getSkrd = $request->get('skrd');
+        $getMetode = $request->get('metode');
 
         $query = Setoran::with(['skrd', 'detailSetoran']);
 
@@ -51,16 +62,47 @@ class SetoranController extends Controller
                 break;
         }
 
+        // dd($getSkrd);
+
+        // dd($query->where('setoran.skrdId', 631)->get());
+
+        if (!empty($getSkrd)) {
+            $query->where('setoran.skrdId', $getSkrd);
+        }
+
+        if ($getMetode) {
+            $query->where('metodeBayar', $getMetode);
+        }
+
+        $skrdOptions = Setoran::with('skrd')->select('skrdId')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($s) {
+                return [
+                    'value' => $s->skrd->id,
+                    'label' => $s->skrd->noSkrd,
+                ];
+            })
+            ->unique();
+
+        // $skrdOptions = Setoran::with('skrd')->select('skrdId')->get();
+
+        // dd($skrdOptions);
+
         $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render('Super-Admin/Pembayaran/Data-Setoran/Data-Setoran', [
             'datas' => $datas,
             'filters' => [
-                'search' => $getSearch && trim($getSearch) === '' ? $getSearch : null,
+                'search' => ($getSearch && trim($getSearch) === '') ? $getSearch : null,
                 'sort' => $sortBy,
                 'direction' => $sortDir,
-                'per_page' => (int) $getPage
-            ]
+                'per_page' => (int) $getPage,
+                'skrd' => (int) $getSkrd,
+                'metode' => $getMetode
+            ],
+            'skrdOptions' => $skrdOptions,
+            'metodeOptions' => $this->getMetodeBayar()
         ]);
     }
 
@@ -74,8 +116,11 @@ class SetoranController extends Controller
             ->orderBy('created_at', 'desc')
             // ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', 1) AS UNSIGNED) ASC")
             // ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', -1) AS UNSIGNED) ASC")
+            ->withSum(['detailSetoran as totalBayar' => fn($q) => $q], 'jumlahBayar')
             ->whereNotNull('noSkrd')
             ->get()
+            ->filter(fn($s) => ($s->tagihanPerTahunSkrd - (int)($s->totalBayar ?? 0)) !== 0)
+            ->values()
             ->map(function ($skrd) {
                 return [
                     'value' => $skrd->id,
@@ -103,7 +148,8 @@ class SetoranController extends Controller
             });
 
         return Inertia::render('Super-Admin/Pembayaran/Data-Setoran/Setoran', [
-            'skrdOptions' => $skrdOptions
+            'skrdOptions' => $skrdOptions,
+            'metodeOptions' => $this->getMetodeBayar()
         ]);
     }
 

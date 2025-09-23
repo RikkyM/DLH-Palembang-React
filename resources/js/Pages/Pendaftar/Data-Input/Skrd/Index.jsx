@@ -30,6 +30,40 @@ const Index = ({
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  const fmtIDR = (v) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(Number(v || 0));
+
+  const totalSetoran = (row) => {
+    if (row.setoran_sum_jumlah_bayar != null)
+      return Number(row.setoran_sum_jumlah_bayar) || 0;
+
+    if (Array.isArray(row.setoran)) {
+      return row.setoran.reduce(
+        (acc, it) => acc + (Number(it?.jumlahBayar) || 0),
+        0,
+      );
+    }
+    return 0;
+  };
+
+  // total bayar efektif (ikuti aturan: prioritas pembayaran, else setoran)
+  const paidEffective = (row) => {
+    const totalPembayaran = Number(row.pembayaran_sum_jumlah_bayar) || 0;
+    if (totalPembayaran > 0) return totalPembayaran;
+    return totalSetoran(row);
+  };
+
+  // sisa = tagihan - paidEffective (jaga-jaga jangan minus)
+  const sisaTagihan = (row) => {
+    const tagihan = Number(row.tagihanPerTahunSkrd) || 0;
+    const paid = paidEffective(row);
+    return Math.max(tagihan - paid, 0);
+  };
+
   const allFilters = {
     search: search || filters.search,
     sort: sort || filters.sort,
@@ -123,7 +157,7 @@ const Index = ({
       label: "penagih retribusi",
       align: "text-left truncate",
     },
-    { key: "statusLunas", label: "status", align: "text-left truncate" },
+    { key: "statusLunas", label: "status", align: "text-left truncate px-2" },
   ];
 
   const bulanOptions = useMemo(
@@ -131,10 +165,10 @@ const Index = ({
     [bulan],
   );
 
-  // const tahunList = useMemo(
-  //   () => tahunOptions.map((t) => ({ value: String(t), label: String(t) })),
-  //   [tahunOptions],
-  // );
+  const tahunList = useMemo(
+    () => tahunOptions.map((t) => ({ value: String(t), label: String(t) })),
+    [tahunOptions],
+  );
 
   const kategoriList = useMemo(
     () =>
@@ -310,8 +344,8 @@ const Index = ({
                 />
                 <SearchableSelect
                   id="FilterTahun"
-                  // options={tahunList}
-                  // value={tahunFilter}
+                  options={tahunList}
+                  value={tahunFilter}
                   onChange={(val) => setTahunFilter(val)}
                   placeholder="Filter tahun"
                 />
@@ -468,26 +502,11 @@ const Index = ({
                             minimumFractionDigits: 0,
                           }).format(data.tagihanPerTahunSkrd ?? 0)}
                         </td>
-                        <td>
-                          {new Intl.NumberFormat("id-ID", {
-                            style: "currency",
-                            currency: "IDR",
-                            minimumFractionDigits: 0,
-                          }).format(data.pembayaran_sum_jumlah_bayar ?? 0)}
-                        </td>
-                        <td>
-                          {new Intl.NumberFormat("id-ID", {
-                            style: "currency",
-                            currency: "IDR",
-                            minimumFractionDigits: 0,
-                          }).format(
-                            data.tagihanPerTahunSkrd -
-                              data.pembayaran_sum_jumlah_bayar,
-                          )}
-                        </td>
+                        <td>{fmtIDR(paidEffective(data))}</td>
+                        <td>{fmtIDR(sisaTagihan(data))}</td>
                         <td>{data.namaPendaftar}</td>
                         <td>{data.namaPenagih ?? "-"}</td>
-                        <td className="text-left">
+                        {/* <td className="text-left">
                           {data.tagihanPerTahunSkrd -
                             data.pembayaran_sum_jumlah_bayar ===
                           0 ? (
@@ -499,11 +518,28 @@ const Index = ({
                               Belum Lunas
                             </span>
                           )}
+                        </td> */}
+                        <td className="text-left">
+                          {sisaTagihan(data) === 0 ? (
+                            <span className="truncate rounded px-2 py-1 text-green-700">
+                              Lunas
+                            </span>
+                          ) : (
+                            <span className="truncate rounded px-2 py-1 text-red-700">
+                              Belum Lunas
+                            </span>
+                          )}
                         </td>
                         {bulan.map((_, i) => {
-                          const pembayaranUntukBulan = data.pembayaran.find(
-                            (item) => item.pembayaranBulan.includes(i + 1),
-                          );
+                          const pembayaranUntukBulan =
+                            data.pembayaran.find((item) =>
+                              item.pembayaranBulan.includes(i + 1),
+                            ) ??
+                            data.detail_setoran.find(
+                              (d) =>
+                                d.namaBulan.toLowerCase() ===
+                                bulan[i].toLowerCase(),
+                            );
 
                           return (
                             <React.Fragment key={i}>
@@ -531,7 +567,6 @@ const Index = ({
                             <button
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               onClick={(e) => {
-                                // e.stopPropagation();
                                 window.open(
                                   route("skrd.pdf", {
                                     filename: data.fileSkrd,

@@ -7,8 +7,8 @@ use App\Http\Requests\PemohonRequest;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
 use App\Models\Pemilik;
-use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class PemohonController extends Controller
@@ -22,6 +22,8 @@ class PemohonController extends Controller
         $sortBy = $request->get('sort', 'id');
         $sortDir = $request->get('direction', 'desc');
         $getPage = $request->get('per_page', 10);
+        $getKecamatan = $request->get('kecamatan');
+        $getKelurahan = $request->get('kelurahan');
 
         $query = Pemilik::with(['kecamatan', 'kelurahan']);
 
@@ -29,7 +31,6 @@ class PemohonController extends Controller
             $query->where('namaPemilik', 'like', "%{$search}%")
                 ->orWhere('nik', 'like', "%{$search}%")
                 ->orWhere('alamat', 'like', "%{$search}%");
-
         }
 
         switch ($sortBy) {
@@ -54,6 +55,21 @@ class PemohonController extends Controller
                 break;
         }
 
+        if ($getKecamatan) {
+            $query->whereHas(
+                'kecamatan',
+                function ($q) use ($getKecamatan) {
+                    $q->where('kodeKecamatan', $getKecamatan);
+                }
+            );
+        }
+
+        if ($getKelurahan) {
+            $query->whereHas('kelurahan', function ($q) use ($getKelurahan) {
+                $q->where('kodeKelurahan', $getKelurahan);
+            });
+        }
+
         $kecamatanOptions = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
             ->orderBy('namaKecamatan')
             ->get()
@@ -76,11 +92,20 @@ class PemohonController extends Controller
                 })->values();
             });
 
-        if ($getPage <= 0) {
-            $pemohon = $query->get();
-        } else {
-            $pemohon = $query->paginate($getPage)->withQueryString();
+        $kelurahanFilter = collect();
+
+        if ($getKecamatan) {
+            $kelurahanFilter = Kelurahan::select('kodeKelurahan', 'namaKelurahan')
+                ->where('kodeKecamatan', $getKecamatan)
+                ->orderBy('namaKelurahan')
+                ->get()
+                ->map(fn($kel) => [
+                    'value' => $kel->kodeKelurahan,
+                    'label' => $kel->namaKelurahan
+                ]);
         }
+
+        $pemohon = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render('Super-Admin/Data-Input/Pemohon/Index', [
             'datas' => $pemohon,
@@ -89,9 +114,13 @@ class PemohonController extends Controller
                 'sort' => $sortBy,
                 'direction' => $sortDir,
                 'per_page' => (int) $getPage,
+                'kecamatan' => $getKecamatan,
+                'kelurahan' => $getKelurahan
             ],
             'kecamatanOptions' => $kecamatanOptions,
-            'kelurahanOptions' => $kelurahanOptions
+            'kelurahanOptions' => $kelurahanOptions,
+            'kelurahanFilter' => $kelurahanFilter,
+            'role' => Auth::user()->role
         ]);
     }
 
@@ -106,16 +135,9 @@ class PemohonController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    // public function store(PemohonRequest $request)
-    // {
-    //     try {
-    //         $request->handle();
-
-    //         return back();
-    //     } catch (Exception $e) {
-    //         return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data');
-    //     }
-    // }
+    public function store(PemohonRequest $request)
+    {
+    }
 
     /**
      * Display the specified resource.
@@ -138,12 +160,11 @@ class PemohonController extends Controller
      */
     public function update(PemohonRequest $request, int $data)
     {
-        // dd($data);
         try {
             $request->handle($data);
 
             return redirect()->back()->with('success', 'Data pemohon berhasil diperbarui.');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data');
         }
     }
@@ -155,15 +176,4 @@ class PemohonController extends Controller
     {
         //
     }
-
-    // public function getKtp($filename)
-    // {
-    //     $path = storage_path('app/private/foto/ktp/' . $filename);
-
-    //     if (!file_exists($path)) {
-    //         abort(404);
-    //     };
-
-    //     return response()->file($path);
-    // }
 }

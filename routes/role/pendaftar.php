@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('role:ROLE_PENDAFTAR')->prefix('pendaftar')->name('pendaftar.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::prefix('data-input')->group(function () {
-        // Route::get('/pemohon/{filename}', [PemohonController::class, 'getKtp'])->name('getKtp');
         Route::resource('/pemohon', PemohonController::class)->only(['index', 'store', 'update']);
         Route::resource('/wajib-retribusi', WajibRetribusiController::class)->only(['index', 'create', 'store'])->parameters([
             'wajib-retribusi' => 'retribusi'
@@ -19,14 +18,14 @@ Route::middleware('role:ROLE_PENDAFTAR')->prefix('pendaftar')->name('pendaftar.'
             Route::get('/diproses', 'diproses')->name('diproses');
             Route::get('/ditolak', 'ditolak')->name('ditolak');
             Route::get('/{status}/{retribusi}/edit', 'edit')
-            ->where(['status' => 'diterima|ditolak'])
-            ->name('edit');
+                ->where(['status' => 'diterima|ditolak'])
+                ->name('edit');
             Route::put('/{status}/{retribusi}/edit', 'update')
                 ->where(['status' => 'diterima|ditolak'])
                 ->name('update');
             Route::put('/{id}/send', 'send')->name('send');
         });
-        
+
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
     });
     // Route::get('/skrd', function() {

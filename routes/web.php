@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\PemohonController;
 use App\Http\Controllers\SkrdController;
 use App\Http\Controllers\WajibRetribusiController;
@@ -28,10 +29,13 @@ Route::prefix('sirep')->group(function () {
             Route::get('/{id}/download-data-excel', 'downloadSingleExcel')->name('skrd.download-data-excel');
         });
 
-        Route::controller(PemohonController::class)->group(function() {
+        Route::get('/export-pemohon', [PemohonController::class, 'exportPemohon'])->name('export-pemohon');
+
+        Route::controller(FileController::class)->group(function () {
+            Route::get('/file/{filename}', 'getBuktiBayar')->where('filename', '.*')->name('bukti-bayar');
             Route::get('/pemohon/{filename}', 'getKtp')->name('getKtp');
-            Route::get('/export-pemohon', 'exportPemohon')->name('export-pemohon');
         });
+
 
         require __DIR__ . '/role/superadmin.php';
         require __DIR__ . '/role/pendaftar.php';

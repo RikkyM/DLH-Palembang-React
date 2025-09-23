@@ -14,7 +14,6 @@ use Inertia\Inertia;
 
 class SkrdController extends Controller
 {
-
     private function getBulan()
     {
         Carbon::setLocale('id');
@@ -45,9 +44,7 @@ class SkrdController extends Controller
             'user:id,namaLengkap,lokasi',
             'pembayaran',
             'setoran',
-            'detailSetoran' => function ($q) {
-                $q->orderBy('tanggalBayar');
-            }
+            'detailSetoran' => fn ($q) => $q->orderBy('tanggalBayar')
         ])
             ->select([
                 'id',
@@ -75,7 +72,6 @@ class SkrdController extends Controller
                     ->whereColumn('skrdId', 'skrd.id')
             ]);
 
-        // dd($skrd->where('noSkrd', 'asd/DLH/2025')->first());
         $paidEfektif = "CASE WHEN COALESCE(pembayaran_sum_jumlah_bayar,0) > 0
                     THEN COALESCE(pembayaran_sum_jumlah_bayar,0)
                     ELSE COALESCE(setoran_sum_jumlah,0)
@@ -91,7 +87,6 @@ class SkrdController extends Controller
         if ($sortBy === 'sisa_tertagih') {
             $skrd->orderByRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) {$sortDir}");
         } elseif ($sortBy === 'statusLunas') {
-            // 0 untuk lunas, 1 untuk belum lunas
             $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - ({$paidEfektif})) = 0 THEN 0 ELSE 1 END {$sortDir}");
         } else {
             $skrd->orderBy($sortBy, $sortDir);

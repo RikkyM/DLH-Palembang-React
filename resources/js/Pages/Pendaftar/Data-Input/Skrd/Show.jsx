@@ -4,7 +4,7 @@ const Show = ({ data, bulan }) => {
   return (
     <Layout title={data.namaObjekRetribusi}>
       <section className="p-3">
-        <div className="mb-3 w-full rounded bg-white p-5">
+        <div className="mb-3 grid w-full grid-cols-2 justify-between rounded bg-white p-5 md:flex-row md:items-center md:gap-2">
           <div className="col-span-2 flex items-center gap-2 text-sm">
             <button
               onClick={() => {
@@ -33,132 +33,137 @@ const Show = ({ data, bulan }) => {
               Excel
             </button>
           </div>
-          <div className="max-w-5xl py-4">
-            <h2 className="col-span-2 font-semibold">Informasi</h2>
-            <div className="table w-full">
-              <div className="table-row-group space-y-3">
-                <div className="table-row">
-                  <div className="table-cell w-96">Nama Pemilik</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">
-                    {data.pemilik.namaPemilik}
-                  </div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">
-                    Nomor Induk Kependudukan (NIK)
-                  </div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">{data.pemilik.nik}</div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Alamat</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">{data.pemilik.alamat}</div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Nomor Handphone</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">{data.pemilik.noHP}</div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Jabatan</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">{data.pemilik.jabatan}</div>
-                </div>
-                <h2 className="font-semibold">UPTD</h2>
-                <div className="table-row">
-                  <div className="table-cell py-1">Wilayah UPTD</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">{data.uptd.namaUptd}</div>
-                </div>
-                <h2 className="font-semibold">Wajib Retribusi</h2>
-                <div className="table-row">
-                  <div className="table-cell py-1">Nomor SKRD</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">{data.noSkrd}</div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Nomor Wajib Retribusi</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">{data.noWajibRetribusi}</div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Nama Objek Retribusi</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">
-                    {data.namaObjekRetribusi}
-                  </div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Alamat</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">
-                    {data.alamatObjekRetribusi}
-                  </div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Kecamatan</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">
-                    {data.kecamatanObjekRetribusi}
-                  </div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Klasifikasi - Objek</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">{data.namaKategori}</div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Kelas</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">{data.namaSubKategori}</div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Jenis/Deskripsi</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">{data.deskripsiUsaha}</div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Per Bulan</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">
-                    {data.tarifPerBulanObjekRetribusi}
-                  </div>
-                </div>
-                <div className="table-row">
-                  <div className="table-cell py-1">Per Tahun</div>
-                  <div className="table-cell py-1">:</div>
-                  <div className="table-cell py-1">
-                    {data.tarifPerTahunObjekRetribusi}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="grid w-max grid-cols-1 gap-2">
-              <h2 className="font-semibold">
-                Pembayaran Tahun {new Date(data.created_at).getFullYear()}:
-              </h2>
-              {bulan.map((bulan, i) => {
-                const pembayaranBulan = data.pembayaran.find((item) =>
-                  item.pembayaranBulan.includes(i + 1),
-                );
-                return (
-                  <div key={i} className="grid grid-cols-3">
-                    <span>{bulan} </span>
-                    <span>:</span>
-                    <span>
-                      {pembayaranBulan
-                        ? new Date(
-                            pembayaranBulan.tanggalBayar,
-                          ).toLocaleDateString("id-ID")
-                        : "-"}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+          <h2 className="col-span-2 font-semibold">Informasi</h2>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Nama Pemilik :</p>
+            <p>{data.pemilik.namaPemilik}</p>
           </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Nomor Induk Kependudukan (NIK) :</p>
+            <p>{data.pemilik.nik}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Alamat :</p>
+            <p>{data.pemilik.alamat}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Nomor Handphone :</p>
+            <p>{data.pemilik.noHP}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Jabatan :</p>
+            <p>{data.pemilik.jabatan}</p>
+          </div>
+          <h2 className="col-span-2 font-semibold">UPTD</h2>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Wilayah UPTD :</p>
+            <p>{data.uptd.namaUptd}</p>
+          </div>
+          <h2 className="col-span-2 font-semibold">Wajib Retribusi</h2>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Nomor SKRD :</p>
+            <p>{data.noSkrd}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Nomor Wajib Retribusi :</p>
+            <p>{data.noWajibRetribusi}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Nama Objek Retribusi :</p>
+            <p>{data.namaObjekRetribusi}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Alamat :</p>
+            <p>{data.alamatObjekRetribusi}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Kecamatan :</p>
+            <p>{data.kecamatanObjekRetribusi}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Kelurahan :</p>
+            <p>{data.kelurahanObjekRetribusi}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Klasifikasi - Objek :</p>
+            <p>{data.namaKategori}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Kelas :</p>
+            <p>{data.namaSubKategori}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Jenis/Deskripsi :</p>
+            <p>{data.deskripsiUsaha}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Per Bulan :</p>
+            <p>{data.tarifPerBulanObjekRetribusi}</p>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 text-sm">
+            <p>Per Tahun :</p>
+            <p>{data.tarifPerTahunObjekRetribusi}</p>
+          </div>
+          <div className="grid grid-cols-1 gap-2 text-sm">
+            <h2 className="font-bold">
+              Pembayaran Tahun {new Date(data.created_at).getFullYear()}:
+            </h2>
+            <table className="w-full">
+              <tbody className="w-full">
+                {bulan.map((bulan, i) => {
+                  const pembayaranBulan =
+                    data.pembayaran.find((item) =>
+                      item.pembayaranBulan.includes(i + 1),
+                    ) ??
+                    data.detail_setoran.find(
+                      (d) => d.namaBulan.toLowerCase() === bulan.toLowerCase(),
+                    );
+
+                  return (
+                    <tr key={i} className="w-full">
+                      <td>{bulan}</td>
+                      <td>:</td>
+                      <td>
+                        {pembayaranBulan
+                          ? new Date(
+                              pembayaranBulan.tanggalBayar,
+                            ).toLocaleDateString("id-ID", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })
+                          : "-"}
+                      </td>
+                      <td>
+                        {pembayaranBulan &&
+                        pembayaranBulan?.setoran?.buktiBayar ? (
+                          <a
+                            href={route("bukti-bayar", {
+                              filename: pembayaranBulan?.setoran?.buktiBayar,
+                            })}
+                            target="_blank"
+                            rel="noopener"
+                            className="hover:underline"
+                          >
+                            Lihat Bukti Bayar
+                          </a>
+                        ) : (
+                          "-"
+                        )}
+                        {/* <>{console.log(pembayaranBulan)}</>
+                    {pembayaranBulan && pembayaranBulan.setoran.length > 0 && (
+                      <>{console.log(pembayaranBulan.setoran.buktiBayar)}</>
+                    )} */}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          {/* <div className="max-w-5xl py-4">
+            
+          </div> */}
         </div>
       </section>
     </Layout>

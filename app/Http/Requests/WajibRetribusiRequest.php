@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class WajibRetribusiRequest extends FormRequest
@@ -23,8 +24,13 @@ class WajibRetribusiRequest extends FormRequest
     {
         $isEdit = $this->isMethod('put') || $this->isMethod('patch');
         $rules = [
-            'noWajibRetribusi' => 'required',
-            'noSkrd' => 'required',
+            'noSkrd' => $isEdit ? [
+                'sometimes',
+                Rule::unique('wajib_retribusi', 'noSkrd')->ignore($this->retribusi, 'id')
+            ] : [
+                'required',
+                Rule::unique('wajib_retribusi', 'noSkrd')
+            ],
             'namaObjekRetribusi' => 'required|string',
             'pemilikId' => 'required',
             'penagihId' => 'required',
@@ -62,11 +68,13 @@ class WajibRetribusiRequest extends FormRequest
         ];
 
         if ($this->isMethod('post')) {
+            $rules['noWajibRetribusi'] = 'required|unique:wajib_retribusi,noWajibRetribusi';
             $rules['fotoBangunan'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
             $rules['fotoBerkas'] = 'sometimes|nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
         }
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {
+            $rules['noWajibRetribusi'] = 'required|unique:wajib_retribusi,noWajibRetribusi,' . $this->retribusi;
             $rules['fotoBangunan'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
             $rules['fotoBerkas'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
         }

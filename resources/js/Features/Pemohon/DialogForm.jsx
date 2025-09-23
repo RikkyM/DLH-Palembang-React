@@ -2,7 +2,7 @@ import Dialog from "@/Components/Dialog";
 import { X } from "lucide-react";
 import useAutoFocusInput from "@/hooks/useAutoFocusInput";
 import { useForm } from "@inertiajs/react";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import DropdownInput from "@/Components/DropdownInput";
 import FormInput from "@/Components/FormInput";
 import Label from "@/Components/Label";
@@ -15,10 +15,18 @@ const DialogForm = ({
   mode = "create",
   kecamatanOptions = [],
   kelurahanOptions = [],
+  role = null,
 }) => {
   const isEditMode = mode === "edit" && pemohon;
   const firstInputRef = useAutoFocusInput(isOpen, true);
   const fileInputRef = useRef(null);
+
+  const roleConfig = {
+    ROLE_SUPERADMIN: "super-admin",
+    ROLE_PENDAFTAR: "pendaftar",
+  };
+
+  const routeConfig = roleConfig[role];
 
   const initialData = {
     nik: "",
@@ -69,7 +77,7 @@ const DialogForm = ({
     clearErrors();
 
     if (isEditMode) {
-      post(route("pendaftar.pemohon.update", pemohon.id), {
+      post(route(`${routeConfig}.pemohon.update`, pemohon.id), {
         forceFormData: true,
         onSuccess: () => {
           setData(initialData);

@@ -1,6 +1,6 @@
 import Layout from "../../Layout";
 import { useForm } from "@inertiajs/react";
-import { act, lazy, Suspense, useMemo, useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
 import { CreditCard, FileText, User } from "lucide-react";
 const Step1 = lazy(() => import("./Step1"));
 const Step2 = lazy(() => import("./Step2"));
@@ -10,7 +10,7 @@ const parseIntIDR = (v) => Number(String(v ?? "").replace(/\D/g, "")) || 0;
 const namaBulanID = (i) =>
   new Date(0, i).toLocaleString("id-ID", { month: "long" });
 
-const Setoran = ({ skrdOptions = [] }) => {
+const Setoran = ({ skrdOptions = [], metodeOptions = [] }) => {
   const [step, setStep] = useState(1);
   const [previewData, setPreviewData] = useState({
     namaObjekRetribusi: "",
@@ -78,6 +78,7 @@ const Setoran = ({ skrdOptions = [] }) => {
             errors={errors}
             clearErrors={clearErrors}
             previewData={previewData}
+            metodeOptions={metodeOptions}
           />
         );
       case 3:
@@ -267,14 +268,14 @@ const Setoran = ({ skrdOptions = [] }) => {
       if (jmlBayarTotal != jmlBulanInput * previewData.tarifPerbulan) {
         setError(
           "jumlahBayar",
-          `Jumlah setor tidak sesuai dengan jumlah bulan ${Intl.NumberFormat(
+          `Jumlah setor tidak sesuai dengan jumlah bulan bayar ${Intl.NumberFormat(
             "id-ID",
             {
               style: "currency",
               currency: "IDR",
               minimumFractionDigits: 0,
             },
-          ).format(previewData.tarifPerbulan)}`,
+          ).format(previewData.tarifPerbulan * data.jumlahBulanBayar)}`,
         );
         hasError = true;
       }

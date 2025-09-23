@@ -273,19 +273,19 @@ const Index = ({
   return (
     <Layout title="WAJIB RETRIBUSI">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
-        <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
-          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
+        <div className="mb-3 flex w-full flex-col items-center justify-between gap-2 rounded bg-white p-2 md:flex-row md:flex-wrap">
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto">
             <div className="flex w-full items-center gap-2 sm:w-max">
               <label
                 htmlFor="showData"
-                className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
+                className="relative flex h-full w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
               >
                 <select
                   name="showData"
                   id="showData"
                   value={perPage}
                   onChange={handlePerPageChange}
-                  className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+                  className="h-full w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                 >
                   <option value="10">10</option>
                   <option value="25">25</option>
@@ -303,7 +303,10 @@ const Index = ({
                 onClick={() => {
                   const params = new URLSearchParams();
 
+                  if (kecamatan) params.append("kecamatan", kecamatan);
                   if (perPage) params.append("per_page", perPage);
+                  if (status) params.append("status", status);
+                  if (tahun) params.append("tahun", tahun);
 
                   window.open(
                     route("wajib-retribusi.download-pdf") +
@@ -316,10 +319,10 @@ const Index = ({
               >
                 <Download size={20} />
               </button>
-              <div className="relative flex w-full gap-2 sm:w-max">
+              <div className="relative flex h-full w-full gap-2 sm:w-max">
                 <button
                   type="button"
-                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max text-sm"
+                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 text-sm shadow sm:w-max"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => setShowFilters((prev) => !prev)}
                 >
@@ -414,7 +417,7 @@ const Index = ({
               />
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start *:text-xs *:md:text-sm">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm">
             <Link
               href={route("pendaftar.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
@@ -430,6 +433,7 @@ const Index = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (petugas) params.append("petugas", petugas);
                 if (status) params.append("status", status);
                 if (tahun) params.append("tahun", tahun);
 
@@ -453,6 +457,7 @@ const Index = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (petugas) params.append("petugas", petugas);
 
                 window.open(
                   route("wajib-retribusi.export") + "?" + params.toString(),
@@ -509,7 +514,7 @@ const Index = ({
                   {(datas.data ?? datas)?.length > 0 ? (
                     (datas.data ?? datas).map((data, index) => (
                       <tr
-                        key={data.id || index}
+                        key={data.id ?? index}
                         className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         <td className="text-center">
@@ -620,7 +625,7 @@ const Index = ({
                         <td
                           className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
-                          <div className="flex gap-2 *:rounded *:text-xs *:md:text-sm *:font-medium">
+                          <div className="flex gap-2 *:rounded *:text-xs *:font-medium *:md:text-sm">
                             {/* <Link
                               href={route("super-admin.wajib-retribusi.edit", {
                                 retribusi: data.noPendaftaran,
@@ -670,13 +675,7 @@ const Index = ({
           )}
         </div>
 
-        {!isLoading && (
-          <SmartPagination
-            className="bg-red-500"
-            datas={datas}
-            filters={filters}
-          />
-        )}
+        {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
     </Layout>
   );

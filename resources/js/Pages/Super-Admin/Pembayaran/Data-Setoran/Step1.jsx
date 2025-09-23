@@ -42,8 +42,8 @@ const Step1 = ({
         <div className="grid w-full gap-3 lg:col-span-2 lg:grid-cols-3">
           <DropdownInput
             id="noSkrd"
-            label="Pilih Nomor SKRD"
-            placeholder="Silahkan Pilih Nomor SKRD..."
+            label="Pilih Nomor SPKRD"
+            placeholder="Silahkan Pilih Nomor SPKRD..."
             value={data.noSkrd}
             onChange={(value) => {
               const base = Array.from({ length: 12 }, (_, i) => ({

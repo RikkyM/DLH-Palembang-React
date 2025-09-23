@@ -22,14 +22,15 @@ class PemohonController extends Controller
         $sortBy = $request->get('sort', 'id');
         $sortDir = $request->get('direction', 'desc');
         $getPage = $request->get('per_page', 10);
+        $getKecamatan = $request->get('kecamatan');
+        $getKelurahan = $request->get('kelurahan');
 
         $query = Pemilik::with(['kecamatan', 'kelurahan']);
-        // ->whereHas('uptd', function ($q) {
-        //     $q->where('id', Auth::user()->uptdId);
-        // });
 
         if ($search && trim($search) !== '') {
-            $query->where('namaPemilik', 'like', "%{$search}%");
+            $query->where('namaPemilik', 'like', "%{$search}%")
+                ->orWhere('nik', 'like', "%{$search}%")
+                ->orWhere('alamat', 'like', "%{$search}%");
         }
 
         switch ($sortBy) {
@@ -54,11 +55,23 @@ class PemohonController extends Controller
                 break;
         }
 
+        if ($getKecamatan) {
+            $query->whereHas(
+                'kecamatan',
+                function ($q) use ($getKecamatan) {
+                    $q->where('kodeKecamatan', $getKecamatan);
+                }
+            );
+        }
+
+        if ($getKelurahan) {
+            $query->whereHas('kelurahan', function ($q) use ($getKelurahan) {
+                $q->where('kodeKelurahan', $getKelurahan);
+            });
+        }
+
         $kecamatanOptions = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
             ->orderBy('namaKecamatan')
-            // ->whereHas('uptd', function ($q) {
-            //     $q->where('id', auth()->user()->uptdId);
-            // })
             ->get()
             ->map(function ($kecamatan) {
                 return [
@@ -68,7 +81,6 @@ class PemohonController extends Controller
             });
 
         $kelurahanOptions = Kelurahan::select('kodeKelurahan', 'namaKelurahan', 'kodeKecamatan')
-            ->orderBy('namaKelurahan')
             ->get()
             ->groupBy('kodeKecamatan')
             ->map(function ($groupedKelurahan) {
@@ -80,6 +92,19 @@ class PemohonController extends Controller
                 })->values();
             });
 
+        $kelurahanFilter = collect();
+
+        if ($getKecamatan) {
+            $kelurahanFilter = Kelurahan::select('kodeKelurahan', 'namaKelurahan')
+                ->where('kodeKecamatan', $getKecamatan)
+                ->orderBy('namaKelurahan')
+                ->get()
+                ->map(fn($kel) => [
+                    'value' => $kel->kodeKelurahan,
+                    'label' => $kel->namaKelurahan
+                ]);
+        }
+
         $pemohon = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render('Pendaftar/Data-Input/Pemohon/Index', [
@@ -88,10 +113,14 @@ class PemohonController extends Controller
                 'search' => $search && trim($search) !== '' ? $search : null,
                 'sort' => $sortBy,
                 'direction' => $sortDir,
-                'per_page' => (int) $getPage
+                'per_page' => (int) $getPage,
+                'kecamatan' => $getKecamatan,
+                'kelurahan' => $getKelurahan
             ],
             'kecamatanOptions' => $kecamatanOptions,
-            'kelurahanOptions' => $kelurahanOptions
+            'kelurahanOptions' => $kelurahanOptions,
+            'kelurahanFilter' => $kelurahanFilter,
+            'role' => Auth::user()->role
         ]);
     }
 
@@ -153,16 +182,5 @@ class PemohonController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function getKtp($filename)
-    {
-        $path = storage_path('app/private/foto/ktp/' . $filename);
-
-        if (!file_exists($path)) {
-            abort(404);
-        };
-
-        return response()->file($path);
     }
 }

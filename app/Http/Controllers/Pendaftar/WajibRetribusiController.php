@@ -281,7 +281,13 @@ class WajibRetribusiController extends Controller
                 }
 
                 if ($request->get('status') === "Finished") {
-                    $q->where('status', 'Approved')->orWhere('current_role', 'ROLE_KABID')->orWhereNull('current_role');
+                    $q->where(function ($data) {
+                        $data->where('status', 'Finished')
+                        ->where('current_role', 'ROLE_KABID');
+                    })->orWhere(function ($data) {
+                        $data->where('status', 'Approved')
+                        ->whereNull('current_role');
+                    });
                 }
             }
         );
@@ -423,7 +429,6 @@ class WajibRetribusiController extends Controller
      */
     public function store(WajibRetribusiRequest $request)
     {
-        // dd($request->all());
         $validated = $request->validated();
 
         $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();

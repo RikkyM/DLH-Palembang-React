@@ -149,7 +149,7 @@ const Detail = ({ data }) => {
               {data.buktiBayar ? (
                 data.buktiBayar.endsWith(".pdf") ? (
                   <a
-                    href={route("super-admin.bukti-bayar", {
+                    href={route("bukti-bayar", {
                       filename: data.buktiBayar,
                     })}
                     target="_blank"
@@ -161,7 +161,7 @@ const Detail = ({ data }) => {
                 ) : (
                   <>
                     <img
-                      src={route("super-admin.bukti-bayar", {
+                      src={route("bukti-bayar", {
                         filename: data.buktiBayar,
                       })}
                       alt="Bukti Bayar"

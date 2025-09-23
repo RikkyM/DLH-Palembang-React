@@ -7,7 +7,14 @@ import { useEffect } from "react";
 const namaBulanID = (i) =>
   new Date(0, i).toLocaleString("id-ID", { month: "long" });
 
-const Step2 = ({ data, setData, errors, clearErrors, previewData }) => {
+const Step2 = ({
+  data,
+  setData,
+  errors,
+  clearErrors,
+  previewData,
+  metodeOptions,
+}) => {
   useEffect(() => {
     if (
       !Array.isArray(data.detailSetoran) ||
@@ -79,11 +86,7 @@ const Step2 = ({ data, setData, errors, clearErrors, previewData }) => {
               setData("metodeBayar", value);
               clearErrors("metodeBayar");
             }}
-            options={[
-              { value: "Transfer", label: "Transfer" },
-              { value: "Tunai", label: "Tunai" },
-              { value: "Qris", label: "Qris" },
-            ]}
+            options={metodeOptions}
             error={errors.metodeBayar}
             required
             valueKey="value"
@@ -170,7 +173,8 @@ const Step2 = ({ data, setData, errors, clearErrors, previewData }) => {
             ) : (
               previewData?.tarifPerbulan && (
                 <span className="text-xs text-neutral-700">
-                  Tarif Perbulan: {Intl.NumberFormat("id-ID", {
+                  Tarif Perbulan:{" "}
+                  {Intl.NumberFormat("id-ID", {
                     style: "currency",
                     currency: "IDR",
                     minimumFractionDigits: 0,

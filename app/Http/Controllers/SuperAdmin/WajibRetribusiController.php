@@ -278,7 +278,13 @@ class WajibRetribusiController extends Controller
                 }
 
                 if ($request->get('status') === "Finished") {
-                    $q->where('status', 'Approved')->orWhere('current_role', 'ROLE_KABID')->orWhereNull('current_role');
+                    $q->where(function ($data) {
+                        $data->where('status', 'Finished')
+                            ->where('current_role', 'ROLE_KABID');
+                    })->orWhere(function ($data) {
+                        $data->where('status', 'Approved')
+                            ->whereNull('current_role');
+                    });
                 }
             }
         );
@@ -566,18 +572,18 @@ class WajibRetribusiController extends Controller
         $retribusi->load(['pemilik', 'kelurahan', 'kecamatan', 'kategori', 'subKategori', 'uptd']);
 
         $pemohonOptions = Pemilik::select('id', 'namaPemilik')
-        ->orderBy('namaPemilik')
-        ->get()
+            ->orderBy('namaPemilik')
+            ->get()
             ->map(fn($pemohon) => ['value' => $pemohon->id, 'label' => $pemohon->namaPemilik]);
 
         $kecamatanOptions = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
-        ->orderBy('namaKecamatan')
-        ->get()
+            ->orderBy('namaKecamatan')
+            ->get()
             ->map(fn($kecamatan) => ['value' => $kecamatan->kodeKecamatan, 'label' => $kecamatan->namaKecamatan]);
 
         $kelurahanOptions = Kelurahan::select('kodeKelurahan', 'namaKelurahan', 'kodeKecamatan')
-        ->orderBy('namaKelurahan')
-        ->get()
+            ->orderBy('namaKelurahan')
+            ->get()
             ->groupBy('kodeKecamatan')
             ->map(fn($grouped) => $grouped->map(fn($kelurahan) => [
                 'value' => $kelurahan->kodeKelurahan,
@@ -585,13 +591,13 @@ class WajibRetribusiController extends Controller
             ])->values());
 
         $kategoriOptions = Kategori::select('kodeKategori', 'namaKategori')
-        ->orderBy('namaKategori')
-        ->get()
+            ->orderBy('namaKategori')
+            ->get()
             ->map(fn($kategori) => ['value' => $kategori->kodeKategori, 'label' => $kategori->namaKategori]);
 
         $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'rumus', 'variabel', 'tarif', 'tarif2')
-        ->orderBy('namaSubKategori')
-        ->get()
+            ->orderBy('namaSubKategori')
+            ->get()
             ->groupBy('kodeKategori')
             ->map(fn($grouped) => $grouped->map(fn($sub) => [
                 'value' => $sub->kodeSubKategori,

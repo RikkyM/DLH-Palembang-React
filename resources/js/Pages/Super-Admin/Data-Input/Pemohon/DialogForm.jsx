@@ -125,7 +125,7 @@ const DialogForm = ({
     <Dialog isOpen={isOpen} onClose={handleClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`h-max max-h-full w-full max-w-2xl overflow-auto rounded bg-white transition-all duration-300 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-1 ${isOpen ? "scale-100" : "scale-95"}`}
+        className={`h-max max-h-full w-full max-w-2xl overflow-auto rounded bg-white transition-all duration-300 md:overflow-visible [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-1 ${isOpen ? "scale-100" : "scale-95"}`}
       >
         <div className="flex items-center justify-between p-5">
           <h3 className="text-lg font-medium">Form Pemohon</h3>
@@ -138,13 +138,8 @@ const DialogForm = ({
           className="grid grid-cols-3 gap-5 px-5 pb-5"
         >
           <div className="col-span-3 grid grid-cols-2 gap-5">
-            <div className="flex flex-col gap-1.5 text-sm">
-              <label
-                htmlFor="nik"
-                className="after:text-red-500 after:content-['*']"
-              >
-                NIK
-              </label>
+            <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
+              <label htmlFor="nik">NIK</label>
               <input
                 autoComplete="off"
                 ref={firstInputRef}
@@ -166,12 +161,12 @@ const DialogForm = ({
                 <span className="text-xs text-red-500">{errors.nik}</span>
               )}
             </div>
-            <div className="flex flex-col gap-1.5 text-sm">
+            <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
               <label
                 htmlFor="namaPemohon"
                 className="after:text-red-500 after:content-['*']"
               >
-                Nama
+                Nama Pemilik
               </label>
               <input
                 autoComplete="off"
@@ -188,7 +183,7 @@ const DialogForm = ({
                 </span>
               )}
             </div>
-            <div className="flex flex-col gap-1.5 text-sm">
+            <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
               <label
                 htmlFor="tempatLahir"
                 className="after:text-red-500 after:content-['*']"
@@ -210,7 +205,7 @@ const DialogForm = ({
                 </span>
               )}
             </div>
-            <div className="flex flex-col gap-1.5 text-sm">
+            <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
               <label
                 htmlFor="tanggalLahir"
                 className="after:text-red-500 after:content-['*']"
@@ -264,6 +259,7 @@ const DialogForm = ({
               required={true}
               valueKey="value"
               labelKey="label"
+              className="col-span-2 md:col-span-1"
             />
             <DropdownInput
               id="kelurahan"
@@ -277,6 +273,7 @@ const DialogForm = ({
               valueKey="value"
               labelKey="label"
               disabled={!data.kodeKecamatan}
+              className="col-span-2 md:col-span-1"
             />
           </div>
           <div className="col-span-3 flex flex-col gap-1.5 text-sm md:col-span-1">

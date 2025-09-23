@@ -1,17 +1,17 @@
-import {
-  ChevronDown,
-  Currency,
-  Filter,
-  ReceiptText,
-  Search,
-} from "lucide-react";
+import { ChevronDown, Filter, ReceiptText, Search } from "lucide-react";
 import Layout from "../../Layout";
 import SearchableSelect from "@/Components/SearchableSelect";
 import TableHead from "@/Components/TableHead";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { router } from "@inertiajs/react";
+import SmartPagination from "@/Components/SmartPagination";
 
-const DataSetoran = ({ datas, filters, skrdOptions = [] }) => {
+const DataSetoran = ({
+  datas,
+  filters,
+  skrdOptions = [],
+  metodeOptions = [],
+}) => {
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
@@ -19,8 +19,10 @@ const DataSetoran = ({ datas, filters, skrdOptions = [] }) => {
     return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
   });
   const [skrd, setSkrd] = useState(filters.skrd || "");
+  const [metode, setMetode] = useState(filters.metode || "");
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const filterRef = useRef(null);
 
   const columns = [
     { key: "nomorNota", label: "nomor nota", align: "text-left" },
@@ -39,22 +41,13 @@ const DataSetoran = ({ datas, filters, skrdOptions = [] }) => {
     { key: "namaPenyetor", label: "pengirim / penyetor", align: "text-left" },
     { key: "keteranganBulan", label: "ket. bulan bayar", align: "text-left" },
     { key: "buktiBayar", label: "bukti setor", align: "text-left" },
-    // { key: "namaPemilik", label: "Nama Pemilik", align: "text-left" },
-    // { key: "alamat", label: "Alamat", align: "text-left" },
-    // { key: "kodeKelurahan", label: "Kelurahan", align: "text-left" },
-    // { key: "kodeKecamatan", label: "Kecamatan", align: "text-left" },
-    // { key: "tempatLahir", label: "Tempat Lahir", align: "text-left" },
-    // { key: "tanggalLahir", label: "Tanggal Lahir", align: "text-left" },
-    // { key: "noHp", label: "Nomor Hp", align: "text-left" },
-    // { key: "email", label: "Email", align: "text-left" },
-    // // { key: "jabatan", label: "Jabatan", align: "text-left" },
-    // { key: "created_at", label: "create date", align: "text-left" },
   ];
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
 
     if (search && search.trim() !== "") params.search = search;
     if (skrd) params.skrd = skrd;
+    if (metode) params.metode = metode;
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (sort && sort !== "nomorNota") {
       params.sort = sort;
@@ -74,20 +67,34 @@ const DataSetoran = ({ datas, filters, skrdOptions = [] }) => {
   };
 
   useEffect(() => {
+    const handleFilterOutside = (e) => {
+      if (filterRef.current && !filterRef.current.contains(e.target)) {
+        setShowFilters(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleFilterOutside);
+    return () => document.removeEventListener("mousedown", handleFilterOutside);
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
       router.get(route("super-admin.data-setoran.index"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas", "skrdOptions", "bankOptions"],
+        only: ["datas", "skrdOptions", "metodeOptions", "filters"],
+        onFinish: () => setIsLoading(false),
       });
     }, 500);
 
     return () => {
       clearTimeout(timeoutId);
+      setIsLoading(false);
     };
-  }, [search, sort, direction, skrd, perPage]);
+  }, [search, sort, direction, skrd, metode, perPage]);
 
   const handlePerPageChange = (e) => {
     setPerPage(parseInt(e.target.value));
@@ -133,7 +140,7 @@ const DataSetoran = ({ datas, filters, skrdOptions = [] }) => {
                   <span>Filter</span>
                 </button>
                 <div
-                  // ref={filterRef}
+                  ref={filterRef}
                   className={`absolute right-0 top-full z-20 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
                     showFilters
                       ? "pointer-events-auto mt-3 opacity-100"
@@ -142,17 +149,21 @@ const DataSetoran = ({ datas, filters, skrdOptions = [] }) => {
                 >
                   <SearchableSelect
                     id="skrdList"
-                    // options={kategoriList}
-                    // value={kategori}
-                    // onChange={handleKategoriChange}
+                    options={skrdOptions}
+                    value={skrd}
+                    onChange={(val) => {
+                      setSkrd(val);
+                    }}
                     placeholder="Pilih Nomor SPKRD"
                   />
                   <SearchableSelect
-                    id="namaBank"
-                    // options={kategoriList}
-                    // value={kategori}
-                    // onChange={handleKategoriChange}
-                    placeholder="Pilih Nama Bank"
+                    id="metodeSetor"
+                    options={metodeOptions}
+                    value={metode}
+                    onChange={(val) => {
+                      setMetode(val);
+                    }}
+                    placeholder="Pilih Metode Bayar"
                   />
                 </div>
               </div>
@@ -286,7 +297,7 @@ const DataSetoran = ({ datas, filters, skrdOptions = [] }) => {
                       </td>
                       <td className="text-center text-xs md:text-sm">
                         <a
-                          href={route("super-admin.bukti-bayar", {
+                          href={route("bukti-bayar", {
                             filename: data.buktiBayar,
                           })}
                           target="_blank"
@@ -330,6 +341,7 @@ const DataSetoran = ({ datas, filters, skrdOptions = [] }) => {
             </table>
           )}
         </div>
+        {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
     </Layout>
   );

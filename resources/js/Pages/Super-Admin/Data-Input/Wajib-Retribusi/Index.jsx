@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
-import { Link, router } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 
 import { ChevronDown, Download, FileText, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -274,18 +274,18 @@ const Index = ({
     <Layout title="WAJIB RETRIBUSI">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-2 rounded bg-white p-2 md:flex-row md:flex-wrap">
-          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto">
             <div className="flex w-full items-center gap-2 sm:w-max">
               <label
                 htmlFor="showData"
-                className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
+                className="relative flex h-full w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
               >
                 <select
                   name="showData"
                   id="showData"
                   value={perPage}
                   onChange={handlePerPageChange}
-                  className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+                  className="h-full w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                 >
                   <option value="10">10</option>
                   <option value="25">25</option>
@@ -303,6 +303,7 @@ const Index = ({
                 onClick={() => {
                   const params = new URLSearchParams();
 
+                  if (kecamatan) params.append("kecamatan", kecamatan);
                   if (perPage) params.append("per_page", perPage);
                   if (status) params.append("status", status);
                   if (tahun) params.append("tahun", tahun);
@@ -318,7 +319,7 @@ const Index = ({
               >
                 <Download size={20} />
               </button>
-              <div className="relative flex w-full gap-2 sm:w-max">
+              <div className="relative flex h-full w-full gap-2 sm:w-max">
                 <button
                   type="button"
                   className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 text-sm shadow sm:w-max"

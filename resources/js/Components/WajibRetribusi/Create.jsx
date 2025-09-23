@@ -1000,7 +1000,6 @@ const WajibRetribusiCreate = ({
               onChange={(e) =>
                 handleFileChange("fotoBangunan", e.target.files[0])
               }
-              required
             />
             {errors.fotoBangunan && (
               <span className="text-xs text-red-500">
