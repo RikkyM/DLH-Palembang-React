@@ -78,6 +78,7 @@ class SetoranController extends Controller
         }
 
         $skrdOptions = Skrd::with('setoran')
+            ->where('uptdId', auth()->user()->uptdId)
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(fn($s) => [
