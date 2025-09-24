@@ -20,9 +20,17 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::prefix('data-input')->group(function () {
-        // Route::get('/pemohon/{filename}', [PemohonController::class, 'getKtp'])->name('getKtp');
+    Route::prefix('permohonan')->group(function () {
         Route::resource('/pemohon', PemohonController::class)->only(['index', 'store', 'update']);
+        Route::resource('/wajib-retribusi', WajibRetribusiController::class)
+            ->except(['destroy', 'edit', 'show'])
+            ->parameters([
+                'wajib-retribusi' => 'retribusi'
+            ]);
+    });
+
+    Route::prefix('inbox-data')->group(function () {
+        // Route::get('/pemohon/{filename}', [PemohonController::class, 'getKtp'])->name('getKtp');
         Route::controller(WajibRetribusiController::class)->name('wajib-retribusi.')->prefix('wajib-retribusi')->group(function () {
             Route::get('/diterima', 'diterima')->name('diterima');
             Route::get('/diproses', 'diproses')->name('diproses');
@@ -35,19 +43,22 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
                 ->name('show');
             Route::put('/{id}/send', 'send')->name('send');
         });
-        Route::resource('/wajib-retribusi', WajibRetribusiController::class)
-            ->except(['destroy', 'edit', 'show'])
-            ->parameters([
-                'wajib-retribusi' => 'retribusi'
-            ]);
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
     });
 
-    Route::prefix('setoran')->group(function () {
-        Route::resource('/invoice', InvoiceController::class)->only(['index', 'show', 'store', 'update']);
-        // Route::get('/invoice/pdf/{filename}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
+    Route::prefix('tagihan')->group(function () {
+        Route::resource('/surat-tagihan', InvoiceController::class)
+            ->only(['index', 'show', 'store', 'update'])
+            ->parameters([
+                'surat-tagihan' => 'invoice'
+            ]);
         Route::get('/invoice/pdf/{invoice}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
-        Route::get('/preview-invoice', [InvoiceController::class, 'previewPdf'])->name('invoice.preview'); // route ini digunakan untuk preview invoice saja tidak terlalu digunakan
+        Route::get('/preview-invoice', [InvoiceController::class, 'previewPdf'])->name('invoice.preview');
+    });
+
+    Route::prefix('penerimaan')->group(function () {
+
+        // Route::get('/invoice/pdf/{filename}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
         Route::resource('/penerimaan-retribusi', PenerimaanRetribusiController::class);
         // Route::resource('/input-setoran', SetoranController::class)->only(['index', 'create']);
         Route::get('/input-setoran', [SetoranController::class, 'create'])->name('input-setoran');

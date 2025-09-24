@@ -70,7 +70,7 @@ const SuperAdminNavigation = () => {
     // },
     {
       label: "Data Surat Tagihan",
-      route: "super-admin.invoice.index",
+      route: "super-admin.surat-tagihan.index",
     },
     // {
     //   label: "History Setoran",

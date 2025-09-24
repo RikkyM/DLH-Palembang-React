@@ -1,4 +1,4 @@
-import Layout from "../../Layout";
+import Layout from "../Layout";
 import Index from "@/Features/Penerimaan/Index";
 
 const DataSetoran = (props) => {

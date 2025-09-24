@@ -436,7 +436,7 @@ const Index = ({
           className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
         >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500 bg-white shadow border">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"

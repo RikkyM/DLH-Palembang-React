@@ -75,7 +75,7 @@ const Index = ({ datas, filters, retribusiOptions = [] }) => {
       if (direction && direction !== filters.direction)
         params.direction = direction;
 
-      router.get(route("super-admin.invoice.index"), params, {
+      router.get(route("super-admin.surat-tagihan.index"), params, {
         preserveState: true,
         replace: true,
         only: ["datas"],

@@ -1,4 +1,4 @@
-import Layout from "../../Layout";
+import Layout from "../Layout";
 import InputSetoran from "@/Features/Penerimaan/Setoran";
 
 const Setoran = (props) => {

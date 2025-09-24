@@ -15,10 +15,7 @@ const KuptdNavigation = () => {
     {
       label: "Wajib Retribusi",
       route: "kuptd.wajib-retribusi.index",
-      activeRoute: [
-        "kuptd.wajib-retribusi.index",
-        "kuptd.wajib-retribusi.create",
-      ],
+      activeRoute: "kuptd.wajib-retribusi.index",
     },
   ];
 
@@ -149,12 +146,6 @@ const KuptdNavigation = () => {
         <div className="py-3">
           <Calendar />
         </div>
-
-        {/* <AccordionItem
-          title="Settings"
-          items={settingItems}
-          isRouteActive={isRouteActive}
-        /> */}
       </div>
     </Sidebar>
   );

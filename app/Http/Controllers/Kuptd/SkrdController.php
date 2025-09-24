@@ -18,11 +18,9 @@ class SkrdController extends Controller
         Carbon::setLocale('id');
 
         return collect(range(1, 12))
-            ->map(function ($i) {
-                return strtoupper(Carbon::create()->month($i)->translatedFormat('M'));
-            });
+            ->map(fn($i) => strtoupper(Carbon::create()->month($i)->translatedFormat('F')));
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -34,21 +32,52 @@ class SkrdController extends Controller
         $getKategori = $request->get('kategori');
         $getSubKategori = $request->get('sub-kategori');
         $getStatus = $request->get('status');
+        $getBulan = $request->get('bulan');
+        $getTahun = $request->get('tahun');
+        $getPage = $request->get('per_page', 10);
 
         $skrd = Skrd::with([
             'user:id,namaLengkap,lokasi',
-            'pembayaran' => fn($q) => $q->orderBy('tanggalBayar')
-        ])->where('uptdId', auth()->user()->uptdId)->addSelect([
-            'skrd.*',
-            'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
-                ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
-                ->whereColumn('skrdId', 'skrd.id')
-        ]);
+            'pembayaran',
+            'setoran',
+            'detailSetoran' => fn($q) => $q->orderBy('tanggalBayar')
+        ])
+            ->select([
+                'id',
+                'noSkrd',
+                'noWajibRetribusi',
+                'namaObjekRetribusi',
+                'alamatObjekRetribusi',
+                "kelurahanObjekRetribusi",
+                "kecamatanObjekRetribusi",
+                "deskripsiUsaha",
+                "tagihanPerBulanSkrd",
+                "tagihanPerTahunSkrd",
+                'namaKategori',
+                'namaSubKategori',
+                'namaPendaftar',
+                'created_at',
+                'fileSkrd'
+            ])
+            ->where('uptdId', auth()->user()->uptdId)
+            ->addSelect([
+                'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
+                    ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
+                    ->whereColumn('skrdId', 'skrd.id'),
+                'setoran_sum_jumlah' => DB::table('setoran')
+                    ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
+                    ->whereColumn('skrdId', 'skrd.id')
+            ]);
+
+        $paidEfektif = "CASE WHEN COALESCE(pembayaran_sum_jumlah_bayar,0) > 0
+                    THEN COALESCE(pembayaran_sum_jumlah_bayar,0)
+                    ELSE COALESCE(setoran_sum_jumlah,0)
+                    END";
 
         if ($getSortBy === 'sisa_tertagih') {
-            $skrd->orderByRaw("(tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) {$getSortDir}");
+            $skrd->orderByRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) {$getSortDir}");
         } elseif ($getSortBy === 'statusLunas') {
-            $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - COALESCE(pembayaran_sum_jumlah_bayar, 0)) = 0 THEN 0 ELSE 1 END {$getSortDir}");
+            $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - ({$paidEfektif})) = 0 THEN 0 ELSE 1 END {$getSortDir}");
         } else {
             $skrd->orderBy($getSortBy, $getSortDir);
         }
@@ -66,9 +95,17 @@ class SkrdController extends Controller
         }
 
         if ($getStatus === 'lunas') {
-            $skrd->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) = 0');
+            $skrd->havingRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) = 0");
         } elseif ($getStatus === 'belum_lunas') {
-            $skrd->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) > 0');
+            $skrd->havingRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) > 0");
+        }
+
+        if ($getBulan) {
+            $skrd->whereMonth('created_at', (int) $getBulan);
+        }
+
+        if ($getTahun) {
+            $skrd->whereYear('created_at', (int) $getTahun);
         }
 
         $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
@@ -77,18 +114,24 @@ class SkrdController extends Controller
                 $query->where('namaKategori', $getKategori);
             })->select('kodeSubKategori', 'namaSubKategori')->get()
             : collect();
+
         $tahunOptions = Skrd::selectRaw('YEAR(created_at) as tahun')
-        ->distinct()->orderByDesc('tahun')->pluck('tahun');
+            ->distinct()->orderByDesc('tahun')->pluck('tahun');
+
+        $datas = $getPage <= 0 ? $skrd->get() : $skrd->paginate($getPage)->withQueryString();
 
         return Inertia::render('Kuptd/Data-Input/Skrd/Index', [
-            'datas' => $skrd->paginate(10)->withQueryString(),
+            'datas' => $datas,
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
                 'sort' => $getSortBy,
                 'direction' => $getSortDir,
                 'kategori' => $getKategori,
                 'subKategori' => $getSubKategori,
-                'status' => $getStatus
+                'status' => $getStatus,
+                'bulan' => $getBulan,
+                'tahun' => $getTahun,
+                'per_page' => $getPage
             ],
             'kategoriOptions' => $kategori,
             'subKategoriOptions' => $subKategori,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\SuperAdmin;
+namespace App\Http\Controllers\Kasubag;
 
 use App\Http\Controllers\Controller;
 use App\Models\DetailSetoran;
@@ -35,7 +35,10 @@ class SetoranController extends Controller
         $getSkrd = $request->get('skrd');
         $getMetode = $request->get('metode');
 
-        $query = Setoran::with(['skrd', 'detailSetoran']);
+        $query = Setoran::with(['skrd', 'detailSetoran'])
+            ->whereHas('skrd', function ($q) {
+                $q->where('uptdId', auth()->user()->uptdId);
+            });
 
         if ($getSearch && trim($getSearch) !== '') {
             $query->whereHas('skrd', function ($q) use ($getSearch) {
@@ -73,7 +76,7 @@ class SetoranController extends Controller
         if ($getMetode) {
             $query->where('metodeBayar', $getMetode);
         }
-        
+
         $skrdOptions = Skrd::with('setoran')
             ->orderBy('created_at', 'desc')
             ->get()
@@ -84,7 +87,7 @@ class SetoranController extends Controller
 
         $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
-        return Inertia::render('Super-Admin/Pembayaran/Data-Setoran/Data-Setoran', [
+        return Inertia::render('Kasubag/Penerimaan/Index', [
             'datas' => $datas,
             'filters' => [
                 'search' => ($getSearch && trim($getSearch) === '') ? $getSearch : null,
@@ -106,6 +109,7 @@ class SetoranController extends Controller
     public function create()
     {
         $skrdOptions = Skrd::with('detailSetoran')->select('id', 'noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'alamatObjekRetribusi', 'kecamatanObjekRetribusi', 'kelurahanObjekRetribusi', 'tagihanPerBulanSkrd', 'tagihanPerTahunSkrd', 'jumlahBulan', 'keteranganBulan')
+            ->where('uptdId', auth()->user()->uptdId)
             ->whereYear('created_at', '>=', '2025')
             ->orderBy('created_at', 'desc')
             // ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', 1) AS UNSIGNED) ASC")
@@ -141,7 +145,7 @@ class SetoranController extends Controller
                 ];
             });
 
-        return Inertia::render('Super-Admin/Pembayaran/Data-Setoran/Setoran', [
+        return Inertia::render('Kasubag/Penerimaan/Setoran', [
             'skrdOptions' => $skrdOptions,
             'metodeOptions' => $this->getMetodeBayar(),
             'role' => auth()->user()->role
@@ -201,7 +205,7 @@ class SetoranController extends Controller
     public function show(Setoran $data)
     {
         $data->load(['skrd', 'detailSetoran']);
-        return Inertia::render('Super-Admin/Pembayaran/Data-Setoran/Detail', [
+        return Inertia::render('Kasubag/Penerimaan/Detail', [
             'data' => $data
         ]);
     }
@@ -228,22 +232,5 @@ class SetoranController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function getBuktiBayar($filename)
-    {
-        // $data = Setoran::findOrFail($nota);
-        // dd($data);
-        // if (!$nota->buktiBayar || !Storage::disk('local')->exists($nota->buktiBayar)) {
-        //     abort(404);
-        // }
-        // // return Storage::disk('local')->response($nota->buktiBayar);
-        // return response()->file('app/private/' . $nota->buktiBayar);
-
-        $path = urldecode($filename);
-
-        abort_unless(Storage::disk('local')->exists($path), 404);
-
-        return Storage::disk('local')->response($path);
     }
 }

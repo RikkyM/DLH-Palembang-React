@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Pendaftar;
+namespace App\Http\Controllers\Kasubag;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
@@ -59,6 +59,7 @@ class SkrdController extends Controller
                 'created_at',
                 'fileSkrd'
             ])
+            ->where('uptdId', auth()->user()->uptdId)
             ->addSelect([
                 'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
                     ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
@@ -119,7 +120,7 @@ class SkrdController extends Controller
 
         $datas = $getPage <= 0 ? $skrd->get() : $skrd->paginate($getPage)->withQueryString();
 
-        return Inertia::render('Pendaftar/Data-Input/Skrd/Index', [
+        return Inertia::render('Kasubag/Inbox-Data/Skrd', [
             'datas' => $datas,
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
@@ -160,7 +161,7 @@ class SkrdController extends Controller
      */
     public function show(Skrd $skrd)
     {
-        return Inertia::render('Pendaftar/Data-Input/Skrd/Show', [
+        return Inertia::render('Kasubag/Inbox-Data/DetailSkrd', [
             'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd', 'setoran', 'detailSetoran.setoran']),
             'bulan' => $this->getBulan()
         ]);

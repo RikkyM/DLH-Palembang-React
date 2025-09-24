@@ -1,52 +1,76 @@
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
 import AccordionItem from "@/Components/AccordionItem";
 import Calendar from "react-calendar";
 
 const KasubagNavigation = () => {
+  const { props } = usePage();
+  const { auth, inbox } = props[0];
 
-//   const permohonanItems = [
-//     {
-//       label: "Pemohon",
-//       route: "kasubag.pemohon.index",
-//     },
-//     {
-//       label: "Wajib Retribusi",
-//       route: "kasubag.wajib-retribusi.index",
-//       activeRoute: [
-//         "kasubag.wajib-retribusi.index",
-//         "kasubag.wajib-retribusi.create",
-//       ],
-//     },
-//   ];
+  let data = inbox.filter(
+    (i) => i.kodeKecamatan === auth.user?.uptd?.kecamatan?.kodeKecamatan,
+  );
 
-//   const inboxItems = [
-//     {
-//       label: "Inbox Diterima",
-//       route: "kasubag.wajib-retribusi.diterima",
-//       activeRoute: [
-//         "kasubag.wajib-retribusi.diterima",
-//         "kasubag.wajib-retribusi.edit",
-//       ],
-//     },
-//     {
-//       label: "Inbox Diproses",
-//       route: "kasubag.wajib-retribusi.diproses",
-//     },
-//     {
-//       label: "Inbox Ditolak",
-//       route: "kasubag.wajib-retribusi.ditolak",
-//       activeRoute: [
-//         "kasubag.wajib-retribusi.ditolak",
-//         "kasubag.wajib-retribusi.edit",
-//       ],
-//     },
-//     {
-//       label: "Inbox Selesai (SPKRD)",
-//       route: "kasubag.skrd.index",
-//       activeRoute: "kasubag.skrd.*",
-//     },
-//   ];
+  const permohonanItems = [
+    {
+      label: "Wajib Retribusi",
+      route: "kasubag.wajib-retribusi.index",
+      activeRoute: "kasubag.wajib-retribusi.index",
+    },
+  ];
+
+  const inboxItems = [
+    {
+      label: "Inbox Diterima",
+      route: "kasubag.wajib-retribusi.diterima",
+      activeRoute: [
+        "kasubag.wajib-retribusi.diterima",
+        "kasubag.wajib-retribusi.show",
+      ],
+      badge:
+        data
+          .filter((i) => i.status === "Processed")
+          .filter((i) => i.current_role === "ROLE_KUPTD").length || "",
+    },
+    {
+      label: "Inbox Diproses",
+      route: "kasubag.wajib-retribusi.diproses",
+      activeRoute: [
+        "kasubag.wajib-retribusi.diproses",
+        "kasubag.wajib-retribusi.show",
+      ],
+      badge:
+        data
+          .filter((i) => i.status === "Processed")
+          .filter((i) => i.current_role !== "ROLE_KUPTD").length || "",
+    },
+    {
+      label: "Inbox Ditolak",
+      route: "kasubag.wajib-retribusi.ditolak",
+      activeRoute: [
+        "kasubag.wajib-retribusi.ditolak",
+        "kasubag.wajib-retribusi.show",
+      ],
+      badge: data.filter((i) => i.status === "Rejected").length || "",
+    },
+    {
+      label: "Inbox Selesai (SPKRD)",
+      route: "kasubag.skrd.index",
+      activeRoute: "kasubag.skrd.*",
+    },
+  ];
+
+  const penerimaanItems = [
+    {
+      label: "Input-Setoran",
+      route: "kasubag.input-setoran",
+    },
+    {
+      label: "Data Setoran",
+      route: "kasubag.data-setoran.index",
+      activeRoute: ["kasubag.data-setoran.index", "kasubag.data-setoran.show"],
+    },
+  ];
 
   // const settingItems = [
   //   {
@@ -85,6 +109,12 @@ const KasubagNavigation = () => {
                 return route().current(r);
               }
               if (
+                item.label.toLowerCase().includes("diproses") &&
+                params.status === "diproses"
+              ) {
+                return route().current(r);
+              }
+              if (
                 item.label.toLowerCase().includes("ditolak") &&
                 params.status === "ditolak"
               ) {
@@ -114,7 +144,7 @@ const KasubagNavigation = () => {
           Dashboard
         </Link>
 
-        {/* <AccordionItem
+        <AccordionItem
           title="Permohonan"
           items={permohonanItems}
           defaultOpen={isAccordionActive(permohonanItems)}
@@ -123,12 +153,16 @@ const KasubagNavigation = () => {
           title="Inbox Data"
           items={inboxItems}
           defaultOpen={isAccordionActive(inboxItems)}
-        /> */}
+        />
+        <AccordionItem
+          title="Penerimaan"
+          items={penerimaanItems}
+          defaultOpen={isAccordionActive(penerimaanItems)}
+        />
 
         <div className="py-3">
           <Calendar />
         </div>
-        
       </div>
     </Sidebar>
   );

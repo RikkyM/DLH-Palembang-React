@@ -33,6 +33,9 @@ const Table = ({
     ROLE_KUPTD: {
       show: "kuptd.wajib-retribusi.show",
     },
+    ROLE_KASUBAG_TU_UPDT: {
+      show: "kasubag.wajib-retribusi.show",
+    },
     ROLE_KATIM: {
       show: "katim.wajib-retribusi.show",
     },
@@ -83,6 +86,32 @@ const Table = ({
       );
     }
 
+    if (role === "ROLE_KASUBAG_TU_UPDT") {
+      return (
+        <span
+          className={`select-none rounded py-2 font-medium ${
+            data.status === "Processed" && data.current_role === "ROLE_KUPTD"
+              ? "text-sky-600"
+              : data.status == "Processed" && data.current_role != "ROLE_KUPTD"
+                ? "text-amber-500"
+                : data.status == "Rejected"
+                  ? "text-red-500"
+                  : data.status === "Approved" &&
+                    data.current_role == null &&
+                    "text-green-500"
+          }`}
+        >
+          {data.status === "Processed" &&
+            data.current_role === "ROLE_KUPTD" &&
+            "Diterima"}
+          {data.status === "Processed" &&
+            data.current_role != "ROLE_KUPTD" &&
+            "Diproses"}
+          {data.status === "Rejected" && "Ditolak"}
+          {data.status === "Approved" && data.current_role == null && "Selesai"}
+        </span>
+      );
+    }
     return (
       <span
         className={`select-none rounded py-2 font-medium ${
@@ -113,11 +142,19 @@ const Table = ({
           : data.status === "Rejected"
             ? "ditolak"
             : "diproses"
-        : data.status === "Processed"
-          ? data.current_role === role
+        : role === "ROLE_KASUBAG_TU_UPDT"
+          ? data.status === "Processed" && data.current_role === "ROLE_KUPTD"
             ? "diterima"
-            : "diproses"
-          : "ditolak";
+            : data.status === "Rejected"
+              ? "ditolak"
+              : "diproses"
+          : data.status === "Processed"
+            ? data.current_role === role
+              ? "diterima"
+              : "diproses"
+            : "ditolak";
+
+    console.log(statusParams);
 
     if (role === "ROLE_PENDAFTAR") {
       return (

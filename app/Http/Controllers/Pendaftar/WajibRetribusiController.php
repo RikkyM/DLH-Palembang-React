@@ -283,10 +283,10 @@ class WajibRetribusiController extends Controller
                 if ($request->get('status') === "Finished") {
                     $q->where(function ($data) {
                         $data->where('status', 'Finished')
-                        ->where('current_role', 'ROLE_KABID');
+                            ->where('current_role', 'ROLE_KABID');
                     })->orWhere(function ($data) {
                         $data->where('status', 'Approved')
-                        ->whereNull('current_role');
+                            ->whereNull('current_role');
                     });
                 }
             }

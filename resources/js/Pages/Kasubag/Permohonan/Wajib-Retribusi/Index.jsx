@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
-import { Link, router } from "@inertiajs/react";
-
+import { router } from "@inertiajs/react";
 import { ChevronDown, Download, FileText, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
@@ -13,9 +12,7 @@ const Index = ({
   pjOptions = [],
   kategoriOptions = [],
   subKategoriOptions = [],
-  kecamatanOptions = [],
   kelurahanOptions = [],
-  petugasOptions = [],
   statusOptions = [],
   tahunOptions = [],
 }) => {
@@ -26,7 +23,6 @@ const Index = ({
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
   const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
-  const [petugas, setPetugas] = useState(filters.petugas || "");
   const [status, setStatus] = useState(filters.status || "");
   const [pj, setpj] = useState(filters.pj || "");
   const [perPage, setPerPage] = useState(() => {
@@ -39,11 +35,6 @@ const Index = ({
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    // {
-    //   key: "noPendaftaran",
-    //   label: "no pendaftaran",
-    //   align: "text-left truncate",
-    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -90,7 +81,11 @@ const Index = ({
     { key: "giat", label: "giat", align: "text-left truncate" },
     { key: "hari", label: "hari", align: "text-left truncate" },
     { key: "meter", label: "meter", align: "text-left truncate" },
-    { key: "tanggalSkrd", label: "tanggal spkrd", align: "text-left truncate" },
+    {
+      key: "tanggalSkrd",
+      label: "tanggal spkrd",
+      align: "text-left truncate",
+    },
     {
       key: "tarifPerbulan",
       label: "tarif perbulan",
@@ -105,85 +100,6 @@ const Index = ({
     { key: "status", label: "status", align: "text-left truncate" },
   ];
 
-  const kategoriList = useMemo(
-    () =>
-      kategoriOptions.map((k) => ({
-        value: k.kodeKategori,
-        label: k.namaKategori,
-      })),
-    [kategoriOptions],
-  );
-
-  const pjList = useMemo(
-    () =>
-      pjOptions.map((k) => ({
-        value: k.id.toString(),
-        label: k.namaPemilik,
-      })),
-    [pjOptions],
-  );
-
-  const subKategoriList = useMemo(
-    () =>
-      subKategoriOptions.map((s) => ({
-        value: s.kodeSubKategori,
-        label: s.namaSubKategori,
-      })),
-    [subKategoriOptions],
-  );
-
-  const kecamatanList = useMemo(
-    () =>
-      kecamatanOptions.map((kec) => ({
-        value: kec.kodeKecamatan,
-        label: kec.namaKecamatan,
-      })),
-    [kecamatanOptions],
-  );
-
-  const kelurahanList = useMemo(
-    () =>
-      kelurahanOptions.map((kel) => ({
-        value: kel.kodeKelurahan,
-        label: kel.namaKelurahan,
-      })),
-    [kelurahanOptions],
-  );
-
-  const petugasList = useMemo(
-    () =>
-      petugasOptions.map((petugas) => ({
-        value: petugas.namaLengkap,
-        label: petugas.namaLengkap,
-      })),
-    [petugasOptions],
-  );
-
-  const statusList = useMemo(
-    () =>
-      statusOptions?.map((statusOption) => ({
-        value: statusOption.value,
-        label:
-          statusOption.label === "Approved"
-            ? "Diterima"
-            : statusOption.label === "Processed"
-              ? "Diproses"
-              : statusOption.label === "Rejected"
-                ? "Ditolak"
-                : "Selesai",
-      })),
-    [statusOptions],
-  );
-
-  const tahunList = useMemo(
-    () =>
-      tahunOptions.map((t) => ({
-        value: t.value.toString(),
-        label: t.label.toString(),
-      })),
-    [tahunOptions],
-  );
-
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
 
@@ -191,9 +107,7 @@ const Index = ({
     if (pj) params.pj = pj;
     if (kategori) params.kategori = kategori;
     if (subKategori) params["sub-kategori"] = subKategori;
-    if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
-    if (petugas) params.petugas = petugas;
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (status) params.status = status;
     if (tahun) params.tahun = tahun;
@@ -230,16 +144,23 @@ const Index = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("pendaftar.wajib-retribusi.index"), params, {
+      router.get(route("kasubag.wajib-retribusi.index"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
+        only: [
+          "datas",
+          "pjOptions",
+          "subKategoriOptions",
+          "kelurahanOptions",
+          "filters",
+        ],
         onFinish: () => setIsLoading(false),
       });
     }, 500);
 
     return () => {
       clearTimeout(timeoutId);
+      setIsLoading(false);
     };
   }, [
     search,
@@ -249,26 +170,11 @@ const Index = ({
     subKategori,
     kecamatan,
     kelurahan,
-    petugas,
     perPage,
     status,
     pj,
     tahun,
   ]);
-
-  const handlePerPageChange = (e) => {
-    setPerPage(parseInt(e.target.value));
-  };
-
-  const handleKategoriChange = (val) => {
-    setKategori(val);
-    setSubKategori("");
-    router.reload({
-      only: ["subKategoriOptions"],
-      data: { kategori: val },
-      preserveState: true,
-    });
-  };
 
   return (
     <Layout title="WAJIB RETRIBUSI">
@@ -284,7 +190,9 @@ const Index = ({
                   name="showData"
                   id="showData"
                   value={perPage}
-                  onChange={handlePerPageChange}
+                  onChange={(e) => {
+                    setPerPage(parseInt(e.target.value));
+                  }}
                   className="h-full w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                 >
                   <option value="10">10</option>
@@ -339,20 +247,22 @@ const Index = ({
                 >
                   <SearchableSelect
                     id="kategoriList"
-                    options={kategoriList}
+                    options={kategoriOptions}
                     value={kategori}
-                    onChange={handleKategoriChange}
+                    onChange={(val) => {
+                      setKategori(val);
+                    }}
                     placeholder="Pilih Kategori"
                   />
                   <SearchableSelect
                     id="subkategorilist"
-                    options={subKategoriList}
+                    options={subKategoriOptions}
                     value={subKategori}
                     onChange={(val) => setSubKategori(val)}
                     placeholder="Pilih Sub Kategori"
                     disabled={!kategori}
                   />
-                  <SearchableSelect
+                  {/* <SearchableSelect
                     id="kecamatanlist"
                     options={kecamatanList}
                     value={kecamatan}
@@ -361,39 +271,32 @@ const Index = ({
                       setKelurahan("");
                     }}
                     placeholder="Pilih Kecamatan"
-                  />
+                  /> */}
                   <SearchableSelect
                     id="kelurahanlist"
-                    options={kelurahanList}
+                    options={kelurahanOptions}
                     value={kelurahan}
                     onChange={(val) => setKelurahan(val)}
                     placeholder="Pilih Kelurahan"
-                    disabled={!kecamatan}
-                  />
-                  <SearchableSelect
-                    id="petugasList"
-                    options={petugasList}
-                    value={petugas}
-                    onChange={(val) => setPetugas(val)}
-                    placeholder="Pilih Petugas Pendaftar"
+                    // disabled={!kecamatan}
                   />
                   <SearchableSelect
                     id="pjlist"
-                    options={pjList}
+                    options={pjOptions}
                     value={pj}
                     onChange={(val) => setpj(val)}
                     placeholder="Pilih Penanggung Jawab"
                   />
                   <SearchableSelect
                     id="statusList"
-                    options={statusList}
+                    options={statusOptions}
                     value={status}
                     onChange={(val) => setStatus(val)}
                     placeholder="Filter Berdasarkan Status"
                   />
                   <SearchableSelect
                     id="tahunList"
-                    options={tahunList}
+                    options={tahunOptions}
                     value={tahun}
                     onChange={(val) => setTahun(val)}
                     placeholder="Pilih Tahun"
@@ -418,54 +321,52 @@ const Index = ({
             </label>
           </div>
           <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm">
-            <Link
-              href={route("pendaftar.wajib-retribusi.create")}
+            {/* <Link
+              href={route("kuptd.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
             >
               Tambah
-            </Link>
+            </Link> */}
             <button
-              onClick={() => {
-                const params = new URLSearchParams();
+              //   onClick={() => {
+              //     const params = new URLSearchParams();
 
-                if (search) params.append("search", search);
-                if (kategori) params.append("kategori", kategori);
-                if (subKategori) params.append("sub-kategori", subKategori);
-                if (kecamatan) params.append("kecamatan", kecamatan);
-                if (kelurahan) params.append("kelurahan", kelurahan);
-                if (petugas) params.append("petugas", petugas);
-                if (status) params.append("status", status);
-                if (tahun) params.append("tahun", tahun);
+              //     if (search) params.append("search", search);
+              //     if (kategori) params.append("kategori", kategori);
+              //     if (subKategori) params.append("sub-kategori", subKategori);
+              //     if (kecamatan) params.append("kecamatan", kecamatan);
+              //     if (kelurahan) params.append("kelurahan", kelurahan);
+              //     if (status) params.append("status", status);
+              //     if (tahun) params.append("tahun", tahun);
 
-                window.open(
-                  route("wajib-retribusi.download-pdf") +
-                    "?" +
-                    params.toString(),
-                  "_blank",
-                );
-              }}
+              //     window.open(
+              //       route("wajib-retribusi.download-pdf") +
+              //         "?" +
+              //         params.toString(),
+              //       "_blank",
+              //     );
+              //   }}
               className="rounded bg-red-500 px-3 py-1.5 text-sm font-medium text-white"
             >
               PDF
             </button>
             <button
-              onClick={() => {
-                const params = new URLSearchParams();
+              //   onClick={() => {
+              //     const params = new URLSearchParams();
 
-                if (search) params.append("search", search);
-                if (kategori) params.append("kategori", kategori);
-                if (subKategori) params.append("sub-kategori", subKategori);
-                if (kecamatan) params.append("kecamatan", kecamatan);
-                if (kelurahan) params.append("kelurahan", kelurahan);
-                if (petugas) params.append("petugas", petugas);
+              //     if (search) params.append("search", search);
+              //     if (kategori) params.append("kategori", kategori);
+              //     if (subKategori) params.append("sub-kategori", subKategori);
+              //     if (kecamatan) params.append("kecamatan", kecamatan);
+              //     if (kelurahan) params.append("kelurahan", kelurahan);
 
-                window.open(
-                  route("wajib-retribusi.export") +
-                  "?" +
-                  params.toString(),
-                  "_blank",
-                );
-              }}
+              //     window.open(
+              //       route("kuptd.wajib-retribusi.export") +
+              //         "?" +
+              //         params.toString(),
+              //       "_blank",
+              //     );
+              //   }}
               className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white"
             >
               Excel
@@ -595,32 +496,28 @@ const Index = ({
                         <td>
                           <span
                             className={`select-none rounded py-2 font-medium ${
-                              data.status === "Approved" &&
-                              data.current_role != null
+                              data.status === "Processed" &&
+                              data.current_role == "ROLE_KUPTD"
                                 ? "text-sky-600"
-                                : data.status == "Processed"
+                                : data.status == "Processed" &&
+                                    data.current_role != "ROLE_KUPTD"
                                   ? "text-amber-500"
                                   : data.status == "Rejected"
                                     ? "text-red-500"
                                     : data.status === "Approved" &&
                                       data.current_role == null &&
                                       "text-green-500"
-                            } ${
-                              data.status === "Finished" &&
-                              data.current_role === "ROLE_KABID" &&
-                              "text-green-500"
                             }`}
                           >
-                            {data.status === "Approved" &&
-                              data.current_role != null &&
+                            {data.status === "Processed" &&
+                              data.current_role == "ROLE_KUPTD" &&
                               "Diterima"}
-                            {data.status === "Processed" && "Diproses"}
+                            {data.status === "Processed" &&
+                              data.current_role != "ROLE_KUPTD" &&
+                              "Diproses"}
                             {data.status === "Rejected" && "Ditolak"}
                             {data.status === "Approved" &&
                               data.current_role == null &&
-                              "Selesai"}
-                            {data.status === "Finished" &&
-                              data.current_role === "ROLE_KABID" &&
                               "Selesai"}
                           </span>
                         </td>
@@ -629,7 +526,7 @@ const Index = ({
                         >
                           <div className="flex gap-2 *:rounded *:text-xs *:font-medium *:md:text-sm">
                             {/* <Link
-                              href={route("super-admin.wajib-retribusi.edit", {
+                              href={route("kuptd.wajib-retribusi.edit", {
                                 retribusi: data.noPendaftaran,
                               })}
                               className="flex items-center gap-1.5"
@@ -645,7 +542,7 @@ const Index = ({
 
                                 window.open(
                                   route(
-                                    "super-admin.wajib-retribusi.export-single",
+                                    "kuptd.wajib-retribusi.export-single",
                                     { id: data.id },
                                   ),
                                   "_blank",

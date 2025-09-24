@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Kuptd;
+namespace App\Http\Controllers\Kasubag;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
@@ -12,7 +12,6 @@ use App\Models\WajibRetribusi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class WajibRetribusiController extends Controller
@@ -123,7 +122,7 @@ class WajibRetribusiController extends Controller
     private function renderWajibRetribusi(
         Request $request,
         $status = null,
-        string $view = 'Index',
+        string $view = 'Kasubag/Permohonan/Wajib-Retribusi/Index',
         ?callable $extraFilter = null
     ) {
         $getSearch = $request->get('search');
@@ -133,7 +132,6 @@ class WajibRetribusiController extends Controller
         $getKategori = $request->get('kategori');
         $getSubKategori = $request->get('sub-kategori');
         $getKecamatan = $request->get('kecamatan', Auth::user()->uptd->kecamatan->kodeKecamatan);
-        // dd(Auth::user()->uptd->kecamatan->kodeKecamatan);
         $getKelurahan = $request->get('kelurahan');
         $getPetugas = $request->get('petugas');
         $getStatus = $request->get('status');
@@ -150,43 +148,58 @@ class WajibRetribusiController extends Controller
             'uptd'
         ])->where('kodeKecamatan', Auth::user()->uptd->kecamatan->kodeKecamatan);
 
-        if ($status) {
-            $query->where('status', $status);
-        }
-
         if ($extraFilter) {
             $extraFilter($query);
-        }
-
-        if ($status && $view !== 'Index') {
-            $query->where('status', $status)->whereNull('noWajibRetribusi');
         }
 
         $this->sortTable($query, $getSortBy, $getSortDir);
         $this->filterData($query, $getSearch, $getPenanggungJawab, $getKategori, $getSubKategori, $getKecamatan, $getKelurahan, $getPetugas, null, $getTahun);
 
-        $penanggungJawab = Pemilik::select('id', 'namaPemilik')->get();
-        $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
-        $subKategori = $getKategori
-            ? SubKategori::where('kodeKategori', $getKategori)->select('kodeSubKategori', 'namaSubKategori')->get()
-            : collect();
-        $kecamatan = Kecamatan::select('kodeKecamatan', 'namaKecamatan')->get();
-        $kelurahan = $getKecamatan
-            ? Kelurahan::where('kodeKecamatan', $getKecamatan)->select('kodeKelurahan', 'namaKelurahan')->get()
-            : collect();
+        $penanggungJawab = Pemilik::select('id', 'namaPemilik')
+            ->get()
+            ->map(function ($pj) {
+                return [
+                    'value' => $pj->namaPemilik,
+                    'label' => $pj->namaPemilik
+                ];
+            });
 
-        // $statusOptions = WajibRetribusi::select('status')
-        //     ->distinct()
-        //     ->whereNotNull('status')
-        //     ->where('status', '!=', '')
-        //     ->orderBy('status')
-        //     ->pluck('status')
-        //     ->map(fn($s) => ['value' => $s, 'label' => $s]);
-        $statuses = ['Approved', 'Processed', 'Rejected', 'Finished'];
-        $statusOptions = collect($statuses)->map(fn($s) => [
-            'value' => $s,
-            'label' => $s
-        ]);
+        $kategori = Kategori::select('kodeKategori', 'namaKategori')
+            ->get()
+            ->map(function ($k) {
+                return [
+                    'value' => $k->kodeKategori,
+                    'label' => $k->namaKategori
+                ];
+            });
+
+        $subKategori = $getKategori ? SubKategori::with('kategori')->select('kodeSubKategori', 'namaSubKategori')
+            ->where('kodeKategori', $getKategori)
+            ->get()
+            ->map(fn($sk) => [
+                'value' => $sk->kodeSubKategori,
+                'label' => $sk->namaSubKategori
+            ]) : collect();
+
+        $kelurahan = $getKecamatan ? Kelurahan::select('kodeKelurahan', 'namaKelurahan')
+            ->where('kodeKecamatan', $getKecamatan)
+            ->get()
+            ->map(fn($kel) => [
+                'value' => $kel->kodeKelurahan,
+                'label' => $kel->namaKelurahan
+            ]) : collect();
+
+        $statuses = [
+            'Approved' => 'Diterima',
+            'Processed' => 'Diproses',
+            'Rejected' => 'Ditolak',
+            'Finished' => 'Selesai'
+        ];
+
+        $statusOptions = collect($statuses)->map(fn($label, $value) => [
+            'value' => $value,
+            'label' => $label
+        ])->values()->all();
 
         $tahunOptions = WajibRetribusi::select('created_at')
             ->get()
@@ -195,11 +208,13 @@ class WajibRetribusiController extends Controller
             ->unique()
             ->sortDesc()
             ->values()
-            ->map(fn($t) => ['value' => $t, 'label' => $t]);
+            ->map(fn($t) => ['value' => (string) $t, 'label' => (string) $t]);
+
+        // dd($tahunOptions);
 
         $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
-        return Inertia::render("Kuptd/Data-Input/Wajib-Retribusi/{$view}", [
+        return Inertia::render($view, [
             'datas' => $datas,
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
@@ -218,7 +233,6 @@ class WajibRetribusiController extends Controller
             'pjOptions' => $penanggungJawab,
             'kategoriOptions' => $kategori,
             'subKategoriOptions' => $subKategori,
-            'kecamatanOptions' => $kecamatan,
             'kelurahanOptions' => $kelurahan,
             'statusOptions' => $statusOptions,
             'tahunOptions' => $tahunOptions,
@@ -230,43 +244,10 @@ class WajibRetribusiController extends Controller
      */
     public function index(Request $request)
     {
-        // return $this->renderWajibRetribusi(
-        //     $request,
-        //     null,
-        //     "Index",
-        //     function ($q) use ($request) {
-        //         if ($request->get('status') === "Approved") {
-        //             $q->where(function ($data) {
-        //                 $data->where('status', "Processed")
-        //                     ->where('current_role', "ROLE_KUPTD");
-        //             })->orWhere(function ($data) {
-        //                 $data->where('status', 'Approved')
-        //                     ->whereNull('current_role');
-        //             });
-        //         }
-
-        //         if ($request->get('status') === "Processed") {
-        //             $q->where('status', "Processed")
-        //                 ->where('current_role', '!=', "ROLE_KUPTD");
-        //         }
-
-        //         if ($request->get('status') === "Rejected") {
-        //             $q->where('status', "Rejected");
-        //         }
-
-        //         if ($request->get('status') === null) {
-        //             $q->where(function ($data) {
-        //                 $data->where('current_role', '!=', "ROLE_PENDAFTAR")
-        //                     ->orWhere('status', "Rejected")
-        //                     ->orWhereNull('current_role');
-        //             });
-        //         }
-        //     }
-        // );
         return $this->renderWajibRetribusi(
             $request,
             null,
-            "Index",
+            'Kasubag/Permohonan/Wajib-Retribusi/Index',
             function ($q) use ($request) {
                 if ($request->get('status') === "Approved") {
                     $q->where('status', 'Processed')->where('current_role', 'ROLE_KUPTD');
@@ -286,7 +267,7 @@ class WajibRetribusiController extends Controller
                             ->where('current_role', 'ROLE_KABID');
                     })->orWhere(function ($data) {
                         $data->where('status', 'Approved')
-                        ->whereNull('current_role');
+                            ->whereNull('current_role');
                     });
                 }
 
@@ -306,7 +287,7 @@ class WajibRetribusiController extends Controller
         return $this->renderWajibRetribusi(
             $request,
             null,
-            "Diterima",
+            "Kasubag/Inbox-Data/Diterima",
             fn($q) => $q->where('status', 'Processed')->where('current_role', 'ROLE_KUPTD')
         );
     }
@@ -316,7 +297,7 @@ class WajibRetribusiController extends Controller
         return $this->renderWajibRetribusi(
             $request,
             null,
-            "Diproses",
+            "Kasubag/Inbox-Data/Diproses",
             fn($q) => $q->where(function ($q) {
                 $q->where('current_role', '!=', 'ROLE_KUPTD')
                     ->where('status', "Processed");
@@ -329,7 +310,7 @@ class WajibRetribusiController extends Controller
         return $this->renderWajibRetribusi(
             $request,
             null,
-            "Ditolak",
+            "Kasubag/Inbox-Data/Ditolak",
             fn($q) => $q->where(function ($q) {
                 $q->where('status', 'Rejected');
                 // ->where('current_role', '!=', 'ROLE_KUPTD')
@@ -398,7 +379,7 @@ class WajibRetribusiController extends Controller
                 'tarif2' => $sub->tarif2
             ])->values());
 
-        return Inertia::render("Kuptd/Data-Input/Wajib-Retribusi/Show", [
+        return Inertia::render("Kasubag/Inbox-Data/Show", [
             'status' => $status,
             'retribusi' => $retribusi,
             'pemohonOptions' => $pemohonOptions,
@@ -420,32 +401,9 @@ class WajibRetribusiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, WajibRetribusi $retribusi)
+    public function update(Request $request, string $id)
     {
-        $request->validate([
-            'status' => 'in:Approved,Rejected,Processed',
-            'keterangan' => $request->status === "Rejected" ? "required" : "nullable"
-        ], [
-            'status.in' => 'Status tidak valid',
-            'keterangan.required' => 'Keterangan perlu diisi'
-        ]);
-
-        $history = $retribusi->historyAction ?? [];
-
-        $history[] = [
-            'role' => Auth::user()->role,
-            'action' => $request->status,
-            'userId' => Auth::id(),
-            'actionDate' => now()->toIso8601String()
-        ];
-
-        $retribusi->keterangan = $request->keterangan;
-        $retribusi->status = $request->status === "Rejected" ? "Rejected" : "Processed";
-        $retribusi->historyAction = $history;
-        $retribusi->current_role = $request->status === "Approved" ? "ROLE_KATIM" : "ROLE_PENDAFTAR";
-        $retribusi->save();
-
-        return redirect()->back();
+        //
     }
 
     /**
@@ -454,21 +412,5 @@ class WajibRetribusiController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function getImageFile()
-    {
-        if ($this->url_image) {
-            return Storage::url($this->url_image[0]);
-        }
-        return null;
-    }
-
-    public function getBerkasFile()
-    {
-        if ($this->url_file) {
-            return Storage::url($this->url_file[0]);
-        }
-        return null;
     }
 }
