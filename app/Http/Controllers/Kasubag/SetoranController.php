@@ -146,6 +146,8 @@ class SetoranController extends Controller
                 ];
             });
 
+        // dd($skrdOptions);
+
         return Inertia::render('Kasubag/Penerimaan/Setoran', [
             'skrdOptions' => $skrdOptions,
             'metodeOptions' => $this->getMetodeBayar(),

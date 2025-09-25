@@ -131,6 +131,7 @@ const Show = ({ data, bulan }) => {
                           })
                         : "-"}
                     </td>
+                    <td>{pembayaranBulan?.keterangan || "-"}</td>
                     <td>
                       {pembayaranBulan &&
                       pembayaranBulan?.setoran?.buktiBayar ? (

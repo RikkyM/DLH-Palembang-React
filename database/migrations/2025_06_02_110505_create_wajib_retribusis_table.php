@@ -34,8 +34,8 @@ return new class extends Migration
             $table->string('statusTempat');
             $table->string('latitude');
             $table->string('longitude');
-            $table->string('image');
-            $table->json('url_image');
+            $table->string('image')->nullable();
+            $table->json('url_image')->nullable();
             $table->string('file')->nullable();
             $table->json('url_file')->nullable();
             $table->string('linkMap')->nullable();

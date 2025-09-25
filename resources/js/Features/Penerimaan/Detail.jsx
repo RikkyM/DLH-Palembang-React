@@ -207,7 +207,7 @@ const Detail = ({ data }) => {
                             minimumFractionDigits: 0,
                           }).format(detail.jumlahBayar)}
                         </td>
-                        <td>{detail.keteranganBulan ?? "-"}</td>
+                        <td>{detail.keterangan ?? "-"}</td>
                       </tr>
                     );
                   })}

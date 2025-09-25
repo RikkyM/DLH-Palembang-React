@@ -55,7 +55,7 @@ class WajibRetribusiRequest extends FormRequest
             // 'fotoBangunan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             // 'fotoBerkas' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'fotoBangunan' => [
-                $isEdit ? 'nullable' : 'required',
+                'nullable',
                 'file',
                 'mimes:pdf,jpg,jpeg,png',
                 'max:5120'
@@ -69,13 +69,13 @@ class WajibRetribusiRequest extends FormRequest
 
         if ($this->isMethod('post')) {
             $rules['noWajibRetribusi'] = 'required|unique:wajib_retribusi,noWajibRetribusi';
-            $rules['fotoBangunan'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
+            // $rules['fotoBangunan'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
             $rules['fotoBerkas'] = 'sometimes|nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
         }
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {
-            $rules['noWajibRetribusi'] = 'required|unique:wajib_retribusi,noWajibRetribusi,' . $this->retribusi;
-            $rules['fotoBangunan'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
+            $rules['noWajibRetribusi'] = 'sometimes|unique:wajib_retribusi,noWajibRetribusi,' . $this->retribusi;
+            // $rules['fotoBangunan'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
             $rules['fotoBerkas'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
         }
 
@@ -85,6 +85,8 @@ class WajibRetribusiRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'noWajibRetribusi.unique' => 'Nomor Wajib Retribusi sudah ada.',
+            'noSkrd.unique' => 'Nomor SPKRD sudah ada.',
             'namaObjekRetribusi.required' => 'Nama objek retribusi wajib diisi.',
             'namaObjekRetribusi.string' => 'Nama objek retribusi harus berupa teks.',
             'pemilikId.required' => 'Pemilik objek retribusi wajib dipilih.',
@@ -107,7 +109,7 @@ class WajibRetribusiRequest extends FormRequest
             'latitude.required' => 'Latitude koordinat lokasi wajib diisi.',
             'longitude.required' => 'Longitude koordinat lokasi wajib diisi.',
             'variabelValues.bulan.required' => 'Bulan wajib diisi.',
-            'fotoBangunan.required' => 'Foto bangunan wajib diunggah.',
+            // 'fotoBangunan.required' => 'Foto bangunan wajib diunggah.',
             'fotoBangunan.file' => 'Foto bangunan harus berupa file.',
             'fotoBangunan.mimes' => 'Foto bangunan harus berformat PDF, JPG, JPEG, atau PNG.',
             'fotoBangunan.max' => 'Ukuran foto bangunan maksimal 5MB.',

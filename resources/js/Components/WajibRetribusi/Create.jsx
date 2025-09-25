@@ -989,7 +989,6 @@ const WajibRetribusiCreate = ({
           <FormInput className="col-span-2 md:col-span-1">
             <Label
               htmlFor="fotoBangunan"
-              className="after:text-red-500 after:content-['*']"
             >
               Upload Foto Bangunan
             </Label>

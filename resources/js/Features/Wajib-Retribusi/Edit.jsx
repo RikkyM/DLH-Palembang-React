@@ -243,45 +243,60 @@ const WajibRetribusiEdit = ({
     const selectedSub = getSelectedSubKategori();
     if (!selectedSub) return 0;
 
-    const tarif = parseInt(data.tarifRetribusi || 0);
+    const tarif = parseInt(data.tarifRetribusi || 0) || 0;
 
     const variabelArray = Array.isArray(selectedSub.variabel)
       ? selectedSub.variabel
       : JSON.parse(selectedSub.variabel || "[]");
 
-    if (selectedSub.rumus) {
-      let formula = selectedSub.rumus;
+    const getVal = (name) => parseInt(data.variabelValues?.[name] ?? 0) || 0;
 
-      variabelArray.forEach((field) => {
-        const value = parseInt(data.variabelValues?.[field] || 0);
-        formula = formula.replaceAll(field, value || 0);
+    // Ada rumus
+    if (selectedSub.rumus && String(selectedSub.rumus).trim() !== "") {
+      const rawFormula = String(selectedSub.rumus);
+      let formula = rawFormula;
+
+      // Replace semua variabel yang kita kenal + 'bulan'
+      const namesToReplace = new Set([...variabelArray, "bulan"]);
+      namesToReplace.forEach((name) => {
+        const re = new RegExp(`\\b${name}\\b`, "gi");
+        formula = formula.replace(re, String(getVal(name)));
       });
 
+      let result = 0;
       try {
-        let result = Function(`"use strict"; return (${formula})`)();
-
-        const bulan = parseInt(data.variabelValues?.bulan || 0);
-        if (bulan > 0) result *= bulan;
-
-        return (result || 0) * tarif;
+        // evaluasi aman untuk ekspresi aritmatika
+        result = Function(`"use strict"; return (${formula})`)();
       } catch (error) {
-        console.error("Error evaluate formula:", error);
-        return 0;
+        console.error("Error evaluate formula:", error, { formula });
+        result = 0;
       }
+
+      // Jika rumus TIDAK mengandung 'bulan', baru kalikan dengan bulan di luar
+      const formulaHasBulan = /\bbulan\b/i.test(rawFormula);
+      if (!formulaHasBulan) {
+        result *= getVal("bulan");
+      }
+
+      return (result || 0) * tarif;
     }
 
+    // TANPA rumus: kalikan semua variabel kecuali 'bulan'
     let total = tarif;
-
     variabelArray.forEach((field) => {
-      const value = parseInt(data.variabelValues?.[field] || 0);
+      if (field?.toLowerCase() === "bulan") return; // hindari double count
+      const value = getVal(field);
       if (value > 0) total *= value;
     });
 
-    const bulan = parseInt(data.variabelValues?.bulan || 0);
-    if (bulan > 0) total *= bulan;
+    // Tambahkan bulan hanya jika tidak ada di variabelArray
+    if (!variabelArray.map((v) => String(v).toLowerCase()).includes("bulan")) {
+      total *= getVal("bulan");
+    }
 
     return total || 0;
   };
+  
 
   useEffect(() => {
     const total = calculateTotal();
@@ -325,7 +340,7 @@ const WajibRetribusiEdit = ({
   };
 
   return (
-    <section className="p-3">
+    <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
       <Link
         href={route(
           status === "diterima"
@@ -626,7 +641,7 @@ const WajibRetribusiEdit = ({
               min={1}
               max={99}
               id="bulan"
-              className={`${errors.bulan && "border border-red-500"}`}
+              className={`${errors["variabelValues.bulan"] && "border border-red-500"}`}
               placeholder="Jumlah Bulan..."
               value={data.variabelValues.bulan || ""}
               onKeyDown={(e) => {
@@ -641,8 +656,10 @@ const WajibRetribusiEdit = ({
                 }
               }}
             />
-            {errors.bulan && (
-              <span className="text-xs text-red-500">{errors.bulan}</span>
+            {errors["variabelValues.bulan"] && (
+              <span className="text-xs text-red-500">
+                {errors["variabelValues.bulan"]}
+              </span>
             )}
           </FormInput>
           <FormInput className="col-span-2 md:col-span-1">

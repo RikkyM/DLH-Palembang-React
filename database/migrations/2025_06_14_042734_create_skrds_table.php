@@ -43,8 +43,8 @@ return new class extends Migration
             $table->json('historyAction');
             $table->string('fileSkrd')->nullable();
             $table->json('url_fileSkrd')->nullable();
-            $table->string('image');
-            $table->json('url_image');
+            $table->string('image')->nullable();
+            $table->json('url_image')->nullable();
             $table->timestamps();
             $table->string('varetribusi')->nullable();
         });

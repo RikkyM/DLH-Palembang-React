@@ -437,16 +437,24 @@ class WajibRetribusiController extends Controller
         $tarif = $sub->{$jenisTarif} ?? 0;
         $rumus = $sub->rumus ?? '';
         $formulaHasBulan = preg_match('/\bbulan\b/i', $rumus) === 1;
+        // dd($formulaHasBulan);
 
-        // replace variabel (termasuk 'bulan' kalau ada)
         $formula = $rumus;
-        // dd($formula);
+        $tarifPerbulan = $request->tarifRetribusi;
         $tarifPertahun = $request->totalRetribusi;
 
         if (!empty($validated['variabelValues']) && $rumus) {
+            $formulaPerbulan = $rumus;
+
             foreach ($validated['variabelValues'] as $k => $v) {
                 $formula = preg_replace('/\b' . preg_quote($k, '/') . '\b/', (string)(int)$v, $formula);
+
+                if ($k !== 'bulan') {
+                    $formulaPerbulan = preg_replace('/\b' . preg_quote($k, '/') . '\b/', (string)(int)$v, $formulaPerbulan);
+                }
             }
+
+            // dd($formula, $formulaPerbulan, preg_replace('/\bbulan\b/', '1', $formulaPerbulan));
 
             $nilaiRumus = 0;
             try {
@@ -455,10 +463,26 @@ class WajibRetribusiController extends Controller
                 return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
             }
 
+            $nilaiRumusPerbulan = 0;
+            try {
+                if ($formulaHasBulan) {
+                    $formulaPerbulanWithMonth = preg_replace('/\bbulan\b/', '1', $formulaPerbulan);
+                } else {
+                    $formulaPerbulanWithMonth = $formulaPerbulan;
+                }
+
+                eval("\$nilaiRumusPerbulan = $formulaPerbulanWithMonth;");
+            } catch (\Throwable $e) {
+                return back()->withErrors(['variabelValues' => 'Rumus per bulan tidan valid']);
+            }
+
             if (!$formulaHasBulan) {
                 $nilaiRumus *= (int) data_get($validated, 'variabelValues.bulan', 0);
             }
+
             $tarifPertahun = $tarif * $nilaiRumus;
+            $tarifPerbulan = $tarif * $nilaiRumusPerbulan;
+
         }
 
 
@@ -498,8 +522,10 @@ class WajibRetribusiController extends Controller
             $fileFotoBangunan = $request->file('fotoBangunan');
             $fileFotoBerkas = $request->file('fotoBerkas');
 
-            $fotoBangunan = Str::uuid() . '.' . $fileFotoBangunan->getClientOriginalExtension();
-            $pathFotoBangunan = $fileFotoBangunan->storeAs('foto/bangunan', $fotoBangunan, 'local');
+            if (!empty($request->file('fotoBangunan'))) {
+                $fotoBangunan = Str::uuid() . '.' . $fileFotoBangunan->getClientOriginalExtension();
+                $pathFotoBangunan = [$fileFotoBangunan->storeAs('foto/bangunan', $fotoBangunan, 'local')];
+            }
 
             if (!empty($request->file('fotoBerkas'))) {
                 $fotoBerkas = Str::uuid() . '.' . $fileFotoBerkas->getClientOriginalExtension();
@@ -531,8 +557,10 @@ class WajibRetribusiController extends Controller
                 'statusTempat' => $request->statusTempat,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
-                'image' => $fotoBangunan,
-                'url_image' => [$pathFotoBangunan],
+                'image' => $fotoBangunan ?? null,
+                'url_image' => !empty($pathFotoBangunan) ? array_map(function ($path) {
+                    return Storage::url($path);
+                }, $pathFotoBangunan) : [],
                 'file' => $fotoBerkas ?? null,
                 'url_file' => !empty($pathFotoBerkas) ? array_map(function ($path) {
                     return Storage::url($path);
@@ -547,7 +575,7 @@ class WajibRetribusiController extends Controller
                 'giat' => $validated['variabelValues']['giat'] ?? null,
                 'hari' => $validated['variabelValues']['hari'] ?? null,
                 'meter' => $validated['variabelValues']['meter'] ?? null,
-                'tarifPerbulan' => $request->tarifRetribusi,
+                'tarifPerbulan' => $tarifPerbulan,
                 'tarifPertahun' => $tarifPertahun,
                 'jumlahBangunan' => $request->jBangunan,
                 'jumlahLantai' => $request->jLantai,
@@ -672,6 +700,7 @@ class WajibRetribusiController extends Controller
 
         $retribusi = WajibRetribusi::findOrFail($id);
 
+        $tarifPerbulan = $request->tarifRetribusi;
         $tarifPertahun = $request->totalRetribusi;
 
         if ($request->filled('variabelValues') || $request->filled('bulan')) {
@@ -680,23 +709,49 @@ class WajibRetribusiController extends Controller
             $jenisTarif = $request->jenisTarif;
             $tarif = $sub->{$jenisTarif} ?? 0;
             $rumus = $sub->rumus ?? '';
+            $formulaHasBulan = preg_match('/\bbulan\b/i', $rumus) === 1;
 
             if (!empty($validated['variabelValues']) && $rumus) {
+                $formulaPerbulan = $rumus;
                 foreach ($validated['variabelValues'] as $key => $value) {
                     $rumus = preg_replace('/\b' . preg_quote($key) . '\b/', $value, $rumus);
+
+                    if ($key !== 'bulan') {
+                        $formulaPerbulan = preg_replace('/\b' . preg_quote($key, '/') . '\b/', (string)(int)$value, $formulaPerbulan);
+                    }
                 }
 
+                $nilaiRumus = 0;
                 try {
-                    $nilaiRumus = 0;
                     eval("\$nilaiRumus = $rumus;");
                     $tarifPertahun = $validated['variabelValues']['bulan'] * $tarif * $nilaiRumus;
                 } catch (\Throwable $e) {
                     return back()->withErrors(['variabelValues' => 'Rumus tidak valid: ' . $e->getMessage()]);
                 }
-            } else {
-                $tarifPertahun = $validated['variabelValues']['bulan'] * $tarif;
+
+                $nilaiRumusPerbulan = 0;
+                try {
+                    if ($formulaHasBulan) {
+                        $formulaPerbulanWithMonth = preg_replace('/\bbulan\b/', '1', $formulaPerbulan);
+                    } else {
+                        $formulaPerbulanWithMonth = $formulaPerbulan;
+                    }
+
+                    eval("\$nilaiRumusPerbulan = $formulaPerbulanWithMonth;");
+                } catch (\Throwable $e) {
+                    return back()->withErrors(['variabelValues' => 'Rumus per bulan tidan valid']);
+                }
+
+                if (!$formulaHasBulan) {
+                    $nilaiRumus *= (int) data_get($validated, 'variabelValues.bulan', 0);
+                }
+
+                $tarifPertahun = $tarif * $nilaiRumus;
+                $tarifPerbulan = $tarif * $nilaiRumusPerbulan;
             }
         }
+
+        // dd($rumus, $tarifPerbulan, $tarifPertahun, $formulaPerbulan);
 
         DB::beginTransaction();
 
@@ -757,7 +812,7 @@ class WajibRetribusiController extends Controller
                 'giat' => $validated['variabelValues']['giat'] ?? null,
                 'hari' => $validated['variabelValues']['hari'] ?? null,
                 'meter' => $validated['variabelValues']['meter'] ?? null,
-                'tarifPerbulan' => $request->tarifRetribusi,
+                'tarifPerbulan' => $tarifPerbulan,
                 'tarifPertahun' => $tarifPertahun,
                 'jumlahBangunan' => $request->jBangunan,
                 'jumlahLantai' => $request->jLantai,

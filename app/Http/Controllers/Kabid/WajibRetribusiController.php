@@ -442,7 +442,7 @@ class WajibRetribusiController extends Controller
             'fileSkrd' => $retribusi->file,
             'url_fileSkrd' => json_encode($retribusi->url_file),
             'image' => $retribusi->image,
-            'url_image' => json_encode($retribusi->url_image),
+            'url_image' => json_encode($retribusi->url_image ?? null) ?? null,
         ];
 
         $skrd = Skrd::create($dataSkrd);

@@ -296,11 +296,22 @@ const Step2 = ({
             value={data.buktiBayar || ""}
             onChange={(e) => {
               setData("buktiBayar", e.target.files?.[0] ?? null);
+              console.log(data.buktiBayar);
               clearErrors("buktiBayar");
             }}
           />
           {errors.buktiBayar && (
             <span className="text-xs text-red-500">{errors.buktiBayar}</span>
+          )}
+          {data.buktiBayar && (
+            <a
+              href={URL.createObjectURL(data.buktiBayar)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-blue-500 hover:underline"
+            >
+              {data.buktiBayar.name}
+            </a>
           )}
         </FormInput>
         <div className="col-span-2">
