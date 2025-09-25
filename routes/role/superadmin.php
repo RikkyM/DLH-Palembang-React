@@ -31,7 +31,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
 
     Route::prefix('inbox-data')->group(function () {
         // Route::get('/pemohon/{filename}', [PemohonController::class, 'getKtp'])->name('getKtp');
-        Route::controller(WajibRetribusiController::class)->name('wajib-retribusi.')->prefix('wajib-retribusi')->group(function () {
+        Route::controller(WajibRetribusiController::class)->name('wajib-retribusi.')->group(function () {
             Route::get('/diterima', 'diterima')->name('diterima');
             Route::get('/diproses', 'diproses')->name('diproses');
             Route::get('/ditolak', 'ditolak')->name('ditolak');
