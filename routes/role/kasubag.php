@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Kasubag\DashboardController;
+use App\Http\Controllers\Kasubag\InvoiceController;
 use App\Http\Controllers\Kasubag\SetoranController;
 use App\Http\Controllers\Kasubag\SkrdController;
 use App\Http\Controllers\Kasubag\WajibRetribusiController;
@@ -27,6 +28,15 @@ Route::middleware('role:ROLE_KASUBAG_TU_UPDT')->prefix('kasubag')->name('kasubag
         });
 
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
+    });
+
+    Route::prefix('tagihan')->group(function () {
+        Route::resource('/surat-tagihan', InvoiceController::class)
+            ->only(['index', 'show', 'store'])
+            ->parameters([
+                'surat-tagihan',
+                'invoice'
+            ]);
     });
 
     Route::prefix('penerimaan')->group(function () {

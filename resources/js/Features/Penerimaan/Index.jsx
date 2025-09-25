@@ -26,6 +26,7 @@ const DataSetoran = ({
 
   const roleConfig = {
     ROLE_SUPERADMIN: "super-admin",
+    ROLE_KUPTD: 'kuptd',
     ROLE_KASUBAG_TU_UPDT: "kasubag",
   };
 

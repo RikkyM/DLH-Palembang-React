@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\DetailSetoran;
 use App\Models\Pembayaran;
 use App\Models\Skrd;
 use App\Models\Uptd;
@@ -35,6 +36,12 @@ class DashboardService
             ->get()
             ->groupBy(fn($item) => Carbon::parse($item->tanggalBayar)->month);
 
+        if ($payments->isEmpty()) {
+            $payments = DetailSetoran::whereYear('tanggalBayar', $year)
+                ->get()
+                ->groupBy(fn($item) => date('n', strtotime($item->tanggalBayar)));
+        }
+
         $bayaranPerbulan = [];
         for ($i = 1; $i <= 12; $i++) {
             $bayaranPerbulan[$i] = $payments->has($i) ? $payments[$i]->sum('jumlahBayar') : 0;
@@ -59,7 +66,7 @@ class DashboardService
         $jumlahSkrd = Skrd::whereYear('created_at', $year)->count();
 
         $proyeksiPenerimaan = Skrd::whereYear('created_at', $year)->sum('tagihanPerTahunSkrd');
-        $penerimaan = Pembayaran::whereYear('created_at', $year)->sum('jumlahBayar');
+        $penerimaan = Pembayaran::whereYear('created_at', $year)->sum('jumlahBayar') ?: DetailSetoran::whereYear('created_at', $year)->sum('jumlahBayar');
         $belumTertagih = $proyeksiPenerimaan - $penerimaan;
 
         return [
@@ -69,11 +76,15 @@ class DashboardService
             'penerimaan' => $penerimaan,
             'belumTertagih' => $belumTertagih,
             'penerimaanHariIni' => Pembayaran::whereYear('created_at', $year)
+                ->whereDate('created_at', Carbon::today())->sum('jumlahBayar') ?: DetailSetoran::whereYear('created_at', $year)
                 ->whereDate('created_at', Carbon::today())->sum('jumlahBayar'),
             'penerimaanBulanIni' => Pembayaran::whereYear('created_at', $year)
                 ->whereMonth('created_at', Carbon::now()->month)
+                ->sum('jumlahBayar') ?: DetailSetoran::whereYear('created_at', $year)
+                ->whereMonth('created_at', Carbon::now()->month)
                 ->sum('jumlahBayar'),
-            'penerimaanTahunIni' => Pembayaran::whereYear('created_at', $year)->sum('jumlahBayar'),
+            'penerimaanTahunIni' => Pembayaran::whereYear('created_at', $year)->sum('jumlahBayar') ?:
+                DetailSetoran::whereYear('created_at', $year)->sum('jumlahBayar'),
         ];
     }
 
@@ -90,6 +101,14 @@ class DashboardService
             ->get()
             ->groupBy(fn($p) => $p->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
             ->map(fn($group) => $group->sum('jumlahBayar'));
+
+        if ($pembayaranPie->isEmpty()) {
+            $pembayaranPie = DetailSetoran::with('skrd.uptd.kecamatan')
+                ->whereYear('tanggalBayar', $year)
+                ->get()
+                ->groupBy(fn($item) => $item->skrd->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
+                ->map(fn($item) => $item->sum('jumlahBayar'));
+        }
 
         $kategoriPembayaran = $kategoriPembayaran->merge($pembayaranPie);
 

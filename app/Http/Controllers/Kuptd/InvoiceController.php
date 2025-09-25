@@ -1,19 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\SuperAdmin;
+namespace App\Http\Controllers\Kuptd;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\InvoiceRequest;
 use App\Models\Invoice;
 use App\Models\Skrd;
-use App\Models\User;
-use App\Models\WajibRetribusi;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class InvoiceController extends Controller
@@ -30,13 +23,11 @@ class InvoiceController extends Controller
         $query = Invoice::query()
             ->select('invoices.*')
             ->join('skrd', 'invoices.noSkrd', '=', 'skrd.noSkrd')
-            ->with(['skrd:noSkrd,noWajibRetribusi,namaObjekRetribusi,alamatObjekRetribusi,kelurahanObjekRetribusi,kecamatanObjekRetribusi,tagihanPerBulanSkrd']);
+            ->with(['skrd:noSkrd,noWajibRetribusi,namaObjekRetribusi,alamatObjekRetribusi,kelurahanObjekRetribusi,kecamatanObjekRetribusi,tagihanPerBulanSkrd'])
+            ->whereRelation('skrd', 'uptdId', auth()->user()->uptdId);
 
         if ($getSearch && trim($getSearch) !== '') {
-            // $query->whereRelation('skrd', function($q) {
-
-            // })
-            $query->whereHas('skrd', function($q) use ($getSearch) {
+            $query->whereHas('skrd', function ($q) use ($getSearch) {
                 $q->where('noSkrd', 'like', "%{$getSearch}%")
                     ->orWhere('namaObjekRetribusi', 'like', "%{$getSearch}%")
                     ->orWhere('alamatObjekRetribusi', 'like', "%{$getSearch}%");
@@ -62,9 +53,9 @@ class InvoiceController extends Controller
         }
 
         $invoices = $query->paginate(10);
-
         $skrd = Skrd::select('noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'tagihanPerBulanSkrd')
             ->where('noSkrd', '!=', null)
+            ->where('uptdId', auth()->user()->uptdId)
             ->get()
             ->sortBy(function ($item) {
                 $parts = explode('/', $item->noSkrd);
@@ -84,9 +75,9 @@ class InvoiceController extends Controller
                 ];
             });
 
-        // dd($skrd->toArray());
+        // dd($skrd);
 
-        return Inertia::render('Super-Admin/Pembayaran/Invoice/Index', [
+        return Inertia::render('Kuptd/Tagihan/Index', [
             'datas' => $invoices,
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
@@ -109,7 +100,7 @@ class InvoiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(InvoiceRequest $request)
+    public function store(Request $request)
     {
         $skrd = Skrd::where('noSkrd', $request->noSkrd)->firstOrFail();
         $tarifRetribusi = $skrd->tagihanPerBulanSkrd;
@@ -118,24 +109,19 @@ class InvoiceController extends Controller
 
         DB::beginTransaction();
         try {
-
             Invoice::create([
                 'noSkrd' => $request->noSkrd,
                 'jumlah_bulan' => $request->jumlahBulan,
                 'satuan' => $request->satuan,
-                // 'nama_bank' => $request->namaBank,
-                // 'atas_nama' => $request->pengirim,
-                // 'no_rekening' => $request->noRekening,
                 'total_retribusi' => $total,
                 'terbilang' => trim(terbilang($total)),
                 'tanggal_terbit' => $request->tanggalTerbit,
                 'jatuh_tempo' => $request->jatuhTempo
             ]);
-
             DB::commit();
         } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan tagihan.']);
+            DB::rollback();
+            return back()->withErrors(['server' => "Terjadi kesalahan saat menyimpan tagihan."]);
         }
     }
 
@@ -170,54 +156,4 @@ class InvoiceController extends Controller
     {
         //
     }
-
-    // public function openFile($filename)
-    // public function openFile(Invoice $invoice)
-    // {
-    //     // $path = storage_path('app/private/invoices/' . $filename);
-
-    //     // if (!file_exists($path)) {
-    //     //     abort(404);
-    //     // }
-
-    //     // return Response::file($path);
-
-    //     $invoice->load('skrd');
-
-    //     // $kuptd = Skrd::with('user')->whereHas('user', function($q) use ($invoice) {
-    //     //     $q->where('uptdId', $invoice->skrd->uptdId)->where('role', 'ROLE_KUPTD');
-    //     // });
-
-    //     $kuptd = User::where('uptdId', $invoice->skrd->uptdId)->where('role', "ROLE_KUPTD")->first();
-    //     // dd($kuptd->first());
-    //     // // dd($invoice->skrd);
-
-    //     $pdf = Pdf::loadView('exports.invoices.invoice', ['invoice' => $invoice, 'skrd' => $invoice->skrd, 'kuptd' => $kuptd])->setPaper('a4');
-    //     // dd($data);
-    //     return $pdf->stream("invoice.pdf");
-    // }
-
-    // public function previewPdf(Request $request)
-    // {
-    //     $skrd = Skrd::where('noSkrd', $request->noSkrd)->firstOrFail();
-    //     $tarifRetribusi = $skrd->tagihanPerBulanSkrd;
-
-    //     $invoice = (object) [
-    //         'id' => 1,
-    //         'noSkrd' => $request->noSkrd,
-    //         'jumlah_bulan' => $request->jumlahBulan,
-    //         'satuan' => $request->satuan,
-    //         'nama_bank' => $request->namaBank,
-    //         'atas_nama' => $request->pengirim,
-    //         'no_rekening' => $request->noRekening,
-    //         'total_retribusi' => $request->jumlahBulan * $tarifRetribusi,
-    //         'terbilang' => trim(terbilang($request->jumlahBulan * $tarifRetribusi)),
-    //         'tanggalTerbit' => now(),
-    //         'jatuhTempo' => now()
-    //     ];
-
-    //     $pdf = Pdf::loadView('exports.invoices.invoice', ['invoice' => $invoice, 'skrd' => $skrd])->setPaper('a4');
-
-    //     return $pdf->stream('preview.pdf');
-    // }
 }

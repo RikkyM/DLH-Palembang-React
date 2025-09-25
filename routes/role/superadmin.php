@@ -52,8 +52,8 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
             ->parameters([
                 'surat-tagihan' => 'invoice'
             ]);
-        Route::get('/invoice/pdf/{invoice}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
-        Route::get('/preview-invoice', [InvoiceController::class, 'previewPdf'])->name('invoice.preview');
+        // Route::get('/invoice/pdf/{invoice}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
+        // Route::get('/preview-invoice', [InvoiceController::class, 'previewPdf'])->name('invoice.preview');
     });
 
     Route::prefix('penerimaan')->group(function () {

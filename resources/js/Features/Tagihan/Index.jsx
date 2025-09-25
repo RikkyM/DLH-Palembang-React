@@ -1,0 +1,295 @@
+import { useProvider } from "@/Context/GlobalContext";
+import { FileText, Search } from "lucide-react";
+import DialogForm from "./DialogForm";
+import { useEffect, useState } from "react";
+import { router } from "@inertiajs/react";
+import TableHead from "@/Components/TableHead";
+import SmartPagination from "@/Components/SmartPagination";
+
+const Index = ({ datas, filters, retribusiOptions = [], role }) => {
+  const { modalState, openModal, closeModal } = useProvider();
+  const [search, setSearch] = useState(filters.search || "");
+  const [sort, setSort] = useState(filters.sort || "");
+  const [direction, setDirection] = useState(filters.direction || "asc");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const roleConfig = {
+    ROLE_SUPERADMIN: "super-admin",
+    ROLE_KUPTD: "kuptd",
+    ROLE_KASUBAG_TU_UPDT: "kasubag",
+  };
+
+  const routeConfig = roleConfig[role];
+
+  const columns = [
+    { key: "id", label: "no", align: "text-left" },
+    {
+      key: "tanggal_terbit",
+      label: "tanggal invoice",
+      align: "text-center truncate",
+    },
+    { key: "no_invoice", label: "no invoice", align: "text-center truncate" },
+    {
+      key: "noSkrd",
+      label: "no spkrd",
+      align: "text-center truncate",
+    },
+    {
+      key: "namaObjekRetribusi",
+      label: "nama wajib retribusi",
+      align: "text-left truncate",
+    },
+    {
+      key: "alamatObjekRetribusi",
+      label: "alamat",
+      align: "text-left truncate",
+    },
+    {
+      key: "kelurahanObjekRetribusi",
+      label: "kelurahan",
+      align: "text-left truncate",
+    },
+    {
+      key: "kecamatanObjekRetribusi",
+      label: "kecamatan",
+      align: "text-left truncate",
+    },
+    {
+      key: "jumlah_bulan",
+      label: "jumlah bulan",
+      align: "text-center truncate",
+    },
+    { key: "satuan", label: "keterangan bulan", align: "text-left truncate" },
+    {
+      key: "tagihanPerBulanSkrd",
+      label: "tarif retribusi",
+      align: "text-left truncate",
+    },
+    {
+      key: "total_retribusi",
+      label: "total retribusi",
+      align: "text-left truncate",
+    },
+  ];
+
+  useEffect(() => {
+    setIsLoading(true);
+    const timeoutId = setTimeout(() => {
+      const params = {};
+
+      if (search && search.trim() !== "") params.search = search;
+      if (sort && sort !== filters.sort) params.sort = sort;
+      if (direction && direction !== filters.direction)
+        params.direction = direction;
+
+      router.get(route(`${routeConfig}.surat-tagihan.index`), params, {
+        preserveState: true,
+        replace: true,
+        only: ["datas"],
+        onFinish: () => setIsLoading(false),
+      });
+    }, 500);
+
+    return () => {
+      clearTimeout(timeoutId);
+      setIsLoading(false);
+    };
+  }, [search, sort, direction]);
+
+  const allFilters = {
+    search: search || filters.search,
+    sort: sort || filters.sort,
+    direction: direction || filters.direction,
+  };
+
+  return (
+    <>
+      <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
+        <div className="mb-3 flex w-full flex-col gap-3 rounded bg-white p-2 lg:flex-row lg:items-start lg:items-center lg:justify-between">
+          <label
+            htmlFor="search"
+            className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
+          >
+            <Search size={20} />
+            <input
+              autoComplete="off"
+              type="search"
+              id="search"
+              placeholder="Cari nama"
+              className="flex-1 outline-none"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </label>
+          <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start">
+            <button
+              onClick={() => {
+                openModal("create");
+              }}
+              className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
+            >
+              Tambah
+            </button>
+            <button className="rounded bg-red-500 px-3 py-1.5 text-sm font-medium text-white">
+              <span>PDF</span>
+            </button>
+            <button className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white">
+              <span>Excel</span>
+            </button>
+          </div>
+        </div>
+        <div
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded ${!isLoading && "shadow"}`}
+        >
+          {isLoading ? (
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
+              <svg
+                className="h-4 w-4 animate-spin"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                />
+              </svg>
+              Memuat data...
+            </div>
+          ) : (
+            <>
+              <table className="min-w-full divide-y divide-gray-300 bg-white p-3">
+                <thead>
+                  <TableHead
+                    columns={columns}
+                    sort={sort}
+                    direction={direction}
+                    onSort={(column, dir) => {
+                      setSort(column);
+                      setDirection(dir);
+                    }}
+                  />
+                </thead>
+                <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
+                  {isLoading ? (
+                    <tr></tr>
+                  ) : datas?.data?.length > 0 ? (
+                    datas.data.map((data, index) => (
+                      <tr
+                        key={data.id || index}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                      >
+                        <td className="text-center">
+                          {(datas.current_page - 1) * datas.per_page +
+                            index +
+                            1}
+                        </td>
+                        <td>
+                          {data.tanggal_terbit
+                            ? new Date(data.tanggal_terbit).toLocaleDateString(
+                                "id-ID",
+                                {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                },
+                              )
+                            : "-"}
+                        </td>
+                        <td>{data.no_invoice}</td>
+                        <td>{data.noSkrd}</td>
+                        <td>
+                          <div className="w-60">
+                            {data.skrd.namaObjekRetribusi}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="w-72">
+                            {data.skrd.alamatObjekRetribusi}
+                          </div>
+                        </td>
+                        <td className="whitespace-nowrap">
+                          {data.skrd.kelurahanObjekRetribusi}
+                        </td>
+                        <td className="whitespace-nowrap">
+                          {data.skrd.kecamatanObjekRetribusi}
+                        </td>
+                        <td className="text-center">
+                          {data.jumlah_bulan
+                            ? `${data.jumlah_bulan} Bulan`
+                            : "-"}
+                        </td>
+                        <td>{data.satuan}</td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data.skrd.tagihanPerBulanSkrd)}
+                        </td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data.total_retribusi)}
+                        </td>
+                        <td
+                          className={`sticky right-0 text-right ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                        >
+                          <div className="flex flex-col gap-2 *:rounded *:text-sm *:font-medium">
+                            <a
+                              href={route("invoice.pdf", {
+                                id: data.id,
+                              })}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5"
+                            >
+                              <FileText size={20} /> PDF
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={13}
+                        className="py-8 text-center text-gray-500"
+                      >
+                        {search
+                          ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
+                          : "Belum ada data surat tagihan"}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </>
+          )}
+        </div>
+        {!isLoading && <SmartPagination datas={datas} filters={filters} />}
+      </section>
+
+      <DialogForm
+        isOpen={modalState.type === "create" || modalState.type === "edit"}
+        onClose={closeModal}
+        mode={modalState.type}
+        invoice={modalState.data}
+        retribusiOptions={retribusiOptions}
+        role={role}
+      />
+    </>
+  );
+};
+
+export default Index;

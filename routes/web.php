@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PemohonController;
 use App\Http\Controllers\SkrdController;
 use App\Http\Controllers\WajibRetribusiController;
@@ -30,6 +31,9 @@ Route::prefix('sirep')->group(function () {
         });
 
         Route::get('/export-pemohon', [PemohonController::class, 'exportPemohon'])->name('export-pemohon');
+
+        Route::get('/invoice/pdf/{invoice}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
+        Route::get('/preview-invoice', [InvoiceController::class, 'previewPdf'])->name('invoice.preview');
 
         Route::controller(FileController::class)->group(function () {
             Route::get('/file/{filename}', 'getBuktiBayar')->where('filename', '.*')->name('bukti-bayar');

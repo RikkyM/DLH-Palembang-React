@@ -60,6 +60,24 @@ const KuptdNavigation = () => {
     },
   ];
 
+  const tagihanItems = [
+    {
+      label: "Data Surat Tagihan",
+      route: "kuptd.surat-tagihan.index",
+    },
+  ];
+
+  const penerimaanItems = [
+    {
+      label: "Data Setoran",
+      route: "kuptd.data-setoran.index",
+      activeRoute: [
+        "kuptd.data-setoran.index",
+        "kuptd.data-setoran.show",
+      ],
+    },
+  ];
+
   // const settingItems = [
   //   {
   //     label: "Uptd",
@@ -141,6 +159,16 @@ const KuptdNavigation = () => {
           title="Inbox Data"
           items={inboxItems}
           defaultOpen={isAccordionActive(inboxItems)}
+        />
+        <AccordionItem
+          title="Tagihan"
+          items={tagihanItems}
+          defaultOpen={isAccordionActive(tagihanItems)}
+        />
+        <AccordionItem
+          title="Penerimaan"
+          items={penerimaanItems}
+          defaultOpen={isAccordionActive(penerimaanItems)}
         />
 
         <div className="py-3">

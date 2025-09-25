@@ -65,10 +65,6 @@ class SetoranController extends Controller
                 break;
         }
 
-        // dd($getSkrd);
-
-        // dd($query->where('setoran.skrdId', 631)->get());
-
         if (!empty($getSkrd)) {
             $query->where('setoran.skrdId', $getSkrd);
         }
@@ -145,8 +141,6 @@ class SetoranController extends Controller
                     })
                 ];
             });
-
-        // dd($skrdOptions);
 
         return Inertia::render('Kasubag/Penerimaan/Setoran', [
             'skrdOptions' => $skrdOptions,

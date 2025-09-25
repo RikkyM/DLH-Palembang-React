@@ -21,4 +21,9 @@ class DetailSetoran extends Model
     {
         return $this->belongsTo(Setoran::class, 'nomorNota', 'nomorNota');
     }
+
+    public function skrd()
+    {
+        return $this->belongsTo(Skrd::class, 'skrdId', 'id');
+    }
 }
