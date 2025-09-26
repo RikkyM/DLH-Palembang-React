@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('setoran', function (Blueprint $table) {
             $table->after('buktiBayar', function (Blueprint $table) {
-                $table->enum('status', ['Processed', 'Approved', 'Rejected'])->default('Processed');
-                $table->enum('current_stage', ['kasubbag', 'kuptd', 'bendahara'])->default('kasubbag');
+                $table->enum('status', ['Processed', 'Approved', 'Rejected'])->default('Processed')->nullable();
+                $table->enum('current_stage', ['kasubbag', 'kuptd', 'bendahara'])->default('kasubbag')->nullable();
             });
         });
     }
