@@ -16,7 +16,7 @@ const DashboardPages = ({
     router.get(route(rute), { year: y }, { preserveState: true });
   };
   return (
-    <section className="relative min-h-screen overflow-hidden p-3">
+    <section className="relative min-h-screen touch-pan-y overflow-hidden p-3">
       <div>
         {years.map((y) => (
           <button

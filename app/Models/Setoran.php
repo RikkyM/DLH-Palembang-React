@@ -21,7 +21,9 @@ class Setoran extends Model
         'keteranganBulan',
         'metodeBayar',
         'namaBank',
-        'buktiBayar'
+        'buktiBayar',
+        'status',
+        'current_stage'
     ];
 
     public static function booted()

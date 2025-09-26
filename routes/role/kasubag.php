@@ -47,5 +47,8 @@ Route::middleware('role:ROLE_KASUBAG_TU_UPDT')->prefix('kasubag')->name('kasubag
                 'data-setoran' => 'data'
             ])
             ->where(['data' => '.*']);
+        Route::put('/data-setoran/{data}', [SetoranController::class, 'prosesSetoran'])
+            ->where('data', '.*')
+            ->name('proses-setoran');
     });
 });

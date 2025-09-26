@@ -1,9 +1,11 @@
-import { ChevronDown, Filter, ReceiptText, Search } from "lucide-react";
+import { useProvider } from "@/Context/GlobalContext";
+import { ChevronDown, Filter, ReceiptText, Search, Send } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import TableHead from "@/Components/TableHead";
 import { useEffect, useRef, useState } from "react";
 import { router } from "@inertiajs/react";
 import SmartPagination from "@/Components/SmartPagination";
+import Confirmation from "./Confirmation";
 
 const DataSetoran = ({
   datas,
@@ -12,6 +14,7 @@ const DataSetoran = ({
   metodeOptions = [],
   role,
 }) => {
+  const { modalState, openModal, closeModal } = useProvider();
   const [search, setSearch] = useState(filters.search || "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
@@ -26,11 +29,50 @@ const DataSetoran = ({
 
   const roleConfig = {
     ROLE_SUPERADMIN: "super-admin",
-    ROLE_KUPTD: 'kuptd',
+    ROLE_KUPTD: "kuptd",
     ROLE_KASUBAG_TU_UPDT: "kasubag",
+    ROLE_BENDAHARA: "bendahara",
   };
 
   const routeConfig = roleConfig[role];
+
+  const statusMap = {
+    ROLE_KASUBAG_TU_UPDT: {
+      Processed: {
+        kasubbag: "Diproses",
+        kuptd: "Dikirim ke KUPTD",
+        bendahara: "Diterima oleh KUPTD",
+      },
+      Approved: "Diterima",
+      Rejected: "Ditolak",
+    },
+    ROLE_KUPTD: {
+      Processed: {
+        kuptd: "Diproses",
+        bendahara: "Dikirim ke Bendahara",
+      },
+      Approved: "Diterima",
+    },
+    ROLE_BENDAHARA: {
+      Processed: {
+        bendahara: "Diproses",
+      },
+      Approved: "Diterima",
+    },
+  };
+
+  const renderStatus = (data) => {
+    const roleStatus = statusMap[role];
+    if (!roleStatus) return data.status;
+
+    const statusValue = roleStatus[data.status];
+
+    if (typeof statusValue === "string") {
+      return statusValue;
+    }
+
+    return statusValue?.[data.current_stage] ?? data.status;
+  };
 
   const columns = [
     { key: "nomorNota", label: "nomor nota", align: "text-left" },
@@ -49,6 +91,7 @@ const DataSetoran = ({
     { key: "namaPenyetor", label: "pengirim / penyetor", align: "text-left" },
     { key: "keteranganBulan", label: "ket. bulan bayar", align: "text-left" },
     { key: "buktiBayar", label: "bukti setor", align: "text-left" },
+    { key: "status", label: "status", align: "text-left" },
   ];
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
@@ -286,7 +329,7 @@ const DataSetoran = ({
                             )
                           : "-"}
                       </td>
-                      <td className="text-xs md:text-sm">
+                      <td className="text-center text-xs md:text-sm">
                         {Intl.NumberFormat("id-ID", {
                           style: "currency",
                           currency: "IDR",
@@ -316,6 +359,19 @@ const DataSetoran = ({
                         </a>
                       </td>
                       <td
+                        className={`whitespace-nowrap text-sm ${data.status === "Processed" ? "text-blue-500" : data.status === "Approved" ? "text-green-500" : "text-red-500"}`}
+                      >
+                        {/* {data.status === "Processed"
+                          ? "Diproses"
+                          : data.status === "Approved"
+                            ? "Diterima"
+                            : "Ditolak"} */}
+                        {/* {data.status === "Processed" ?
+                              data.current_stage === "kuptd" ? "Dikirim ke KUPTD" : data.current_stage === "bendahara" ? "Dikirim ke Bendahara" : "Diproses"
+                              : ""} */}
+                              {renderStatus(data)}
+                      </td>
+                      <td
                         className={`sticky right-0 space-x-1 text-right md:space-x-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                       >
                         {/* <Link href={route("super-admin.data-setoran.show", {
@@ -323,13 +379,24 @@ const DataSetoran = ({
                         })}>
                           <ReceiptText size={20} />
                         </Link> */}
-                        <a
-                          href={route(`${routeConfig}.data-setoran.show`, {
-                            data: data.nomorNota,
-                          })}
-                        >
-                          <ReceiptText size={20} />
-                        </a>
+                        <div className="flex flex-col gap-1.5">
+                          <a
+                            title="Detail"
+                            href={route(`${routeConfig}.data-setoran.show`, {
+                              data: data.nomorNota,
+                            })}
+                          >
+                            <ReceiptText className="size-5" />
+                          </a>
+                          <button
+                            title="Kirim"
+                            onClick={(e) => {
+                              openModal("confirmation", data);
+                            }}
+                          >
+                            <Send className="size-5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -351,6 +418,12 @@ const DataSetoran = ({
         </div>
         {!isLoading && <SmartPagination datas={datas} filters={filters} />}
       </section>
+      <Confirmation
+        isOpen={modalState.type === "confirmation"}
+        onClose={closeModal}
+        setoran={modalState.data}
+        route={routeConfig}
+      />
     </>
   );
 };

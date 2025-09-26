@@ -53,7 +53,7 @@ const DialogForm = ({ isOpen, onClose, retribusi = null, user }) => {
         onClose();
       },
       onError: () => {
-        console.error("Terjadi kesalahan ketika mengirim");
+        console.error("Terjadi kesalahan ketika mengirim retribusi.");
       },
     });
   };
