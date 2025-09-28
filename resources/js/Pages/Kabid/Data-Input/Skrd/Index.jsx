@@ -30,6 +30,38 @@ const Index = ({
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  const fmtIDR = (v) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(Number(v || 0));
+
+  const totalSetoran = (row) => {
+    if (row.setoran_sum_jumlah_bayar != null)
+      return Number(row.setoran_sum_jumlah_bayar) || 0;
+
+    if (Array.isArray(row.setoran)) {
+      return row.setoran.reduce(
+        (acc, it) => acc + (Number(it?.jumlahBayar) || 0),
+        0,
+      );
+    }
+    return 0;
+  };
+
+  const paidEffective = (row) => {
+    const totalPembayaran = Number(row.pembayaran_sum_jumlah_bayar) || 0;
+    if (totalPembayaran > 0) return totalPembayaran;
+    return totalSetoran(row);
+  };
+
+  const sisaTagihan = (row) => {
+    const tagihan = Number(row.tagihanPerTahunSkrd) || 0;
+    const paid = paidEffective(row);
+    return Math.max(tagihan - paid, 0);
+  };
+
   const allFilters = {
     search: search || filters.search,
     sort: sort || filters.sort,
@@ -100,7 +132,7 @@ const Index = ({
     },
     {
       key: "tagihanPerTahunSkrd",
-      label: "Tarif /tahun",
+      label: "Tarif /Tahun",
       align: "text-left truncate",
     },
     {
@@ -123,7 +155,7 @@ const Index = ({
       label: "penagih retribusi",
       align: "text-left truncate",
     },
-    { key: "statusLunas", label: "status", align: "text-left truncate" },
+    { key: "statusLunas", label: "status", align: "text-left truncate px-2" },
   ];
 
   const bulanOptions = useMemo(
@@ -131,10 +163,10 @@ const Index = ({
     [bulan],
   );
 
-  // const tahunList = useMemo(
-  //   () => tahunOptions.map((t) => ({ value: String(t), label: String(t) })),
-  //   [tahunOptions],
-  // );
+  const tahunList = useMemo(
+    () => tahunOptions.map((t) => ({ value: String(t), label: String(t) })),
+    [tahunOptions],
+  );
 
   const kategoriList = useMemo(
     () =>
@@ -243,10 +275,6 @@ const Index = ({
     tahunFilter,
   ]);
 
-  const handlePerPageChange = (e) => {
-    setPerPage(parseInt(e.target.value));
-  };
-
   return (
     <Layout title="INBOX SELESAI (SPKRD)">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
@@ -261,7 +289,9 @@ const Index = ({
                   name="showData"
                   id="showData"
                   value={perPage}
-                  onChange={handlePerPageChange}
+                  onChange={(e) => {
+                    setPerPage(parseInt(e.target.value));
+                  }}
                   className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                 >
                   <option value="10">10</option>
@@ -334,8 +364,8 @@ const Index = ({
                 />
                 <SearchableSelect
                   id="FilterTahun"
-                  // options={tahunList}
-                  // value={tahunFilter}
+                  options={tahunList}
+                  value={tahunFilter}
                   onChange={(val) => setTahunFilter(val)}
                   placeholder="Filter tahun"
                 />
@@ -402,7 +432,7 @@ const Index = ({
           className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
         >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 border bg-white px-2 text-sm text-gray-500 shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -439,10 +469,10 @@ const Index = ({
                   >
                     {bulan.map((bulan, i) => (
                       <React.Fragment key={i}>
-                        <th className="sticky top-0 z-0 cursor-pointer select-none bg-[#F1B174]">
+                        <th className="sticky top-0 cursor-pointer select-none bg-[#F1B174]">
                           {bulan}
                         </th>
-                        <th className="sticky top-0 z-0 cursor-pointer select-none truncate bg-[#F1B174]">
+                        <th className="sticky top-0 cursor-pointer select-none truncate bg-[#F1B174]">
                           Tanggal Bayar
                         </th>
                       </React.Fragment>
@@ -470,7 +500,11 @@ const Index = ({
                             .replace(/\//g, "-")}
                         </td>
                         <td>{data.namaObjekRetribusi}</td>
-                        <td>{data.alamatObjekRetribusi}</td>
+                        <td>
+                          <div className="w-72">
+                            {data.alamatObjekRetribusi}
+                          </div>
+                        </td>
                         <td>{data.kelurahanObjekRetribusi}</td>
                         <td>{data.kecamatanObjekRetribusi}</td>
                         <td>{data.namaKategori}</td>
@@ -490,29 +524,12 @@ const Index = ({
                             minimumFractionDigits: 0,
                           }).format(data.tagihanPerTahunSkrd ?? 0)}
                         </td>
-                        <td>
-                          {new Intl.NumberFormat("id-ID", {
-                            style: "currency",
-                            currency: "IDR",
-                            minimumFractionDigits: 0,
-                          }).format(data.pembayaran_sum_jumlah_bayar ?? 0)}
-                        </td>
-                        <td>
-                          {new Intl.NumberFormat("id-ID", {
-                            style: "currency",
-                            currency: "IDR",
-                            minimumFractionDigits: 0,
-                          }).format(
-                            data.tagihanPerTahunSkrd -
-                              data.pembayaran_sum_jumlah_bayar,
-                          )}
-                        </td>
+                        <td>{fmtIDR(paidEffective(data))}</td>
+                        <td>{fmtIDR(sisaTagihan(data))}</td>
                         <td>{data.namaPendaftar}</td>
-                        <td>-</td>
+                        <td>{data.namaPenagih ?? "-"}</td>
                         <td className="text-left">
-                          {data.tagihanPerTahunSkrd -
-                            data.pembayaran_sum_jumlah_bayar ===
-                          0 ? (
+                          {sisaTagihan(data) === 0 ? (
                             <span className="truncate rounded px-2 py-1 text-green-700">
                               Lunas
                             </span>
@@ -523,9 +540,16 @@ const Index = ({
                           )}
                         </td>
                         {bulan.map((_, i) => {
-                          const pembayaranUntukBulan = data.pembayaran.find(
-                            (item) => item.pembayaranBulan.includes(i + 1),
-                          );
+                          const pembayaranUntukBulan =
+                            data.pembayaran.find((item) =>
+                              item.pembayaranBulan.includes(i + 1),
+                            ) ??
+                            data.detail_setoran.find(
+                              (d) =>
+                                d.namaBulan.toLowerCase() ===
+                                  bulan[i].toLowerCase() &&
+                                d.setoran.status === "Approved",
+                            );
 
                           return (
                             <React.Fragment key={i}>
@@ -565,7 +589,7 @@ const Index = ({
                             </button>
                             <button
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
-                              onClick={(e) => {
+                              onClick={() => {
                                 window.open(
                                   route("skrd.download-data-excel", {
                                     id: data.id,

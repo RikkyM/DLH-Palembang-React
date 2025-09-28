@@ -258,10 +258,6 @@ const Index = ({
     tahunFilter,
   ]);
 
-  const handlePerPageChange = (e) => {
-    setPerPage(parseInt(e.target.value));
-  };
-
   return (
     <Layout title="INBOX SELESAI (SPKRD)">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
@@ -276,7 +272,9 @@ const Index = ({
                   name="showData"
                   id="showData"
                   value={perPage}
-                  onChange={handlePerPageChange}
+                  onChange={(e) => {
+                    setPerPage(parseInt(e.target.value));
+                  }}
                   className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                 >
                   <option value="10">10</option>
@@ -408,7 +406,7 @@ const Index = ({
           className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
         >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 px-2 text-sm text-gray-500">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 border bg-white px-2 text-sm text-gray-500 shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"
@@ -504,19 +502,6 @@ const Index = ({
                         <td>{fmtIDR(sisaTagihan(data))}</td>
                         <td>{data.namaPendaftar}</td>
                         <td>{data.namaPenagih ?? "-"}</td>
-                        {/* <td className="text-left">
-                          {data.tagihanPerTahunSkrd -
-                            data.pembayaran_sum_jumlah_bayar ===
-                          0 ? (
-                            <span className="truncate rounded px-2 py-1 text-green-700">
-                              Lunas
-                            </span>
-                          ) : (
-                            <span className="truncate rounded px-2 py-1 text-red-700">
-                              Belum Lunas
-                            </span>
-                          )}
-                        </td> */}
                         <td className="text-left">
                           {sisaTagihan(data) === 0 ? (
                             <span className="truncate rounded px-2 py-1 text-green-700">
@@ -536,7 +521,8 @@ const Index = ({
                             data.detail_setoran.find(
                               (d) =>
                                 d.namaBulan.toLowerCase() ===
-                                bulan[i].toLowerCase(),
+                                  bulan[i].toLowerCase() &&
+                                d.setoran.status === "Approved",
                             );
 
                           return (

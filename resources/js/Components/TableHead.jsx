@@ -7,7 +7,6 @@ const TableHead = ({
   onSort,
   children = null,
   user = null,
-  textAlign = "text-left",
 }) => {
   const handleSort = (column) => {
     const newDirection =
@@ -24,7 +23,7 @@ const TableHead = ({
           onClick={() => handleSort(col.key)}
           title="Sort"
         >
-          <span className="flex items-center gap-1.5">
+          <span className="inline-flex items-center gap-1.5">
             {col.label}
             {sort === col.key && (
               <span className="ml-1">

@@ -7,13 +7,12 @@ import TableHead from "@/Components/TableHead";
 import { router } from "@inertiajs/react";
 import React from "react";
 
-const Index = ({
+const Skrd = ({
   datas,
   filters,
   bulan,
   kategoriOptions = [],
   subKategoriOptions = [],
-  petugasOptions = [],
   tahunOptions = [],
 }) => {
   const [search, setSearch] = useState(filters.search || "");
@@ -234,7 +233,7 @@ const Index = ({
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route("kuptd.skrd.index"), params, {
+      router.get(route("bendahara.skrd.index"), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "subKategoriOptions", "filters", "tahunOptions"],
@@ -545,9 +544,9 @@ const Index = ({
                         >
                           <div className="flex flex-wrap gap-2 *:rounded *:text-xs *:font-medium *:sm:text-sm">
                             {/* <button className="flex items-center gap-1.5 outline-none">
-                                                    <PencilLine size={20} />{" "}
-                                                    Edit
-                                                </button> */}
+                                                        <PencilLine size={20} />{" "}
+                                                        Edit
+                                                    </button> */}
                             <button
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               onClick={(e) => {
@@ -576,13 +575,13 @@ const Index = ({
                             </button>
                             <button
                               onClick={() =>
-                                router.get(route("kuptd.skrd.show", data.id))
+                                router.get(route("bendahara.skrd.show", data.id))
                               }
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                               // onClick={(e) => {
                               //   e.stopPropagation();
                               //   window.open(
-                              //     route("kuptd.skrd.download-data-excel", {
+                              //     route("bendahara.skrd.download-data-excel", {
                               //       id: data.id,
                               //     }),
                               //     "_blank",
@@ -619,4 +618,4 @@ const Index = ({
   );
 };
 
-export default Index;
+export default Skrd;

@@ -39,8 +39,8 @@ class SkrdController extends Controller
         $skrd = Skrd::with([
             'user:id,namaLengkap,lokasi',
             'pembayaran',
-            'setoran',
-            'detailSetoran' => fn($q) => $q->orderBy('tanggalBayar')
+            'setoran' => fn($q) => $q->where('status', 'Approved'),
+            'detailSetoran.setoran' => fn($q) => $q->orderBy('tanggalBayar')
         ])
             ->select([
                 'id',

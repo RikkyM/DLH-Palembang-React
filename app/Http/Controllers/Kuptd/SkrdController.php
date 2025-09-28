@@ -39,8 +39,8 @@ class SkrdController extends Controller
         $skrd = Skrd::with([
             'user:id,namaLengkap,lokasi',
             'pembayaran',
-            'setoran',
-            'detailSetoran' => fn($q) => $q->orderBy('tanggalBayar')
+            'setoran' => fn($q) => $q->where('status', 'Approved'),
+            'detailSetoran.setoran' => fn($q) => $q->orderBy('tanggalBayar')
         ])
             ->select([
                 'id',
@@ -162,7 +162,7 @@ class SkrdController extends Controller
     public function show(Skrd $skrd)
     {
         return Inertia::render('Kuptd/Data-Input/Skrd/Show', [
-            'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd']),
+            'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd', 'setoran', 'detailSetoran.setoran']),
             'bulan' => $this->getBulan()
         ]);
     }

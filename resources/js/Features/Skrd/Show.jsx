@@ -6,8 +6,8 @@ const Show = ({ data, bulan }) => {
           <button
             onClick={() => {
               window.open(
-                route("skrd.download-data-pdf", {
-                  id: data.id,
+                route("skrd.pdf", {
+                  filename: data.fileSkrd
                 }),
                 "_blank",
               );

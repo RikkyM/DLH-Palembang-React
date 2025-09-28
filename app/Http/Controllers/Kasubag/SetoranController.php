@@ -233,14 +233,15 @@ class SetoranController extends Controller
 
     public function prosesSetoran(Setoran $data)
     {
-        $data->update([
-            'current_stage' => 'kuptd'
-        ]);
-        // try {
-        //     DB::transaction(function () use ($data) {
-        //     });
-        // } catch (\Exception $e) {
-        //     report($e);
-        // }
+        try {
+            DB::transaction(function () use ($data) {
+                $data->update([
+                    'current_stage' => 'kuptd'
+                ]);
+            });
+        } catch (\Exception $e) {
+            report($e);
+            return redirect()->back()->withErrors(['server' => 'Terjadi kesalahan ketika memproses setoran.']);
+        }
     }
 }

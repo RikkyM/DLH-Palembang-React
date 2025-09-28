@@ -13,7 +13,6 @@ const Skrd = ({
   bulan,
   kategoriOptions = [],
   subKategoriOptions = [],
-  petugasOptions = [],
   tahunOptions = [],
 }) => {
   const [search, setSearch] = useState(filters.search || "");
@@ -521,7 +520,8 @@ const Skrd = ({
                             data.detail_setoran.find(
                               (d) =>
                                 d.namaBulan.toLowerCase() ===
-                                bulan[i].toLowerCase(),
+                                  bulan[i].toLowerCase() &&
+                                d.setoran.status === "Approved",
                             );
 
                           return (

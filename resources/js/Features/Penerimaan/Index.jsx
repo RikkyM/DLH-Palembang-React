@@ -37,11 +37,22 @@ const DataSetoran = ({
   const routeConfig = roleConfig[role];
 
   const statusMap = {
+    ROLE_SUPERADMIN: {
+      Processed: {
+        default: "Diproses",
+      },
+      Approved: {
+        default: "Diterima",
+      },
+      Rejected: {
+        default: "Ditolak",
+      },
+    },
     ROLE_KASUBAG_TU_UPDT: {
       Processed: {
         kasubbag: "Diproses",
-        kuptd: "Dikirim ke KUPTD",
-        bendahara: "Diterima oleh KUPTD",
+        kuptd: "Diproses ke KUPTD",
+        bendahara: "Diproses oleh Bendahara",
       },
       Approved: "Diterima",
       Rejected: "Ditolak",
@@ -49,7 +60,7 @@ const DataSetoran = ({
     ROLE_KUPTD: {
       Processed: {
         kuptd: "Diproses",
-        bendahara: "Dikirim ke Bendahara",
+        bendahara: "Diproses ke Bendahara",
       },
       Approved: "Diterima",
     },
@@ -71,7 +82,7 @@ const DataSetoran = ({
       return statusValue;
     }
 
-    return statusValue?.[data.current_stage] ?? data.status;
+    return statusValue?.[data.current_stage] || statusValue.default;
   };
 
   const columns = [
@@ -369,7 +380,7 @@ const DataSetoran = ({
                         {/* {data.status === "Processed" ?
                               data.current_stage === "kuptd" ? "Dikirim ke KUPTD" : data.current_stage === "bendahara" ? "Dikirim ke Bendahara" : "Diproses"
                               : ""} */}
-                              {renderStatus(data)}
+                        {renderStatus(data)}
                       </td>
                       <td
                         className={`sticky right-0 space-x-1 text-right md:space-x-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
@@ -388,14 +399,18 @@ const DataSetoran = ({
                           >
                             <ReceiptText className="size-5" />
                           </a>
-                          <button
-                            title="Kirim"
-                            onClick={(e) => {
-                              openModal("confirmation", data);
-                            }}
-                          >
-                            <Send className="size-5" />
-                          </button>
+                          {console.log(data.current_stage === roleConfig[role])}
+                          {role !== "ROLE_SUPERADMIN" &&
+                            data.current_stage === roleConfig[role] && (
+                              <button
+                                title="Kirim"
+                                onClick={(e) => {
+                                  openModal("confirmation", data);
+                                }}
+                              >
+                                <Send className="size-5" />
+                              </button>
+                            )}
                         </div>
                       </td>
                     </tr>

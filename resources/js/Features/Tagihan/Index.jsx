@@ -17,6 +17,7 @@ const Index = ({ datas, filters, retribusiOptions = [], role }) => {
     ROLE_SUPERADMIN: "super-admin",
     ROLE_KUPTD: "kuptd",
     ROLE_KASUBAG_TU_UPDT: "kasubag",
+    ROLE_BENDAHARA: "bendahara",
   };
 
   const routeConfig = roleConfig[role];
@@ -122,14 +123,16 @@ const Index = ({ datas, filters, retribusiOptions = [], role }) => {
             />
           </label>
           <div className="flex flex-wrap items-center justify-end gap-1.5 md:justify-start">
-            <button
-              onClick={() => {
-                openModal("create");
-              }}
-              className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
-            >
-              Tambah
-            </button>
+            {role !== "ROLE_BENDAHARA" && (
+              <button
+                onClick={() => {
+                  openModal("create");
+                }}
+                className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
+              >
+                Tambah
+              </button>
+            )}
             <button className="rounded bg-red-500 px-3 py-1.5 text-sm font-medium text-white">
               <span>PDF</span>
             </button>

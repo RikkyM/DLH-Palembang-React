@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\SuperAdmin;
+namespace App\Http\Controllers\Bendahara;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
 use App\Models\Skrd;
 use App\Models\SubKategori;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,8 +17,10 @@ class SkrdController extends Controller
     {
         Carbon::setLocale('id');
 
-        return collect(range(1, 12))
-            ->map(fn($i) => strtoupper(Carbon::create()->month($i)->translatedFormat('F')));
+        return collect(range(1, 12))->map(
+            fn($i) =>
+            strtoupper(Carbon::create()->month($i)->translatedFormat('F'))
+        );
     }
 
     /**
@@ -27,13 +28,12 @@ class SkrdController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->get('search');
-        $sortBy = $request->get('sort', 'id');
-        $sortDir = $request->get('direction', 'desc');
-        $kategoriId = $request->get('kategori');
-        $subKategoriId = $request->get('sub-kategori');
-        $petugasId = $request->get('petugas');
-        $status = $request->get('status');
+        $getSearch = $request->get('search');
+        $getSortBy = $request->get('sort', 'id');
+        $getSortDir = $request->get('direction', 'desc');
+        $getKategori = $request->get('kategori');
+        $getSubKategori = $request->get('sub-kategori');
+        $getStatus = $request->get('status');
         $getBulan = $request->get('bulan');
         $getTahun = $request->get('tahun');
         $getPage = $request->get('per_page', 10);
@@ -75,33 +75,29 @@ class SkrdController extends Controller
                     ELSE COALESCE(setoran_sum_jumlah,0)
                     END";
 
-        if ($sortBy === 'sisa_tertagih') {
-            $skrd->orderByRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) {$sortDir}");
-        } elseif ($sortBy === 'statusLunas') {
-            $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - ({$paidEfektif})) = 0 THEN 0 ELSE 1 END {$sortDir}");
+        if ($getSortBy === 'sisa_tertagih') {
+            $skrd->orderByRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) {$getSortDir}");
+        } elseif ($getSortBy === 'statusLunas') {
+            $skrd->orderByRaw("CASE WHEN (tagihanPerTahunSkrd - ({$paidEfektif})) = 0 THEN 0 ELSE 1 END {$getSortDir}");
         } else {
-            $skrd->orderBy($sortBy, $sortDir);
+            $skrd->orderBy($getSortBy, $getSortDir);
         }
 
-        if ($search && trim($search) !== '') {
-            $skrd->where('namaObjekRetribusi', 'like', "%{$search}%");
+        if ($getSearch && trim($getSearch) !== '') {
+            $skrd->where('namaObjekRetribusi', 'like', "%{$getSearch}%");
         }
 
-        if ($kategoriId) {
-            $skrd->where('namaKategori', $kategoriId);
+        if ($getKategori) {
+            $skrd->where('namaKategori', $getKategori);
         }
 
-        if ($subKategoriId) {
-            $skrd->where('namaSubKategori', $subKategoriId);
+        if ($getSubKategori) {
+            $skrd->where('namaSubKategori', $getSubKategori);
         }
 
-        if ($petugasId) {
-            $skrd->where('namaPendaftar', $petugasId);
-        }
-
-        if ($status === 'lunas') {
+        if ($getStatus === 'lunas') {
             $skrd->havingRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) = 0");
-        } elseif ($status === 'belum_lunas') {
+        } elseif ($getStatus === 'belum_lunas') {
             $skrd->havingRaw("(tagihanPerTahunSkrd - ({$paidEfektif})) > 0");
         }
 
@@ -114,35 +110,30 @@ class SkrdController extends Controller
         }
 
         $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
-        $subKategori = $kategoriId ?
-            SubKategori::whereHas('kategori', function ($query) use ($kategoriId) {
-                $query->where('namaKategori', $kategoriId);
-            })->select('kodeSubKategori', 'namaSubKategori')->get()
+        $subKategori = $getKategori ?
+            SubKategori::whereRelation('kategori', 'namaKategori', $getKategori)->select('kodeSubKategori', 'namaSubKategori')->get()
             : collect();
-        $petugas = User::select('id', 'namaLengkap', 'lokasi')->where('role', 'ROLE_PENDAFTAR')->orderBy('namaLengkap')->get();
 
         $tahunOptions = Skrd::selectRaw('YEAR(created_at) as tahun')
             ->distinct()->orderByDesc('tahun')->pluck('tahun');
 
         $datas = $getPage <= 0 ? $skrd->get() : $skrd->paginate($getPage)->withQueryString();
 
-        return Inertia::render('Super-Admin/Data-Input/Skrd/Index', [
+        return Inertia::render('Bendahara/Inbox-Data/Skrd/Index', [
             'datas' => $datas,
             'filters' => [
-                'search' => $search && trim($search) !== '' ? $search : null,
-                'sort' => $sortBy,
-                'direction' => $sortDir,
-                'kategori' => $kategoriId,
-                'subKategori' => $subKategoriId,
-                'petugas' => $petugasId,
-                'status' => $status,
+                'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
+                'sort' => $getSortBy,
+                'direction' => $getSortDir,
+                'kategori' => $getKategori,
+                'subKategori' => $getSubKategori,
+                'status' => $getStatus,
                 'bulan' => $getBulan,
                 'tahun' => $getTahun,
                 'per_page' => $getPage
             ],
             'kategoriOptions' => $kategori,
             'subKategoriOptions' => $subKategori,
-            'petugasOptions' => $petugas,
             'bulan' => $this->getBulan(),
             'tahunOptions' => $tahunOptions
         ]);
@@ -169,8 +160,7 @@ class SkrdController extends Controller
      */
     public function show(Skrd $skrd)
     {
-
-        return Inertia::render('Super-Admin/Data-Input/Skrd/Show/Index', [
+        return Inertia::render('Bendahara/Inbox-Data/Skrd/Show', [
             'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd', 'setoran', 'detailSetoran.setoran']),
             'bulan' => $this->getBulan()
         ]);

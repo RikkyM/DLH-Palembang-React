@@ -47,5 +47,6 @@ Route::prefix('sirep')->group(function () {
         require __DIR__ . '/role/katim.php';
         require __DIR__ . '/role/kabid.php';
         require __DIR__ . '/role/kasubag.php';
+        require __DIR__ . '/role/bendahara.php';
     });
 });

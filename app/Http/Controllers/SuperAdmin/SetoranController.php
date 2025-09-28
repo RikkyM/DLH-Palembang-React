@@ -62,10 +62,6 @@ class SetoranController extends Controller
                 break;
         }
 
-        // dd($getSkrd);
-
-        // dd($query->where('setoran.skrdId', 631)->get());
-
         if (!empty($getSkrd)) {
             $query->where('setoran.skrdId', $getSkrd);
         }
@@ -73,7 +69,7 @@ class SetoranController extends Controller
         if ($getMetode) {
             $query->where('metodeBayar', $getMetode);
         }
-        
+
         $skrdOptions = Skrd::with('setoran')
             ->orderBy('created_at', 'desc')
             ->get()

@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Kuptd;
+namespace App\Http\Controllers\Bendahara;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setoran;
 use App\Models\Skrd;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class SetoranController extends Controller
@@ -33,9 +31,7 @@ class SetoranController extends Controller
         $getSkrd = $request->get('skrd');
         $getMetode = $request->get('metode');
 
-        $query = Setoran::with(['skrd', 'detailSetoran'])
-            ->where('current_stage', '!=', 'kasubbag')
-            ->whereHas('skrd', fn($q) => $q->where('uptdId', auth()->user()->uptdId));
+        $query = Setoran::with(['skrd', 'detailSetoran'])->where('current_stage', 'bendahara');
 
         if ($getSearch && trim($getSearch) !== '') {
             $query->whereHas('skrd', function ($q) use ($getSearch) {
@@ -71,7 +67,6 @@ class SetoranController extends Controller
         }
 
         $skrdOptions = Skrd::with('setoran')
-            ->where('uptdId', auth()->user()->uptdId)
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(fn($s) => [
@@ -81,7 +76,7 @@ class SetoranController extends Controller
 
         $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
-        return Inertia::render('Kuptd/Penerimaan/Index', [
+        return Inertia::render('Bendahara/Penerimaan/Index', [
             'datas' => $datas,
             'filters' => [
                 'search' => ($getSearch && trim($getSearch) === '') ? $getSearch : null,
@@ -119,7 +114,7 @@ class SetoranController extends Controller
     public function show(Setoran $data)
     {
         $data->load(['skrd', 'detailSetoran']);
-        return Inertia::render('Kuptd/Penerimaan/Detail', [
+        return Inertia::render('Bendahara/Penerimaan/Detail', [
             'data' => $data
         ]);
     }
@@ -146,19 +141,5 @@ class SetoranController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function prosesSetoran(Setoran $data)
-    {
-        try {
-            DB::transaction(function () use ($data) {
-                $data->update([
-                    'current_stage' => 'bendahara'
-                ]);
-            });
-        } catch (\Exception $e) {
-            report($e);
-            return redirect()->back()->withErrors(['server' => 'Terjadi kesalahan ketika memproses setoran.']);
-        }
     }
 }

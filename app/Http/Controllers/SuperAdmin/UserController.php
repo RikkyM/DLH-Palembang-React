@@ -30,7 +30,8 @@ class UserController extends Controller
                     $qq->where('namaLengkap', 'like', "%{$search}%")
                         ->orWhere('username', 'like', "%{$search}%")
                         ->orWhere('nip', 'like', "%{$search}%")
-                        ->orWhere('role', 'like', "%{$search}%");
+                        ->orWhere('role', 'like', "%{$search}%")
+                        ->orWhere('lokasi', 'like', "%{$search}%");
                 });
             })
             ->whereNotExists(function ($q) {
