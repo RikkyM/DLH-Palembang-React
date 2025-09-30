@@ -6,36 +6,49 @@ import { useEffect } from "react";
 const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
   const { data, setData, processing, put } = useForm();
 
-  console.log(data)
-
   useEffect(() => {
     if (isOpen) {
       setData({
-        status: setoran.status,
-        current_stage: setoran.current_stage
-      })
+        status: setoran.status ?? null,
+        current_stage: setoran.current_stage,
+      });
     }
-  }, [isOpen, setoran])
-  
-  const handleSend = (e, nota) => {
+  }, [isOpen, setoran]);
+
+  console.log(config)
+
+  const handleSubmit = (e, nota) => {
     e.preventDefault();
-    console.log(setoran.status, nota);
-    
-    put(
-      route(`${config}.proses-setoran`, {
-        data: encodeURIComponent(nota),
-      }),
-      {
-        preserveScroll: true,
-        onSuccess: () => {
-          onClose();
+
+    if (config === "kasubag") {
+      put(
+        route(`${config}.proses-setoran`, {
+          data: encodeURIComponent(nota),
+        }),
+        {
+          preserveScroll: true,
+          onSuccess: () => {
+            onClose();
+          },
+          onError: () => {
+            console.error("Terjadi kesalahan ketika memproses data setoran.");
+          },
         },
-        onError: () => {
-          console.error("Terjadi kesalahan ketika memproses data setoran.");
+      );
+    } else {
+      put(
+        route(`${config}.data-setoran.update`, {
+          data: encodeURIComponent(nota),
+        }),
+        {
+          preserveScroll: true,
+          onSuccess: () => {
+            onClose();
+          },
         },
-      },
-    );
-  }
+      );
+    }
+  };
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
@@ -50,18 +63,42 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
           </button>
         </div>
         <div className="px-5 pb-5 text-sm">
-          Apakah anda yakin ingin memproses data setoran ?
+          {config === "kasubag"
+            ? "Apakah anda yakin ingin memproses data setoran ?"
+            : "Apakah Anda yakin ingin melanjutkan?"}
         </div>
-        <div className="px-5 pb-3">
-          <div className="flex flex-col gap-3 text-xs md:text-sm md:flex-row md:justify-end md:gap-2">
+        <form
+          onSubmit={(e) => handleSubmit(e, setoran.nomorNota)}
+          className="px-5 pb-3"
+        >
+          <div className="flex flex-col gap-3 text-xs md:flex-row md:justify-end md:gap-2 md:text-sm">
+            {config !== "kasubag" && (
+              <button
+                className="order-2 rounded bg-red-500 px-3 py-2 font-medium text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
+                disabled={processing}
+                type="submit"
+                onClick={(e) => {
+                  setData("status", "Rejected");
+                }}
+              >
+                {processing ? "Proses..." : "Tolak"}
+              </button>
+            )}
             <button
               className="order-1 rounded bg-green-500 px-3 py-2 font-medium text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
               disabled={processing}
+              type="submit"
               onClick={(e) => {
-                handleSend(e, setoran.nomorNota);
+                if (config !== "kasubag") {
+                  setData("status", "Approved");
+                }
               }}
             >
-              {processing ? "Proses..." : "Kirim"}
+              {processing
+                ? "Proses..."
+                : config !== "kasubag"
+                  ? "Setujui"
+                  : "Kirim"}
             </button>
             <button
               onClick={onClose}
@@ -71,7 +108,7 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
               Batal
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </Dialog>
   );

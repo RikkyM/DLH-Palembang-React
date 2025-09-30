@@ -77,18 +77,28 @@ const Index = ({ users, uptd, filters }) => {
               onChange={(e) => setSearch(e.target.value)}
             />
           </label>
-          <button
-            onClick={() => {
-              openModal("create");
-            }}
-            className="flex w-full items-center justify-center gap-1.5 rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:w-auto"
-          >
-            <span>Tambah User</span>
-          </button>
+          <div className="flex gap-1.5">
+            <a
+              href={route("super-admin.export-user")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-1.5 rounded bg-green-700 px-3 py-2 text-sm text-white outline-none md:w-auto"
+            >
+              <span>Excel</span>
+            </a>
+            <button
+              onClick={() => {
+                openModal("create");
+              }}
+              className="flex w-full items-center justify-center gap-1.5 rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:w-auto"
+            >
+              <span>Tambah User</span>
+            </button>
+          </div>
         </div>
 
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow bg-white"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "bg-white shadow"}`}
         >
           <table className="min-w-full divide-y divide-gray-300 whitespace-nowrap p-3">
             <thead>

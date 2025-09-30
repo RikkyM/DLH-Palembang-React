@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setoran;
 use App\Models\Skrd;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class SetoranController extends Controller
@@ -130,9 +131,18 @@ class SetoranController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Setoran $data)
     {
-        //
+        try {
+            DB::transaction(function () use ($request, $data) {
+                $data->update([
+                    'status' => $request->status
+                ]);
+            });
+        } catch (\Exception $e) {
+            report($e);
+            return redirect()->back()->withErrors(['server' => 'Terjadi kesalahan ketika memproses setoran']);
+        }
     }
 
     /**

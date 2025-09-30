@@ -34,7 +34,7 @@ class SetoranController extends Controller
         $getMetode = $request->get('metode');
 
         $query = Setoran::with(['skrd', 'detailSetoran'])
-            ->where('current_stage', '!=', 'kasubbag')
+            ->where('current_stage', '!=', 'kasubag')
             ->whereHas('skrd', fn($q) => $q->where('uptdId', auth()->user()->uptdId));
 
         if ($getSearch && trim($getSearch) !== '') {
@@ -135,9 +135,27 @@ class SetoranController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Setoran $data)
     {
-        //
+        // dd($request->all());
+        try {
+            DB::transaction(function () use ($request, $data) {
+                if ($request->status === "Rejected") {
+                    $data->update([
+                        'status' => 'Rejected',
+                        'current_stage' => 'kasubag',
+                    ]);
+                } else {
+                    $data->update([
+                        'current_stage' => 'bendahara',
+                    ]);
+                }
+
+            });
+        } catch (\Exception $e) {
+            report($e);
+            return redirect()->back()->withErrors(['server' => 'Terjadi kesalahan ketika memproses setoran']);
+        }
     }
 
     /**
@@ -148,17 +166,17 @@ class SetoranController extends Controller
         //
     }
 
-    public function prosesSetoran(Setoran $data)
-    {
-        try {
-            DB::transaction(function () use ($data) {
-                $data->update([
-                    'current_stage' => 'bendahara'
-                ]);
-            });
-        } catch (\Exception $e) {
-            report($e);
-            return redirect()->back()->withErrors(['server' => 'Terjadi kesalahan ketika memproses setoran.']);
-        }
-    }
+    // public function prosesSetoran(Setoran $data)
+    // {
+    //     try {
+    //         DB::transaction(function () use ($data) {
+    //             $data->update([
+    //                 'current_stage' => 'bendahara'
+    //             ]);
+    //         });
+    //     } catch (\Exception $e) {
+    //         report($e);
+    //         return redirect()->back()->withErrors(['server' => 'Terjadi kesalahan ketika memproses setoran.']);
+    //     }
+    // }
 }

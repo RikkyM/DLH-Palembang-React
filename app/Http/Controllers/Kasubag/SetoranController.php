@@ -231,17 +231,17 @@ class SetoranController extends Controller
         //
     }
 
-    public function prosesSetoran(Setoran $data)
-    {
-        try {
-            DB::transaction(function () use ($data) {
-                $data->update([
-                    'current_stage' => 'kuptd'
-                ]);
-            });
-        } catch (\Exception $e) {
-            report($e);
-            return redirect()->back()->withErrors(['server' => 'Terjadi kesalahan ketika memproses setoran.']);
-        }
-    }
+    // public function prosesSetoran(Setoran $data)
+    // {
+    //     try {
+    //         DB::transaction(function () use ($data) {
+    //             $data->update([
+    //                 'current_stage' => 'kuptd'
+    //             ]);
+    //         });
+    //     } catch (\Exception $e) {
+    //         report($e);
+    //         return redirect()->back()->withErrors(['server' => 'Terjadi kesalahan ketika memproses setoran.']);
+    //     }
+    // }
 }

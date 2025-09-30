@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Exports\UserExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\Uptd;
@@ -10,6 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -101,6 +103,7 @@ class UserController extends Controller
 
             return redirect()->back();
         } catch (Exception $e) {
+            report($e);
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data');
         }
     }
@@ -158,6 +161,7 @@ class UserController extends Controller
 
             return redirect()->back()->with('success', 'Data pengguna berhasil diperbarui.');
         } catch (Exception $e) {
+            report($e);
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data');
         }
     }
@@ -168,5 +172,10 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function exportUser()
+    {
+        return Excel::download(new UserExport, 'users.xlsx');
     }
 }

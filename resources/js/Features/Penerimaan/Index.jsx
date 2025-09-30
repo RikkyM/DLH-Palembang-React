@@ -50,25 +50,39 @@ const DataSetoran = ({
     },
     ROLE_KASUBAG_TU_UPDT: {
       Processed: {
-        kasubbag: "Diproses",
+        kasubag: "Diproses",
         kuptd: "Diproses ke KUPTD",
         bendahara: "Diproses oleh Bendahara",
       },
-      Approved: "Diterima",
-      Rejected: "Ditolak",
+      Approved: {
+        default: "Diterima",
+      },
+      Rejected: {
+        default: "Ditolak",
+      },
     },
     ROLE_KUPTD: {
       Processed: {
         kuptd: "Diproses",
         bendahara: "Diproses ke Bendahara",
       },
-      Approved: "Diterima",
+      Approved: {
+        default: "Diterima",
+      },
+      Rejected: {
+        default: "Ditolak",
+      },
     },
     ROLE_BENDAHARA: {
       Processed: {
         bendahara: "Diproses",
       },
-      Approved: "Diterima",
+      Approved: {
+        default: "Diterima",
+      },
+      Rejected: {
+        default: "Ditolak",
+      },
     },
   };
 
