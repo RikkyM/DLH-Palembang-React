@@ -65,7 +65,7 @@ class SkrdDataExport implements FromView, ShouldAutoSize, WithStyles
             $query->havingRaw('(tagihanPerTahunSkrd - pembayaran_sum_jumlah_bayar) > 0');
         }
 
-        $data = $query->get();
+        $data = $r->per_page != null ? $query->take((int) $r->get('per_page', 10))->get() : $query->get();
 
         return view('exports.skrd.skrd-excel', compact('data'));
     }

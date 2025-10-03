@@ -13,7 +13,7 @@ class SetoranController extends Controller
 {
     private function getMetodeBayar()
     {
-        $metode = ['Transfer', 'Tunai', 'Qris'];
+        $metode = ['Transfer', 'Qris', 'Kliring', 'E-Wallet'];
         return collect($metode)->map(fn($s) => [
             'value' => $s,
             'label' => $s

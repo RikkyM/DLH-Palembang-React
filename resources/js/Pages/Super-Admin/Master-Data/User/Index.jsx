@@ -2,7 +2,7 @@ import { Search, Users, PencilLine } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useState } from "react";
 import { useProvider } from "@/Context/GlobalContext";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import DialogCreate from "./DialogCreate";
 import TableHead from "@/Components/TableHead";
 import SmartPagination from "@/Components/SmartPagination";
@@ -60,6 +60,7 @@ const Index = ({ users, uptd, filters }) => {
 
   return (
     <Layout title="USER / PEGAWAI">
+      <Head title="User / Pegawai" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
           <label

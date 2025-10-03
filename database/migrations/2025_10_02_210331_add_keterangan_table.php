@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('setoran', function (Blueprint $table) {
-            $table->after('buktiBayar', function (Blueprint $table) {
-                $table->enum('status', ['Processed', 'Approved', 'Rejected', 'Cancelled'])->default('Processed')->nullable();
-                $table->enum('current_stage', ['kasubag', 'kuptd', 'bendahara'])->default('kasubag')->nullable();
+            $table->after('current_stage', function (Blueprint $table) {
+                $table->string('keterangan')->nullable();
+                $table->datetime('tanggal_diterima')->nullable();
+                $table->datetime('tanggal_batal')->nullable();
             });
         });
     }
@@ -25,7 +26,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('setoran', function (Blueprint $table) {
-            $table->dropColumn(['status', 'current_stage']);
+            $table->dropColumn(['keterangan', 'tanggal_diterima', 'tanggal_batal']);
         });
     }
 };

@@ -387,7 +387,7 @@ const Index = ({
               />
             </label>
           </div>
-          <div className="flex items-center justify-end gap-1.5 md:justify-start">
+          <div className="flex w-full flex-wrap items-center justify-end gap-1.5 *:text-xs md:w-max md:justify-start *:md:text-sm">
             <button
               onClick={() => {
                 const params = new URLSearchParams();
@@ -397,6 +397,7 @@ const Index = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (petugas) params.append("petugas", petugas);
                 if (status) params.append("status", status);
+                if (tahun) params.append("tahun", tahun);
 
                 window.open(
                   route("skrd.download-pdf") + "?" + params.toString(),
@@ -415,6 +416,7 @@ const Index = ({
                 if (kategori) params.append("kategori", kategori);
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (petugas) params.append("petugas", petugas);
+                if (perPage) params.append("per_page", perPage);
                 if (status) params.append("status", status);
 
                 window.open(
@@ -422,17 +424,17 @@ const Index = ({
                   "_blank",
                 );
               }}
-              className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white transition duration-300"
+              className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white"
             >
               Excel
             </button>
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "bg-white shadow"}`}
         >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 border bg-white px-2 text-sm text-gray-500 shadow">
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
               <svg
                 className="h-4 w-4 animate-spin"
                 fill="none"

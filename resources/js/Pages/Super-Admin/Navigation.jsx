@@ -87,10 +87,10 @@ const SuperAdminNavigation = () => {
   ];
 
   const penerimaanItems = [
-    {
-      label: "Input Setoran",
-      route: "super-admin.input-setoran",
-    },
+    // {
+    //   label: "Input Setoran",
+    //   route: "super-admin.input-setoran",
+    // },
     {
       label: "Data Setoran",
       route: "super-admin.data-setoran.index",

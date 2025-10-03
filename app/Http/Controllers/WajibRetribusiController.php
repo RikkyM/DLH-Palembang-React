@@ -105,7 +105,6 @@ class WajibRetribusiController extends Controller
             }
         }
 
-
         if ($request->filled('per_page')) {
             $perPage = (int) $request->get('per_page', 10);
             $data = $query->take($perPage)->get();

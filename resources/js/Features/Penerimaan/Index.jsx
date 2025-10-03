@@ -1,11 +1,19 @@
 import { useProvider } from "@/Context/GlobalContext";
-import { ChevronDown, Filter, ReceiptText, Search, Send } from "lucide-react";
+import {
+  ChevronDown,
+  Filter,
+  ReceiptText,
+  Search,
+  Send,
+  Undo2,
+} from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import TableHead from "@/Components/TableHead";
 import { useEffect, useRef, useState } from "react";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import SmartPagination from "@/Components/SmartPagination";
 import Confirmation from "./Confirmation";
+import { data } from "autoprefixer";
 
 const DataSetoran = ({
   datas,
@@ -107,6 +115,7 @@ const DataSetoran = ({
       label: "nama objek retribusi",
       align: "text-left",
     },
+    { key: "kecamatan", label: "kecamatan", align: "text-center" },
     { key: "metodeBayar", label: "metode setor", align: "text-center" },
     { key: "namaBank", label: "nama bank", align: "text-center" },
     { key: "tanggalBayar", label: "tanggal bayar", align: "text-left" },
@@ -172,13 +181,38 @@ const DataSetoran = ({
     };
   }, [search, sort, direction, skrd, metode, perPage]);
 
-  const handlePerPageChange = (e) => {
-    setPerPage(parseInt(e.target.value));
+  const actionButtons = (data) => {
+    const isCurrentStage =
+      role !== "ROLE_SUPERADMIN" && data.current_stage === roleConfig[role];
+
+    const ACTIONS = {
+      Processed: { title: "Kirim", Icon: Send, iconClass: "size-5" },
+      Approved: {
+        title: "Tolak Data Setoran",
+        Icon: Undo2,
+        iconClass: "size-5 text-red-500",
+      },
+    };
+
+    const action = isCurrentStage ? ACTIONS[data.status] : null;
+    if (!action) return null;
+
+    const Icon = ACTIONS[data.status].Icon;
+
+    return (
+      <button
+        title={ACTIONS[data.status].title}
+        aria-label={ACTIONS[data.status].title}
+      >
+        <Icon className={ACTIONS[data.status].iconClass} />
+      </button>
+    );
   };
 
   return (
     <>
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
+        <Head title="Data Setoran" />
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
@@ -191,7 +225,9 @@ const DataSetoran = ({
                     name="showData"
                     id="showData"
                     value={perPage}
-                    onChange={handlePerPageChange}
+                    onChange={(e) => {
+                      setPerPage(parseInt(e.target.value));
+                    }}
                     className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                   >
                     <option value="10">10</option>
@@ -336,6 +372,11 @@ const DataSetoran = ({
                           {data.skrd.namaObjekRetribusi}
                         </div>
                       </td>
+                      <td className="text-xs md:text-sm">
+                        <div className="max-w-72">
+                          {data.skrd.kecamatanObjekRetribusi}
+                        </div>
+                      </td>
                       <td className="text-center text-xs md:text-sm">
                         {data.metodeBayar}
                       </td>
@@ -413,18 +454,31 @@ const DataSetoran = ({
                           >
                             <ReceiptText className="size-5" />
                           </a>
-                          {console.log(data.current_stage === roleConfig[role])}
-                          {role !== "ROLE_SUPERADMIN" &&
-                            data.current_stage === roleConfig[role] && (
+                          {/* {role !== "ROLE_SUPERADMIN" &&
+                            data.current_stage === roleConfig[role] &&
+                            data.status === "Processed" && (
                               <button
                                 title="Kirim"
-                                onClick={(e) => {
+                                onClick={() => {
                                   openModal("confirmation", data);
                                 }}
                               >
                                 <Send className="size-5" />
                               </button>
                             )}
+                          {role !== "ROLE_SUPERADMIN" &&
+                            data.current_stage === roleConfig[role] &&
+                            data.status === "Approved" && (
+                              <button
+                                title="Tolak Data Setoran"
+                                onClick={() => {
+                                  openModal("confirmation", data);
+                                }}
+                              >
+                                <Undo2 className="size-5 text-red-500" />
+                              </button>
+                            )} */}
+                            {actionButtons(data)}
                         </div>
                       </td>
                     </tr>

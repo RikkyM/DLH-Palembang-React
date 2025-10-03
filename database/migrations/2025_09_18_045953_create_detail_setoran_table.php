@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('nomorNota')->references('nomorNota')->on('setoran')->onUpdate('cascade')->onDelete('cascade');
-            $table->unique(['skrdId', 'namaBulan']);
+            $table->index(['skrdId', 'namaBulan']);
         });
     }
 

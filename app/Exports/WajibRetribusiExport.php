@@ -69,7 +69,7 @@ class WajibRetribusiExport implements FromView, ShouldAutoSize, WithStyles
             $query->where('status', $status);
         }
 
-        $data = $query->get();
+        $data = $this->request->per_page != null ? $query->take((int) $this->request->get('per_page', 10))->get() : $query->get();
 
         return view('exports.wajib-retribusi.data-excel', compact('data'));
     }

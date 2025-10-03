@@ -16,7 +16,7 @@ class SetoranController extends Controller
 {
     private function getMetodeBayar()
     {
-        $metode = ['Transfer', 'Tunai', 'Qris'];
+        $metode = ['Transfer', 'Qris', 'Kliring', 'E-Wallet'];
         return collect($metode)->map(fn($s) => [
             'value' => $s,
             'label' => $s
@@ -36,9 +36,7 @@ class SetoranController extends Controller
         $getMetode = $request->get('metode');
 
         $query = Setoran::with(['skrd', 'detailSetoran'])
-            ->whereHas('skrd', function ($q) {
-                $q->where('uptdId', auth()->user()->uptdId);
-            });
+            ->whereRelation('skrd', 'uptdId', auth()->user()->uptdId);
 
         if ($getSearch && trim($getSearch) !== '') {
             $query->whereHas('skrd', function ($q) use ($getSearch) {
@@ -105,13 +103,19 @@ class SetoranController extends Controller
      */
     public function create()
     {
-        $skrdOptions = Skrd::with('detailSetoran')->select('id', 'noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'alamatObjekRetribusi', 'kecamatanObjekRetribusi', 'kelurahanObjekRetribusi', 'tagihanPerBulanSkrd', 'tagihanPerTahunSkrd', 'jumlahBulan', 'keteranganBulan')
+        $skrdOptions = Skrd::with([
+            'detailSetoran' => function ($setoran) {
+                $setoran->whereHas('setoran', fn($s) => $s->where('status', '!=', 'Rejected'));
+            }
+        ])->select('id', 'noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'alamatObjekRetribusi', 'kecamatanObjekRetribusi', 'kelurahanObjekRetribusi', 'tagihanPerBulanSkrd', 'tagihanPerTahunSkrd', 'jumlahBulan', 'keteranganBulan')
             ->where('uptdId', auth()->user()->uptdId)
             ->whereYear('created_at', '>=', '2025')
             ->orderBy('created_at', 'desc')
             // ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', 1) AS UNSIGNED) ASC")
             // ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', -1) AS UNSIGNED) ASC")
-            ->withSum(['detailSetoran as totalBayar' => fn($q) => $q], 'jumlahBayar')
+            ->withSum(['detailSetoran as totalBayar' => function($q) {
+                $q->whereHas('setoran', fn($data) => $data->where('status', '!=', "Rejected"));
+            }], 'jumlahBayar')
             ->whereNotNull('noSkrd')
             ->get()
             ->filter(fn($s) => ($s->tagihanPerTahunSkrd - (int)($s->totalBayar ?? 0)) !== 0)
@@ -141,6 +145,8 @@ class SetoranController extends Controller
                     })
                 ];
             });
+
+        // dd($skrdOptions);
 
         return Inertia::render('Kasubag/Penerimaan/Setoran', [
             'skrdOptions' => $skrdOptions,
@@ -218,9 +224,18 @@ class SetoranController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Setoran $data)
     {
-        //
+        try {
+            DB::transaction(function () use ($data) {
+                $data->update([
+                    'current_stage' => 'kuptd'
+                ]);
+            });
+        } catch (\Exception $e) {
+            report($e);
+            return redirect()->back()->withErrors(['server' => 'Terjadi kesalahan ketika memproses setoran']);
+        }
     }
 
     /**

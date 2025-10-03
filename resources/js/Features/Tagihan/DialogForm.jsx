@@ -54,10 +54,14 @@ const DialogForm = ({
   useEffect(() => {
     if (isOpen) {
       if (isEditMode && invoice?.id !== data.id) {
+        console.log(invoice)
         setData({
           noWajibRetribusi: invoice.noWajibRetribusi,
           noSkrd: invoice.noSkrd,
-          namaObjekRetribusi: invoice.namaObjekRetribusi,
+          namaObjekRetribusi: invoice.skrd.namaObjekRetribusi,
+          tarifPerbulan: invoice.skrd.tagihanPerBulanSkrd,
+          jumlahBulan: invoice.jumlah_bulan,
+          satuan: invoice.satuan
         });
       } else {
         setData(initialData);

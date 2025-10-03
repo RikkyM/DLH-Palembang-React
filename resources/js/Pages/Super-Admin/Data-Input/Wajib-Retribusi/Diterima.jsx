@@ -346,7 +346,7 @@ const Diterima = ({
               />
             </label>
           </div>
-          <div className="flex items-center justify-end gap-1.5 md:justify-start">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm w-full md:w-max">
             <button
               onClick={() => {
                 const params = new URLSearchParams();
@@ -359,6 +359,7 @@ const Diterima = ({
                 if (petugas) params.append("petugas", petugas);
 
                 params.append("status", "Approved");
+                if (tahun) params.append("tahun", tahun);
 
                 window.open(
                   route("wajib-retribusi.download-pdf") +
@@ -381,6 +382,7 @@ const Diterima = ({
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (petugas) params.append("petugas", petugas);
+                if (perPage) params.append("per_page", perPage);
 
                 params.append("status", "Approved");
 
@@ -389,7 +391,7 @@ const Diterima = ({
                   "_blank",
                 );
               }}
-              className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white transition duration-300"
+              className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white"
             >
               Excel
             </button>

@@ -450,13 +450,19 @@ const WajibRetribusiShow = ({
         </div>
         <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
           <h2>Bangunan</h2>
-          <img
-            src={route("private.file", {
-              type: "image",
-              filename: retribusi.image,
-            })}
-            alt=""
-          />
+          {retribusi.image ? (
+            <img
+              src={route("private.file", {
+                type: "image",
+                filename: retribusi.image,
+              })}
+              alt=""
+            />
+          ) : (
+            <>
+              <h2 className="text-sm">Tidak ada Gambar</h2>
+            </>
+          )}
         </div>
         <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
           <h2>Berkas</h2>

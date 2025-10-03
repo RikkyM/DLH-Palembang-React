@@ -310,19 +310,15 @@ const InputSetoran = ({ skrdOptions = [], metodeOptions = [], role }) => {
         hasError = true;
       }
 
-      // if (activeRows.length !== jmlBulanInput) {
-      //   setError(
-      //     "jumlahBulanBayar",
-      //     `Jumlah Bulan Bayar (${jmlBulanInput}) harus sama dengan baris aktif (${activeRows.length}).`,
-      //   );
-      //   setError(
-      //     "detailSetoran",
-      //     "Periksa kembali jumlah baris aktif pada tabel.",
-      //   );
-      //   hasError = true;
-      // } else {
-      //   clearErrors("jumlahBulanBayar");
-      // }
+      if (activeRows.length !== jmlBulanInput) {
+        setError(
+          "detailSetoran",
+          `Input bulan yang aktif (${activeRows.length} Bulan) harus sama dengan jumlah bulan yang ingin dibayar (${jmlBulanInput} Bulan)`,
+        );
+        hasError = true;
+      } else {
+        clearErrors("jumlahBulanBayar");
+      }
 
       // if (totalBulanan !== jmlBayarTotal) {
       //   const fmt = (n) =>

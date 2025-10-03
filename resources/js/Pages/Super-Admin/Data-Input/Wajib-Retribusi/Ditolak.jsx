@@ -347,7 +347,7 @@ const Ditolak = ({
               />
             </label>
           </div>
-          <div className="flex items-center justify-end gap-1.5 md:justify-start">
+          <div className="flex w-full flex-wrap items-center justify-end gap-1.5 *:text-xs md:w-max md:justify-start *:md:text-sm">
             <button
               onClick={() => {
                 const params = new URLSearchParams();
@@ -358,8 +358,8 @@ const Ditolak = ({
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (petugas) params.append("petugas", petugas);
-
                 params.append("status", "Rejected");
+                if (tahun) params.append("tahun", tahun);
 
                 window.open(
                   route("wajib-retribusi.download-pdf") +
@@ -382,6 +382,7 @@ const Ditolak = ({
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (petugas) params.append("petugas", petugas);
+                if (perPage) params.append("per_page", perPage);
 
                 params.append("status", "Rejected");
 
@@ -390,14 +391,14 @@ const Ditolak = ({
                   "_blank",
                 );
               }}
-              className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white transition duration-300"
+              className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white"
             >
               Excel
             </button>
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "bg-white shadow"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">

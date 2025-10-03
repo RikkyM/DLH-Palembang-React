@@ -42,13 +42,10 @@ Route::middleware('role:ROLE_KASUBAG_TU_UPDT')->prefix('kasubag')->name('kasubag
     Route::prefix('penerimaan')->group(function () {
         Route::get('/input-setoran', [SetoranController::class, 'create'])->name('input-setoran');
         Route::resource('/data-setoran', SetoranController::class)
-            ->only(['index', 'store', 'show'])
+            ->only(['index', 'store', 'show', 'update'])
             ->parameters([
                 'data-setoran' => 'data'
             ])
             ->where(['data' => '.*']);
-        Route::put('/data-setoran/{data}', [SetoranController::class, 'prosesSetoran'])
-            ->where('data', '.*')
-            ->name('proses-setoran');
     });
 });

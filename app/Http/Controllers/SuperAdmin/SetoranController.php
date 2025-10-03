@@ -16,7 +16,7 @@ class SetoranController extends Controller
 {
     private function getMetodeBayar()
     {
-        $metode = ['Transfer', 'Tunai', 'Qris'];
+        $metode = ['Transfer', 'Qris', 'Kliring', 'E-Wallet'];
         return collect($metode)->map(fn($s) => [
             'value' => $s,
             'label' => $s
@@ -55,6 +55,11 @@ class SetoranController extends Controller
             case 'namaObjekRetribusi':
                 $query->leftJoin('skrd', 'setoran.skrdId', '=', 'skrd.id')
                     ->orderBy('skrd.namaObjekRetribusi', $sortDir)
+                    ->select('setoran.*');
+                break;
+            case 'kecamatan':
+                $query->leftJoin('skrd', 'setoran.skrdId', '=', 'skrd.id')
+                    ->orderBy('skrd.kecamatanObjekRetribusi', $sortDir)
                     ->select('setoran.*');
                 break;
             default:

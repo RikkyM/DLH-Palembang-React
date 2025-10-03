@@ -1,5 +1,5 @@
 import { useProvider } from "@/Context/GlobalContext";
-import { FileText, Search } from "lucide-react";
+import { FileText, Search, PencilLine } from "lucide-react";
 import DialogForm from "./DialogForm";
 import { useEffect, useState } from "react";
 import { router } from "@inertiajs/react";
@@ -249,6 +249,14 @@ const Index = ({ datas, filters, retribusiOptions = [], role }) => {
                           className={`sticky right-0 text-right ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
                           <div className="flex flex-col gap-2 *:rounded *:text-sm *:font-medium">
+                            <button
+                              onClick={() => {
+                                openModal("edit", data);
+                              }}
+                              className="inline-flex items-center gap-1.5"
+                            >
+                              <PencilLine className="size-5" /> Edit
+                            </button>
                             <a
                               href={route("invoice.pdf", {
                                 id: data.id,
@@ -257,7 +265,7 @@ const Index = ({ datas, filters, retribusiOptions = [], role }) => {
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1.5"
                             >
-                              <FileText size={20} /> PDF
+                              <FileText className="size-5" /> PDF
                             </a>
                           </div>
                         </td>

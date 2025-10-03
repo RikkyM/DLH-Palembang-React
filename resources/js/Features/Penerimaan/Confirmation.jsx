@@ -15,39 +15,51 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
     }
   }, [isOpen, setoran]);
 
-  console.log(config)
+  console.log(setoran)
 
   const handleSubmit = (e, nota) => {
     e.preventDefault();
 
-    if (config === "kasubag") {
-      put(
-        route(`${config}.proses-setoran`, {
-          data: encodeURIComponent(nota),
-        }),
-        {
-          preserveScroll: true,
-          onSuccess: () => {
-            onClose();
-          },
-          onError: () => {
-            console.error("Terjadi kesalahan ketika memproses data setoran.");
-          },
+    put(
+      route(`${config}.data-setoran.update`, {
+        data: encodeURIComponent(nota),
+      }),
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          onClose();
         },
-      );
-    } else {
-      put(
-        route(`${config}.data-setoran.update`, {
-          data: encodeURIComponent(nota),
-        }),
-        {
-          preserveScroll: true,
-          onSuccess: () => {
-            onClose();
-          },
-        },
-      );
-    }
+      },
+    );
+
+    // if (config === "kasubag") {
+    //   put(
+    //     route(`${config}.proses-setoran`, {
+    //       data: encodeURIComponent(nota),
+    //     }),
+    //     {
+    //       preserveScroll: true,
+    //       onSuccess: () => {
+    //         onClose();
+    //       },
+    //       onError: () => {
+    //         console.error("Terjadi kesalahan ketika memproses data setoran.");
+    //       },
+    //     },
+    //   );
+    // } else {
+    //   put(
+    //     route(`${config}.data-setoran.update`, {
+    //       data: encodeURIComponent(nota),
+    //     }),
+    //     {
+    //       preserveScroll: true,
+    //       onSuccess: () => {
+    //         onClose();
+    //       },
+    //     },
+    //   );
+    // }
   };
 
   return (
