@@ -434,6 +434,7 @@ const Index = ({
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (petugas) params.append("petugas", petugas);
+                if (perPage) params.append("per_page", perPage);
                 if (status) params.append("status", status);
                 if (tahun) params.append("tahun", tahun);
 
@@ -462,7 +463,9 @@ const Index = ({
                 if (status) params.append("status", status);
 
                 window.open(
-                  route("wajib-retribusi.export") + "?" + params.toString(),
+                  route("wajib-retribusi.export") +
+                  "?" +
+                  params.toString(),
                   "_blank",
                 );
               }}

@@ -287,15 +287,18 @@
                         <td class="text-center">
                             @php
                                 $style = null;
-                                if ($item->status === "Processed" && $item->current_role === "ROLE_KUPTD" || $item->status === "Approved" && $item->current_role == null) {
-                                    $style = "#166534";
+                                if ($item->status === "Processed" && $item->current_role === auth()->user()->role || $item->status === "Approved" && $item->current_role == auth()->user()->role) {
+                                    $style = "blue";
                                     $item->status = "Diterima";
-                                } elseif ($item->status === "Processed" && $item->current_role !== "ROLE_KUPTD") {
+                                } elseif ($item->status === "Processed" && $item->current_role !== auth()->user()->role) {
                                     $style = "#F59E0C";
                                     $item->status = 'Diproses';
                                 } elseif ($item->status === "Rejected") {
                                     $style = 'red';
                                     $item->status = "Ditolak";
+                                } elseif ($item->status === 'Finished' || $item->status === 'Approved' && $item->current_role == null) {
+                                    $style = '#166534';
+                                    $item->status = 'Selesai';
                                 }
                             @endphp
                             <span class="status-approved" style="color: {{ $style }}">

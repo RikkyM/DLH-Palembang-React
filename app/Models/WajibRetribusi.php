@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\Cast\String_;
 
 class WajibRetribusi extends Model
 {
@@ -130,6 +131,20 @@ class WajibRetribusi extends Model
 
             return $formatted . '.' . $tahun;
         });
+    }
+
+    public function getStatusLabelAttribute(): String
+    {
+        return match (true) {
+            $this->status === 'Approved'  && !is_null($this->current_role)             => 'Diterima',
+            $this->status === 'Processed'  && $this->current_role == auth()->user()->role             => 'Diterima',
+            $this->status === 'Processed'                                                => 'Diproses',
+            $this->status === 'Processed'  && $this->current_role != auth()->user()->role             => 'Diproses',
+            $this->status === 'Rejected'                                                 => 'Ditolak',
+            $this->status === 'Approved'  && is_null($this->current_role)               => 'Selesai',
+            $this->status === 'Finished' && $this->current_role === 'ROLE_KABID'        => 'Selesai',
+            default                                                                       => '-',
+        };
     }
 
     /**

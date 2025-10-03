@@ -94,6 +94,7 @@ class WajibRetribusiController extends Controller
         }
 
         if ($getKecamatan) {
+            // dd($getKecamatan);
             $query->whereHas('kecamatan', function ($q) use ($getKecamatan) {
                 $q->where('kodeKecamatan', $getKecamatan);
             });
@@ -126,6 +127,7 @@ class WajibRetribusiController extends Controller
         string $view = 'Index',
         ?callable $extraFilter = null
     ) {
+        // dd(Auth::user()->uptd->kecamatan->kodeKecamatan);
         $getSearch = $request->get('search');
         $getSortBy = $request->get('sort', 'id');
         $getSortDir = $request->get('direction', 'desc');

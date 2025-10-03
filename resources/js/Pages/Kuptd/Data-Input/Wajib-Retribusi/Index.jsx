@@ -180,7 +180,7 @@ const Index = ({
     if (pj) params.pj = pj;
     if (kategori) params.kategori = kategori;
     if (subKategori) params["sub-kategori"] = subKategori;
-    // if (kecamatan) params.kecamatan = kecamatan;
+    if (kecamatan && kecamatan !== kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (status) params.status = status;
@@ -397,7 +397,7 @@ const Index = ({
               />
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm w-full md:w-max">
             {/* <Link
               href={route("kuptd.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
@@ -435,10 +435,12 @@ const Index = ({
                 if (kategori) params.append("kategori", kategori);
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
-                if (kelurahan) params.append("kelurahan", kelurahan);
+                // if (kelurahan) params.append("kelurahan", kelurahan);
+                if (perPage) params.append("per_page", perPage);
+                if (status) params.append("status", status);
 
                 window.open(
-                  route("kuptd.wajib-retribusi.export") +
+                  route("wajib-retribusi.export") +
                     "?" +
                     params.toString(),
                   "_blank",
@@ -573,17 +575,29 @@ const Index = ({
                         <td>
                           <span
                             className={`select-none rounded py-2 font-medium ${
+                              // data.status === "Processed" &&
+                              // data.current_role == "ROLE_KUPTD"
+                              //   ? "text-sky-600"
+                              //   : data.status == "Processed" &&
+                              //       data.current_role != "ROLE_KUPTD"
+                              //     ? "text-amber-500"
+                              //     : data.status == "Rejected"
+                              //       ? "text-red-500"
+                              //       : data.status === "Approved" &&
+                              //         data.current_role == null &&
+                              //         "text-green-500"
                               data.status === "Processed" &&
                               data.current_role == "ROLE_KUPTD"
                                 ? "text-sky-600"
-                                : data.status == "Processed" &&
+                                : data.status === "Processed" &&
                                     data.current_role != "ROLE_KUPTD"
                                   ? "text-amber-500"
                                   : data.status == "Rejected"
                                     ? "text-red-500"
                                     : data.status === "Approved" &&
-                                      data.current_role == null &&
-                                      "text-green-500"
+                                        data.current_role === null
+                                      ? "text-green-500"
+                                      : "text-green-500"
                             }`}
                           >
                             {data.status === "Processed" &&
@@ -595,6 +609,9 @@ const Index = ({
                             {data.status === "Rejected" && "Ditolak"}
                             {data.status === "Approved" &&
                               data.current_role == null &&
+                              "Selesai"}
+                            {data.status === "Finished" &&
+                              data.current_role === "ROLE_KABID" &&
                               "Selesai"}
                           </span>
                         </td>

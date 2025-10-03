@@ -36,7 +36,8 @@ class WajibRetribusiExport implements FromView, ShouldAutoSize, WithStyles
             'user:id,namaLengkap',
             'pemilik',
             'uptd'
-        ]);
+        ])
+            ->orderBy('created_at', 'desc');
 
         if ($search = $this->request->search) {
             $query->where(function ($q) use ($search) {
@@ -54,19 +55,71 @@ class WajibRetribusiExport implements FromView, ShouldAutoSize, WithStyles
         }
 
         if ($kecamatan = $this->request->kecamatan) {
-            $query->whereHas('kecamatan', fn($q) => $q->where('kodeKecamatan', $kecamatan));
+            $query->whereRelation('kecamatan', 'kodeKecamatan', $kecamatan);
         }
 
         if ($kelurahan = $this->request->kelurahan) {
-            $query->whereHas('kelurahan', fn($q) => $q->where('kodeKelurahan', $kelurahan));
+            $query->whereRelation('kelurahan', 'kodeKelurahan', $kelurahan);
         }
 
         if ($petugas = $this->request->petugas) {
             $query->whereHas('user', fn($q) => $q->where('id', $petugas));
         }
 
-        if ($status = $this->request->status) {
-            $query->where('status', $status);
+        $status = $this->request->status;
+
+        // if ($status) {
+        //     if ($status == 'Finished') {
+        //         $query->where(function ($q) {
+        //             $q->where(function ($x) {
+        //                 $x->where('status', 'Approved')
+        //                     ->whereNull('current_role');
+        //             })
+        //                 ->orWhere('status', 'Finished');
+        //         });
+        //     } elseif ($status == 'Processed' && auth()->user()->role !== 'ROLE_SUPERADMIN') {
+        //         $query->where('status', 'Processed')
+        //             ->where('current_role', auth()->user()->role);
+        //     } else {
+        //         $query->where('status', $status);
+        //     }
+        // }
+
+        if ($status) {
+            if ($status === "Finished") {
+                $query->where(function ($q) {
+                    $q->where(function ($data) {
+                        $data->where('status', 'Approved')
+                            ->whereNull('current_role');
+                    })->orWhere('status', 'Finished');
+                });
+            } else if ($status === 'Approved' && auth()->user()->role !== 'ROLE_SUPERADMIN') {
+                $query->where(function ($q) {
+                    $q->where('status', 'Processed')
+                        ->orWhere('status', "Approved");
+                })
+                    ->where('current_role', auth()->user()->role);
+            } else if ($status === "Processed" && auth()->user()->role !== 'ROLE_SUPERADMIN') {
+                if (auth()->user()->role === "ROLE_PENDAFTAR") {
+                    $query->where('status', 'Processed')
+                        ->where('current_role', '!=', auth()->user()->role);
+                }
+
+                if (auth()->user()->role === "ROLE_KUPTD") {
+                    $query->where('status', 'Processed')
+                        ->where('current_role', '!=', 'ROLE_PENDAFTAR')
+                        ->where('current_role', '!=', auth()->user()->role);
+                }
+
+                if (auth()->user()->role === "ROLE_KATIM") {
+                    $query->where('status', 'Processed')
+                        ->where('current_role', '!=', 'ROLE_PENDAFTAR')
+                        ->where('current_role', '!=', 'ROLE_KUPTD')
+                        ->where('current_role', '!=', auth()->user()->role);
+                }
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         $data = $this->request->per_page != null ? $query->take((int) $this->request->get('per_page', 10))->get() : $query->get();

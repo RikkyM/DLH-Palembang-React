@@ -17,6 +17,7 @@ class WajibRetribusiController extends Controller
 {
     public function downloadPdf(Request $request)
     {
+        // dd($request->all());
         $query = WajibRetribusi::with([
             'kategori',
             'subKategori',
@@ -25,7 +26,13 @@ class WajibRetribusiController extends Controller
             'user:id,namaLengkap',
             'pemilik',
             'uptd'
-        ]);
+        ])
+        ->where(function($data) {
+            $data->where('current_role', auth()->user()->role)
+                ->orWhere('status', 'Rejected')
+                ->orWhereNull('current_role');
+        })
+        ->orderBy('created_at', 'desc');
 
         if ($search = $request->search) {
             $query->where(function ($q) use ($search) {
@@ -61,56 +68,51 @@ class WajibRetribusiController extends Controller
             $query->whereYear('created_at', $tahun);
         }
 
-        // if ($status = $request->get('status')) {
-        //     // $query->where('status', $status);
-        //     if (Auth::user()->role === "ROLE_KUPTD") {
-        //         $query->where(function ($data) {
-        //             $data->where('status', "Processed")
-        //                 ->where('current_role', Auth::user()->role);
-        //         })->orWhere(function($data) {
-        //             $data->whereNull('current_role');
-        //         });
-        //         // $query->where(function ($data) {
-        //         //     $data->where('status', "Processed")
-        //         //         ->where('current_role', "ROLE_KUPTD");
-        //         // });
-        //     }
-        // }
-        if ($status = $request->get('status')) {
-            if (Auth::user()->role == 'ROLE_KUPTD') {
-                if ($status === "Approved") {
-                    $query->where(function ($q) {
-                        $q->where(function ($data) {
-                            $data->where('status', "Processed")
-                                ->where('current_role', Auth::user()->role);
-                        })
-                            ->orWhere(function ($data) {
-                                $data->where('status', "Approved")
-                                    ->whereNotNull('noWajibRetribusi');
-                            });
-                    });
+        $status = $request->get('status');
+        if ($status) {
+            if ($status === "Finished") {
+                $query->where(function ($q) {
+                    $q->where(function ($data) {
+                        $data->where('status', 'Approved')
+                        ->whereNull('current_role');
+                    })->orWhere('status', 'Finished');
+                });
+            } else if ($status === 'Approved' && auth()->user()->role !== 'ROLE_SUPERADMIN') {
+                $query->where(function ($q) {
+                    $q->where('status', 'Processed')
+                    ->orWhere('status', "Approved");
+                })
+                    ->where('current_role', auth()->user()->role);
+            } else if ($status === "Processed" && auth()->user()->role !== 'ROLE_SUPERADMIN') {
+                if (auth()->user()->role === "ROLE_PENDAFTAR") {
+                    $query->where('status', 'Processed')
+                    ->where('current_role', '!=', auth()->user()->role);
                 }
 
-                if ($status === "Processed") {
-                    $query->where('status', "Processed")
-                        ->where('current_role', '!=', Auth::user()->role);
+                if (auth()->user()->role === "ROLE_KUPTD") {
+                    $query->where('status', 'Processed')
+                    ->where('current_role', '!=', 'ROLE_PENDAFTAR')
+                    ->where('current_role', '!=', auth()->user()->role);
                 }
 
-                if ($status === "Rejected") {
-                    $query->where('status', 'Rejected');
+                if (auth()->user()->role === "ROLE_KATIM") {
+                    $query->where('status', 'Processed')
+                    ->where('current_role', '!=', 'ROLE_PENDAFTAR')
+                    ->where('current_role', '!=', 'ROLE_KUPTD')
+                    ->where('current_role', '!=', auth()->user()->role);
                 }
             } else {
-                // Untuk role lain, gunakan filter status standar
                 $query->where('status', $status);
             }
         }
 
-        if ($request->filled('per_page')) {
-            $perPage = (int) $request->get('per_page', 10);
-            $data = $query->take($perPage)->get();
-        } else {
-            $data = $query->get();
-        }
+        // if ($request->filled('per_page')) {
+        //     $perPage = (int) $request->get('per_page', 10);
+        //     $data = $query->take($perPage)->get();
+        // } else {
+        //     $data = $query->get();
+        // }
+        $data = $request->get('per_page') != null ? $query->take((int) $request->get('per_page', 10))->get() : $query->get();
 
         $pdf = Pdf::loadView('exports.wajib-retribusi.wajib-retribusi-pdf', compact('data'))
             ->setPaper('a4', 'landscape')
