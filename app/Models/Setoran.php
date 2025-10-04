@@ -23,7 +23,9 @@ class Setoran extends Model
         'namaBank',
         'buktiBayar',
         'status',
-        'current_stage'
+        'current_stage',
+        'tanggal_diterima',
+        'tanggal_batal'
     ];
 
     public static function booted()

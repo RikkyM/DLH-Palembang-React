@@ -14,6 +14,9 @@ Route::middleware('role:ROLE_BENDAHARA')->prefix('bendahara')->name('bendahara.'
         ->parameters([
             'surat-tagihan' => 'invoice'
         ]);
+    Route::put('/penerimaan/data-setoran/{nota}/cancel', [SetoranController::class, 'batalSetoran'])
+        ->where(['nota' => '.*'])
+        ->name('data-setoran.cancel');
     Route::resource('/penerimaan/data-setoran', SetoranController::class)
         ->only(['index', 'show', 'update'])
         ->parameters([

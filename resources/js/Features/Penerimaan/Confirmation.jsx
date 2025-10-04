@@ -15,22 +15,34 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
     }
   }, [isOpen, setoran]);
 
-  console.log(setoran)
-
   const handleSubmit = (e, nota) => {
     e.preventDefault();
 
-    put(
-      route(`${config}.data-setoran.update`, {
-        data: encodeURIComponent(nota),
-      }),
-      {
-        preserveScroll: true,
-        onSuccess: () => {
-          onClose();
+    if (!setoran) return;
+
+    if (setoran.status === "Approved") {
+      put(
+        route("bendahara.data-setoran.cancel", {
+          nota: nota,
+        }),
+        {
+          preserveScroll: true,
+          onSuccess: () => onClose(),
         },
-      },
-    );
+      );
+    }
+    if (setoran.status !== "Approved") {
+      // console.log(config)
+      put(
+        route(`${config}.data-setoran.update`, {
+          data: encodeURIComponent(nota),
+        }),
+        {
+          preserveScroll: true,
+          onSuccess: () => onClose(),
+        },
+      );
+    }
 
     // if (config === "kasubag") {
     //   put(
@@ -77,7 +89,9 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
         <div className="px-5 pb-5 text-sm">
           {config === "kasubag"
             ? "Apakah anda yakin ingin memproses data setoran ?"
-            : "Apakah Anda yakin ingin melanjutkan?"}
+            : config === "bendahara" && setoran && setoran.status === "Approved"
+              ? "Apakah anda ingin menarik setoran ini ?"
+              : "Apakah Anda yakin ingin melanjutkan?"}
         </div>
         <form
           onSubmit={(e) => handleSubmit(e, setoran.nomorNota)}
@@ -89,29 +103,41 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
                 className="order-2 rounded bg-red-500 px-3 py-2 font-medium text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
                 disabled={processing}
                 type="submit"
-                onClick={(e) => {
-                  setData("status", "Rejected");
+                onClick={() => {
+                  if (config !== "kasubag") {
+                    setData("status", "Rejected");
+                  }
+
+                  if (setoran?.status === "Approved") {
+                    setData("status", "Cancelled");
+                  }
                 }}
               >
-                {processing ? "Proses..." : "Tolak"}
+                {processing
+                  ? "Proses..."
+                  : setoran && setoran.status === "Approved"
+                    ? "Batalkan Setoran"
+                    : "Tolak"}
               </button>
             )}
-            <button
-              className="order-1 rounded bg-green-500 px-3 py-2 font-medium text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
-              disabled={processing}
-              type="submit"
-              onClick={(e) => {
-                if (config !== "kasubag") {
-                  setData("status", "Approved");
-                }
-              }}
-            >
-              {processing
-                ? "Proses..."
-                : config !== "kasubag"
-                  ? "Setujui"
-                  : "Kirim"}
-            </button>
+            {setoran && setoran.status !== "Approved" && (
+              <button
+                className="order-1 rounded bg-green-500 px-3 py-2 font-medium text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50 md:order-2"
+                disabled={processing}
+                type="submit"
+                onClick={(e) => {
+                  if (config !== "kasubag") {
+                    setData("status", "Approved");
+                  }
+                }}
+              >
+                {processing
+                  ? "Proses..."
+                  : config !== "kasubag"
+                    ? "Setujui"
+                    : "Kirim"}
+              </button>
+            )}
             <button
               onClick={onClose}
               className="order-2 rounded-md border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 hover:bg-gray-50 md:order-1"

@@ -17,7 +17,7 @@ class WajibRetribusiController extends Controller
 {
     public function downloadPdf(Request $request)
     {
-        // dd($request->all());
+
         $query = WajibRetribusi::with([
             'kategori',
             'subKategori',
@@ -27,12 +27,25 @@ class WajibRetribusiController extends Controller
             'pemilik',
             'uptd'
         ])
-        ->where(function($data) {
-            $data->where('current_role', auth()->user()->role)
-                ->orWhere('status', 'Rejected')
-                ->orWhereNull('current_role');
-        })
-        ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc');
+
+        $role = auth()->user()->role;
+
+        if ($role === "ROLE_KUPTD" || $role === "ROLE_KASUBAG_TU_UPDT") {
+            $query->where(function ($data) use ($role) {
+                $data->where('current_role', $role)
+                    ->orWhere('current_role', '!=', 'ROLE_PENDAFTAR')
+                    ->orWhereNull('current_role')
+                    ->orWhere('status', 'Rejected');
+            });
+        }
+
+        if ($pj = $request->pj) {
+
+            $query->whereHas('pemilik', fn($q) => $q->where('id', $pj));
+        }
+
+        // dd($query->take((int) $request->get('per_page', 10))->get()->toArray());
 
         if ($search = $request->search) {
             $query->where(function ($q) use ($search) {
@@ -60,7 +73,7 @@ class WajibRetribusiController extends Controller
         if ($petugas = $request->petugas) {
             $query->whereHas(
                 'user',
-                fn($q) => $q->where('id', $petugas)
+                fn($q) => $q->where('namaLengkap', $petugas)
             );
         }
 
@@ -74,32 +87,37 @@ class WajibRetribusiController extends Controller
                 $query->where(function ($q) {
                     $q->where(function ($data) {
                         $data->where('status', 'Approved')
-                        ->whereNull('current_role');
+                            ->whereNull('current_role');
                     })->orWhere('status', 'Finished');
                 });
             } else if ($status === 'Approved' && auth()->user()->role !== 'ROLE_SUPERADMIN') {
                 $query->where(function ($q) {
                     $q->where('status', 'Processed')
-                    ->orWhere('status', "Approved");
+                        ->orWhere('status', "Approved");
                 })
                     ->where('current_role', auth()->user()->role);
+            } else if ($status === 'Approved' && auth()->user()->role === 'ROLE_SUPERADMIN') {
+                $query->where(function ($q) {
+                    $q->where('status', 'Approved');
+                })
+                    ->where('current_role', "ROLE_PENDAFTAR");
             } else if ($status === "Processed" && auth()->user()->role !== 'ROLE_SUPERADMIN') {
                 if (auth()->user()->role === "ROLE_PENDAFTAR") {
                     $query->where('status', 'Processed')
-                    ->where('current_role', '!=', auth()->user()->role);
+                        ->where('current_role', '!=', auth()->user()->role);
                 }
 
                 if (auth()->user()->role === "ROLE_KUPTD") {
                     $query->where('status', 'Processed')
-                    ->where('current_role', '!=', 'ROLE_PENDAFTAR')
-                    ->where('current_role', '!=', auth()->user()->role);
+                        ->where('current_role', '!=', 'ROLE_PENDAFTAR')
+                        ->where('current_role', '!=', auth()->user()->role);
                 }
 
                 if (auth()->user()->role === "ROLE_KATIM") {
                     $query->where('status', 'Processed')
-                    ->where('current_role', '!=', 'ROLE_PENDAFTAR')
-                    ->where('current_role', '!=', 'ROLE_KUPTD')
-                    ->where('current_role', '!=', auth()->user()->role);
+                        ->where('current_role', '!=', 'ROLE_PENDAFTAR')
+                        ->where('current_role', '!=', 'ROLE_KUPTD')
+                        ->where('current_role', '!=', auth()->user()->role);
                 }
             } else {
                 $query->where('status', $status);

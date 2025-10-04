@@ -210,8 +210,6 @@ class WajibRetribusiController extends Controller
             ->values()
             ->map(fn($t) => ['value' => (string) $t, 'label' => (string) $t]);
 
-        // dd($tahunOptions);
-
         $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render($view, [

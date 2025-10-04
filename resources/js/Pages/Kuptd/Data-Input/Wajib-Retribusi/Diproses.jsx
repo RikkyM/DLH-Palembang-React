@@ -13,8 +13,8 @@ const Diproses = ({
   pjOptions = [],
   kategoriOptions = [],
   subKategoriOptions = [],
-  kecamatanOptions = [],
   kelurahanOptions = [],
+  tahunOptions = [],
   user = "ROLE_KUPTD",
 }) => {
   const [search, setSearch] = useState(filters.search || "");
@@ -24,21 +24,18 @@ const Diproses = ({
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
   const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
-  const [showFilters, setShowFilters] = useState(false);
+  const [status, setStatus] = useState(filters.status || "");
   const [pj, setpj] = useState(filters.pj || "");
   const [perPage, setPerPage] = useState(() => {
     return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
   });
+  const [tahun, setTahun] = useState(filters.tahun || "");
+  const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    // {
-    //   key: "noPendaftaran",
-    //   label: "no pendaftaran",
-    //   align: "text-left truncate",
-    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -85,7 +82,11 @@ const Diproses = ({
     { key: "giat", label: "giat", align: "text-left truncate" },
     { key: "hari", label: "hari", align: "text-left truncate" },
     { key: "meter", label: "meter", align: "text-left truncate" },
-    { key: "tanggalSkrd", label: "tanggal spkrd", align: "text-left truncate" },
+    {
+      key: "tanggalSkrd",
+      label: "tanggal spkrd",
+      align: "text-left truncate",
+    },
     {
       key: "tarifPerbulan",
       label: "tarif perbulan",
@@ -127,15 +128,6 @@ const Diproses = ({
     [subKategoriOptions],
   );
 
-  const kecamatanList = useMemo(
-    () =>
-      kecamatanOptions?.map((kec) => ({
-        value: kec.kodeKecamatan,
-        label: kec.namaKecamatan,
-      })),
-    [kecamatanOptions],
-  );
-
   const kelurahanList = useMemo(
     () =>
       kelurahanOptions.map((kel) => ({
@@ -155,6 +147,8 @@ const Diproses = ({
     // if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
     if (perPage && perPage !== 10) params.per_page = perPage;
+    if (status) params.status = status;
+    if (tahun) params.tahun = tahun;
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "asc") {
@@ -191,13 +185,20 @@ const Diproses = ({
       router.get(route("kuptd.wajib-retribusi.diproses"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
+        only: [
+          "datas",
+          "pjOptions",
+          "subKategoriOptions",
+          "kelurahanOptions",
+          "filters",
+        ],
         onFinish: () => setIsLoading(false),
       });
     }, 500);
 
     return () => {
       clearTimeout(timeoutId);
+      setIsLoading(false);
     };
   }, [
     search,
@@ -208,12 +209,10 @@ const Diproses = ({
     kecamatan,
     kelurahan,
     perPage,
+    status,
     pj,
+    tahun,
   ]);
-
-  const handlePerPageChange = (e) => {
-    setPerPage(parseInt(e.target.value));
-  };
 
   return (
     <Layout title="INBOX DIPROSES">
@@ -224,14 +223,16 @@ const Diproses = ({
               <div className="relative flex w-full gap-2 sm:w-max">
                 <label
                   htmlFor="showData"
-                  className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
+                  className="relative flex h-full w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
                 >
                   <select
                     name="showData"
                     id="showData"
                     value={perPage}
-                    onChange={handlePerPageChange}
-                    className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+                    onChange={(e) => {
+                      setPerPage(parseInt(e.target.value));
+                    }}
+                    className="h-full w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                   >
                     <option value="10">10</option>
                     <option value="25">25</option>
@@ -247,7 +248,7 @@ const Diproses = ({
                 </label>
                 <button
                   type="button"
-                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 shadow sm:w-max"
+                  className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 text-sm shadow sm:w-max"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => setShowFilters((prev) => !prev)}
                 >
@@ -256,7 +257,7 @@ const Diproses = ({
                 </button>
                 <div
                   ref={filterRef}
-                  className={`absolute left-0 top-full z-10 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all ${
+                  className={`absolute right-0 top-full z-20 grid w-max grid-cols-1 gap-2 rounded border border-neutral-300 bg-white p-3 shadow transition-all sm:left-0 sm:right-auto ${
                     showFilters
                       ? "pointer-events-auto mt-3 opacity-100"
                       : "pointer-events-none mt-0 opacity-0"
@@ -305,6 +306,13 @@ const Diproses = ({
                     onChange={(val) => setpj(val)}
                     placeholder="Pilih Penanggung Jawab"
                   />
+                  <SearchableSelect
+                    id="tahunList"
+                    options={tahunOptions}
+                    value={tahun}
+                    onChange={(val) => setTahun(val)}
+                    placeholder="Pilih Tahun"
+                  />
                 </div>
               </div>
             </div>
@@ -312,19 +320,19 @@ const Diproses = ({
               htmlFor="search"
               className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
             >
-              <Search size={20} />
+              <Search className="min-w-5 max-w-20" />
               <input
                 autoComplete="off"
                 type="search"
                 id="search"
                 placeholder="Cari nama..."
-                className="flex-1 outline-none"
+                className="w-full flex-1 outline-none"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </label>
           </div>
-          <div className="flex items-center justify-end gap-1.5 md:justify-start">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm">
             <button
               onClick={() => {
                 const params = new URLSearchParams();
@@ -372,7 +380,7 @@ const Diproses = ({
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "bg-white shadow"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">

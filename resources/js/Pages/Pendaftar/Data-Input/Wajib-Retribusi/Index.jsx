@@ -434,6 +434,8 @@ const Index = ({
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (petugas) params.append("petugas", petugas);
+                if (perPage) params.append("per_page", perPage);
+                if (pj) params.append("pj", pj);
                 if (status) params.append("status", status);
                 if (tahun) params.append("tahun", tahun);
 

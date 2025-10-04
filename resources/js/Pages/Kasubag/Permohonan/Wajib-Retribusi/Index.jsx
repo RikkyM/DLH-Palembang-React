@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
 import { router } from "@inertiajs/react";
+
 import { ChevronDown, Download, FileText, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
 import SmartPagination from "@/Components/SmartPagination";
@@ -107,6 +108,7 @@ const Index = ({
     if (pj) params.pj = pj;
     if (kategori) params.kategori = kategori;
     if (subKategori) params["sub-kategori"] = subKategori;
+    if (kecamatan && kecamatan !== kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (status) params.status = status;
@@ -320,7 +322,7 @@ const Index = ({
               />
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm">
+          <div className="flex w-full flex-wrap items-center justify-end gap-1.5 *:text-xs md:w-max md:justify-start *:md:text-sm">
             {/* <Link
               href={route("kuptd.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
@@ -328,45 +330,47 @@ const Index = ({
               Tambah
             </Link> */}
             <button
-              //   onClick={() => {
-              //     const params = new URLSearchParams();
+              onClick={() => {
+                const params = new URLSearchParams();
 
-              //     if (search) params.append("search", search);
-              //     if (kategori) params.append("kategori", kategori);
-              //     if (subKategori) params.append("sub-kategori", subKategori);
-              //     if (kecamatan) params.append("kecamatan", kecamatan);
-              //     if (kelurahan) params.append("kelurahan", kelurahan);
-              //     if (status) params.append("status", status);
-              //     if (tahun) params.append("tahun", tahun);
+                if (search) params.append("search", search);
+                if (kategori) params.append("kategori", kategori);
+                if (subKategori) params.append("sub-kategori", subKategori);
+                if (kecamatan) params.append("kecamatan", kecamatan);
+                if (kelurahan) params.append("kelurahan", kelurahan);
+                if (perPage) params.append("per_page", perPage);
+                if (pj) params.append("pj", pj);
+                if (status) params.append("status", status);
+                if (tahun) params.append("tahun", tahun);
 
-              //     window.open(
-              //       route("wajib-retribusi.download-pdf") +
-              //         "?" +
-              //         params.toString(),
-              //       "_blank",
-              //     );
-              //   }}
+                window.open(
+                  route("wajib-retribusi.download-pdf") +
+                    "?" +
+                    params.toString(),
+                  "_blank",
+                );
+              }}
               className="rounded bg-red-500 px-3 py-1.5 text-sm font-medium text-white"
             >
               PDF
             </button>
             <button
-              //   onClick={() => {
-              //     const params = new URLSearchParams();
+              onClick={() => {
+                const params = new URLSearchParams();
 
-              //     if (search) params.append("search", search);
-              //     if (kategori) params.append("kategori", kategori);
-              //     if (subKategori) params.append("sub-kategori", subKategori);
-              //     if (kecamatan) params.append("kecamatan", kecamatan);
-              //     if (kelurahan) params.append("kelurahan", kelurahan);
+                if (search) params.append("search", search);
+                if (kategori) params.append("kategori", kategori);
+                if (subKategori) params.append("sub-kategori", subKategori);
+                if (kecamatan) params.append("kecamatan", kecamatan);
+                if (kelurahan) params.append("kelurahan", kelurahan);
+                if (perPage) params.append("per_page", perPage);
+                if (status) params.append("status", status);
 
-              //     window.open(
-              //       route("kuptd.wajib-retribusi.export") +
-              //         "?" +
-              //         params.toString(),
-              //       "_blank",
-              //     );
-              //   }}
+                window.open(
+                  route("wajib-retribusi.export") + "?" + params.toString(),
+                  "_blank",
+                );
+              }}
               className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white"
             >
               Excel
@@ -499,14 +503,15 @@ const Index = ({
                               data.status === "Processed" &&
                               data.current_role == "ROLE_KUPTD"
                                 ? "text-sky-600"
-                                : data.status == "Processed" &&
+                                : data.status === "Processed" &&
                                     data.current_role != "ROLE_KUPTD"
                                   ? "text-amber-500"
                                   : data.status == "Rejected"
                                     ? "text-red-500"
                                     : data.status === "Approved" &&
-                                      data.current_role == null &&
-                                      "text-green-500"
+                                        data.current_role === null
+                                      ? "text-green-500"
+                                      : "text-green-500"
                             }`}
                           >
                             {data.status === "Processed" &&
@@ -518,6 +523,9 @@ const Index = ({
                             {data.status === "Rejected" && "Ditolak"}
                             {data.status === "Approved" &&
                               data.current_role == null &&
+                              "Selesai"}
+                            {data.status === "Finished" &&
+                              data.current_role === "ROLE_KABID" &&
                               "Selesai"}
                           </span>
                         </td>

@@ -287,16 +287,25 @@
                         <td class="text-center">
                             @php
                                 $style = null;
-                                if ($item->status === "Processed" && $item->current_role === auth()->user()->role || $item->status === "Approved" && $item->current_role == auth()->user()->role) {
-                                    $style = "blue";
-                                    $item->status = "Diterima";
-                                } elseif ($item->status === "Processed" && $item->current_role !== auth()->user()->role) {
-                                    $style = "#F59E0C";
+                                if (
+                                    ($item->status === 'Processed' && $item->current_role === auth()->user()->role) ||
+                                    ($item->status === 'Approved' && $item->current_role === 'ROLE_PENDAFTAR')
+                                ) {
+                                    $style = 'blue';
+                                    $item->status = 'Diterima';
+                                } elseif (
+                                    $item->status === 'Processed' &&
+                                    $item->current_role !== auth()->user()->role
+                                ) {
+                                    $style = '#F59E0C';
                                     $item->status = 'Diproses';
-                                } elseif ($item->status === "Rejected") {
+                                } elseif ($item->status === 'Rejected') {
                                     $style = 'red';
-                                    $item->status = "Ditolak";
-                                } elseif ($item->status === 'Finished' || $item->status === 'Approved' && $item->current_role == null) {
+                                    $item->status = 'Ditolak';
+                                } elseif (
+                                    ($item->status === 'Approved' && $item->current_role == null) ||
+                                    ($item->status === 'Finished' && $item->current_role === 'ROLE_KABID')
+                                ) {
                                     $style = '#166534';
                                     $item->status = 'Selesai';
                                 }

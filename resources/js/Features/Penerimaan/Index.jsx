@@ -13,7 +13,6 @@ import { useEffect, useRef, useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import SmartPagination from "@/Components/SmartPagination";
 import Confirmation from "./Confirmation";
-import { data } from "autoprefixer";
 
 const DataSetoran = ({
   datas,
@@ -55,6 +54,9 @@ const DataSetoran = ({
       Rejected: {
         default: "Ditolak",
       },
+      Cancelled: {
+        default: "Dibatalkan"
+      }
     },
     ROLE_KASUBAG_TU_UPDT: {
       Processed: {
@@ -68,6 +70,9 @@ const DataSetoran = ({
       Rejected: {
         default: "Ditolak",
       },
+      Cancelled: {
+        default: "Dibatalkan",
+      },
     },
     ROLE_KUPTD: {
       Processed: {
@@ -80,6 +85,9 @@ const DataSetoran = ({
       Rejected: {
         default: "Ditolak",
       },
+      Cancelled: {
+        default: "Dibatalkan",
+      },
     },
     ROLE_BENDAHARA: {
       Processed: {
@@ -90,6 +98,9 @@ const DataSetoran = ({
       },
       Rejected: {
         default: "Ditolak",
+      },
+      Cancelled: {
+        default: "Dibatalkan",
       },
     },
   };
@@ -188,7 +199,7 @@ const DataSetoran = ({
     const ACTIONS = {
       Processed: { title: "Kirim", Icon: Send, iconClass: "size-5" },
       Approved: {
-        title: "Tolak Data Setoran",
+        title: "Batalkan Data Setoran",
         Icon: Undo2,
         iconClass: "size-5 text-red-500",
       },
@@ -203,6 +214,7 @@ const DataSetoran = ({
       <button
         title={ACTIONS[data.status].title}
         aria-label={ACTIONS[data.status].title}
+        onClick={(e) => openModal("confirmation", data)}
       >
         <Icon className={ACTIONS[data.status].iconClass} />
       </button>
@@ -425,7 +437,7 @@ const DataSetoran = ({
                         </a>
                       </td>
                       <td
-                        className={`whitespace-nowrap text-sm ${data.status === "Processed" ? "text-blue-500" : data.status === "Approved" ? "text-green-500" : "text-red-500"}`}
+                        className={`whitespace-nowrap text-sm ${data.status === "Processed" ? "text-blue-500" : data.status === "Approved" ? "text-green-500" : data.status === "Cancelled" ? "text-amber-500" : "text-red-500"}`}
                       >
                         {/* {data.status === "Processed"
                           ? "Diproses"
@@ -478,7 +490,7 @@ const DataSetoran = ({
                                 <Undo2 className="size-5 text-red-500" />
                               </button>
                             )} */}
-                            {actionButtons(data)}
+                          {actionButtons(data)}
                         </div>
                       </td>
                     </tr>

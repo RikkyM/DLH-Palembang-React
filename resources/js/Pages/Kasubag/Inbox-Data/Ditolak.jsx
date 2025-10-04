@@ -178,10 +178,10 @@ const Ditolak = ({
   ]);
 
   return (
-    <Layout title="Inbox Ditolak">
+    <Layout title="INBOX DITOLAK">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
-        <div className="mb-3 flex w-full flex-col items-center justify-between gap-2 rounded bg-white p-2 md:flex-row md:flex-wrap">
-          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto">
+        <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
               <label
                 htmlFor="showData"
@@ -302,46 +302,46 @@ const Ditolak = ({
                   Tambah
                 </Link> */}
             <button
-              //   onClick={() => {
-              //     const params = new URLSearchParams();
+              onClick={() => {
+                const params = new URLSearchParams();
 
-              //     if (search) params.append("search", search);
-              //     if (kategori) params.append("kategori", kategori);
-              //     if (subKategori) params.append("sub-kategori", subKategori);
-              //     if (kecamatan) params.append("kecamatan", kecamatan);
-              //     if (kelurahan) params.append("kelurahan", kelurahan);
-              //     if (status) params.append("status", status);
-              //     if (tahun) params.append("tahun", tahun);
+                if (search) params.append("search", search);
+                if (kategori) params.append("kategori", kategori);
+                if (subKategori) params.append("sub-kategori", subKategori);
+                if (kecamatan) params.append("kecamatan", kecamatan);
+                if (kelurahan) params.append("kelurahan", kelurahan);
 
-              //     window.open(
-              //       route("wajib-retribusi.download-pdf") +
-              //         "?" +
-              //         params.toString(),
-              //       "_blank",
-              //     );
-              //   }}
+                params.append("status", "Rejected");
+
+                window.open(
+                  route("wajib-retribusi.download-pdf") +
+                    "?" +
+                    params.toString(),
+                  "_blank",
+                );
+              }}
               className="rounded bg-red-500 px-3 py-1.5 text-sm font-medium text-white"
             >
               PDF
             </button>
             <button
-              //   onClick={() => {
-              //     const params = new URLSearchParams();
+              onClick={() => {
+                const params = new URLSearchParams();
 
-              //     if (search) params.append("search", search);
-              //     if (kategori) params.append("kategori", kategori);
-              //     if (subKategori) params.append("sub-kategori", subKategori);
-              //     if (kecamatan) params.append("kecamatan", kecamatan);
-              //     if (kelurahan) params.append("kelurahan", kelurahan);
+                if (search) params.append("search", search);
+                if (kategori) params.append("kategori", kategori);
+                if (subKategori) params.append("sub-kategori", subKategori);
+                if (kecamatan) params.append("kecamatan", kecamatan);
+                if (kelurahan) params.append("kelurahan", kelurahan);
 
-              //     window.open(
-              //       route("kuptd.wajib-retribusi.export") +
-              //         "?" +
-              //         params.toString(),
-              //       "_blank",
-              //     );
-              //   }}
-              className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white"
+                params.append("status", "Rejected");
+
+                window.open(
+                  route("wajib-retribusi.export") + "?" + params.toString(),
+                  "_blank",
+                );
+              }}
+              className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white transition duration-300"
             >
               Excel
             </button>

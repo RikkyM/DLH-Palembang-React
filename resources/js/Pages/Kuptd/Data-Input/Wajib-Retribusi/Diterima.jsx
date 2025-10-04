@@ -14,8 +14,8 @@ const Diterima = ({
   pjOptions = [],
   kategoriOptions = [],
   subKategoriOptions = [],
-  kecamatanOptions = [],
   kelurahanOptions = [],
+  tahunOptions = [],
   user = "ROLE_KUPTD",
 }) => {
   const { modalState, closeModal } = useProvider();
@@ -26,23 +26,17 @@ const Diterima = ({
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
   const [kelurahan, setKelurahan] = useState(filters.kelurahan || "");
-  const [showFilters, setShowFilters] = useState(false);
   const [pj, setpj] = useState(filters.pj || "");
   const [perPage, setPerPage] = useState(() => {
     return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
   });
+  const [tahun, setTahun] = useState(filters.tahun || "");
+  const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
 
-  console.log(datas)
-
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    // {
-    //   key: "noPendaftaran",
-    //   label: "no pendaftaran",
-    //   align: "text-left truncate",
-    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -89,7 +83,11 @@ const Diterima = ({
     { key: "giat", label: "giat", align: "text-left truncate" },
     { key: "hari", label: "hari", align: "text-left truncate" },
     { key: "meter", label: "meter", align: "text-left truncate" },
-    { key: "tanggalSkrd", label: "tanggal spkrd", align: "text-left truncate" },
+    {
+      key: "tanggalSkrd",
+      label: "tanggal spkrd",
+      align: "text-left truncate",
+    },
     {
       key: "tarifPerbulan",
       label: "tarif perbulan",
@@ -159,6 +157,7 @@ const Diterima = ({
     // if (kecamatan) params.kecamatan = kecamatan;
     if (kelurahan) params.kelurahan = kelurahan;
     if (perPage && perPage !== 10) params.per_page = perPage;
+    if (tahun) params.tahun = tahun;
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "asc") {
@@ -195,13 +194,20 @@ const Diterima = ({
       router.get(route("kuptd.wajib-retribusi.diterima"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
+        only: [
+          "datas",
+          "pjOptions",
+          "subKategoriOptions",
+          "kelurahanOptions",
+          "filters",
+        ],
         onFinish: () => setIsLoading(false),
       });
     }, 500);
 
     return () => {
       clearTimeout(timeoutId);
+      setIsLoading(false);
     };
   }, [
     search,
@@ -211,12 +217,11 @@ const Diterima = ({
     subKategori,
     kecamatan,
     kelurahan,
+    perPage,
+    status,
     pj,
+    tahun,
   ]);
-
-  const handlePerPageChange = (e) => {
-    setPerPage(parseInt(e.target.value));
-  };
 
   const handleSendDiterima = (e, id) => {
     e.preventDefault();
@@ -251,7 +256,9 @@ const Diterima = ({
                     name="showData"
                     id="showData"
                     value={perPage}
-                    onChange={handlePerPageChange}
+                    onChange={(e) => {
+                      setPerPage(parseInt(e.target.value));
+                    }}
                     className="w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                   >
                     <option value="10">10</option>
@@ -326,6 +333,13 @@ const Diterima = ({
                     onChange={(val) => setpj(val)}
                     placeholder="Pilih Penanggung Jawab"
                   />
+                  <SearchableSelect
+                    id="tahunList"
+                    options={tahunOptions}
+                    value={tahun}
+                    onChange={(val) => setTahun(val)}
+                    placeholder="Pilih Tahun"
+                  />
                 </div>
               </div>
             </div>
@@ -333,13 +347,13 @@ const Diterima = ({
               htmlFor="search"
               className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
             >
-              <Search size={20} />
+              <Search className="min-w-5 max-w-20" />
               <input
                 autoComplete="off"
                 type="search"
                 id="search"
                 placeholder="Cari nama..."
-                className="flex-1 outline-none"
+                className="w-full flex-1 outline-none"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -393,7 +407,7 @@ const Diterima = ({
           </div>
         </div>
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "bg-white shadow"}`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
@@ -429,7 +443,6 @@ const Diterima = ({
                 direction={direction}
                 setDirection={setDirection}
                 isLoading={isLoading}
-                handleSendDiterima={handleSendDiterima}
                 role={user}
               />
             </>

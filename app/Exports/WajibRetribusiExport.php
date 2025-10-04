@@ -39,6 +39,17 @@ class WajibRetribusiExport implements FromView, ShouldAutoSize, WithStyles
         ])
             ->orderBy('created_at', 'desc');
 
+        $role = auth()->user()->role;
+
+        if ($role === "ROLE_KUPTD" || $role === "ROLE_KASUBAG_TU_UPDT") {
+            $query->where(function ($data) use ($role) {
+                $data->where('current_role', $role)
+                ->orWhere('current_role', '!=', 'ROLE_PENDAFTAR')
+                ->orWhereNull('current_role')
+                ->orWhere('status', 'Rejected');
+            });
+        }
+
         if ($search = $this->request->search) {
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', fn($q2) => $q2->where('namaLengkap', 'like', "%{$search}%"))
@@ -105,7 +116,7 @@ class WajibRetribusiExport implements FromView, ShouldAutoSize, WithStyles
                         ->where('current_role', '!=', auth()->user()->role);
                 }
 
-                if (auth()->user()->role === "ROLE_KUPTD") {
+                if (auth()->user()->role === "ROLE_KUPTD" || auth()->user()->role === "ROLE_KUPTD") {
                     $query->where('status', 'Processed')
                         ->where('current_role', '!=', 'ROLE_PENDAFTAR')
                         ->where('current_role', '!=', auth()->user()->role);

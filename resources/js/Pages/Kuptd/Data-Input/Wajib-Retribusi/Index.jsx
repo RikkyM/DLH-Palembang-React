@@ -13,7 +13,7 @@ const Index = ({
   pjOptions = [],
   kategoriOptions = [],
   subKategoriOptions = [],
-  kecamatanOptions = [],
+  // kecamatanOptions = [],
   kelurahanOptions = [],
   statusOptions = [],
   tahunOptions = [],
@@ -37,11 +37,6 @@ const Index = ({
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-    // {
-    //   key: "noPendaftaran",
-    //   label: "no pendaftaran",
-    //   align: "text-left truncate",
-    // },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -88,7 +83,11 @@ const Index = ({
     { key: "giat", label: "giat", align: "text-left truncate" },
     { key: "hari", label: "hari", align: "text-left truncate" },
     { key: "meter", label: "meter", align: "text-left truncate" },
-    { key: "tanggalSkrd", label: "tanggal spkrd", align: "text-left truncate" },
+    {
+      key: "tanggalSkrd",
+      label: "tanggal spkrd",
+      align: "text-left truncate",
+    },
     {
       key: "tarifPerbulan",
       label: "tarif perbulan",
@@ -221,13 +220,20 @@ const Index = ({
       router.get(route("kuptd.wajib-retribusi.index"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas", "subKategoriOptions", "kelurahanOptions", "filters"],
+        only: [
+          "datas",
+          "pjOptions",
+          "subKategoriOptions",
+          "kelurahanOptions",
+          "filters",
+        ],
         onFinish: () => setIsLoading(false),
       });
     }, 500);
 
     return () => {
       clearTimeout(timeoutId);
+      setIsLoading(false);
     };
   }, [
     search,
@@ -242,10 +248,6 @@ const Index = ({
     pj,
     tahun,
   ]);
-
-  const handlePerPageChange = (e) => {
-    setPerPage(parseInt(e.target.value));
-  };
 
   const handleKategoriChange = (val) => {
     setKategori(val);
@@ -271,7 +273,9 @@ const Index = ({
                   name="showData"
                   id="showData"
                   value={perPage}
-                  onChange={handlePerPageChange}
+                  onChange={(e) => {
+                    setPerPage(parseInt(e.target.value));
+                  }}
                   className="h-full w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
                 >
                   <option value="10">10</option>
@@ -397,7 +401,7 @@ const Index = ({
               />
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm w-full md:w-max">
+          <div className="flex w-full flex-wrap items-center justify-end gap-1.5 *:text-xs md:w-max md:justify-start *:md:text-sm">
             {/* <Link
               href={route("kuptd.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
@@ -413,6 +417,8 @@ const Index = ({
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
                 if (kelurahan) params.append("kelurahan", kelurahan);
+                if (perPage) params.append("per_page", perPage);
+                if (pj) params.append("pj", pj);
                 if (status) params.append("status", status);
                 if (tahun) params.append("tahun", tahun);
 
@@ -435,14 +441,12 @@ const Index = ({
                 if (kategori) params.append("kategori", kategori);
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (kecamatan) params.append("kecamatan", kecamatan);
-                // if (kelurahan) params.append("kelurahan", kelurahan);
+                if (kelurahan) params.append("kelurahan", kelurahan);
                 if (perPage) params.append("per_page", perPage);
                 if (status) params.append("status", status);
 
                 window.open(
-                  route("wajib-retribusi.export") +
-                    "?" +
-                    params.toString(),
+                  route("wajib-retribusi.export") + "?" + params.toString(),
                   "_blank",
                 );
               }}

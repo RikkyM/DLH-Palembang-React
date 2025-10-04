@@ -39,7 +39,8 @@ class SetoranController extends Controller
                 $q->where('noSkrd', 'like', "%{$getSearch}%");
             })
                 ->orWhere(function ($q) use ($getSearch) {
-                    $q->where('nomorNota', 'like', "%{$getSearch}%");
+                    $q->where('nomorNota', 'like', "%{$getSearch}%")
+                        ->orWhere('jumlahBayar', 'like', "%{$getSearch}%");
                 });
         }
 
@@ -136,7 +137,8 @@ class SetoranController extends Controller
         try {
             DB::transaction(function () use ($request, $data) {
                 $data->update([
-                    'status' => $request->status
+                    'status' => $request->status,
+                    'tanggal_diterima' => $request->status === 'Approved' ? now() : null
                 ]);
             });
         } catch (\Exception $e) {
@@ -151,5 +153,20 @@ class SetoranController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function batalSetoran(Request $request, Setoran $nota)
+    {
+        try {
+            DB::transaction(function () use ($request, $nota) {
+                $nota->update([
+                    'status' => $request->status,
+                    'tanggal_batal' => $request->status === 'Cancelled' ? now() : null
+                ]);
+            });
+        } catch (\Exception $e) {
+            report($e);
+            return redirect()->back()->withErrors(['server' => 'Terjadi kesalahan ketika memproses setoran']);
+        }
     }
 }

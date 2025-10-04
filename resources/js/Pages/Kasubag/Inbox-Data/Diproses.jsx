@@ -177,37 +177,37 @@ const Diproses = ({
   ]);
 
   return (
-    <Layout title="Inbox Diproses">
+    <Layout title="INBOX DIPROSES">
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
-        <div className="mb-3 flex w-full flex-col items-center justify-between gap-2 rounded bg-white p-2 md:flex-row md:flex-wrap">
-          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto">
+        <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
-              <label
-                htmlFor="showData"
-                className="relative flex h-full w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
-              >
-                <select
-                  name="showData"
-                  id="showData"
-                  value={perPage}
-                  onChange={(e) => {
-                    setPerPage(parseInt(e.target.value));
-                  }}
-                  className="h-full w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+              <div className="relative flex w-full gap-2 sm:w-max">
+                <label
+                  htmlFor="showData"
+                  className="relative flex h-full w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
                 >
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                  <option value="250">250</option>
-                  <option value="-1">Semua</option>
-                </select>
-                <ChevronDown
-                  size={20}
-                  className="pointer-events-none absolute right-1 bg-transparent"
-                />
-              </label>
-              <div className="relative flex h-full w-full gap-2 sm:w-max">
+                  <select
+                    name="showData"
+                    id="showData"
+                    value={perPage}
+                    onChange={(e) => {
+                      setPerPage(parseInt(e.target.value));
+                    }}
+                    className="h-full w-full cursor-pointer appearance-none rounded border bg-transparent px-2 py-1.5 shadow outline-none"
+                  >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="250">250</option>
+                    <option value="-1">Semua</option>
+                  </select>
+                  <ChevronDown
+                    size={20}
+                    className="pointer-events-none absolute right-1 bg-transparent"
+                  />
+                </label>
                 <button
                   type="button"
                   className="flex w-full items-center gap-1.5 rounded border px-3 py-1.5 text-sm shadow sm:w-max"
@@ -301,46 +301,46 @@ const Diproses = ({
                   Tambah
                 </Link> */}
             <button
-              //   onClick={() => {
-              //     const params = new URLSearchParams();
+              onClick={() => {
+                const params = new URLSearchParams();
 
-              //     if (search) params.append("search", search);
-              //     if (kategori) params.append("kategori", kategori);
-              //     if (subKategori) params.append("sub-kategori", subKategori);
-              //     if (kecamatan) params.append("kecamatan", kecamatan);
-              //     if (kelurahan) params.append("kelurahan", kelurahan);
-              //     if (status) params.append("status", status);
-              //     if (tahun) params.append("tahun", tahun);
+                if (search) params.append("search", search);
+                if (kategori) params.append("kategori", kategori);
+                if (subKategori) params.append("sub-kategori", subKategori);
+                if (kecamatan) params.append("kecamatan", kecamatan);
+                if (kelurahan) params.append("kelurahan", kelurahan);
 
-              //     window.open(
-              //       route("wajib-retribusi.download-pdf") +
-              //         "?" +
-              //         params.toString(),
-              //       "_blank",
-              //     );
-              //   }}
+                params.append("status", "Processed");
+
+                window.open(
+                  route("wajib-retribusi.download-pdf") +
+                    "?" +
+                    params.toString(),
+                  "_blank",
+                );
+              }}
               className="rounded bg-red-500 px-3 py-1.5 text-sm font-medium text-white"
             >
               PDF
             </button>
             <button
-              //   onClick={() => {
-              //     const params = new URLSearchParams();
+              onClick={() => {
+                const params = new URLSearchParams();
 
-              //     if (search) params.append("search", search);
-              //     if (kategori) params.append("kategori", kategori);
-              //     if (subKategori) params.append("sub-kategori", subKategori);
-              //     if (kecamatan) params.append("kecamatan", kecamatan);
-              //     if (kelurahan) params.append("kelurahan", kelurahan);
+                if (search) params.append("search", search);
+                if (kategori) params.append("kategori", kategori);
+                if (subKategori) params.append("sub-kategori", subKategori);
+                if (kecamatan) params.append("kecamatan", kecamatan);
+                if (kelurahan) params.append("kelurahan", kelurahan);
 
-              //     window.open(
-              //       route("kuptd.wajib-retribusi.export") +
-              //         "?" +
-              //         params.toString(),
-              //       "_blank",
-              //     );
-              //   }}
-              className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white"
+                params.append("status", "Processed");
+
+                window.open(
+                  route("wajib-retribusi.export") + "?" + params.toString(),
+                  "_blank",
+                );
+              }}
+              className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white transition duration-300"
             >
               Excel
             </button>

@@ -191,13 +191,13 @@ class WajibRetribusiController extends Controller
         ]);
 
         $tahunOptions = WajibRetribusi::select('created_at')
-            ->get()
+        ->get()
             ->pluck('created_at')
             ->map(fn($date) => Carbon::parse($date)->year)
             ->unique()
             ->sortDesc()
             ->values()
-            ->map(fn($t) => ['value' => $t, 'label' => $t]);
+            ->map(fn($t) => ['value' => (string) $t, 'label' => (string) $t]);
 
         $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
