@@ -113,9 +113,9 @@ class SetoranController extends Controller
             ->orderBy('created_at', 'desc')
             // ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', 1) AS UNSIGNED) ASC")
             // ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', -1) AS UNSIGNED) ASC")
-            ->withSum(['detailSetoran as totalBayar' => function($q) {
+            ->withSum(['detailSetoran as totalBayar' => function ($q) {
                 // $q->whereHas('setoran', fn($data) => $data->where('status', '!=', "Rejected"));
-            $q->whereHas('setoran', fn($s) => $s->where('status', '!=', 'Rejected')->where('status', '!=', 'Cancelled'));
+                $q->whereHas('setoran', fn($s) => $s->where('status', '!=', 'Rejected')->where('status', '!=', 'Cancelled'));
             }], 'jumlahBayar')
             ->whereNotNull('noSkrd')
             ->get()
@@ -225,11 +225,12 @@ class SetoranController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Setoran $data)
+    public function update(Request $request)
     {
+        $setoran = Setoran::where('nomorNota', $request->nota)->firstOrFail();
         try {
-            DB::transaction(function () use ($data) {
-                $data->update([
+            DB::transaction(function () use ($setoran) {
+                $setoran->update([
                     'current_stage' => 'kuptd'
                 ]);
             });

@@ -32,10 +32,10 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
       );
     }
     if (setoran.status !== "Approved") {
-      // console.log(config)
       put(
         route(`${config}.data-setoran.update`, {
-          data: encodeURIComponent(nota),
+          // data: encodeURIComponent(nota),
+          nota: nota,
         }),
         {
           preserveScroll: true,
@@ -91,7 +91,7 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
             ? "Apakah anda yakin ingin memproses data setoran ke kepala UPTD?"
             : config === "bendahara" && setoran && setoran.status === "Approved"
               ? "Apakah anda ingin menarik setoran ini ?"
-              : "Apakah anda yakin ingin memproses data setoran ke Bendahara?"}
+              : "Apakah anda yakin ingin memproses data setoran ke kepala UPTD?"}
         </div>
         <form
           onSubmit={(e) => handleSubmit(e, setoran.nomorNota)}
