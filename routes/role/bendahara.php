@@ -18,9 +18,11 @@ Route::middleware('role:ROLE_BENDAHARA')->prefix('bendahara')->name('bendahara.'
         ->where(['nota' => '.*'])
         ->name('data-setoran.cancel');
     Route::resource('/penerimaan/data-setoran', SetoranController::class)
-        ->only(['index', 'show', 'update'])
+        ->only(['index', 'show'])
         ->parameters([
             'data-setoran' => 'data'
         ])
         ->where(['data' => '.*']);
+    Route::put('/penerimaan/data-setoran', [SetoranController::class, 'update'])
+        ->name('data-setoran.update');
 });

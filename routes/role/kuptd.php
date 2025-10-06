@@ -36,10 +36,12 @@ Route::middleware('role:ROLE_KUPTD')->prefix('kuptd')->name('kuptd.')->group(fun
 
     Route::prefix('penerimaan')->group(function () {
         Route::resource('/data-setoran', SetoranController::class)
-            ->only(['index', 'show', 'update'])
+            ->only(['index', 'show'])
             ->parameters([
                 'data-setoran' => 'data'
             ])
             ->where(['data' => '.*']);
+        Route::put('/data-setoran', [SetoranController::class, 'update'])
+            ->name('data-setoran.update');
     });
 });

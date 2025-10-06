@@ -91,7 +91,7 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
             ? "Apakah anda yakin ingin memproses data setoran ke kepala UPTD?"
             : config === "bendahara" && setoran && setoran.status === "Approved"
               ? "Apakah anda ingin menarik setoran ini ?"
-              : "Apakah anda yakin ingin memproses data setoran ke kepala UPTD?"}
+              : "Apakah anda yakin ingin memproses data setoran ke Bendahara?"}
         </div>
         <form
           onSubmit={(e) => handleSubmit(e, setoran.nomorNota)}

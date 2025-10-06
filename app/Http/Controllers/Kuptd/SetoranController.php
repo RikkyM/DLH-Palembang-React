@@ -140,18 +140,17 @@ class SetoranController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Setoran $data)
+    public function update(Request $request)
     {
-        // dd($request->all());
+        $setoran = Setoran::where('nomorNota', $request->nota)->firstOrFail();
         try {
-            DB::transaction(function () use ($request, $data) {
+            DB::transaction(function () use ($request, $setoran) {
                 if ($request->status === "Rejected") {
-                    $data->update([
+                    $setoran->update([
                         'status' => 'Rejected',
-                        'current_stage' => 'kasubag',
                     ]);
                 } else {
-                    $data->update([
+                    $setoran->update([
                         'current_stage' => 'bendahara',
                     ]);
                 }
