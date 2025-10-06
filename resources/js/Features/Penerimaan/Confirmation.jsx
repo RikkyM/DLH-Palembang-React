@@ -86,12 +86,12 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
             <X size={20} />
           </button>
         </div>
-        <div className="px-5 pb-5 text-sm">
+        <div className="max-w-[400px] px-5 pb-5 text-sm">
           {config === "kasubag"
-            ? "Apakah anda yakin ingin memproses data setoran ?"
+            ? "Apakah anda yakin ingin memproses data setoran ke kepala UPTD?"
             : config === "bendahara" && setoran && setoran.status === "Approved"
               ? "Apakah anda ingin menarik setoran ini ?"
-              : "Apakah Anda yakin ingin melanjutkan?"}
+              : "Apakah anda yakin ingin memproses data setoran ke Bendahara?"}
         </div>
         <form
           onSubmit={(e) => handleSubmit(e, setoran.nomorNota)}

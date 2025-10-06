@@ -197,7 +197,7 @@ const Step3 = ({ data, previewData }) => {
               <th>No.</th>
               <th className="text-left">Bulan</th>
               <th className="text-center">Tanggal Bayar</th>
-              <th className="text-center">Jumlah Bayar</th>
+              <th className="text-left">Jumlah Bayar</th>
               <th className="text-left">Keterangan</th>
             </tr>
           </thead>
@@ -211,7 +211,7 @@ const Step3 = ({ data, previewData }) => {
               };
 
               return (
-                <tr key={i} className="*:py-1.5">
+                <tr key={i} className="*:px-2 *:py-1.5">
                   <td className="text-center">{i + 1}</td>
                   <td className="text-sm lg:text-base">{namaBulanID(i)}</td>
                   <td className="px-1 text-center text-sm lg:text-base">

@@ -105,7 +105,7 @@ class SetoranController extends Controller
     {
         $skrdOptions = Skrd::with([
             'detailSetoran' => function ($setoran) {
-                $setoran->whereHas('setoran', fn($s) => $s->where('status', '!=', 'Rejected'));
+                $setoran->whereHas('setoran', fn($s) => $s->where('status', '!=', 'Rejected')->where('status', '!=', 'Cancelled'));
             }
         ])->select('id', 'noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'alamatObjekRetribusi', 'kecamatanObjekRetribusi', 'kelurahanObjekRetribusi', 'tagihanPerBulanSkrd', 'tagihanPerTahunSkrd', 'jumlahBulan', 'keteranganBulan')
             ->where('uptdId', auth()->user()->uptdId)
@@ -114,7 +114,8 @@ class SetoranController extends Controller
             // ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', 1) AS UNSIGNED) ASC")
             // ->orderByRaw("CAST(SUBSTRING_INDEX(noSkrd, '/', -1) AS UNSIGNED) ASC")
             ->withSum(['detailSetoran as totalBayar' => function($q) {
-                $q->whereHas('setoran', fn($data) => $data->where('status', '!=', "Rejected"));
+                // $q->whereHas('setoran', fn($data) => $data->where('status', '!=', "Rejected"));
+            $q->whereHas('setoran', fn($s) => $s->where('status', '!=', 'Rejected')->where('status', '!=', 'Cancelled'));
             }], 'jumlahBayar')
             ->whereNotNull('noSkrd')
             ->get()
