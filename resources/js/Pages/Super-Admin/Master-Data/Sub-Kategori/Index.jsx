@@ -1,7 +1,7 @@
 import { PencilLine, Search, Trash } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useState } from "react";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import SmartPagination from "@/Components/SmartPagination";
 import { useProvider } from "@/Context/GlobalContext";
 import DialogForm from "./DialogForm";
@@ -35,6 +35,7 @@ const Index = ({ datas, filters, kategori }) => {
 
   return (
     <Layout title="SUB KATEGORI">
+      <Head title="Sub Kategori Layanan" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
           <label

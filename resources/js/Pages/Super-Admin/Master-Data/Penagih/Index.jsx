@@ -3,7 +3,7 @@ import { useProvider } from "@/Context/GlobalContext";
 import { PencilLine, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import DialogForm from "./DialogForm";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import SmartPagination from "@/Components/SmartPagination";
 
 const Index = ({ datas, filters, uptdOptions = [] }) => {
@@ -34,6 +34,7 @@ const Index = ({ datas, filters, uptdOptions = [] }) => {
 
   return (
     <Layout title="Penagih">
+      <Head title="Penagih" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
           <label
@@ -89,7 +90,7 @@ const Index = ({ datas, filters, uptdOptions = [] }) => {
           ) : (
             <table className="min-w-full divide-y divide-gray-300 p-3">
               <thead>
-                <tr className="text-white *:bg-[#F1B174] *:p-2 *:text-sm *:font-medium truncate">
+                <tr className="truncate text-white *:bg-[#F1B174] *:p-2 *:text-sm *:font-medium">
                   <th className="w-16 text-center">No</th>
                   <th className="text-left">Nama Penagih</th>
                   <th className="text-left">Jabatan</th>

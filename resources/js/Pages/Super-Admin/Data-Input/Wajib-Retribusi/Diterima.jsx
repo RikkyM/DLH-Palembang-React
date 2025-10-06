@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { ChevronDown, Filter, Search } from "lucide-react";
 import { useProvider } from "@/Context/GlobalContext";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -232,6 +232,7 @@ const Diterima = ({
 
   return (
     <Layout title="INBOX DITERIMA">
+      <Head title="Inbox Diterima" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
@@ -346,7 +347,7 @@ const Diterima = ({
               />
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm w-full md:w-max">
+          <div className="flex w-full flex-wrap items-center justify-end gap-1.5 *:text-xs md:w-max md:justify-start *:md:text-sm">
             <button
               onClick={() => {
                 const params = new URLSearchParams();

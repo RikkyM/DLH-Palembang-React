@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 
 import { ChevronDown, Download, FileText, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -180,6 +180,7 @@ const Index = ({
 
   return (
     <Layout title="WAJIB RETRIBUSI">
+      <Head title="Wajib Retribusi" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-2 rounded bg-white p-2 md:flex-row md:flex-wrap">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto">

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 
 import { ChevronDown, Download, FileText, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -272,6 +272,7 @@ const Index = ({
 
   return (
     <Layout title="WAJIB RETRIBUSI">
+      <Head title="Wajib Retribusi" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-2 rounded bg-white p-2 md:flex-row md:flex-wrap">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto">
@@ -417,7 +418,7 @@ const Index = ({
               />
             </label>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 *:text-xs md:justify-start *:md:text-sm w-full md:w-max">
+          <div className="flex w-full flex-wrap items-center justify-end gap-1.5 *:text-xs md:w-max md:justify-start *:md:text-sm">
             {/* <Link
               href={route("super-admin.wajib-retribusi.create")}
               className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
@@ -464,9 +465,7 @@ const Index = ({
                 if (status) params.append("status", status);
 
                 window.open(
-                  route("wajib-retribusi.export") +
-                  "?" +
-                  params.toString(),
+                  route("wajib-retribusi.export") + "?" + params.toString(),
                   "_blank",
                 );
               }}

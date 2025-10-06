@@ -2,7 +2,7 @@ import { useProvider } from "@/Context/GlobalContext";
 import { FileText, Search, PencilLine } from "lucide-react";
 import DialogForm from "./DialogForm";
 import { useEffect, useState } from "react";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import TableHead from "@/Components/TableHead";
 import SmartPagination from "@/Components/SmartPagination";
 
@@ -105,6 +105,7 @@ const Index = ({ datas, filters, retribusiOptions = [], role }) => {
 
   return (
     <>
+      <Head title="Data Surat Tagihan" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col gap-3 rounded bg-white p-2 lg:flex-row lg:items-start lg:items-center lg:justify-between">
           <label

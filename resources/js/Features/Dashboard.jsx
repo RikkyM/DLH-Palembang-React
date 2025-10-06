@@ -1,4 +1,4 @@
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 
 import { Clock, DollarSign, FileText, Users, Wallet } from "lucide-react";
 import BarChart from "@/Components/Chart/BarChart";
@@ -17,6 +17,7 @@ const DashboardPages = ({
   };
   return (
     <section className="relative min-h-screen touch-pan-y overflow-hidden p-3">
+  <Head title="Dashboard"/>
       <div>
         {years.map((y) => (
           <button

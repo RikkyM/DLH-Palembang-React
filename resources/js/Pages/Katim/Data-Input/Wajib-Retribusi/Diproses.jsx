@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 
 import { ChevronDown, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -229,6 +229,7 @@ const Diproses = ({
 
   return (
     <Layout title="INBOX DIPROSES">
+      <Head title="Inbox Diproses" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">

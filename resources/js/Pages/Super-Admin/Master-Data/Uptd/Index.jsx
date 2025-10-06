@@ -1,7 +1,7 @@
 import { PencilLine, Search, Trash } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useState } from "react";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useProvider } from "@/Context/GlobalContext";
 import DialogEdit from "./DialogEdit";
 import DialogCreate from "./DialogCreate";
@@ -35,6 +35,7 @@ const Index = ({ datas, filters }) => {
 
   return (
     <Layout title="UPTD">
+      <Head title="UPTD" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
           <label
@@ -63,7 +64,7 @@ const Index = ({ datas, filters }) => {
         </div>
 
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow bg-white"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_210px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "bg-white shadow"}`}
         >
           <table className="min-w-full divide-y divide-gray-300 whitespace-nowrap p-3">
             <thead>
