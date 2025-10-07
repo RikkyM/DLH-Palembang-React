@@ -14,7 +14,6 @@ class InvoiceController extends Controller
     {
         $invoice->load('skrd');
         $noInvoice = str_replace('/', '-', $invoice->no_invoice);
-        $namaRetribusi = $invoice->skrd->namaObjekRetribusi;
 
         $kuptd = User::where('uptdId', $invoice->skrd->uptdId)->where('role', "ROLE_KUPTD")->first();
 

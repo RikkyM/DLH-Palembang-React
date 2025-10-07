@@ -3,6 +3,7 @@
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PemohonController;
+use App\Http\Controllers\SetoranController;
 use App\Http\Controllers\SkrdController;
 use App\Http\Controllers\WajibRetribusiController;
 use Illuminate\Support\Facades\Route;
@@ -37,11 +38,14 @@ Route::prefix('sirep')->group(function () {
             ->name('invoice.pdf');
         Route::get('/preview-invoice', [InvoiceController::class, 'previewPdf'])->name('invoice.preview');
 
+        Route::get('/penerimaan/bukti-bayar/{setoran:nomorNota}', [SetoranController::class, 'getBuktiSetoran'])
+            ->where(['setoran' => '.*'])
+            ->name('setoran.pdf');
+
         Route::controller(FileController::class)->group(function () {
             Route::get('/file/{filename}', 'getBuktiBayar')->where('filename', '.*')->name('bukti-bayar');
             Route::get('/pemohon/{filename}', 'getKtp')->name('getKtp');
         });
-
 
         require __DIR__ . '/role/superadmin.php';
         require __DIR__ . '/role/pendaftar.php';

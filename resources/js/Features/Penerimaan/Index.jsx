@@ -1,6 +1,7 @@
 import { useProvider } from "@/Context/GlobalContext";
 import {
   ChevronDown,
+  Eye,
   Filter,
   ReceiptText,
   Search,
@@ -55,8 +56,8 @@ const DataSetoran = ({
         default: "Ditolak",
       },
       Cancelled: {
-        default: "Dibatalkan"
-      }
+        default: "Dibatalkan",
+      },
     },
     ROLE_KASUBAG_TU_UPDT: {
       Processed: {
@@ -214,7 +215,7 @@ const DataSetoran = ({
       <button
         title={ACTIONS[data.status].title}
         aria-label={ACTIONS[data.status].title}
-        onClick={(e) => openModal("confirmation", data)}
+        onClick={() => openModal("confirmation", data)}
       >
         <Icon className={ACTIONS[data.status].iconClass} />
       </button>
@@ -464,8 +465,21 @@ const DataSetoran = ({
                               data: data.nomorNota,
                             })}
                           >
-                            <ReceiptText className="size-5" />
+                            <Eye className="size-5" />
                           </a>
+                          {data.status === "Approved" &&
+                            data.current_stage === "bendahara" && (
+                              <a
+                                href={route('setoran.pdf', {
+                                  setoran: data.nomorNota
+                                })}
+                                target="_blank"
+                                rel="noreferrer noopener"
+                                title="Bukti Setoran"
+                              >
+                                <ReceiptText className="size-5"/>
+                              </a>
+                            )}
                           {/* {role !== "ROLE_SUPERADMIN" &&
                             data.current_stage === roleConfig[role] &&
                             data.status === "Processed" && (
