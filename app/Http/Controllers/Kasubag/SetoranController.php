@@ -7,10 +7,14 @@ use App\Models\DetailSetoran;
 use App\Models\Setoran;
 use App\Models\Skrd;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\JpegEncoder;
+use Intervention\Image\ImageManager;
 
 class SetoranController extends Controller
 {
@@ -21,6 +25,50 @@ class SetoranController extends Controller
             'value' => $s,
             'label' => $s
         ]);
+    }
+
+    private function compressToMaxBytes(UploadedFile $file, int $maxBytes = 512_000): array
+    {
+        $manager = new ImageManager(new Driver());
+
+        $image = $manager->read($file->getRealPath())->orient(); // v3
+
+
+        $originalExt = strtolower($file->getClientOriginalExtension());
+        $encodeAsJpeg = in_array($originalExt, ['jpg', 'jpeg', 'png']);
+
+        $quality = 85;
+        $scale = 1.0;
+
+        $encoded = null;
+        $mime = '';
+        $ext = '';
+
+        do {
+
+            $working = clone $image;
+
+            if ($scale < 1.0) {
+                $working = $working->scale($scale * 100);
+            }
+
+            if ($encodeAsJpeg) {
+                $encoded = $working->encode(new JpegEncoder(quality: $quality));
+                $mime = 'image/jpeg';
+                $ext = 'jpg';
+            }
+
+            $bytes = strlen($encoded->toString());
+            if ($bytes <= $maxBytes) break;
+
+            if ($quality > 60) {
+                $quality -= 5;
+            } else {
+                $scale *= 0.90;
+            }
+        } while ($scale > 0.30);
+
+        return [$encoded->toString(), $ext, $mime];
     }
 
     /**
@@ -162,28 +210,39 @@ class SetoranController extends Controller
     public function store(Request $request)
     {
         DB::transaction(function () use ($request) {
-            $fileBuktiBayar = $request->file('buktiBayar');
-            if ($fileBuktiBayar) {
-                $namaFileBuktiBayar = Str::uuid() . '.' . $fileBuktiBayar->getClientOriginalExtension();
-                $fileBuktiBayar->storeAs('bukti-bayar', $namaFileBuktiBayar, 'local');
-                $filePath = Storage::disk('local')->putFileAs(
-                    'bukti-bayar',
-                    $fileBuktiBayar,
-                    $namaFileBuktiBayar
-                );
+            // $fileBuktiBayar = $request->file('buktiBayar');
+            // if ($fileBuktiBayar) {
+            //     $namaFileBuktiBayar = Str::uuid() . '.' . $fileBuktiBayar->getClientOriginalExtension();
+            //     $fileBuktiBayar->storeAs('bukti-bayar', $namaFileBuktiBayar, 'local');
+            //     $filePath = Storage::disk('local')->putFileAs(
+            //         'bukti-bayar',
+            //         $fileBuktiBayar,
+            //         $namaFileBuktiBayar
+            //     );
+            // }
+
+            $filePath = null;
+
+            if ($request->hasFile('buktiBayar')) {
+                [$binary, $ext, $mime] = $this->compressToMaxBytes($request->file('buktiBayar'), 512000);
+
+                $namaFileBuktiBayar = Str::uuid() . '.' . $ext;
+                // Simpan binary hasil kompresi
+                Storage::disk('local')->put("bukti-bayar/{$namaFileBuktiBayar}", $binary);
+                $filePath = "bukti-bayar/{$namaFileBuktiBayar}";
             }
 
             $dataSave = [
-                'skrdId' => $request->noSkrd,
-                'noRef' => $request->noReferensiBank,
-                'tanggalBayar' => $request->tanggalBayar,
-                'jumlahBayar' => $request->jumlahBayar,
-                'jumlahBulan' => $request->jumlahBulanBayar,
-                'namaPenyetor' => $request->namaPengirim,
+                'skrdId'         => $request->noSkrd,
+                'noRef'          => $request->noReferensiBank,
+                'tanggalBayar'   => $request->tanggalBayar,
+                'jumlahBayar'    => $request->jumlahBayar,
+                'jumlahBulan'    => $request->jumlahBulanBayar,
+                'namaPenyetor'   => $request->namaPengirim,
                 'keteranganBulan' => $request->keteranganBulan,
-                'metodeBayar' => $request->metodeBayar,
-                'namaBank' => $request->namaBank,
-                'buktiBayar' => $filePath,
+                'metodeBayar'    => $request->metodeBayar,
+                'namaBank'       => $request->namaBank,
+                'buktiBayar'     => $filePath, // path relatif di disk 'public'
             ];
 
             $setoran = Setoran::create($dataSave);
