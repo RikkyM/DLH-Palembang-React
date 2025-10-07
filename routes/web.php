@@ -32,7 +32,9 @@ Route::prefix('sirep')->group(function () {
 
         Route::get('/export-pemohon', [PemohonController::class, 'exportPemohon'])->name('export-pemohon');
 
-        Route::get('/invoice/pdf/{invoice}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
+        Route::get('/invoice/pdf/{invoice:no_invoice}', [InvoiceController::class, 'openFile'])
+            ->where(['invoice' => '.*'])
+            ->name('invoice.pdf');
         Route::get('/preview-invoice', [InvoiceController::class, 'previewPdf'])->name('invoice.preview');
 
         Route::controller(FileController::class)->group(function () {

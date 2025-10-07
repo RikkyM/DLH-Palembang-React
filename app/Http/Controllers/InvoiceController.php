@@ -13,15 +13,21 @@ class InvoiceController extends Controller
     public function openFile(Invoice $invoice)
     {
         $invoice->load('skrd');
+        $noInvoice = str_replace('/', '-', $invoice->no_invoice);
+        $namaRetribusi = $invoice->skrd->namaObjekRetribusi;
 
         $kuptd = User::where('uptdId', $invoice->skrd->uptdId)->where('role', "ROLE_KUPTD")->first();
 
 
         $pdf = Pdf::loadView('exports.invoices.invoice', ['invoice' => $invoice, 'skrd' => $invoice->skrd, 'kuptd' => $kuptd])->setPaper('a4');
 
-        return $pdf->stream("invoice.pdf");
+        // $pdf->getDomPDF()->getCanvas()->get_cpdf()->setTitle($invoice->skrd->namaObjekRetribusi);
+        // $pdf->getDomPDF()->getCanvas()->get_cpdf()->setTitle($invoice->skrd->namaObjekRetribusi);
+        $pdf->getDomPDF()->add_info('Title', $invoice->no_invoice);
+
+        return $pdf->stream("Tagihan-$noInvoice.pdf");
     }
-    
+
     public function previewPdf(Request $request)
     {
         $skrd = Skrd::where('noSkrd', $request->noSkrd)->firstOrFail();

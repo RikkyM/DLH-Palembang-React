@@ -260,7 +260,7 @@ const Index = ({ datas, filters, retribusiOptions = [], role }) => {
                             </button>
                             <a
                               href={route("invoice.pdf", {
-                                id: data.id,
+                                id: data.no_invoice,
                               })}
                               target="_blank"
                               rel="noopener noreferrer"
