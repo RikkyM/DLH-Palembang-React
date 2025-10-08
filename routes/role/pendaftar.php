@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Pendaftar\AccountController;
 use App\Http\Controllers\Pendaftar\DashboardController;
 use App\Http\Controllers\Pendaftar\PemohonController;
 use App\Http\Controllers\Pendaftar\SkrdController;
@@ -30,7 +31,7 @@ Route::middleware('role:ROLE_PENDAFTAR')->prefix('pendaftar')->name('pendaftar.'
 
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
     });
-    // Route::get('/skrd', function() {
-    //     return dd('asd');
-    // })->name('skrd.index');
+
+    Route::get('/akun', [AccountController::class, 'index'])->name('akun');
+    Route::put('/akun', [AccountController::class, 'update'])->name('akun.update');
 });

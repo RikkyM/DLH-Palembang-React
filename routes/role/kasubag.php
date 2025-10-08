@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Kasubag\AccountController;
 use App\Http\Controllers\Kasubag\DashboardController;
 use App\Http\Controllers\Kasubag\InvoiceController;
 use App\Http\Controllers\Kasubag\SetoranController;
@@ -50,4 +51,7 @@ Route::middleware('role:ROLE_KASUBAG_TU_UPDT')->prefix('kasubag')->name('kasubag
         Route::put('/data-setoran', [SetoranController::class, 'update'])
             ->name('data-setoran.update');
     });
+
+    Route::get('/akun', [AccountController::class, 'index'])->name('akun');
+    Route::put('/akun', [AccountController::class, 'update'])->name('akun.update');
 });

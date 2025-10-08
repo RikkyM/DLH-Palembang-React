@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Bendahara\AccountController;
 use App\Http\Controllers\Bendahara\DashboardController;
 use App\Http\Controllers\Bendahara\InvoiceController;
 use App\Http\Controllers\Bendahara\SetoranController;
@@ -25,4 +26,7 @@ Route::middleware('role:ROLE_BENDAHARA')->prefix('bendahara')->name('bendahara.'
         ->where(['data' => '.*']);
     Route::put('/penerimaan/data-setoran', [SetoranController::class, 'update'])
         ->name('data-setoran.update');
+
+    Route::get('/akun', [AccountController::class, 'index'])->name('akun');
+    Route::put('/akun', [AccountController::class, 'update'])->name('akun.update');
 });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Katim\AccountController;
 use App\Http\Controllers\Katim\DashboardController;
 use App\Http\Controllers\Katim\SkrdController;
 use App\Http\Controllers\Katim\WajibRetribusiController;
@@ -24,4 +25,7 @@ Route::middleware('role:ROLE_KATIM')->prefix('katim')->name('katim.')->group(fun
 
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
     });
+
+    Route::get('/akun', [AccountController::class, 'index'])->name('akun');
+    Route::put('/akun', [AccountController::class, 'update'])->name('akun.update');
 });

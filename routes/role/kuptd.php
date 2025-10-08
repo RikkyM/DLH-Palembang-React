@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Kuptd\AccountController;
 use App\Http\Controllers\Kuptd\DashboardController;
 use App\Http\Controllers\Kuptd\InvoiceController;
 use App\Http\Controllers\Kuptd\SetoranController;
@@ -44,4 +45,7 @@ Route::middleware('role:ROLE_KUPTD')->prefix('kuptd')->name('kuptd.')->group(fun
         Route::put('/data-setoran', [SetoranController::class, 'update'])
             ->name('data-setoran.update');
     });
+
+    Route::get('/akun', [AccountController::class, 'index'])->name('akun');
+    Route::put('/akun', [AccountController::class, 'update'])->name('akun.update');
 });

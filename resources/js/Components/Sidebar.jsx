@@ -12,6 +12,18 @@ const Sidebar = ({ children }) => {
 
   const user = props[0]?.auth?.user;
 
+  const roleConfig = {
+    ROLE_SUPERADMIN: "super-admin",
+    ROLE_PENDAFTAR: "pendaftar",
+    ROLE_KUPTD: "kuptd",
+    ROLE_KATIM: "katim",
+    ROLE_KABID: "kabid",
+    ROLE_KASUBAG_TU_UPDT: "kasubag",
+    ROLE_BENDAHARA: "bendahara",
+  };
+
+  const routeConfig = roleConfig[user.role];
+
   useEffect(() => {
     setIsOpen(false);
   }, [url]);
@@ -93,7 +105,7 @@ const Sidebar = ({ children }) => {
         </section>
 
         {/* body */}
-        <section className="flex-1 place-content-start space-y-1.5 overflow-y-auto overflow-x-hidden  text-sm [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-0.5">
+        <section className="flex-1 place-content-start space-y-1.5 overflow-y-auto overflow-x-hidden text-sm [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-0.5">
           {children}
         </section>
 
@@ -138,7 +150,10 @@ const Sidebar = ({ children }) => {
             </div>
             <ul className="flex flex-col gap-2 p-1.5 text-xs md:text-sm">
               <li>
-                <Link className="inline-flex w-full items-center gap-1.5 rounded p-1.5 font-medium transition-all duration-200 hover:bg-neutral-200">
+                <Link
+                  href={route(`${routeConfig}.akun`)}
+                  className="inline-flex w-full items-center gap-1.5 rounded p-1.5 font-medium transition-all duration-200 hover:bg-neutral-200"
+                >
                   <User size={20} />
                   <span>Akun</span>
                 </Link>

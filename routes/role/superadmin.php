@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SuperAdmin\AccountController;
 use App\Http\Controllers\SuperAdmin\BadanUsahaController;
 use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\SuperAdmin\InvoiceController;
@@ -66,7 +67,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
             ->where(['data' => '.*']);
     });
 
-    Route::prefix('rekapitulasi')->name('rekapitulasi.')->group(function() {
+    Route::prefix('rekapitulasi')->name('rekapitulasi.')->group(function () {
         Route::get('/spkrd', [RekapitulasiController::class, 'spkrd'])->name('spkrd');
     });
 
@@ -82,6 +83,8 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::resource('/badan-usaha', BadanUsahaController::class)->only(['index', 'store', 'update']);
     });
 
+    Route::get('/akun', [AccountController::class, 'index'])->name('akun');
+    Route::put('/akun', [AccountController::class, 'update'])->name('akun.update');
 
     Route::get('excel', [SubKategoriController::class, 'importExcelIndex'])->name('excelIndex');
     Route::post('excel', [SubKategoriController::class, 'importExcel'])->name('excel');

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Kabid\AccountController;
 use App\Http\Controllers\Kabid\DashboardController;
 use App\Http\Controllers\Kabid\SkrdController;
 use App\Http\Controllers\Kabid\WajibRetribusiController;
@@ -24,4 +25,7 @@ Route::middleware('role:ROLE_KABID')->prefix('kabid')->name('kabid.')->group(fun
 
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
     });
+
+    Route::get('/akun', [AccountController::class, 'index'])->name('akun');
+    Route::put('/akun', [AccountController::class, 'update'])->name('akun.update');
 });
