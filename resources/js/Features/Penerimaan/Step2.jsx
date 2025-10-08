@@ -291,7 +291,7 @@ const Step2 = ({
           <Input
             id="buktiBayar"
             type="file"
-            accept="image/*,application/pdf"
+            accept="image/*"
             className={`${errors.buktiBayar && "border border-red-500"}`}
             value={data.buktiBayar || ""}
             onChange={(e) => {

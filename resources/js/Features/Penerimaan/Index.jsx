@@ -222,6 +222,8 @@ const DataSetoran = ({
     );
   };
 
+  const displayNomorNota = v => typeof v === 'string' && v.toLowerCase().startsWith('temp-') ? "-" : v;
+
   return (
     <>
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
@@ -377,7 +379,7 @@ const DataSetoran = ({
                       className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                     >
                       <td className="whitespace-nowrap text-xs md:text-sm">
-                        {data.nomorNota}
+                        {displayNomorNota(data.nomorNota)}
                       </td>
                       <td className="text-xs md:text-sm">{data.skrd.noSkrd}</td>
                       <td className="text-xs md:text-sm">

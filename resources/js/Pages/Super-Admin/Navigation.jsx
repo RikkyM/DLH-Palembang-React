@@ -139,7 +139,7 @@ const SuperAdminNavigation = () => {
     },
     {
       label: "SPKRD",
-      // route: "super-admin.laporan.piutang-retribusi",
+      route: "super-admin.rekapitulasi.spkrd",
     },
     {
       label: "Penerimaan",

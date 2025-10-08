@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Setoran extends Model
 {
@@ -28,26 +29,45 @@ class Setoran extends Model
         'tanggal_batal'
     ];
 
-    public static function booted()
+    protected static function booted()
     {
         static::creating(function ($setoran) {
-            $year = date('Y');
-
-            $lastNote = self::whereYear('created_at', $year)
-                ->orderByDesc('nomorNota')
-                ->first();
-
-            if ($lastNote) {
-                $lastNumber = (int) substr($lastNote->nomorNota, 0, 4);
-                $nextNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-            } else {
-                $nextNumber = "0001";
+            if (empty($setoran->nomorNota)) {
+                $setoran->nomorNota = 'TEMP-' . Str::uuid()->toString();
             }
-            $setoran->nomorNota = "{$nextNumber}/NP-RET/DLH/{$year}";
         });
     }
 
-    public function skrd() {
+    // public static function booted()
+    // {
+    //     static::creating(function ($setoran) {
+
+    //     });
+    // }
+
+    public static function generateNomorNota(): string
+    {
+        $year = date('Y');
+        $prefix = "NP-RET/DLH/{$year}";
+
+        $lastNote = self::whereYear('created_at', $year)
+            ->where('nomorNota', 'like', "%/{$prefix}")
+            ->orderByDesc('nomorNota')
+            ->lockForUpdate()
+            ->first();
+
+        if ($lastNote) {
+            $lastNumber = (int) substr($lastNote->nomorNota, 0, 4);
+            $nextNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $nextNumber = "0001";
+        }
+        // return "{$nextNumber}/NP-RET/DLH/{$year}";
+        return "{$nextNumber}/{$prefix}";
+    }
+
+    public function skrd()
+    {
         return $this->belongsTo(Skrd::class, 'skrdId', 'id');
     }
 

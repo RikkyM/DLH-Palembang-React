@@ -227,7 +227,6 @@ class SetoranController extends Controller
                 [$binary, $ext, $mime] = $this->compressToMaxBytes($request->file('buktiBayar'), 512000);
 
                 $namaFileBuktiBayar = Str::uuid() . '.' . $ext;
-                // Simpan binary hasil kompresi
                 Storage::disk('local')->put("bukti-bayar/{$namaFileBuktiBayar}", $binary);
                 $filePath = "bukti-bayar/{$namaFileBuktiBayar}";
             }
@@ -242,7 +241,7 @@ class SetoranController extends Controller
                 'keteranganBulan' => $request->keteranganBulan,
                 'metodeBayar'    => $request->metodeBayar,
                 'namaBank'       => $request->namaBank,
-                'buktiBayar'     => $filePath, // path relatif di disk 'public'
+                'buktiBayar'     => $filePath,
             ];
 
             $setoran = Setoran::create($dataSave);

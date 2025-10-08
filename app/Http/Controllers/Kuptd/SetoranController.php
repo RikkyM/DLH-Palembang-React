@@ -149,10 +149,22 @@ class SetoranController extends Controller
                     $setoran->update([
                         'status' => 'Rejected',
                     ]);
+                    return;
+                }
+
+                $movingToBendahara = $setoran->current_stage !== 'bendahara';
+                $isTemp = str_starts_with($setoran->nomorNota, 'TEMP-');
+
+                if ($movingToBendahara && $isTemp) {
+                    $oldNota = $setoran->nomorNota;
+                    $newNota = Setoran::generateNomorNota();
+                    // dd($oldNota, $newNota);
+
+                    $setoran->nomorNota = $newNota;
+                    $setoran->current_stage = 'bendahara';
+                    $setoran->save();
                 } else {
-                    $setoran->update([
-                        'current_stage' => 'bendahara',
-                    ]);
+                    $setoran->update(['current_stage' => 'bendahara']);
                 }
             });
         } catch (\Exception $e) {

@@ -103,7 +103,7 @@
                             <tr>
                                 <td style="vertical-align: top; padding: 3px 4px;"></td>
                                 <td style="width: 20px; vertical-align: top; padding: 3px 4px;"></td>
-                                <td style="width: 420px; padding: 3px 4px; text-transform: capitalize;">Bulan
+                                <td style="width: 420px; padding: 2px 4px; text-transform: capitalize;">Bulan
                                     @foreach ($setoran->detailSetoran as $item)
                                         {{ $item->namaBulan }}@if (!$loop->last)
                                             ,
@@ -117,18 +117,20 @@
                                 <td style="vertical-align: top; padding: 3px 4px;"></td>
                                 <td style="width: 20px; vertical-align: top; padding: 3px 4px;"></td>
                                 <td
-                                    style="width: 420px; padding: 0 4px 3px; text-transform: capitalize; vertical-align: top; line-height: 1.2rem;">
+                                    style="width: 420px; padding: 0 4px 3px; text-transform: capitalize; vertical-align: top; line-height: 1.15rem;">
                                     {{ strtolower($setoran->skrd->alamatObjekRetribusi) }}, Kel.
                                     {{ strtolower($setoran->skrd->kelurahanObjekRetribusi) }} Kecamatan
                                     {{ strtolower($setoran->skrd->kecamatanObjekRetribusi) }}</td>
                             </tr>
                             <tr>
-                                <td style="vertical-align: top; padding: 3px 4px; padding-bottom: 10px;">Metode Bayar
+                                <td style="vertical-align: top; padding: 0 4px 3px; padding-bottom: 10px;">
+                                    Metode Bayar
                                 </td>
-                                <td style="width: 20px; vertical-align: top; padding: 3px 4px; padding-bottom: 10px;">:
+                                <td style="width: 20px; vertical-align: top; padding: 0 4px 3px; padding-bottom: 10px;">
+                                    :
                                 </td>
                                 <td
-                                    style="width: 420px; padding: 0 4px 3px; text-transform: capitalize; padding-bottom: 10px; vertical-align: top; line-height: 1.3rem;">
+                                    style="width: 420px; padding: 0 4px 3px; text-transform: capitalize;  vertical-align: top;">
                                     {{ $setoran->metodeBayar }}
                                 </td>
                             </tr>
@@ -137,12 +139,12 @@
                                 <td style="width: 20px; vertical-align: top; padding: 5px; padding-bottom: 50px;"></td>
                                 <td
                                     style="width: 420px; padding: 5px; text-transform: capitalize; padding-bottom: 50px; vertical-align: middle;">
-                                    <div style="padding-left: 60px; padding: 3px auto;">
+                                    <div style="padding-left: 120px; padding: 3px auto;">
                                         <span style="margin-right: 20px;">Palembang,</span>
                                         {{ \Carbon\Carbon::parse($setoran->created_at)->translatedFormat('F Y') }}
                                     </div>
-                                    <div style="padding-left: 60px; padding: 3px auto;">Verifikator</div>
-                                    <div style="padding-left: 60px; padding: 3px auto;">Kepala UPTD Kec.
+                                    <div style="padding-left: 120px; padding: 3px auto;">Verifikator</div>
+                                    <div style="padding-left: 120px; padding: 3px auto;">Kepala UPTD Kec.
                                         {{ strtolower($setoran->skrd->kecamatanObjekRetribusi) }}</div>
                                 </td>
                             </tr>
@@ -156,8 +158,9 @@
                                 {{-- <td style="width: 20px; vertical-align: top; padding: 5px; padding-bottom: 50px;"></td> --}}
                                 <td
                                     style="width: 420px; padding: 5px; text-transform: capitalize; padding-bottom: 10px; vertical-align: middle; font-weight: 700;">
-                                    <div style="padding-left: 60px; padding: 3px auto;">{{ $kuptd->namaLengkap }}</div>
-                                    <div style="padding-left: 60px; padding: 3px auto;">Nip. {{ $kuptd->nip }}</div>
+                                    <div style="padding-left: 120px; padding: 3px auto;">{{ $kuptd->namaLengkap }}
+                                    </div>
+                                    <div style="padding-left: 120px; padding: 3px auto;">Nip. {{ $kuptd->nip }}</div>
                                 </td>
                             </tr>
                         </tbody>

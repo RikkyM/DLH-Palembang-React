@@ -8,7 +8,7 @@ use App\Http\Controllers\SuperAdmin\KecamatanController;
 use App\Http\Controllers\SuperAdmin\KelurahanController;
 use App\Http\Controllers\SuperAdmin\PemohonController;
 use App\Http\Controllers\SuperAdmin\PenagihController;
-use App\Http\Controllers\SuperAdmin\PenerimaanRetribusiController;
+use App\Http\Controllers\SuperAdmin\RekapitulasiController;
 use App\Http\Controllers\SuperAdmin\SetoranController;
 use App\Http\Controllers\SuperAdmin\SkrdController;
 use App\Http\Controllers\SuperAdmin\SubKategoriController;
@@ -57,10 +57,6 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
     });
 
     Route::prefix('penerimaan')->group(function () {
-
-        // Route::get('/invoice/pdf/{filename}', [InvoiceController::class, 'openFile'])->name('invoice.pdf');
-        Route::resource('/penerimaan-retribusi', PenerimaanRetribusiController::class);
-        // Route::resource('/input-setoran', SetoranController::class)->only(['index', 'create']);
         Route::get('/input-setoran', [SetoranController::class, 'create'])->name('input-setoran');
         Route::resource('/data-setoran', SetoranController::class)
             ->only(['index', 'store', 'show'])
@@ -68,6 +64,10 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
                 'data-setoran' => 'data'
             ])
             ->where(['data' => '.*']);
+    });
+
+    Route::prefix('rekapitulasi')->name('rekapitulasi.')->group(function() {
+        Route::get('/spkrd', [RekapitulasiController::class, 'spkrd'])->name('spkrd');
     });
 
     Route::prefix('master-data')->group(function () {
