@@ -130,16 +130,12 @@ const SuperAdminNavigation = () => {
 
   const rekapitulasiItems = [
     {
-      label: "Pemohon",
-      // route: "super-admin.laporan.piutang-retribusi",
-    },
-    {
-      label: "Wajib Retribusi",
-      // route: "super-admin.laporan.penerimaan-retribusi",
-    },
-    {
       label: "SPKRD",
       route: "super-admin.rekapitulasi.spkrd",
+      activeRoute: [
+        "super-admin.rekapitulasi.spkrd",
+        "super-admin.rekapitulasi.spkrd.detail",
+      ],
     },
     {
       label: "Penerimaan",

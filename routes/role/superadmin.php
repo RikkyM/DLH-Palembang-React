@@ -68,7 +68,10 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
     });
 
     Route::prefix('rekapitulasi')->name('rekapitulasi.')->group(function () {
-        Route::get('/spkrd', [RekapitulasiController::class, 'spkrd'])->name('spkrd');
+        Route::controller(RekapitulasiController::class)->prefix('/spkrd')->group(function () {
+            Route::get('/', 'spkrd')->name('spkrd');
+            Route::get('/detail', 'spkrdDetail')->name('spkrd.detail');
+        });
     });
 
     Route::prefix('master-data')->group(function () {

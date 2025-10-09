@@ -1,5 +1,5 @@
-import Layout from "../Layout";
-import Index from "@/Features/Rekapitulasi/Spkrd";
+import Layout from "../../Layout";
+import Index from "@/Features/Rekapitulasi/Spkrd/Index";
 
 const Spkrd = (props) => {
   return (

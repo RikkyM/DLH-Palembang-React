@@ -1,13 +1,9 @@
+import { usePage } from "@inertiajs/react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 
-const TableHead = ({
-  columns,
-  sort,
-  direction,
-  onSort,
-  children = null,
-  user = null,
-}) => {
+const TableHead = ({ columns, sort, direction, onSort, children = null }) => {
+  const { url } = usePage();
+
   const handleSort = (column) => {
     const newDirection =
       sort === column && direction === "desc" ? "asc" : "desc";
@@ -15,7 +11,7 @@ const TableHead = ({
   };
 
   return (
-    <tr className="text-white *:p-2 *:text-xs *:md:text-sm *:font-medium *:uppercase">
+    <tr className="text-white *:p-2 *:text-xs *:font-medium *:uppercase *:md:text-sm">
       {columns.map((col) => (
         <th
           key={col.key}
@@ -38,9 +34,11 @@ const TableHead = ({
         </th>
       ))}
       {children}
-      <th className="sticky right-0 top-0 z-10 bg-[#F1B174] text-right text-white">
-        Aksi
-      </th>
+      {!url.includes("rekapitulasi") && (
+        <th className="sticky right-0 top-0 z-10 bg-[#F1B174] text-right text-white">
+          Aksi
+        </th>
+      )}
     </tr>
   );
 };
