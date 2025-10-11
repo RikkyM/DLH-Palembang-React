@@ -1,7 +1,7 @@
 import { usePage } from "@inertiajs/react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 
-const TableHead = ({ columns, sort, direction, onSort, children = null }) => {
+const TableHead = ({ columns, sort, direction, onSort, rowSpan = 0, colSpan = 0, children = null }) => {
   const { url } = usePage();
 
   const handleSort = (column) => {
@@ -18,6 +18,8 @@ const TableHead = ({ columns, sort, direction, onSort, children = null }) => {
           className={`${col.align} sticky top-0 z-0 cursor-pointer select-none bg-[#F1B174]`}
           onClick={() => handleSort(col.key)}
           title="Sort"
+          colSpan={colSpan}
+          rowSpan={rowSpan}
         >
           <span className="inline-flex items-center gap-1.5">
             {col.label}

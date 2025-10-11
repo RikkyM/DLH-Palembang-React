@@ -1,24 +1,26 @@
 import { Head, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import TableHead from "@/Components/TableHead";
-import SmartPagination from "@/Components/SmartPagination";
-import React from "react";
 
 const Index = ({ datas, filters }) => {
   const [startDate, setStartDate] = useState(filters.tanggal_mulai ?? "");
   const [endDate, setEndDate] = useState(filters.tanggal_akhir ?? "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
-  // const [perPage, setPerPage] = useState(() => {
-  //   return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
-  // });
   const [isLoading, setIsLoading] = useState(false);
 
   const columns = [
     { key: "id", label: "No", align: "text-center w-10" },
-    { key: "namaKategori", label: "Kategori", align: "text-left" },
-    { key: "namaSubKategori", label: "Sub Kategori", align: "text-left" },
-    { key: "jumlah", label: "Jumlah", align: "text-center" },
+    {
+      key: "namaKategori",
+      label: "Wilayah UPTD",
+      align: "text-left",
+    },
+    {
+      key: "namaSubKategori",
+      label: "Jumlah Tagihan",
+      align: "text-left",
+    },
   ];
 
   const buildParams = (additionalParams = {}) => {
@@ -48,7 +50,7 @@ const Index = ({ datas, filters }) => {
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route(`super-admin.rekapitulasi.spkrd`), params, {
+      router.get(route(`super-admin.rekapitulasi.penerimaan`), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "filters"],
@@ -64,11 +66,12 @@ const Index = ({ datas, filters }) => {
 
   const onSubmitFilter = (e) => {
     e.preventDefault();
+
     const params = buildParams();
 
     setIsLoading(true);
     router.get(
-      route("super-admin.rekapitulasi.spkrd"),
+      route("super-admin.rekapitulasi.penerimaan"),
       {
         ...params,
         tanggal_mulai: startDate || undefined,
@@ -82,30 +85,9 @@ const Index = ({ datas, filters }) => {
     );
   };
 
-  const openDetail = (data) => {
-    const params = {
-      tanggal_mulai: startDate || filters.tanggal_mulai || "",
-      tanggal_akhir: endDate || filters.tanggal_akhir || "",
-      kategori: data.namaKategori,
-      sub_kategori: data.namaSubKategori,
-    };
-
-    router.get(route("super-admin.rekapitulasi.spkrd.detail"), params, {
-      preserveScroll: true,
-      replace: false,
-    });
-  };
-
-  const allFilters = {
-    sort: sort || filters.sort,
-    direction: direction || filters.direction,
-    tanggal_mulai: startDate || filters.tanggal_mulai,
-    tanggal_akhir: endDate || filters.tanggal_akhir,
-  };
-
   return (
     <>
-      <Head title="Rekapitulasi SPKRD" />
+      <Head title="Penerimaan" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
@@ -183,16 +165,59 @@ const Index = ({ datas, filters }) => {
                       setSort(column);
                       setDirection(dir);
                     }}
-                  />
+                  >
+                    {/* <th
+                      colSpan={2}
+                      className="sticky top-0 select-none bg-[#F1B174]"
+                    >
+                      Approval UPTD
+                    </th>
+                    <th
+                      colSpan={2}
+                      className="sticky top-0 select-none bg-[#F1B174]"
+                    >
+                      Approval Keuangan
+                    </th> */}
+                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
+                      Total Bayar
+                    </th>
+                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
+                      Sisa Bayar
+                    </th>
+                  </TableHead>
+                  {/* <tr className="text-white *:p-2 *:text-xs *:font-medium *:uppercase *:md:text-sm">
+                    <th className="sticky top-9 select-none bg-[#F1B174]">
+                      Total Bayar
+                    </th>
+                    <th className="sticky top-9 select-none bg-[#F1B174]">
+                      Sisa Bayar
+                    </th>
+                    <th className="sticky top-9 select-none bg-[#F1B174]">
+                      Total Bayar
+                    </th>
+                    <th className="sticky top-9 select-none bg-[#F1B174]">
+                      Sisa Bayar
+                    </th>
+                  </tr> */}
                 </thead>
                 <tbody>
-                  {(datas.data ?? datas)?.length > 0 ? (
+                  <tr>
+                    {/* <td>1</td>
+                  <td>TEST</td>
+                  <td>3</td>
+                  <td>10000</td>
+                  <td>10000</td>
+                  <td>10000</td>
+                  <td>10000</td> */}
+                  </tr>
+                  {datas && (datas.data ?? datas)?.length > 0 ? (
                     (datas.data ?? datas).map((data, i) => (
                       <tr
                         key={data.id ?? i}
-                        className={`cursor-pointer *:p-2 odd:bg-white even:bg-[#B3CEAF] odd:hover:bg-neutral-200 even:hover:bg-[#A0BD9A]`}
+                        className={`*:p-2 ${i % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         onClick={() => openDetail(data)}
                       >
+                        {console.log(data)}
                         <td className="text-left">
                           <div className="w-10 text-center">
                             {((datas.current_page ?? 1) - 1) *
@@ -201,9 +226,33 @@ const Index = ({ datas, filters }) => {
                               1}
                           </div>
                         </td>
-                        <td>{data.namaKategori}</td>
+                        <td>{data.namaUptd}</td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data.tagihanPertahun ?? 0)}
+                        </td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data.totalBayar ?? 0)}
+                        </td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(
+                            data.tagihanPertahun - data.totalBayar ?? 0,
+                          )}
+                        </td>
+                        {/* <td>{data.namaKategori}</td>
                         <td>{data.namaSubKategori}</td>
-                        <td className="text-center">{data.jumlah}</td>
+                        <td className="text-center">{data.jumlah}</td> */}
                       </tr>
                     ))
                   ) : (
@@ -223,9 +272,6 @@ const Index = ({ datas, filters }) => {
             </>
           )}
         </div>
-        {!isLoading && datas?.links && (
-          <SmartPagination datas={datas} filters={allFilters} />
-        )}
       </section>
     </>
   );

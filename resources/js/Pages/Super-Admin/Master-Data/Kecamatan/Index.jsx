@@ -113,8 +113,9 @@ const Index = ({ datas, filters }) => {
                     <td className="text-center">
                       {(datas.current_page - 1) * datas.per_page + index + 1}
                     </td>
-                    <td>{data.kodeKecamatan}</td>
-                    <td>{data.namaKecamatan}</td>
+                    {console.log(data)}
+                    <td className="text-left">{data.kodeKecamatan}</td>
+                    <td className="text-left">{data.namaKecamatan}</td>
                     <td
                       className={`sticky right-0 space-x-1 text-right md:space-x-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                     >

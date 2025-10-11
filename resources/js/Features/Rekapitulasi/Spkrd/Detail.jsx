@@ -3,12 +3,11 @@ import { useState } from "react";
 import TableHead from "@/Components/TableHead";
 import React from "react";
 
-const Detail = ({ datas, filters }) => {
-  const [startDate, setStartDate] = useState(filters.tanggal_mulai ?? "");
-  const [endDate, setEndDate] = useState(filters.tanggal_akhir ?? "");
+const Detail = ({ datas, bulan, filters }) => {
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
+
   console.log(datas);
 
   const columns = [
@@ -23,10 +22,6 @@ const Detail = ({ datas, filters }) => {
     { key: "namaSubKategori", label: "Sub Kategori", align: "text-left" },
     { key: "tagihanPerBulanSkrd", label: "Tarif Perbulan", align: "text-left" },
     { key: "tangalSkrd", label: "Tgl Bayar (Bank)", align: "text-left" },
-    { key: "namaBank", label: "Nama Bank", align: "text-left" },
-    { key: "metodeBayar", label: "Metode Bayar", align: "text-left" },
-    { key: "jumlahBayar", label: "Jumlah Bayar", align: "text-left" },
-    { key: "keteranganBulan", label: "Keterangan Bulan", align: "text-left" },
   ];
 
   return (
@@ -71,7 +66,18 @@ const Detail = ({ datas, filters }) => {
                       setSort(column);
                       setDirection(dir);
                     }}
-                  />
+                  >
+                    {bulan.map((bulan, i) => (
+                      <React.Fragment key={i}>
+                        <th className="sticky top-0 cursor-pointer select-none bg-[#F1B174]">
+                          {bulan}
+                        </th>
+                        <th className="sticky top-0 cursor-pointer select-none truncate bg-[#F1B174]">
+                          Tanggal Bayar
+                        </th>
+                      </React.Fragment>
+                    ))}
+                  </TableHead>
                 </thead>
                 <tbody>
                   {(datas.data ?? datas).map((data, i) => (
@@ -109,19 +115,32 @@ const Detail = ({ datas, filters }) => {
                           year: "numeric",
                         })}
                       </td>
-                      {/* {(data.setoran).map((d, idx) => (
-                        <React.Fragment key={idx}>
-                          <td>{d.namaBank ?? "-"}</td>
-                          <td>{d.metodeBayar ?? d.tipePembayaran}</td>
-                          <td>
-                            {new Intl.NumberFormat("id-ID", {
-                              style: "currency",
-                              currency: "IDR",
-                            }).format(d.jumlahBayar)}
-                          </td>
-                          <td>{d.keteranganBulan}</td>
-                        </React.Fragment>
-                      ))} */}
+                      {bulan.map((_, i) => {
+                        const pembayaranUntukBulan =
+                          data.pembayaran.find((item) =>
+                            item.pembayaranBulan.includes(i + 1),
+                          ) ??
+                          data.detail_setoran.find(
+                            (d) =>
+                              d.namaBulan.toLowerCase() ===
+                                bulan[i].toLowerCase()
+                          );
+
+                        return (
+                          <React.Fragment key={i}>
+                            <td className="text-center">
+                              {pembayaranUntukBulan ? i + 1 : "-"}
+                            </td>
+                            <td className="text-center">
+                              {pembayaranUntukBulan
+                                ? new Date(
+                                    pembayaranUntukBulan.tanggalBayar,
+                                  ).toLocaleDateString("id-ID")
+                                : "-"}
+                            </td>
+                          </React.Fragment>
+                        );
+                      })}
                     </tr>
                   ))}
                 </tbody>

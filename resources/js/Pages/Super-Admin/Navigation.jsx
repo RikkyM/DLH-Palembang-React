@@ -130,7 +130,7 @@ const SuperAdminNavigation = () => {
 
   const rekapitulasiItems = [
     {
-      label: "SPKRD",
+      label: "Jumlah SPKRD",
       route: "super-admin.rekapitulasi.spkrd",
       activeRoute: [
         "super-admin.rekapitulasi.spkrd",
@@ -139,10 +139,10 @@ const SuperAdminNavigation = () => {
     },
     {
       label: "Penerimaan",
-      // route: "super-admin.laporan.piutang-retribusi",
+      route: "super-admin.rekapitulasi.penerimaan",
     },
     {
-      label: "Piutang",
+      label: "Nota Tagihan",
       // route: "super-admin.laporan.piutang-retribusi",
     },
   ];
@@ -287,6 +287,18 @@ const SuperAdminNavigation = () => {
           items={settingItems}
           defaultOpen={isAccordionActive(settingItems)}
         />
+        <Link
+          className={`block rounded px-3 py-2 transition-all duration-300 text-neutral-500 pointer-events-none`}
+          disabled={true}
+          // ${
+          //   route().current("super-admin.dashboard")
+          //     ? "bg-[#B3CEAF] font-medium text-white"
+          //     : "bg-transparent hover:bg-neutral-300"
+          // }
+          // href={route("super-admin.dashboard")}
+        >
+          Log Aktivitas
+        </Link>
         <div className="py-3">
           <Calendar className="border-none" />
         </div>

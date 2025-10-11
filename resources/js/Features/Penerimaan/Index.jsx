@@ -136,6 +136,7 @@ const DataSetoran = ({
     { key: "noRef", label: "nomor referensi", align: "text-left" },
     { key: "namaPenyetor", label: "pengirim / penyetor", align: "text-left" },
     { key: "keteranganBulan", label: "ket. bulan bayar", align: "text-left" },
+    { key: "tanggal_diterima", label: "Tgl Keuangan", align: "text-left" },
     { key: "buktiBayar", label: "bukti setor", align: "text-left" },
     { key: "status", label: "status", align: "text-left" },
   ];
@@ -222,7 +223,8 @@ const DataSetoran = ({
     );
   };
 
-  const displayNomorNota = v => typeof v === 'string' && v.toLowerCase().startsWith('temp-') ? "-" : v;
+  const displayNomorNota = (v) =>
+    typeof v === "string" && v.toLowerCase().startsWith("temp-") ? "-" : v;
 
   return (
     <>
@@ -292,6 +294,13 @@ const DataSetoran = ({
                     }}
                     placeholder="Pilih Metode Bayar"
                   />
+                  <div>
+                    <input
+                      id="tanggalBayar"
+                      type="date"
+                      className="w-full rounded bg-white p-2"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -427,6 +436,13 @@ const DataSetoran = ({
                       <td className="text-xs md:text-sm">
                         {data.keteranganBulan}
                       </td>
+                      <td className="text-xs md:text-sm">
+                        {data.tanggal_diterima ? new Date(data.tanggal_diterima).toLocaleString('id-ID', {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric"
+                        }) : "-"}
+                      </td>
                       <td className="text-center text-xs md:text-sm">
                         <a
                           href={route("bukti-bayar", {
@@ -472,14 +488,14 @@ const DataSetoran = ({
                           {data.status === "Approved" &&
                             data.current_stage === "bendahara" && (
                               <a
-                                href={route('setoran.pdf', {
-                                  setoran: data.nomorNota
+                                href={route("setoran.pdf", {
+                                  setoran: data.nomorNota,
                                 })}
                                 target="_blank"
                                 rel="noreferrer noopener"
                                 title="Bukti Setoran"
                               >
-                                <ReceiptText className="size-5"/>
+                                <ReceiptText className="size-5" />
                               </a>
                             )}
                           {/* {role !== "ROLE_SUPERADMIN" &&

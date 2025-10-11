@@ -43,7 +43,8 @@ class SetoranController extends Controller
             })
                 ->orWhere(function ($q) use ($getSearch) {
                     $q->where('nomorNota', 'like', "%{$getSearch}%");
-                });
+                })
+                ->orWhere('namaBank', 'like', "%{$getSearch}%");
         }
 
         switch ($sortBy) {
