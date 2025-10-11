@@ -72,7 +72,7 @@ const Index = ({ datas, filters }) => {
 
     const params = buildParams();
 
-    setHasFilter(true)
+    setHasFilter(true);
     setIsLoading(true);
     router.get(
       route("super-admin.rekapitulasi.penerimaan"),
@@ -89,6 +89,16 @@ const Index = ({ datas, filters }) => {
     );
   };
 
+  const formatNumber = (data) => {
+    return (
+      new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(data) ?? 0
+    );
+  };
+
   return (
     <>
       <Head title="Penerimaan" />
@@ -97,7 +107,7 @@ const Index = ({ datas, filters }) => {
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <form
               onSubmit={onSubmitFilter}
-              className="grid h-full w-full grid-cols-1 gap-2 sm:w-max md:grid-cols-3"
+              className="grid h-full w-full grid-cols-2 gap-2 md:grid-cols-2"
             >
               <div className="space-y-2 rounded text-sm">
                 <label htmlFor="tanggal_mulai">Tanggal Mulai</label>
@@ -106,7 +116,14 @@ const Index = ({ datas, filters }) => {
                   id="tanggal_mulai"
                   className="h-10 w-full rounded border bg-white p-2 shadow"
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  onChange={(e) => {
+                    const start = e.target.value || "";
+                    
+                    setStartDate(start);
+
+                    if (endDate && endDate < start) setEndDate(start);
+                  }}
+                  max={endDate || undefined}
                 />
               </div>
               <div className="space-y-2 rounded text-sm">
@@ -116,13 +133,27 @@ const Index = ({ datas, filters }) => {
                   id="tanggal_akhir"
                   className="h-10 w-full rounded border bg-white p-2 shadow"
                   value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
+                  onChange={(e) => {
+                    const end = e.target.value || "";
+
+                    if (end === "") {
+                      setEndDate("");
+                      return;
+                    }
+
+                    if (startDate && end < startDate) {
+                      setEndDate(startDate);
+                      return;
+                    }
+                    setEndDate(end);
+                  }}
+                  min={startDate || undefined}
                 />
               </div>
-              <div className="flex items-end text-sm">
+              <div className="flex items-end text-sm col-span-2 w-full">
                 <button
                   disabled={isLoading}
-                  className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded bg-black px-4 py-2 text-white"
+                  className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded bg-black px-4 py-2 text-white w-full sm:w-max"
                 >
                   Cari
                 </button>
@@ -222,7 +253,6 @@ const Index = ({ datas, filters }) => {
                           className={`*:p-2 ${i % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                           onClick={() => openDetail(data)}
                         >
-                          {console.log(data)}
                           <td className="text-left">
                             <div className="w-10 text-center">
                               {((datas.current_page ?? 1) - 1) *
@@ -233,45 +263,28 @@ const Index = ({ datas, filters }) => {
                             </div>
                           </td>
                           <td>{data.namaUptd}</td>
+                          <td>{formatNumber(data.tagihanPertahun)}</td>
+                          <td>{formatNumber(data.totalBayar)}</td>
                           <td>
-                            {new Intl.NumberFormat("id-ID", {
-                              style: "currency",
-                              currency: "IDR",
-                              minimumFractionDigits: 0,
-                            }).format(data.tagihanPertahun) ?? 0}
-                          </td>
-                          <td>
-                            {new Intl.NumberFormat("id-ID", {
-                              style: "currency",
-                              currency: "IDR",
-                              minimumFractionDigits: 0,
-                            }).format(data.totalBayar) ?? 0}
-                          </td>
-                          <td>
-                            {new Intl.NumberFormat("id-ID", {
-                              style: "currency",
-                              currency: "IDR",
-                              minimumFractionDigits: 0,
-                            }).format(data.tagihanPertahun - data.totalBayar) ??
-                              0}
+                            {formatNumber(
+                              data.tagihanPertahun - data.totalBayar,
+                            )}
                           </td>
                           {/* <td>{data.namaKategori}</td>
                         <td>{data.namaSubKategori}</td>
                         <td className="text-center">{data.jumlah}</td> */}
                         </tr>
                       ))
-                    ) : (
+                    ) : Boolean(startDate || endDate) ? (
                       <tr>
                         <td
-                          colSpan="4"
+                          colSpan="5"
                           className="py-8 text-center text-xs text-gray-500 lg:text-sm"
                         >
-                          {startDate && endDate
-                            ? "Tidak ada SPKRD pada waktu tersebut"
-                            : "Belum ada data wajib retribusi"}
+                          Rekapitulasi Penerimaan tidak ditemukan.
                         </td>
                       </tr>
-                    )}
+                    ) : null}
                   </tbody>
                 </table>
               </>

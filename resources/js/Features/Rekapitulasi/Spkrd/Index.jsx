@@ -96,12 +96,12 @@ const Index = ({ datas, filters }) => {
     });
   };
 
-  const allFilters = {
-    sort: sort || filters.sort,
-    direction: direction || filters.direction,
-    tanggal_mulai: startDate || filters.tanggal_mulai,
-    tanggal_akhir: endDate || filters.tanggal_akhir,
-  };
+  // const allFilters = {
+  //   sort: sort || filters.sort,
+  //   direction: direction || filters.direction,
+  //   tanggal_mulai: startDate || filters.tanggal_mulai,
+  //   tanggal_akhir: endDate || filters.tanggal_akhir,
+  // };
 
   return (
     <>
@@ -111,7 +111,7 @@ const Index = ({ datas, filters }) => {
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <form
               onSubmit={onSubmitFilter}
-              className="grid h-full w-full grid-cols-1 gap-2 sm:w-max md:grid-cols-3"
+              className="grid h-full w-full grid-cols-2 gap-2 md:grid-cols-2"
             >
               <div className="space-y-2 rounded text-sm">
                 <label htmlFor="tanggal_mulai">Tanggal Mulai</label>
@@ -120,7 +120,14 @@ const Index = ({ datas, filters }) => {
                   id="tanggal_mulai"
                   className="h-10 w-full rounded border bg-white p-2 shadow"
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  onChange={(e) => {
+                    const start = e.target.value || "";
+
+                    setStartDate(start);
+
+                    if (endDate && endDate < start) setEndDate(start);
+                  }}
+                  max={endDate || undefined}
                 />
               </div>
               <div className="space-y-2 rounded text-sm">
@@ -130,15 +137,29 @@ const Index = ({ datas, filters }) => {
                   id="tanggal_akhir"
                   className="h-10 w-full rounded border bg-white p-2 shadow"
                   value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
+                  onChange={(e) => {
+                    const end = e.target.value || "";
+
+                    if (end === "") {
+                      setEndDate("");
+                      return;
+                    }
+
+                    if (startDate && end < startDate) {
+                      setEndDate(startDate);
+                      return;
+                    }
+                    setEndDate(end);
+                  }}
+                  min={startDate || undefined}
                 />
               </div>
-              <div className="flex items-end text-sm">
+              <div className="col-span-2 flex w-full items-end text-sm">
                 <button
                   disabled={isLoading}
-                  className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded bg-black px-4 py-2 text-white"
+                  className="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded bg-black px-4 py-2 text-white sm:w-max"
                 >
-                  Proses
+                  Cari
                 </button>
               </div>
             </form>
@@ -186,7 +207,7 @@ const Index = ({ datas, filters }) => {
                   />
                 </thead>
                 <tbody>
-                  {(datas.data ?? datas)?.length > 0 ? (
+                  {datas && (datas.data ?? datas)?.length > 0 ? (
                     (datas.data ?? datas).map((data, i) => (
                       <tr
                         key={data.id ?? i}
@@ -206,26 +227,24 @@ const Index = ({ datas, filters }) => {
                         <td className="text-center">{data.jumlah}</td>
                       </tr>
                     ))
-                  ) : (
+                  ) : startDate || endDate ? (
                     <tr>
                       <td
                         colSpan="4"
                         className="py-8 text-center text-xs text-gray-500 lg:text-sm"
                       >
-                        {startDate && endDate
-                          ? "Tidak ada SPKRD pada waktu tersebut"
-                          : "Belum ada data wajib retribusi"}
+                        SPKRD tidak ditemukan.
                       </td>
                     </tr>
-                  )}
+                  ) : null}
                 </tbody>
               </table>
             </>
           )}
         </div>
-        {!isLoading && datas?.links && (
+        {/* {!isLoading && datas?.links && (
           <SmartPagination datas={datas} filters={allFilters} />
-        )}
+        )} */}
       </section>
     </>
   );
