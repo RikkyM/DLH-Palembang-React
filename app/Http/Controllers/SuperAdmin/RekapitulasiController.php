@@ -110,12 +110,52 @@ class RekapitulasiController extends Controller
         $getSortDir = $request->get('direction', 'desc');
         $getPage = $request->get('per_page', 10);
 
-        $rangeCol = DB::raw('DATE(COALESCE(tanggalSkrd, created_at))');
+        $filter = function ($query, $tanggal = 'tanggalBayar') use ($startDate, $endDate) {
+            $query->when($startDate && $endDate, fn($q) => $q->whereBetween($tanggal, [$startDate, $endDate]))
+                ->when($startDate && !$endDate, fn($q) => $q->where($tanggal, '>=', $startDate))
+                ->when(!$startDate && $endDate, fn($q) => $q->where($tanggal, '<=', $endDate));
+        };
 
-        $query = Skrd::with('pembayaran', 'setoran', 'detailSetoran', 'uptd:id,namaUptd')
-            ->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
-            ->when($startDate && !$endDate, fn($q) => $q->where($rangeCol, '>=', $startDate))
-            ->when(!$startDate && $endDate, fn($q) => $q->where($rangeCol, '<=', $endDate))
+        $setoranFilter = function ($query) use ($filter) {
+            $query->where('status', 'Approved')
+                ->where('current_stage', 'bendahara');
+            $filter($query, 'tanggal_diterima');
+        };
+
+        $query = Skrd::with([
+            'pembayaran' => $filter,
+            // function ($q) use ($startDate, $endDate) {
+            //     $q->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggalBayar', [$startDate, $endDate]))
+            //         ->when($startDate && !$endDate, fn($query) => $query->where('tanggalBayar', '>=', $startDate))
+            //         ->when(!$startDate && $endDate, fn($query) => $query->where('tanggalBayar', '<=', $endDate));
+            // },
+            'setoran' => $setoranFilter,
+            // function ($q) use ($startDate, $endDate) {
+            //     $q->where('status', 'Approved')
+            //         ->where('current_stage', 'bendahara')
+            //         ->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggal_diterima', [$startDate, $endDate]))
+            //         ->when($startDate && !$endDate, fn($query) => $query->where('tanggal_diterima', '>=', $startDate))
+            //         ->when(!$startDate && $endDate, fn($query) => $query->where('tanggal_diterima', '<=', $endDate));
+            // },
+            'detailSetoran',
+            'uptd:id,namaUptd'
+        ])
+            ->whereHas('pembayaran', function ($q) use ($startDate, $endDate) {
+                $q->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggalBayar', [$startDate, $endDate]))
+                    ->when($startDate && !$endDate, fn($query) => $query->where('tanggalBayar', '>=', $startDate))
+                    ->when(!$startDate && $endDate, fn($query) => $query->where('tanggalBayar', '<=', $endDate));
+            })
+            ->orWhereHas('setoran', function ($q) use ($startDate, $endDate) {
+                $q->where('status', 'Approved')
+                    ->where('current_stage', 'bendahara')
+                    ->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggal_diterima', [$startDate, $endDate]))
+                    ->when($startDate && !$endDate, fn($query) => $query->where('tanggal_diterima', '>=', $startDate))
+                    ->when(!$startDate && $endDate, fn($query) => $query->where('tanggal_diterima', '<=', $endDate));
+            })
+            // with('pembayaran', 'setoran', 'detailSetoran', 'uptd:id,namaUptd')
+            // ->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
+            // ->when($startDate && !$endDate, fn($q) => $q->where($rangeCol, '>=', $startDate))
+            // ->when(!$startDate && $endDate, fn($q) => $q->where($rangeCol, '<=', $endDate))
             ->get()
             ->groupBy('uptd.namaUptd')
             ->map(fn($group, $namaUptd) => [
