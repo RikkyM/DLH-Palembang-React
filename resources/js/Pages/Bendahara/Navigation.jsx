@@ -15,18 +15,21 @@ const BendaharaNavigation = () => {
     },
   ];
 
-  const tagihanItems = [
-    {
-      label: "Data Surat Tagihan",
-      route: "bendahara.surat-tagihan.index",
-    },
-  ];
+  // const tagihanItems = [
+  //   {
+  //     label: "Data Surat Tagihan",
+  //     route: "bendahara.surat-tagihan.index",
+  //   },
+  // ];
 
   const penerimaanItems = [
     {
       label: "Data Setoran",
       route: "bendahara.data-setoran.index",
-      activeRoute: ["bendahara.data-setoran.index", "bendahara.data-setoran.show"],
+      activeRoute: [
+        "bendahara.data-setoran.index",
+        "bendahara.data-setoran.show",
+      ],
     },
   ];
 
@@ -84,11 +87,21 @@ const BendaharaNavigation = () => {
           items={inboxItems}
           defaultOpen={isAccordionActive(inboxItems)}
         />
-        <AccordionItem
+        {/* <AccordionItem
           title="Tagihan"
           items={tagihanItems}
           defaultOpen={isAccordionActive(tagihanItems)}
-        />
+        /> */}
+        <Link
+          className={`block rounded px-3 py-2 transition-all duration-300 ${
+            route().current("bendahara.surat-tagihan.index")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("bendahara.surat-tagihan.index")}
+        >
+          Surat Tagihan
+        </Link>
         <AccordionItem
           title="Penerimaan"
           items={penerimaanItems}

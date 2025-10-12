@@ -284,15 +284,17 @@ const Index = ({ datas, filters, retribusiOptions = [], role }) => {
                           className={`sticky right-0 text-right ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                         >
                           <div className="flex flex-col gap-2 *:rounded *:text-sm *:font-medium">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                openModal("edit", data);
-                              }}
-                              className="inline-flex items-center gap-1.5"
-                            >
-                              <PencilLine className="size-5" /> Edit
-                            </button>
+                            {role === "ROLE_SUPERADMIN" && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  openModal("edit", data);
+                                }}
+                                className="inline-flex items-center gap-1.5"
+                              >
+                                <PencilLine className="size-5" /> Edit
+                              </button>
+                            )}
                             <a
                               href={route("invoice.pdf", {
                                 id: data.no_invoice,

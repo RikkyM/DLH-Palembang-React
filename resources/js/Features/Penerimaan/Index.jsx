@@ -31,6 +31,7 @@ const DataSetoran = ({
   });
   const [skrd, setSkrd] = useState(filters.skrd || "");
   const [metode, setMetode] = useState(filters.metode || "");
+  const [tanggal, setTanggal] = useState(filters.tanggal_bayar || "");
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
@@ -147,6 +148,7 @@ const DataSetoran = ({
     if (search && search.trim() !== "") params.search = search;
     if (skrd) params.skrd = skrd;
     if (metode) params.metode = metode;
+    if (tanggal) params.tanggal_bayar = tanggal;
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (sort && sort !== "nomorNota") {
       params.sort = sort;
@@ -193,7 +195,7 @@ const DataSetoran = ({
       clearTimeout(timeoutId);
       setIsLoading(false);
     };
-  }, [search, sort, direction, skrd, metode, perPage]);
+  }, [search, sort, direction, skrd, metode, perPage, tanggal]);
 
   const actionButtons = (data) => {
     const isCurrentStage =
@@ -299,7 +301,11 @@ const DataSetoran = ({
                     <input
                       id="tanggalBayar"
                       type="date"
-                      className="w-full rounded bg-white p-2"
+                      className="w-full rounded border bg-white p-2"
+                      value={tanggal || ""}
+                      onChange={e => {
+                        setTanggal(e.target.value);
+                      }}
                     />
                   </div>
                 </div>

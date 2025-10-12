@@ -63,23 +63,23 @@ const SuperAdminNavigation = () => {
     },
   ];
 
-  // const tagihanItems = [
-  //   {
-  //     label: "Data Surat Tagihan",
-  //     route: "super-admin.surat-tagihan.index",
-  //   },
-  // ];
+  const tagihanItems = [
+    {
+      label: "Data Surat Tagihan",
+      route: "super-admin.surat-tagihan.index",
+    },
+  ];
 
-  // const penerimaanItems = [
-  //   {
-  //     label: "Data Setoran",
-  //     route: "super-admin.data-setoran.index",
-  //     activeRoute: [
-  //       "super-admin.data-setoran.index",
-  //       "super-admin.data-setoran.show",
-  //     ],
-  //   },
-  // ];
+  const penerimaanItems = [
+    {
+      label: "Data Setoran",
+      route: "super-admin.data-setoran.index",
+      activeRoute: [
+        "super-admin.data-setoran.index",
+        "super-admin.data-setoran.show",
+      ],
+    },
+  ];
 
   const rekapitulasiItems = [
     {
@@ -215,11 +215,6 @@ const SuperAdminNavigation = () => {
           items={tagihanItems}
           defaultOpen={isAccordionActive(tagihanItems)}
         /> */}
-        {/* <AccordionItem
-          title="Penerimaan"
-          items={penerimaanItems}
-          defaultOpen={isAccordionActive(penerimaanItems)}
-        /> */}
         <Link
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("super-admin.surat-tagihan.index")
@@ -230,16 +225,16 @@ const SuperAdminNavigation = () => {
         >
           Surat Tagihan
         </Link>
-        <Link
-          className={`block rounded px-3 py-2 transition-all duration-300 ${
-            route().current("super-admin.data-setoran.*")
-              ? "bg-[#B3CEAF] font-medium text-white"
-              : "bg-transparent hover:bg-neutral-300"
-          }`}
-          href={route("super-admin.data-setoran.index")}
-        >
-          Penerimaan
-        </Link>
+        <AccordionItem
+          title="Penerimaan"
+          items={penerimaanItems}
+          defaultOpen={isAccordionActive(penerimaanItems)}
+        />
+        {/* <AccordionItem
+          title="Pembayaran"
+          items={pembayaranItems}
+          defaultOpen={isAccordionActive(pembayaranItems)}
+        /> */}
         <AccordionItem
           title="Rekapitulasi Data"
           items={rekapitulasiItems}

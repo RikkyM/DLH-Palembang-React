@@ -19,6 +19,7 @@ class InvoiceController extends Controller
         $getSearch = $request->get('search');
         $getSortBy = $request->get('sort', 'id');
         $getSortDir = $request->get('direction', 'asc');
+        $getPage = (int) $request->get('per_page', 10);
 
         $query = Invoice::query()
             ->select('invoices.*')
@@ -52,7 +53,8 @@ class InvoiceController extends Controller
                 break;
         }
 
-        $invoices = $query->paginate(10);
+        $invoices = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
+
         $skrd = Skrd::select('noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'tagihanPerBulanSkrd')
             ->where('noSkrd', '!=', null)
             ->where('uptdId', auth()->user()->uptdId)
@@ -82,7 +84,8 @@ class InvoiceController extends Controller
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
                 'sort' => $getSortBy,
-                'direction' => $getSortDir
+                'direction' => $getSortDir,
+                'per_page' => $getPage
             ],
             'retribusiOptions' => $skrd,
             'role' => auth()->user()->role

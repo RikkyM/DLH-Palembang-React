@@ -34,6 +34,7 @@ class SetoranController extends Controller
         $getPage = $request->get('per_page', 10);
         $getSkrd = $request->get('skrd');
         $getMetode = $request->get('metode');
+        $getTanggal = $request->get('tanggal_bayar');
 
         $query = Setoran::with(['skrd', 'detailSetoran']);
 
@@ -76,6 +77,10 @@ class SetoranController extends Controller
             $query->where('metodeBayar', $getMetode);
         }
 
+        if ($getTanggal) {
+            $query->whereDate('tanggalBayar', $getTanggal);
+        }
+
         $skrdOptions = Skrd::with('setoran')
             ->orderBy('created_at', 'desc')
             ->get()
@@ -94,7 +99,8 @@ class SetoranController extends Controller
                 'direction' => $sortDir,
                 'per_page' => (int) $getPage,
                 'skrd' => (int) $getSkrd,
-                'metode' => $getMetode
+                'metode' => $getMetode,
+                'tanggal_bayar' => $getTanggal
             ],
             'skrdOptions' => $skrdOptions,
             'metodeOptions' => $this->getMetodeBayar(),

@@ -28,7 +28,7 @@ class InvoiceController extends Controller
             ->with(['skrd:noSkrd,noWajibRetribusi,namaObjekRetribusi,alamatObjekRetribusi,kelurahanObjekRetribusi,kecamatanObjekRetribusi,tagihanPerBulanSkrd']);
 
         if ($getSearch && trim($getSearch) !== '') {
-            $query->whereHas('skrd', function($q) use ($getSearch) {
+            $query->whereHas('skrd', function ($q) use ($getSearch) {
                 $q->where('noSkrd', 'like', "%{$getSearch}%")
                     ->orWhere('namaObjekRetribusi', 'like', "%{$getSearch}%")
                     ->orWhere('alamatObjekRetribusi', 'like', "%{$getSearch}%");
@@ -75,8 +75,6 @@ class InvoiceController extends Controller
                     'tagihanPerbulan' => $skrd->tagihanPerBulanSkrd
                 ];
             });
-
-        // dd($skrd->toArray());
 
         return Inertia::render('Super-Admin/Pembayaran/Invoice/Index', [
             'datas' => $invoices,

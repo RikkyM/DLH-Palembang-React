@@ -60,12 +60,12 @@ const KasubagNavigation = () => {
     },
   ];
 
-  const tagihanItems = [
-    {
-      label: "Data Surat Tagihan",
-      route: "kasubag.surat-tagihan.index",
-    },
-  ];
+  // const tagihanItems = [
+  //   {
+  //     label: "Data Surat Tagihan",
+  //     route: "kasubag.surat-tagihan.index",
+  //   },
+  // ];
 
   const penerimaanItems = [
     {
@@ -161,11 +161,21 @@ const KasubagNavigation = () => {
           items={inboxItems}
           defaultOpen={isAccordionActive(inboxItems)}
         />
-        <AccordionItem
+        {/* <AccordionItem
           title="Tagihan"
           items={tagihanItems}
           defaultOpen={isAccordionActive(tagihanItems)}
-        />
+        /> */}
+        <Link
+          className={`block rounded px-3 py-2 transition-all duration-300 ${
+            route().current("kasubag.surat-tagihan.index")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("kasubag.surat-tagihan.index")}
+        >
+          Surat Tagihan
+        </Link>
         <AccordionItem
           title="Penerimaan"
           items={penerimaanItems}
