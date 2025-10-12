@@ -266,7 +266,7 @@ const Step2 = ({
             </Label>
             <Input
               id="keteranganBulan"
-              placeholder="ex. Januari s.d Desember"
+              placeholder={`ex. Januari s.d Desember ${ new Date().getFullYear()}`}
               className={`${errors.keteranganBulan && "border border-red-500"}`}
               value={data.keteranganBulan || ""}
               onChange={(e) => {
