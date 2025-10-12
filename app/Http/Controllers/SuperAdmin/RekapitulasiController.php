@@ -26,7 +26,6 @@ class RekapitulasiController extends Controller
         $endDate = $request->get('tanggal_akhir');
         $getSortBy = $request->get('sort', 'id');
         $getSortDir = $request->get('direction', 'desc');
-        // $getPage = $request->get('per_page', 10);
 
         $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
 
@@ -34,34 +33,43 @@ class RekapitulasiController extends Controller
             ->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
             ->when($startDate && !$endDate, fn($q) => $q->where($rangeCol, '>=', $startDate))
             ->when(!$startDate && $endDate, fn($q) => $q->where($rangeCol, '<=', $endDate))
-            // ->when($startDate, fn($q) => $q->whereDate('tanggalSkrd', '>=', $startDate))
-            // ->when($endDate, fn($q) => $q->whereDate('tanggalSkrd', '<=', $endDate))
             ->select([
                 DB::raw('MAX(id) as id'),
                 'namaKategori',
                 'namaSubKategori',
                 DB::raw('COUNT(*) as jumlah')
             ])
-            ->groupBy('namaKategori', 'namaSubKategori');
+            ->groupBy('namaKategori', 'namaSubKategori')
+            ->orderBy('namaKategori')
+            ->orderBy('namaSubKategori');
 
+        // switch ($getSortBy) {
+        //     case 'jumlah':
+        //         $query->orderBy('jumlah', $getSortDir);
+        //         break;
+        //     default:
+        //         $query->orderBy($getSortBy, $getSortDir);
+        //         break;
+        // }
 
-        switch ($getSortBy) {
-            case 'jumlah':
-                $query->orderBy('jumlah', $getSortDir);
-                break;
-            default:
-                $query->orderBy($getSortBy, $getSortDir);
-                break;
-        }
+        $query->orderBy($getSortBy, $getSortDir);
 
-        $datas = $query->get();
+        $datas = $query->get()->groupBy('namaKategori')->values()->map(function ($grp, $i) {
+            return [
+                'no' => $i + 1,
+                'namaKategori' => $grp->first()->namaKategori,
+                'subKategori' => $grp->values()->map(fn($r) => [
+                    'label' => $r->namaSubKategori,
+                    'jumlah' => (int) $r->jumlah
+                ])->all()
+            ];
+        });
 
         return Inertia::render('Super-Admin/Rekapitulasi/Spkrd/Index', [
             'datas' => $datas,
             'filters' => [
                 'sort' => $getSortBy,
                 'direction' => $getSortDir,
-                // 'per_page' => (int) $getPage,
                 'tanggal_mulai' => $startDate,
                 'tanggal_akhir' => $endDate
             ],
@@ -77,7 +85,7 @@ class RekapitulasiController extends Controller
 
         $getSortBy  = $request->get('sort', 'created_at');
         $getSortDir = $request->get('direction', 'desc');
-        $getPage    = (int) $request->get('per_page', 10);
+        // $getPage    = (int) $request->get('per_page', 10);
 
         abort_unless($kategori && $subKategori, 422, 'Kategori & Sub Kategori wajib.');
 
@@ -87,9 +95,10 @@ class RekapitulasiController extends Controller
             ->where('namaKategori', $kategori)
             ->where('namaSubKategori', $subKategori);
 
-        $datas = $getPage <= 0
-            ? $query->orderBy($getSortBy, $getSortDir)->get()
-            : $query->orderBy($getSortBy, $getSortDir)->paginate($getPage)->withQueryString();
+        $datas =  $query->orderBy($getSortBy, $getSortDir)->get();
+        // $datas = $getPage <= 0
+        //     ? $query->orderBy($getSortBy, $getSortDir)->get()
+        //     : $query->orderBy($getSortBy, $getSortDir)->paginate($getPage)->withQueryString();
 
         return Inertia::render('Super-Admin/Rekapitulasi/Spkrd/Detail', [
             'datas' => $datas,
@@ -201,13 +210,14 @@ class RekapitulasiController extends Controller
                     })
                     // 'tagihanPertahun' => $u->skrd->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
                     // $u->skrd->where(function ($q) use ($startDate, $endDate, $rangeCol) {
-                        // $q->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
-                        //     ->when($startDate && !$endDate, fn($q) => $q->where($rangeCol, '>=', $startDate))
-                        //     ->when(!$startDate && $endDate, fn($q) => $q->where($rangeCol, '<=', $endDate))
-                            // $q->sum('tagihanPerTahunSkrd');
+                    // $q->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
+                    //     ->when($startDate && !$endDate, fn($q) => $q->where($rangeCol, '>=', $startDate))
+                    //     ->when(!$startDate && $endDate, fn($q) => $q->where($rangeCol, '<=', $endDate))
+                    // $q->sum('tagihanPerTahunSkrd');
                     // }) ?? 0
                 ];
             })->values();
+
         // ->groupBy('namaUptd');
         // ->map(fn($group, $namaUptd) => [
         //     'namaUptd' => $namaUptd,

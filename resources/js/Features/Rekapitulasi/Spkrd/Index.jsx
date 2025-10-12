@@ -1,7 +1,6 @@
 import { Head, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import TableHead from "@/Components/TableHead";
-import SmartPagination from "@/Components/SmartPagination";
 import React from "react";
 
 const Index = ({ datas, filters }) => {
@@ -9,9 +8,6 @@ const Index = ({ datas, filters }) => {
   const [endDate, setEndDate] = useState(filters.tanggal_akhir ?? "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
-  // const [perPage, setPerPage] = useState(() => {
-  //   return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
-  // });
   const [isLoading, setIsLoading] = useState(false);
 
   const columns = [
@@ -24,7 +20,6 @@ const Index = ({ datas, filters }) => {
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
 
-    // if (perPage && perPage !== 10) params.per_page = perPage;
     if (startDate) params.tanggal_mulai = startDate;
     if (endDate) params.tanggal_akhir = endDate;
     if (sort && sort !== "id") {
@@ -82,26 +77,21 @@ const Index = ({ datas, filters }) => {
     );
   };
 
-  const openDetail = (data) => {
+  const openDetail = (data, sub) => {
     const params = {
       tanggal_mulai: startDate || filters.tanggal_mulai || "",
       tanggal_akhir: endDate || filters.tanggal_akhir || "",
       kategori: data.namaKategori,
-      sub_kategori: data.namaSubKategori,
+      sub_kategori: sub.label,
     };
+
+    // console.log(data);
 
     router.get(route("super-admin.rekapitulasi.spkrd.detail"), params, {
       preserveScroll: true,
       replace: false,
     });
   };
-
-  // const allFilters = {
-  //   sort: sort || filters.sort,
-  //   direction: direction || filters.direction,
-  //   tanggal_mulai: startDate || filters.tanggal_mulai,
-  //   tanggal_akhir: endDate || filters.tanggal_akhir,
-  // };
 
   return (
     <>
@@ -209,23 +199,42 @@ const Index = ({ datas, filters }) => {
                 <tbody>
                   {datas && (datas.data ?? datas)?.length > 0 ? (
                     (datas.data ?? datas).map((data, i) => (
-                      <tr
-                        key={data.id ?? i}
-                        className={`cursor-pointer *:p-2 odd:bg-white even:bg-[#B3CEAF] odd:hover:bg-neutral-200 even:hover:bg-[#A0BD9A]`}
-                        onClick={() => openDetail(data)}
-                      >
-                        <td className="text-left">
-                          <div className="w-10 text-center">
-                            {((datas.current_page ?? 1) - 1) *
-                              (datas.per_page ?? (datas.data ?? datas).length) +
-                              i +
-                              1}
-                          </div>
-                        </td>
-                        <td>{data.namaKategori}</td>
-                        <td>{data.namaSubKategori}</td>
-                        <td className="text-center">{data.jumlah}</td>
-                      </tr>
+                      <React.Fragment key={i}>
+                        {data.subKategori.map((sub, subIdx) => (
+                          <tr
+                            key={`${i}-${subIdx}`}
+                            className={`cursor-pointer *:p-2 ${i % 2 == 0 ? "bg-[#B3CEAF] hover:bg-[#A0BD9A]" : "bg-white hover:bg-neutral-200"}`}
+                          >
+                            {subIdx === 0 && (
+                              <>
+                                <td
+                                  onClick={(e) => e.stopPropagation()}
+                                  className={`pointer-events-none text-center ${i % 2 == 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                                  rowSpan={data.subKategori.length}
+                                >
+                                  {data.no}
+                                </td>
+                                <td
+                                  onClick={(e) => e.stopPropagation()}
+                                  className={`pointer-events-none ${i % 2 == 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                                  rowSpan={data.subKategori.length}
+                                >
+                                  {data.namaKategori}
+                                </td>
+                              </>
+                            )}
+                            <td onClick={() => openDetail(data, sub)}>
+                              {sub.label}
+                            </td>
+                            <td
+                              className="text-center"
+                              onClick={() => openDetail(data, sub)}
+                            >
+                              {sub.jumlah}
+                            </td>
+                          </tr>
+                        ))}
+                      </React.Fragment>
                     ))
                   ) : startDate || endDate ? (
                     <tr>
@@ -242,9 +251,6 @@ const Index = ({ datas, filters }) => {
             </>
           )}
         </div>
-        {/* {!isLoading && datas?.links && (
-          <SmartPagination datas={datas} filters={allFilters} />
-        )} */}
       </section>
     </>
   );

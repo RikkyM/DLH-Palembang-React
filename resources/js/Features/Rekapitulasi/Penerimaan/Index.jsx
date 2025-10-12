@@ -23,6 +23,7 @@ const Index = ({ datas, filters }) => {
       align: "text-left",
     },
   ];
+  
 
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
