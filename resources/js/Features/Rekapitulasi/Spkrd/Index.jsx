@@ -111,7 +111,7 @@ const Index = ({ datas, filters }) => {
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <form
               onSubmit={onSubmitFilter}
-              className="grid h-full w-full grid-cols-2 gap-2 md:grid-cols-2"
+              className="grid h-full w-full grid-cols-2 gap-2 md:grid-cols-4"
             >
               <div className="space-y-2 rounded text-sm">
                 <label htmlFor="tanggal_mulai">Tanggal Mulai</label>

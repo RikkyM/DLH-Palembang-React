@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Skrd;
+use App\Models\Uptd;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -122,52 +123,102 @@ class RekapitulasiController extends Controller
             $filter($query, 'tanggal_diterima');
         };
 
-        $query = Skrd::with([
-            'pembayaran' => $filter,
-            // function ($q) use ($startDate, $endDate) {
-            //     $q->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggalBayar', [$startDate, $endDate]))
-            //         ->when($startDate && !$endDate, fn($query) => $query->where('tanggalBayar', '>=', $startDate))
-            //         ->when(!$startDate && $endDate, fn($query) => $query->where('tanggalBayar', '<=', $endDate));
-            // },
-            'setoran' => $setoranFilter,
-            // function ($q) use ($startDate, $endDate) {
-            //     $q->where('status', 'Approved')
-            //         ->where('current_stage', 'bendahara')
-            //         ->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggal_diterima', [$startDate, $endDate]))
-            //         ->when($startDate && !$endDate, fn($query) => $query->where('tanggal_diterima', '>=', $startDate))
-            //         ->when(!$startDate && $endDate, fn($query) => $query->where('tanggal_diterima', '<=', $endDate));
-            // },
-            'detailSetoran',
-            'uptd:id,namaUptd'
-        ])
-            ->whereHas('pembayaran', function ($q) use ($startDate, $endDate) {
-                $q->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggalBayar', [$startDate, $endDate]))
-                    ->when($startDate && !$endDate, fn($query) => $query->where('tanggalBayar', '>=', $startDate))
-                    ->when(!$startDate && $endDate, fn($query) => $query->where('tanggalBayar', '<=', $endDate));
-            })
-            ->orWhereHas('setoran', function ($q) use ($startDate, $endDate) {
-                $q->where('status', 'Approved')
-                    ->where('current_stage', 'bendahara')
-                    ->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggal_diterima', [$startDate, $endDate]))
-                    ->when($startDate && !$endDate, fn($query) => $query->where('tanggal_diterima', '>=', $startDate))
-                    ->when(!$startDate && $endDate, fn($query) => $query->where('tanggal_diterima', '<=', $endDate));
-            })
-            // with('pembayaran', 'setoran', 'detailSetoran', 'uptd:id,namaUptd')
-            // ->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
-            // ->when($startDate && !$endDate, fn($q) => $q->where($rangeCol, '>=', $startDate))
-            // ->when(!$startDate && $endDate, fn($q) => $q->where($rangeCol, '<=', $endDate))
-            ->get()
-            ->groupBy('uptd.namaUptd')
-            ->map(fn($group, $namaUptd) => [
-                'namaUptd' => $namaUptd,
-                'tagihanPertahun' => $group->sum('tagihanPerTahunSkrd'),
-                'totalBayar' => $group->sum(function ($skrd) {
-                    $totalSetoran = $skrd->setoran->where('status', 'Approved')->where('current_stage', 'bendahara')->sum('jumlahBayar');
-                    $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar');
+        // $query = Skrd::with([
+        //     'pembayaran' => $filter,
+        //     // function ($q) use ($startDate, $endDate) {
+        //     //     $q->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggalBayar', [$startDate, $endDate]))
+        //     //         ->when($startDate && !$endDate, fn($query) => $query->where('tanggalBayar', '>=', $startDate))
+        //     //         ->when(!$startDate && $endDate, fn($query) => $query->where('tanggalBayar', '<=', $endDate));
+        //     // },
+        //     'setoran' => $setoranFilter,
+        //     // function ($q) use ($startDate, $endDate) {
+        //     //     $q->where('status', 'Approved')
+        //     //         ->where('current_stage', 'bendahara')
+        //     //         ->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggal_diterima', [$startDate, $endDate]))
+        //     //         ->when($startDate && !$endDate, fn($query) => $query->where('tanggal_diterima', '>=', $startDate))
+        //     //         ->when(!$startDate && $endDate, fn($query) => $query->where('tanggal_diterima', '<=', $endDate));
+        //     // },
+        //     'detailSetoran',
+        //     'uptd:id,namaUptd'
+        // ])
+        //     ->whereHas('pembayaran', function ($q) use ($startDate, $endDate) {
+        //         $q->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggalBayar', [$startDate, $endDate]))
+        //             ->when($startDate && !$endDate, fn($query) => $query->where('tanggalBayar', '>=', $startDate))
+        //             ->when(!$startDate && $endDate, fn($query) => $query->where('tanggalBayar', '<=', $endDate));
+        //     })
+        //     ->orWhereHas('setoran', function ($q) use ($startDate, $endDate) {
+        //         $q->where('status', 'Approved')
+        //             ->where('current_stage', 'bendahara')
+        //             ->when($startDate && $endDate, fn($query) => $query->whereBetween('tanggal_diterima', [$startDate, $endDate]))
+        //             ->when($startDate && !$endDate, fn($query) => $query->where('tanggal_diterima', '>=', $startDate))
+        //             ->when(!$startDate && $endDate, fn($query) => $query->where('tanggal_diterima', '<=', $endDate));
+        //     })
+        //     // with('pembayaran', 'setoran', 'detailSetoran', 'uptd:id,namaUptd')
+        //     // ->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
+        //     // ->when($startDate && !$endDate, fn($q) => $q->where($rangeCol, '>=', $startDate))
+        //     // ->when(!$startDate && $endDate, fn($q) => $q->where($rangeCol, '<=', $endDate))
+        //     ->get()
+        //     ->groupBy('uptd.namaUptd')
+        //     ->map(fn($group, $namaUptd) => [
+        //         'namaUptd' => $namaUptd,
+        //         'tagihanPertahun' => $group->sum('tagihanPerTahunSkrd'),
+        //         'totalBayar' => $group->sum(function ($skrd) {
+        //             $totalSetoran = $skrd->setoran->where('status', 'Approved')->where('current_stage', 'bendahara')->sum('jumlahBayar');
+        //             $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar');
 
-                    return $totalSetoran + $totalPembayaran;
-                }),
-            ])->values();
+        //             return $totalSetoran + $totalPembayaran;
+        //         }),
+        //     ])->values();
+
+        $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
+
+        $query = Uptd::with([
+            'skrd' => function ($q) use ($startDate, $endDate, $rangeCol) {
+                $q->when($startDate && $endDate, fn($data) => $data->whereBetween($rangeCol, [$startDate, $endDate]))
+                    ->when($startDate && !$endDate, fn($data) => $data->where($rangeCol, '>=', $startDate))
+                    ->when(!$startDate && $endDate, fn($data) => $data->where($rangeCol, '<=', $endDate));
+            },
+            'skrd.pembayaran',
+            'skrd.setoran',
+            // 'skrd.pembayaran' => $filter,
+            // 'skrd.setoran' => $setoranFilter,
+            'skrd.detailSetoran'
+        ])
+            ->where('namaUptd', '!=', 'Dinas')
+            // ->whereHas('skrd.pembayaran', $filter)
+            // ->whereHas('skrd.setoran', $setoranFilter)
+            ->get(['id', 'namaUptd'])
+            ->map(function ($u) use ($startDate, $endDate, $rangeCol) {
+
+                return [
+                    'namaUptd' => $u->namaUptd,
+                    'tagihanPertahun' => $u->skrd->sum('tagihanPerTahunSkrd'),
+                    'totalBayar' => $u->skrd->sum(function ($skrd) {
+                        $totalSetoran = $skrd->setoran->where('status', 'Approved')->where('current_stage', 'bendahara')->sum('jumlahBayar');
+                        $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar');
+
+                        return $totalSetoran + $totalPembayaran;
+                    })
+                    // 'tagihanPertahun' => $u->skrd->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
+                    // $u->skrd->where(function ($q) use ($startDate, $endDate, $rangeCol) {
+                        // $q->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
+                        //     ->when($startDate && !$endDate, fn($q) => $q->where($rangeCol, '>=', $startDate))
+                        //     ->when(!$startDate && $endDate, fn($q) => $q->where($rangeCol, '<=', $endDate))
+                            // $q->sum('tagihanPerTahunSkrd');
+                    // }) ?? 0
+                ];
+            })->values();
+        // ->groupBy('namaUptd');
+        // ->map(fn($group, $namaUptd) => [
+        //     'namaUptd' => $namaUptd,
+        //     'tagihanPertahun' => $group->sum('tagihanPerTahunSkrd'),
+        //     'totalBayar' => $group->sum(function ($skrd) {
+        //         $totalSetoran = $skrd->setoran->where('status', 'Approved')->where('current_stage', 'bendahara')->sum('jumlahBayar');
+        //         $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar');
+
+        //         return $totalSetoran + $totalPembayaran;
+        //     }),
+        // ])->values();
 
         // dd($query);
 
