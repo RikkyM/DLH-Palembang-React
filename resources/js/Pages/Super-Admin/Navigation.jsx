@@ -63,68 +63,21 @@ const SuperAdminNavigation = () => {
     },
   ];
 
-  const tagihanItems = [
-    // {
-    //   label: "Surat Tagihan",
-    //   // route: "super-admin.invoice.index",
-    // },
-    {
-      label: "Data Surat Tagihan",
-      route: "super-admin.surat-tagihan.index",
-    },
-    // {
-    //   label: "History Setoran",
-    //   // route: "super-admin.laporan.piutang-retribusi",
-    // },
-    // {
-    //   label: "Penerimaan Retribusi",
-    //   route: "super-admin.penerimaan-retribusi.index",
-    // },
-    // {
-    //   label: "Piutang Retribusi",
-    //   // route: "super-admin.laporan.piutang-retribusi",
-    // },
-  ];
+  // const tagihanItems = [
+  //   {
+  //     label: "Data Surat Tagihan",
+  //     route: "super-admin.surat-tagihan.index",
+  //   },
+  // ];
 
-  const penerimaanItems = [
-    // {
-    //   label: "Input Setoran",
-    //   route: "super-admin.input-setoran",
-    // },
-    {
-      label: "Data Setoran",
-      route: "super-admin.data-setoran.index",
-      activeRoute: [
-        "super-admin.data-setoran.index",
-        "super-admin.data-setoran.show",
-      ],
-    },
-    // {
-    //   label: "Detail Setoran",
-    //   // route: "super-admin.laporan.piutang-retribusi",
-    // },
-  ];
-
-  // const pembayaranItems = [
+  // const penerimaanItems = [
   //   {
-  //     label: "Invoice",
-  //     route: "super-admin.invoice.index",
-  //   },
-  //   {
-  //     label: "Input Setoran",
-  //     route: "super-admin.input-setoran",
-  //   },
-  //   {
-  //     label: "History Setoran",
-  //     // route: "super-admin.laporan.piutang-retribusi",
-  //   },
-  //   {
-  //     label: "Penerimaan Retribusi",
-  //     route: "super-admin.penerimaan-retribusi.index",
-  //   },
-  //   {
-  //     label: "Piutang Retribusi",
-  //     // route: "super-admin.laporan.piutang-retribusi",
+  //     label: "Data Setoran",
+  //     route: "super-admin.data-setoran.index",
+  //     activeRoute: [
+  //       "super-admin.data-setoran.index",
+  //       "super-admin.data-setoran.show",
+  //     ],
   //   },
   // ];
 
@@ -257,21 +210,36 @@ const SuperAdminNavigation = () => {
           defaultOpen={isAccordionActive(inboxItems)}
           badge="diterima"
         />
-        <AccordionItem
+        {/* <AccordionItem
           title="Tagihan"
           items={tagihanItems}
           defaultOpen={isAccordionActive(tagihanItems)}
-        />
-        <AccordionItem
+        /> */}
+        {/* <AccordionItem
           title="Penerimaan"
           items={penerimaanItems}
           defaultOpen={isAccordionActive(penerimaanItems)}
-        />
-        {/* <AccordionItem
-          title="Pembayaran"
-          items={pembayaranItems}
-          defaultOpen={isAccordionActive(pembayaranItems)}
         /> */}
+        <Link
+          className={`block rounded px-3 py-2 transition-all duration-300 ${
+            route().current("super-admin.surat-tagihan.index")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("super-admin.surat-tagihan.index")}
+        >
+          Surat Tagihan
+        </Link>
+        <Link
+          className={`block rounded px-3 py-2 transition-all duration-300 ${
+            route().current("super-admin.data-setoran.*")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("super-admin.data-setoran.index")}
+        >
+          Penerimaan
+        </Link>
         <AccordionItem
           title="Rekapitulasi Data"
           items={rekapitulasiItems}
@@ -288,7 +256,7 @@ const SuperAdminNavigation = () => {
           defaultOpen={isAccordionActive(settingItems)}
         />
         <Link
-          className={`block rounded px-3 py-2 transition-all duration-300 text-neutral-500 pointer-events-none`}
+          className={`pointer-events-none block rounded px-3 py-2 text-neutral-500 transition-all duration-300`}
           disabled={true}
           // ${
           //   route().current("super-admin.dashboard")

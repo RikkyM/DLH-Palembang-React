@@ -393,6 +393,7 @@ class WajibRetribusiController extends Controller
         $retribusi->status = $request->status;
         $retribusi->historyAction = $history;
         $retribusi->current_role = "ROLE_PENDAFTAR";
+        dd($retribusi);
         $retribusi->save();
 
         return redirect()->back();
@@ -406,9 +407,18 @@ class WajibRetribusiController extends Controller
         //
     }
 
-    public function createSkrd(WajibRetribusi $retribusi)
+    public function createSkrd(Request $request, WajibRetribusi $retribusi)
     {
         $retribusi->load(['penagih']);
+
+        $history = $retribusi->historyAction ?? [];
+
+        $history[] = [
+            'role' => Auth::user()->role,
+            'action' => $request->status,
+            'userId' => Auth::id(),
+            'actionDate' => now()->toIso8601String()
+        ];
 
         $dataSkrd = [
             'noWajibRetribusi' => $retribusi->noWajibRetribusi,
@@ -438,12 +448,14 @@ class WajibRetribusiController extends Controller
             'tahun' => date('Y'),
             'objekRetribusiId' => $retribusi->id,
             'statusSkrd' => 'Approved Kabid',
-            'historyAction' => json_encode($retribusi->historyAction),
+            'historyAction' => json_encode($history),
             'fileSkrd' => $retribusi->file,
             'url_fileSkrd' => json_encode($retribusi->url_file),
             'image' => $retribusi->image,
             'url_image' => json_encode($retribusi->url_image ?? null) ?? null,
         ];
+
+        // dd($dataSkrd);
 
         $skrd = Skrd::create($dataSkrd);
         $tandaTangan = TandaTangan::first();

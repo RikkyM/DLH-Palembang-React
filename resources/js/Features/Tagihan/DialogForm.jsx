@@ -54,7 +54,6 @@ const DialogForm = ({
   useEffect(() => {
     if (isOpen) {
       if (isEditMode && invoice?.id !== data.id) {
-        console.log(invoice)
         setData({
           noWajibRetribusi: invoice.noWajibRetribusi,
           noSkrd: invoice.noSkrd,

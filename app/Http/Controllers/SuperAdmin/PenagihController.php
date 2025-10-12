@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Exports\PenagihExport;
 use App\Http\Controllers\Controller;
 use App\Models\Penagih;
 use App\Models\Uptd;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PenagihController extends Controller
 {
@@ -16,12 +18,14 @@ class PenagihController extends Controller
     public function index(Request $request)
     {
         $getSearch = $request->get('search');
+        $getPage = $request->get('per_page', 10);
 
         $penagih = Penagih::when($getSearch && trim($getSearch) !== '', function ($query) use ($getSearch) {
             $query->where('nama', 'like', "%{$getSearch}%");
         })
-            ->orderByDesc('id')
-            ->paginate(10)
+            ->orderByDesc('id');
+
+        $datas = $getPage <= 0 ? $penagih->get() : $penagih->paginate($getPage)
             ->withQueryString();
 
         $wilayahUptdOptions = Uptd::select('id', 'namaUptd')
@@ -35,9 +39,10 @@ class PenagihController extends Controller
             });
 
         return Inertia::render('Super-Admin/Master-Data/Penagih/Index', [
-            'datas' => $penagih,
+            'datas' => $datas,
             'filters' => [
-                'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null
+                'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
+                'per_page' => (int) $getPage
             ],
             'uptdOptions' => $wilayahUptdOptions
         ]);
@@ -112,5 +117,15 @@ class PenagihController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function exportPenagih(Request $request)
+    {
+        $filename = 'penagih-' . date('Y-m-d') . '.xlsx';
+
+        return Excel::download(
+            new PenagihExport($request),
+            $filename
+        );
     }
 }

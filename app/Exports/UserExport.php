@@ -17,7 +17,7 @@ class UserExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
      */
     public function collection()
     {
-        return User::with('uptd')->select('namaLengkap', 'username', 'jabatan', 'nip', 'email', 'kelamin', 'pangkat', 'golongan', 'lokasi', 'uptdId')->get();
+        return User::with('uptd')->select('namaLengkap', 'username', 'jabatan', 'nip', 'email', 'kelamin', 'pangkat', 'golongan', 'lokasi', 'uptdId', 'role')->get();
     }
 
     public function map($user): array
@@ -32,13 +32,14 @@ class UserExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
             $user->pangkat,
             $user->golongan,
             $user->uptd->namaUptd,
-            $user->lokasi
+            $user->lokasi,
+            $user->role
         ];
     }
 
     public function headings(): array
     {
-        return ['Nama Lengkap', 'Username', 'Jabatan', 'NIP', 'E-Mail', 'Jenis Kelamin', 'Pangkat', 'Golongan', 'UPTD', 'Lokasi'];
+        return ['Nama Lengkap', 'Username', 'Jabatan', 'NIP', 'E-Mail', 'Jenis Kelamin', 'Pangkat', 'Golongan', 'UPTD', 'Lokasi', 'Role'];
     }
 
     public function columnFormats(): array

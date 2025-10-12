@@ -120,6 +120,7 @@ const DataSetoran = ({
   };
 
   const columns = [
+    { key: "created_at", label: "no", align: "text-left" },
     { key: "nomorNota", label: "nomor nota", align: "text-left" },
     { key: "noSkrd", label: "nomor skrd", align: "text-left" },
     {
@@ -228,8 +229,8 @@ const DataSetoran = ({
 
   return (
     <>
+      <Head title="Data Setoran" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
-        <Head title="Data Setoran" />
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <div className="flex w-full items-center gap-2 sm:w-max">
@@ -387,6 +388,12 @@ const DataSetoran = ({
                       key={data.id ?? index}
                       className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                     >
+                      <td className="text-center">
+                        {((datas.current_page ?? 1) - 1) *
+                          (datas.per_page ?? (datas.data ?? datas).length) +
+                          index +
+                          1}
+                      </td>
                       <td className="whitespace-nowrap text-xs md:text-sm">
                         {displayNomorNota(data.nomorNota)}
                       </td>
@@ -437,11 +444,16 @@ const DataSetoran = ({
                         {data.keteranganBulan}
                       </td>
                       <td className="text-xs md:text-sm">
-                        {data.tanggal_diterima ? new Date(data.tanggal_diterima).toLocaleString('id-ID', {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric"
-                        }) : "-"}
+                        {data.tanggal_diterima
+                          ? new Date(data.tanggal_diterima).toLocaleString(
+                              "id-ID",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )
+                          : "-"}
                       </td>
                       <td className="text-center text-xs md:text-sm">
                         <a

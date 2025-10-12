@@ -1,4 +1,4 @@
-import { ChevronDown, FileText, Filter, Search } from "lucide-react";
+import { ChevronDown, FileClock, FileText, Filter, Search } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -6,6 +6,8 @@ import SmartPagination from "@/Components/SmartPagination";
 import TableHead from "@/Components/TableHead";
 import { Head, router } from "@inertiajs/react";
 import React from "react";
+import { useProvider } from "@/Context/GlobalContext";
+import Dialog from "./Dialog";
 
 const Index = ({
   datas,
@@ -16,6 +18,7 @@ const Index = ({
   petugasOptions = [],
   tahunOptions = [],
 }) => {
+  const { modalState, openModal, closeModal } = useProvider();
   const [search, setSearch] = useState(filters.search || "");
   const [kategori, setKategori] = useState(filters.kategori || "");
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
@@ -610,17 +613,22 @@ const Index = ({
                                 )
                               }
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
-                              // onClick={(e) => {
-                              //   e.stopPropagation();
-                              //   window.open(
-                              //     route("super-admin.skrd.download-data-excel", {
-                              //       id: data.id,
-                              //     }),
-                              //     "_blank",
-                              //   );
-                              // }}
                             >
                               <FileText size={20} /> Detail
+                            </button>
+                            <button
+                              onClick={() =>
+                                // router.get(
+                                //   route("super-admin.skrd.show", data.id),
+                                // )
+                                openModal(
+                                  "history",
+                                  JSON.parse(data.historyAction),
+                                )
+                              }
+                              className="flex items-center gap-1.5 whitespace-nowrap outline-none"
+                            >
+                              <FileClock size={20} /> History
                             </button>
                           </div>
                         </td>
@@ -646,6 +654,11 @@ const Index = ({
 
         {!isLoading && <SmartPagination datas={datas} filters={allFilters} />}
       </section>
+      <Dialog
+        isOpen={modalState.type === "history"}
+        onClose={closeModal}
+        item={modalState.data}
+      />
     </Layout>
   );
 };

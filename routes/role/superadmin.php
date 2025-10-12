@@ -83,6 +83,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::resource('/uptd', UptdController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/user', UserController::class)->only(['index', 'store', 'update']);
         Route::get('/export-user', [UserController::class, 'exportUser'])->name('export-user');
+        Route::get('/penagih/export', [PenagihController::class, 'exportPenagih'])->name('export.penagih');
         Route::resource('/penagih', PenagihController::class)->only(['index', 'store', 'update']);
         Route::resource('/kecamatan', KecamatanController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/kelurahan', KelurahanController::class)->only(['index', 'store', 'update', 'destroy']);

@@ -6,14 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Invoice;
 use App\Models\Skrd;
-use App\Models\User;
-use App\Models\WajibRetribusi;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class InvoiceController extends Controller
@@ -26,6 +20,7 @@ class InvoiceController extends Controller
         $getSearch = $request->get('search');
         $getSortBy = $request->get('sort', 'id');
         $getSortDir = $request->get('direction', 'asc');
+        $getPage = $request->get('per_page', 10);
 
         $query = Invoice::query()
             ->select('invoices.*')
@@ -58,7 +53,7 @@ class InvoiceController extends Controller
                 break;
         }
 
-        $invoices = $query->paginate(10);
+        $invoices = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         $skrd = Skrd::select('noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'tagihanPerBulanSkrd')
             ->where('noSkrd', '!=', null)
@@ -88,7 +83,8 @@ class InvoiceController extends Controller
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
                 'sort' => $getSortBy,
-                'direction' => $getSortDir
+                'direction' => $getSortDir,
+                'per_page' => (int) $getPage
             ],
             'retribusiOptions' => $skrd,
             'role' => auth()->user()->role
