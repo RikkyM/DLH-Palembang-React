@@ -100,7 +100,7 @@ const BendaharaNavigation = () => {
           }`}
           href={route("bendahara.surat-tagihan.index")}
         >
-          Surat Tagihan
+          Nota Tagihan
         </Link>
         <AccordionItem
           title="Penerimaan"

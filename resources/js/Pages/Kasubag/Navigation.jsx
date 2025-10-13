@@ -174,7 +174,7 @@ const KasubagNavigation = () => {
           }`}
           href={route("kasubag.surat-tagihan.index")}
         >
-          Surat Tagihan
+          Nota Tagihan
         </Link>
         <AccordionItem
           title="Penerimaan"

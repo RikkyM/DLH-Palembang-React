@@ -3,12 +3,24 @@ import { useEffect, useState } from "react";
 import TableHead from "@/Components/TableHead";
 import React from "react";
 
-const Index = ({ datas, filters }) => {
+const Index = ({ datas, filters, role }) => {
   const [startDate, setStartDate] = useState(filters.tanggal_mulai ?? "");
   const [endDate, setEndDate] = useState(filters.tanggal_akhir ?? "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const roleConfig = {
+    ROLE_SUPERADMIN: "super-admin",
+    ROLE_PENDAFTAR: 'pendaftar',
+    ROLE_KUPTD: "kuptd",
+    ROLE_KATIM: 'katim',
+    ROLE_KABID: 'kabid',
+    ROLE_KASUBAG_TU_UPDT: "kasubag",
+    ROLE_BENDAHARA: "bendahara",
+  };
+
+  const routeConfig = roleConfig[role];
 
   // const columns = [
   //   { key: "id", label: "No", align: "text-center w-10" },
@@ -53,7 +65,7 @@ const Index = ({ datas, filters }) => {
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route(`super-admin.rekapitulasi.spkrd`), params, {
+      router.get(route(`${routeConfig}.rekapitulasi.spkrd`), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "filters"],
@@ -73,7 +85,7 @@ const Index = ({ datas, filters }) => {
 
     setIsLoading(true);
     router.get(
-      route("super-admin.rekapitulasi.spkrd"),
+      route(`${routeConfig}.rekapitulasi.spkrd`),
       {
         ...params,
         tanggal_mulai: startDate || undefined,
@@ -97,7 +109,7 @@ const Index = ({ datas, filters }) => {
 
     // console.log(data);
 
-    router.get(route("super-admin.rekapitulasi.spkrd.detail"), params, {
+    router.get(route(`${routeConfig}.rekapitulasi.spkrd.detail`), params, {
       preserveScroll: true,
       replace: false,
     });

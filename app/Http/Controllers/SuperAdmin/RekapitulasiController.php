@@ -9,6 +9,7 @@ use App\Models\Skrd;
 use App\Models\Uptd;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -124,6 +125,7 @@ class RekapitulasiController extends Controller
                 'tanggal_mulai' => $startDate,
                 'tanggal_akhir' => $endDate
             ],
+            'role' => Auth::user()->role
         ]);
     }
 

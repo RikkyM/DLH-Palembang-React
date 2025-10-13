@@ -63,12 +63,12 @@ const SuperAdminNavigation = () => {
     },
   ];
 
-  const tagihanItems = [
-    {
-      label: "Data Surat Tagihan",
-      route: "super-admin.surat-tagihan.index",
-    },
-  ];
+  // const tagihanItems = [
+  //   {
+  //     label: "Data Surat Tagihan",
+  //     route: "super-admin.surat-tagihan.index",
+  //   },
+  // ];
 
   const penerimaanItems = [
     {
@@ -223,7 +223,7 @@ const SuperAdminNavigation = () => {
           }`}
           href={route("super-admin.surat-tagihan.index")}
         >
-          Surat Tagihan
+          Nota Tagihan
         </Link>
         <AccordionItem
           title="Penerimaan"
