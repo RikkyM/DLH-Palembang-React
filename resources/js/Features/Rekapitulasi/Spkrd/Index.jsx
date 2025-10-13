@@ -10,12 +10,22 @@ const Index = ({ datas, filters }) => {
   const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const columns = [
-    { key: "id", label: "No", align: "text-center w-10" },
-    { key: "namaKategori", label: "Kategori", align: "text-left" },
-    { key: "namaSubKategori", label: "Sub Kategori", align: "text-left" },
-    { key: "jumlah", label: "Jumlah", align: "text-center" },
-  ];
+  // const columns = [
+  //   { key: "id", label: "No", align: "text-center w-10" },
+  //   { key: "namaKategori", label: "Kategori", align: "text-left" },
+  //   { key: "namaSubKategori", label: "Sub Kategori", align: "text-left" },
+  //   { key: "jumlah", label: "Jumlah", align: "text-center" },
+  // ];
+
+  const numberFormat = (data) => {
+    return (
+      new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(data) ?? 0
+    );
+  };
 
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
@@ -186,7 +196,7 @@ const Index = ({ datas, filters }) => {
             <>
               <table className="min-w-full divide-y divide-gray-300 p-3">
                 <thead className="truncate">
-                  <TableHead
+                  {/* <TableHead
                     columns={columns}
                     sort={sort}
                     direction={direction}
@@ -194,7 +204,18 @@ const Index = ({ datas, filters }) => {
                       setSort(column);
                       setDirection(dir);
                     }}
-                  />
+                  /> */}
+                  <tr className="text-white *:sticky *:top-0 *:z-0 *:cursor-pointer *:select-none *:bg-[#F1B174] *:p-2 *:text-xs *:font-medium *:uppercase *:md:text-sm">
+                    <th className="sticky top-0 z-0 w-10 cursor-pointer select-none bg-[#F1B174] text-center">
+                      no
+                    </th>
+                    <th className="text-left">kategori</th>
+                    <th className="text-left">sub kategori</th>
+                    <th className="text-center">jumlah spkrd</th>
+                    <th className="text-center">total tagihan</th>
+                    <th className="text-center">total bayar</th>
+                    <th className="text-center">sisa bayar</th>
+                  </tr>
                 </thead>
                 <tbody>
                   {datas && (datas.data ?? datas)?.length > 0 ? (
@@ -216,21 +237,43 @@ const Index = ({ datas, filters }) => {
                                 </td>
                                 <td
                                   onClick={(e) => e.stopPropagation()}
-                                  className={`pointer-events-none ${i % 2 == 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                                  className={`pointer-events-none w-[400px] ${i % 2 == 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                                   rowSpan={data.subKategori.length}
                                 >
-                                  {data.namaKategori}
+                                  <div className="w-full max-w-[400px]">
+                                    {data.namaKategori}
+                                  </div>
                                 </td>
                               </>
                             )}
                             <td onClick={() => openDetail(data, sub)}>
-                              {sub.label}
+                              <div>{sub.label}</div>
                             </td>
                             <td
                               className="text-center"
                               onClick={() => openDetail(data, sub)}
                             >
                               {sub.jumlah}
+                            </td>
+                            <td
+                              className="text-center"
+                              onClick={() => openDetail(data, sub)}
+                            >
+                              {numberFormat(sub.tagihan)}
+                            </td>
+                            <td
+                              className="text-center"
+                              onClick={() => openDetail(data, sub)}
+                            >
+                              {numberFormat(sub.totalBayar)}
+                              {console.log(sub.totalBayar)}
+                            </td>
+                            <td
+                              className="text-center"
+                              onClick={() => openDetail(data, sub)}
+                            >
+                              {numberFormat(sub.tagihan - sub.totalBayar)}
+                              {console.log(data)}
                             </td>
                           </tr>
                         ))}

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pembayaran;
 use App\Models\Skrd;
 use App\Models\Uptd;
 use Carbon\Carbon;
@@ -29,7 +30,29 @@ class RekapitulasiController extends Controller
 
         $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
 
+        $pembayaranSubquery = DB::table('pembayaran as p')
+            ->selectRaw('p.skrdId, SUM(p.jumlahBayar) as totalPembayaran')
+            ->when($startDate && $endDate, fn($q) => $q->whereBetween(DB::raw('DATE(p.tanggalBayar)'), [$startDate, $endDate]))
+            ->when($startDate && !$endDate, fn($q) => $q->where(DB::raw('DATE(p.tanggalBayar)'), '>=', $startDate))
+            ->when(!$startDate && $endDate, fn($q) => $q->where(DB::raw('DATE(p.tanggalBayar)'), '<=', $endDate))
+            ->groupBy('p.skrdId');
+
+        $detailSetoranSubquery = DB::table('detail_setoran as ds')
+            ->join('setoran as s', 's.nomorNota', '=', 'ds.nomorNota')
+            ->where('s.status', 'Approved')
+            ->selectRaw('ds.skrdId, SUM(ds.jumlahBayar) as totalDetailSetoran')
+            ->when($startDate && $endDate, fn($q) => $q->whereBetween(DB::raw('DATE(ds.tanggalBayar)'), [$startDate, $endDate]))
+            ->when($startDate && !$endDate, fn($q) => $q->where(DB::raw('DATE(ds.tanggalBayar)'), '>=', $startDate))
+            ->when(!$startDate && $endDate, fn($q) => $q->where(DB::raw('DATE(ds.tanggalBayar)'), '<=', $endDate))
+            ->groupBy('ds.skrdId');
+
         $query = Skrd::query()
+            ->leftJoinSub($pembayaranSubquery, 'p', function ($join) {
+                $join->on('skrd.id', '=', 'p.skrdId');
+            })
+            ->leftJoinSub($detailSetoranSubquery, 'ds', function ($join) {
+                $join->on('skrd.id', '=', 'ds.skrdId');
+            })
             ->when($startDate && $endDate, fn($q) => $q->whereBetween($rangeCol, [$startDate, $endDate]))
             ->when($startDate && !$endDate, fn($q) => $q->where($rangeCol, '>=', $startDate))
             ->when(!$startDate && $endDate, fn($q) => $q->where($rangeCol, '<=', $endDate))
@@ -37,7 +60,16 @@ class RekapitulasiController extends Controller
                 DB::raw('MAX(id) as id'),
                 'namaKategori',
                 'namaSubKategori',
-                DB::raw('COUNT(*) as jumlah')
+                DB::raw('COUNT(*) as jumlah'),
+                DB::raw('SUM(COALESCE(tagihanPerTahunSkrd,0)) as tagihan'),
+                DB::raw('SUM(COALESCE(p.totalPembayaran, 0) + COALESCE(ds.totalDetailSetoran, 0)) as total')
+                // DB::raw('SUM(
+                //     COALESCE(
+                //         (SELECT SUM(jumlahBayar) FROM detail_setoran WHERE detail_setoran.skrdId = skrd.id),
+                //         (SELECT SUM(jumlahBayar) FROM pembayaran WHERE pembayaran.skrdId = skrd.id),
+                //         0
+                //     )
+                // ) as total')
             ])
             ->groupBy('namaKategori', 'namaSubKategori')
             ->orderBy('namaKategori')
@@ -52,18 +84,36 @@ class RekapitulasiController extends Controller
         //         break;
         // }
 
-        $query->orderBy($getSortBy, $getSortDir);
+        // $query->orderBy($getSortBy, $getSortDir);
 
-        $datas = $query->get()->groupBy('namaKategori')->values()->map(function ($grp, $i) {
+        // switch ($getSortBy) {
+        //     case 'jumlah':
+        //     case 'tagihan':
+        //     case 'namaKategori':
+        //     case 'namaSubKategori':
+        //     case 'id':
+        //         $query->orderBy($getSortBy, $getSortDir);
+        //         break;
+        //     default:
+        //         $query->orderBy('id', 'desc');
+        // }
+
+        $rows = $query->get();
+
+        $datas = $rows->groupBy('namaKategori')->values()->map(function ($grp, $i) {
             return [
                 'no' => $i + 1,
                 'namaKategori' => $grp->first()->namaKategori,
                 'subKategori' => $grp->values()->map(fn($r) => [
                     'label' => $r->namaSubKategori,
-                    'jumlah' => (int) $r->jumlah
-                ])->all()
+                    'jumlah' => (int) $r->jumlah,
+                    'tagihan' => (int) $r->tagihan,
+                    'totalBayar' => (int) $r->total
+                ])->all(),
             ];
         });
+
+        // dd($datas);
 
         return Inertia::render('Super-Admin/Rekapitulasi/Spkrd/Index', [
             'datas' => $datas,
