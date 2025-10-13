@@ -3,6 +3,7 @@
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PemohonController;
+use App\Http\Controllers\RekapitulasiController;
 use App\Http\Controllers\SetoranController;
 use App\Http\Controllers\SkrdController;
 use App\Http\Controllers\WajibRetribusiController;
@@ -32,6 +33,9 @@ Route::prefix('sirep')->group(function () {
         });
 
         Route::get('/export-pemohon', [PemohonController::class, 'exportPemohon'])->name('export-pemohon');
+        Route::get('/export-rekap-spkrd', [RekapitulasiController::class, 'exportSpkrd'])->name('export-rekap-spkrd');
+        Route::get('/export-rekap-retribusi', [RekapitulasiController::class, 'exportRetribusi'])->name('export-rekap-retribusi');
+        Route::get('/export-rekap-nota-tagihan', [RekapitulasiController::class, 'exportInvoice'])->name('export-rekap-nota-tagihan');
 
         Route::get('/invoice/pdf/{invoice:no_invoice}', [InvoiceController::class, 'openFile'])
             ->where(['invoice' => '.*'])

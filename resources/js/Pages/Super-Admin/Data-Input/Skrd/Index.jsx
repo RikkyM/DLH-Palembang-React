@@ -616,11 +616,8 @@ const Index = ({
                             >
                               <FileText size={20} /> Detail
                             </button>
-                            <button
+                            {/* <button
                               onClick={() =>
-                                // router.get(
-                                //   route("super-admin.skrd.show", data.id),
-                                // )
                                 openModal(
                                   "history",
                                   JSON.parse(data.historyAction),
@@ -629,7 +626,7 @@ const Index = ({
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                             >
                               <FileClock size={20} /> History
-                            </button>
+                            </button> */}
                           </div>
                         </td>
                       </tr>

@@ -8,7 +8,7 @@ const Index = ({ datas, filters }) => {
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasFilter, setHasFilter] = useState(false);
+  // const [hasFilter, setHasFilter] = useState(false);
 
   const columns = [
     { key: "id", label: "No", align: "text-center w-10" },
@@ -18,12 +18,11 @@ const Index = ({ datas, filters }) => {
       align: "text-left",
     },
     {
-      key: "namaSubKategori",
+      key: "tagihan",
       label: "Jumlah Tagihan",
       align: "text-left",
     },
   ];
-  
 
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
@@ -48,7 +47,7 @@ const Index = ({ datas, filters }) => {
   };
 
   useEffect(() => {
-    if (!hasFilter) return;
+    // if (!hasFilter) return;
 
     setIsLoading(true);
     const timeoutId = setTimeout(() => {
@@ -73,7 +72,7 @@ const Index = ({ datas, filters }) => {
 
     const params = buildParams();
 
-    setHasFilter(true);
+    // setHasFilter(true);
     setIsLoading(true);
     router.get(
       route("super-admin.rekapitulasi.penerimaan"),
@@ -84,7 +83,7 @@ const Index = ({ datas, filters }) => {
       },
       {
         preserveState: true,
-        preserveScroll: true,
+        replace: true,
         onFinish: () => setIsLoading(false),
       },
     );
@@ -105,10 +104,10 @@ const Index = ({ datas, filters }) => {
       <Head title="Penerimaan" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
-          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
+          <div className="flex flex-col gap-2 sm:flex-row md:w-auto md:items-center">
             <form
               onSubmit={onSubmitFilter}
-              className="grid h-full w-full grid-cols-2 gap-2 md:grid-cols-4"
+              className="grid h-full w-full grid-cols-2 gap-2 md:grid-cols-3 lg:flex"
             >
               <div className="space-y-2 rounded text-sm">
                 <label htmlFor="tanggal_mulai">Tanggal Mulai</label>
@@ -119,7 +118,7 @@ const Index = ({ datas, filters }) => {
                   value={startDate}
                   onChange={(e) => {
                     const start = e.target.value || "";
-                    
+
                     setStartDate(start);
 
                     if (endDate && endDate < start) setEndDate(start);
@@ -151,59 +150,79 @@ const Index = ({ datas, filters }) => {
                   min={startDate || undefined}
                 />
               </div>
-              <div className="flex items-end text-sm col-span-2 w-full">
+              <div className="col-span-2 flex w-full flex-col items-end gap-2 text-sm sm:col-span-1 sm:w-max sm:flex-row">
                 <button
                   disabled={isLoading}
-                  className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded bg-black px-4 py-2 text-white w-full sm:w-max"
+                  className="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded bg-black px-4 py-2 text-white sm:w-max"
                 >
                   Cari
+                </button>
+                <button
+                  onClick={() => {
+                    const params = new URLSearchParams();
+
+                    if (startDate) params.append('tanggal_mulai', startDate);
+                    if (endDate) params.append('tanggal_akhir', endDate);
+
+                    window.open(
+                      route("export-rekap-retribusi") + "?" + params.toString(),
+                      "_blank",
+                    );
+                  }}
+                  className="h-10 self-end rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white"
+                >
+                  Excel
                 </button>
               </div>
             </form>
           </div>
+          <div className="self-end">
+            <p className="relative text-xs text-red-500 before:text-red-500 before:content-['*']">
+              Data Tampil apabila sudah di approve oleh Keuangan/Bendahara
+            </p>
+          </div>
         </div>
 
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded-t sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
         >
-          {hasFilter &&
-            (isLoading ? (
-              <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
-                <svg
-                  className="h-4 w-4 animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                  />
-                </svg>
-                Memuat data...
-              </div>
-            ) : (
-              <>
-                <table className="min-w-full divide-y divide-gray-300 p-3">
-                  <thead className="truncate">
-                    <TableHead
-                      columns={columns}
-                      sort={sort}
-                      direction={direction}
-                      onSort={(column, dir) => {
-                        setSort(column);
-                        setDirection(dir);
-                      }}
-                    >
-                      {/* <th
+          {isLoading ? (
+            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
+              <svg
+                className="h-4 w-4 animate-spin"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                />
+              </svg>
+              Memuat data...
+            </div>
+          ) : (
+            <>
+              <table className="min-w-full divide-y divide-gray-300 p-3">
+                <thead className="truncate">
+                  <TableHead
+                    columns={columns}
+                    sort={sort}
+                    direction={direction}
+                    onSort={(column, dir) => {
+                      setSort(column);
+                      setDirection(dir);
+                    }}
+                  >
+                    {/* <th
                       colSpan={2}
                       className="sticky top-0 select-none bg-[#F1B174]"
                     >
@@ -215,14 +234,14 @@ const Index = ({ datas, filters }) => {
                     >
                       Approval Keuangan
                     </th> */}
-                      <th className="sticky top-0 select-none bg-[#F1B174] text-left">
-                        Total Bayar
-                      </th>
-                      <th className="sticky top-0 select-none bg-[#F1B174] text-left">
-                        Sisa Bayar
-                      </th>
-                    </TableHead>
-                    {/* <tr className="text-white *:p-2 *:text-xs *:font-medium *:uppercase *:md:text-sm">
+                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
+                      Total Bayar
+                    </th>
+                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
+                      Sisa Bayar
+                    </th>
+                  </TableHead>
+                  {/* <tr className="text-white *:p-2 *:text-xs *:font-medium *:uppercase *:md:text-sm">
                     <th className="sticky top-9 select-none bg-[#F1B174]">
                       Total Bayar
                     </th>
@@ -236,60 +255,100 @@ const Index = ({ datas, filters }) => {
                       Sisa Bayar
                     </th>
                   </tr> */}
-                  </thead>
-                  <tbody>
-                    <tr>
-                      {/* <td>1</td>
+                </thead>
+                <tbody>
+                  <tr>
+                    {/* <td>1</td>
                   <td>TEST</td>
                   <td>3</td>
                   <td>10000</td>
                   <td>10000</td>
                   <td>10000</td>
                   <td>10000</td> */}
-                    </tr>
-                    {datas && (datas.data ?? datas)?.length > 0 ? (
-                      (datas.data ?? datas).map((data, i) => (
-                        <tr
-                          key={data.id ?? i}
-                          className={`*:p-2 ${i % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
-                          onClick={() => openDetail(data)}
-                        >
-                          <td className="text-left">
-                            <div className="w-10 text-center">
-                              {((datas.current_page ?? 1) - 1) *
-                                (datas.per_page ??
-                                  (datas.data ?? datas).length) +
-                                i +
-                                1}
-                            </div>
-                          </td>
-                          <td>{data.namaUptd}</td>
-                          <td>{formatNumber(data.tagihanPertahun)}</td>
-                          <td>{formatNumber(data.totalBayar)}</td>
-                          <td>
-                            {formatNumber(
-                              data.tagihanPertahun - data.totalBayar,
-                            )}
-                          </td>
-                          {/* <td>{data.namaKategori}</td>
+                  </tr>
+                  {datas && (datas.data ?? datas)?.length > 0 ? (
+                    <>
+                      {datas &&
+                        (datas.data ?? datas).map((data, i) => (
+                          <tr
+                            key={data.id ?? i}
+                            className={`*:p-2 ${i % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                            onClick={() => openDetail(data)}
+                          >
+                            <td className="text-left">
+                              <div className="w-10 text-center">
+                                {((datas.current_page ?? 1) - 1) *
+                                  (datas.per_page ??
+                                    (datas.data ?? datas).length) +
+                                  i +
+                                  1}
+                              </div>
+                            </td>
+                            <td>{data.namaUptd}</td>
+                            <td>{formatNumber(data.tagihanPertahun)}</td>
+                            <td>{formatNumber(data.totalBayar)}</td>
+                            <td>
+                              {formatNumber(
+                                data.tagihanPertahun - data.totalBayar,
+                              )}
+                            </td>
+                            {/* <td>{data.namaKategori}</td>
                         <td>{data.namaSubKategori}</td>
                         <td className="text-center">{data.jumlah}</td> */}
-                        </tr>
-                      ))
-                    ) : Boolean(startDate || endDate) ? (
-                      <tr>
-                        <td
-                          colSpan="5"
-                          className="py-8 text-center text-xs text-gray-500 lg:text-sm"
-                        >
-                          Rekapitulasi Penerimaan tidak ditemukan.
+                          </tr>
+                        ))}
+                      <tr className="sticky bottom-0 bg-white">
+                        <td colSpan={2} className="sticky left-0 p-2 font-bold">
+                          Total
+                        </td>
+                        <td className="p-2">
+                          {formatNumber(
+                            datas.reduce(
+                              (acc, row) =>
+                                acc + (Number(row?.tagihanPertahun ?? 0) || 0),
+                              0,
+                            ),
+                          )}
+                        </td>
+                        <td>
+                          {formatNumber(
+                            datas.reduce(
+                              (acc, row) =>
+                                acc + (Number(row?.totalBayar ?? 0) || 0),
+                              0,
+                            ),
+                          )}
+                        </td>
+                        <td>
+                          {formatNumber(
+                            datas.reduce((acc, row) => {
+                              {
+                                /* acc + (Number(row?.tagihanPertahun ?? 0) || 0), */
+                              }
+                              const tagihan = Number(row?.tagihanPertahun ?? 0);
+                              const totalBayar = Number(row?.totalBayar ?? 0);
+
+                              return acc + (tagihan - totalBayar);
+                            }, 0),
+                          )}
                         </td>
                       </tr>
-                    ) : null}
-                  </tbody>
-                </table>
-              </>
-            ))}
+                    </>
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="5"
+                        className="py-8 text-center text-xs text-gray-500 lg:text-sm"
+                      >
+                        {Boolean(startDate || endDate) &&
+                          "Rekapitulasi Penerimaan tidak ditemukan."}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </>
+          )}
         </div>
       </section>
     </>

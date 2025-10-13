@@ -76,6 +76,9 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
             Route::prefix('/penerimaan')->group(function() {
                 Route::get('/', 'penerimaan')->name('penerimaan');
             });
+            Route::prefix('/nota-tagihan')->group(function() {
+                Route::get('/', 'notaTagihan')->name('nota-tagihan');
+            });
         });
     });
 

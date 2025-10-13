@@ -96,7 +96,7 @@ const SuperAdminNavigation = () => {
     },
     {
       label: "Nota Tagihan",
-      // route: "super-admin.laporan.piutang-retribusi",
+      route: "super-admin.rekapitulasi.nota-tagihan",
     },
   ];
 

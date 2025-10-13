@@ -1,31 +1,74 @@
-import { Head, router } from "@inertiajs/react";
+import { useProvider } from "@/Context/GlobalContext";
 import { useEffect, useState } from "react";
+import { Head, router } from "@inertiajs/react";
 import TableHead from "@/Components/TableHead";
-import React from "react";
 
-const Index = ({ datas, filters }) => {
+const Index = ({ datas, filters, role }) => {
   const [startDate, setStartDate] = useState(filters.tanggal_mulai ?? "");
   const [endDate, setEndDate] = useState(filters.tanggal_akhir ?? "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // const columns = [
-  //   { key: "id", label: "No", align: "text-center w-10" },
-  //   { key: "namaKategori", label: "Kategori", align: "text-left" },
-  //   { key: "namaSubKategori", label: "Sub Kategori", align: "text-left" },
-  //   { key: "jumlah", label: "Jumlah", align: "text-center" },
-  // ];
-
-  const numberFormat = (data) => {
-    return (
-      new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-      }).format(data) ?? 0
-    );
+  const roleConfig = {
+    ROLE_SUPERADMIN: "super-admin",
+    ROLE_KUPTD: "kuptd",
+    ROLE_KASUBAG_TU_UPDT: "kasubag",
+    ROLE_BENDAHARA: "bendahara",
   };
+
+  const routeConfig = roleConfig[role];
+
+  const columns = [
+    { key: "id", label: "no", align: "text-left" },
+    {
+      key: "tanggal_terbit",
+      label: "tanggal invoice",
+      align: "text-center truncate",
+    },
+    { key: "no_invoice", label: "no invoice", align: "text-left truncate" },
+    {
+      key: "noSkrd",
+      label: "no spkrd",
+      align: "text-left truncate",
+    },
+    {
+      key: "namaObjekRetribusi",
+      label: "nama wajib retribusi",
+      align: "text-left truncate",
+    },
+    {
+      key: "alamatObjekRetribusi",
+      label: "alamat",
+      align: "text-left truncate",
+    },
+    {
+      key: "kelurahanObjekRetribusi",
+      label: "kelurahan",
+      align: "text-left truncate",
+    },
+    {
+      key: "kecamatanObjekRetribusi",
+      label: "kecamatan",
+      align: "text-left truncate",
+    },
+    {
+      key: "jumlah_bulan",
+      label: "jumlah bulan",
+      align: "text-center truncate",
+    },
+    { key: "satuan", label: "keterangan bulan", align: "text-left truncate" },
+    {
+      key: "tagihanPerBulanSkrd",
+      label: "tarif retribusi",
+      align: "text-left truncate",
+    },
+    {
+      key: "total_retribusi",
+      label: "total retribusi",
+      align: "text-left truncate",
+    },
+  ];
 
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
@@ -53,7 +96,7 @@ const Index = ({ datas, filters }) => {
     const timeoutId = setTimeout(() => {
       const params = buildParams();
 
-      router.get(route(`super-admin.rekapitulasi.spkrd`), params, {
+      router.get(route(`${routeConfig}.rekapitulasi.nota-tagihan`), params, {
         preserveState: true,
         replace: true,
         only: ["datas", "filters"],
@@ -73,7 +116,7 @@ const Index = ({ datas, filters }) => {
 
     setIsLoading(true);
     router.get(
-      route("super-admin.rekapitulasi.spkrd"),
+      route(`${routeConfig}.rekapitulasi.nota-tagihan`),
       {
         ...params,
         tanggal_mulai: startDate || undefined,
@@ -87,25 +130,9 @@ const Index = ({ datas, filters }) => {
     );
   };
 
-  const openDetail = (data, sub) => {
-    const params = {
-      tanggal_mulai: startDate || filters.tanggal_mulai || "",
-      tanggal_akhir: endDate || filters.tanggal_akhir || "",
-      kategori: data.namaKategori,
-      sub_kategori: sub.label,
-    };
-
-    // console.log(data);
-
-    router.get(route("super-admin.rekapitulasi.spkrd.detail"), params, {
-      preserveScroll: true,
-      replace: false,
-    });
-  };
-
   return (
     <>
-      <Head title="Rekapitulasi SPKRD" />
+      <Head title="Data Surat Tagihan" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex flex-col gap-2 sm:flex-row md:w-auto md:items-center">
@@ -169,7 +196,7 @@ const Index = ({ datas, filters }) => {
                     if (endDate) params.append("tanggal_akhir", endDate);
 
                     window.open(
-                      route("export-rekap-spkrd") + "?" + params.toString(),
+                      route("export-rekap-nota-tagihan") + "?" + params.toString(),
                       "_blank",
                     );
                   }}
@@ -211,8 +238,8 @@ const Index = ({ datas, filters }) => {
           ) : (
             <>
               <table className="min-w-full divide-y divide-gray-300 p-3">
-                <thead className="truncate">
-                  {/* <TableHead
+                <thead>
+                  <TableHead
                     columns={columns}
                     sort={sort}
                     direction={direction}
@@ -220,91 +247,85 @@ const Index = ({ datas, filters }) => {
                       setSort(column);
                       setDirection(dir);
                     }}
-                  /> */}
-                  <tr className="text-white *:sticky *:top-0 *:z-0 *:cursor-pointer *:select-none *:bg-[#F1B174] *:p-2 *:text-xs *:font-medium *:uppercase *:md:text-sm">
-                    <th className="sticky top-0 z-0 w-10 cursor-pointer select-none bg-[#F1B174] text-center">
-                      no
-                    </th>
-                    <th className="text-left">kategori</th>
-                    <th className="text-left">sub kategori</th>
-                    <th className="text-center">jumlah spkrd</th>
-                    <th className="text-center">total tagihan</th>
-                    <th className="text-center">total bayar</th>
-                    <th className="text-center">sisa bayar</th>
-                  </tr>
+                  />
                 </thead>
-                <tbody>
-                  {datas && (datas.data ?? datas)?.length > 0 ? (
-                    (datas.data ?? datas).map((data, i) => (
-                      <React.Fragment key={i}>
-                        {data.subKategori.map((sub, subIdx) => (
-                          <tr
-                            key={`${i}-${subIdx}`}
-                            className={`cursor-pointer *:p-2 ${i % 2 == 0 ? "bg-[#B3CEAF] hover:bg-[#A0BD9A]" : "bg-white hover:bg-neutral-200"}`}
-                          >
-                            {subIdx === 0 && (
-                              <>
-                                <td
-                                  onClick={(e) => e.stopPropagation()}
-                                  className={`pointer-events-none text-center ${i % 2 == 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
-                                  rowSpan={data.subKategori.length}
-                                >
-                                  {data.no}
-                                </td>
-                                <td
-                                  onClick={(e) => e.stopPropagation()}
-                                  className={`pointer-events-none w-[400px] ${i % 2 == 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
-                                  rowSpan={data.subKategori.length}
-                                >
-                                  <div className="w-full max-w-[400px]">
-                                    {data.namaKategori}
-                                  </div>
-                                </td>
-                              </>
-                            )}
-                            <td onClick={() => openDetail(data, sub)}>
-                              <div>{sub.label}</div>
-                            </td>
-                            <td
-                              className="text-center"
-                              onClick={() => openDetail(data, sub)}
-                            >
-                              {sub.jumlah}
-                            </td>
-                            <td
-                              className="text-center"
-                              onClick={() => openDetail(data, sub)}
-                            >
-                              {numberFormat(sub.tagihan)}
-                            </td>
-                            <td
-                              className="text-center"
-                              onClick={() => openDetail(data, sub)}
-                            >
-                              {numberFormat(sub.totalBayar)}
-                              {console.log(sub.totalBayar)}
-                            </td>
-                            <td
-                              className="text-center"
-                              onClick={() => openDetail(data, sub)}
-                            >
-                              {numberFormat(sub.tagihan - sub.totalBayar)}
-                              {console.log(data)}
-                            </td>
-                          </tr>
-                        ))}
-                      </React.Fragment>
+                <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
+                  {(datas.data ?? datas)?.length > 0 ? (
+                    (datas.data ?? datas).map((data, index) => (
+                      <tr
+                        key={data.id ?? index}
+                        className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                      >
+                        <td className="text-center">
+                          {((datas.current_page ?? 1) - 1) *
+                            (datas.per_page ?? (datas.data ?? datas).length) +
+                            index +
+                            1}
+                        </td>
+                        <td>
+                          {data.tanggal_terbit
+                            ? new Date(data.tanggal_terbit).toLocaleDateString(
+                                "id-ID",
+                                {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                },
+                              )
+                            : "-"}
+                        </td>
+                        <td>{data.no_invoice}</td>
+                        <td>{data.noSkrd}</td>
+                        <td>
+                          <div className="w-60">
+                            {data.skrd.namaObjekRetribusi}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="w-72">
+                            {data.skrd.alamatObjekRetribusi}
+                          </div>
+                        </td>
+                        <td className="whitespace-nowrap">
+                          {data.skrd.kelurahanObjekRetribusi}
+                        </td>
+                        <td className="whitespace-nowrap">
+                          {data.skrd.kecamatanObjekRetribusi}
+                        </td>
+                        <td className="text-center">
+                          {data.jumlah_bulan
+                            ? `${data.jumlah_bulan} Bulan`
+                            : "-"}
+                        </td>
+                        <td>{data.satuan}</td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data.skrd.tagihanPerBulanSkrd)}
+                        </td>
+                        <td>
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data.total_retribusi)}
+                        </td>
+                      </tr>
                     ))
-                  ) : startDate || endDate ? (
+                  ) : (
                     <tr>
                       <td
-                        colSpan="4"
-                        className="py-8 text-center text-xs text-gray-500 lg:text-sm"
+                        colSpan={13}
+                        className="py-8 text-center text-gray-500"
                       >
-                        SPKRD tidak ditemukan.
+                        {search
+                          ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
+                          : "Belum ada data surat tagihan"}
                       </td>
                     </tr>
-                  ) : null}
+                  )}
                 </tbody>
               </table>
             </>

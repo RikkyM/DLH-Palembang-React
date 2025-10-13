@@ -169,12 +169,12 @@ const Index = ({ datas, filters, retribusiOptions = [], role }) => {
                 Tambah
               </button>
             )}
-            <button className="rounded bg-red-500 px-3 py-1.5 text-sm font-medium text-white">
+            {/* <button className="rounded bg-red-500 px-3 py-1.5 text-sm font-medium text-white">
               <span>PDF</span>
             </button>
             <button className="rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white">
               <span>Excel</span>
-            </button>
+            </button> */}
           </div>
         </div>
         <div
