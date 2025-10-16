@@ -106,5 +106,8 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::post('/pemohon-import', 'importExcelPemohon')->name('pemohon-import');
         Route::get('/retribusi-import', 'importRetribusiIndex')->name('retribusi-index');
         Route::post('/retribusi-import', 'importExcelRetribusi')->name('retribusi-import');
+        Route::post('/skrd-import', 'importExcelSkrd')->name('skrd-import');
+        Route::get('/setoran-import', 'importSetoranIndex')->name('setoran-index');
+        Route::post('/setoran-import', 'importExcelSetoran')->name('setoran-import');
     });
 });

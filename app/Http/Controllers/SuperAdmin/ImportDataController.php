@@ -5,6 +5,8 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Imports\PemohonImport;
 use App\Imports\RetribusiImport;
+use App\Imports\SetoranImport;
+use App\Imports\SkrdImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -30,8 +32,37 @@ class ImportDataController extends Controller
 
     public function importExcelRetribusi(Request $request)
     {
-        Excel::import( new RetribusiImport , $request->file('file'));
+        Excel::import(new RetribusiImport, $request->file('file'));
 
         return back();
     }
+
+    public function importExcelSkrd(Request $request)
+    {
+        Excel::import(new SkrdImport, $request->file('skrd'));
+
+        return back();
+    }
+
+    public function importSetoranIndex()
+    {
+        return view('imports.setoran');
+    }
+
+    public function importExcelSetoran(Request $request)
+    {
+        Excel::import(new SetoranImport, $request->file('file'));
+
+        return back();
+    }
+
+    // private function getBulan()
+    // {
+    //     Carbon::setLocale('id');
+
+    //     return collect(range(1, 12))->map(
+    //         fn($i) =>
+    //         strtoupper(Carbon::create()->month($i)->translatedFormat('F'))
+    //     );
+    // }
 }
