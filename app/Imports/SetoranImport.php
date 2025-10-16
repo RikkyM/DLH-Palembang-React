@@ -56,28 +56,28 @@ class SetoranImport implements ToCollection, WithHeadingRow, WithCalculatedFormu
                     ->values()
                     ->toArray();
 
-                Setoran::create([
-                    'nomorNota' => $nomorNota,
-                    'skrdId' => $skrd['id'],
-                    'noRef' => null,
-                    'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_skrd'])->format('Y-m-d'),
-                    'jumlahBayar' => $row['sudah_bayar'],
-                    'jumlahBulan' => count($detailSetoran),
-                    'namaPenyetor' => null,
-                    'keteranganBulan' => null,
-                    'metodeBayar' => null,
-                    'namaBank' => null,
-                    'buktiBayar' => null,
-                    'status' => 'Approved',
-                    'current_stage' => 'bendahara',
-                    'keterangan' => $row['ket'],
-                    'tanggal_diterima' => Carbon::create(2025, 1, 2, 0, 0, 0),
-                    'tanggal_batal' => null,
-                    'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
-                    'updated_at' => now()
-                ]);
-
                 if ($detailSetoran) {
+                    Setoran::create([
+                        'nomorNota' => $nomorNota,
+                        'skrdId' => $skrd['id'],
+                        'noRef' => null,
+                        'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_skrd'])->format('Y-m-d'),
+                        'jumlahBayar' => $row['sudah_bayar'],
+                        'jumlahBulan' => count($detailSetoran),
+                        'namaPenyetor' => null,
+                        'keteranganBulan' => null,
+                        'metodeBayar' => null,
+                        'namaBank' => null,
+                        'buktiBayar' => null,
+                        'status' => 'Approved',
+                        'current_stage' => 'bendahara',
+                        'keterangan' => $row['ket'],
+                        'tanggal_diterima' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                        'tanggal_batal' => null,
+                        'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                        'updated_at' => now()
+                    ]);
+
                     foreach ($detailSetoran as $detSet) {
                         DetailSetoran::create([
                             'nomorNota' => $nomorNota,
