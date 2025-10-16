@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('kodeKelurahan', 8);
             $table->string('namaPemilik');
             $table->string('jabatan')->nullable();
-            $table->string('nik')->unique();
+            $table->string('nik')->unique()->nullable();
             $table->string('alamat');
-            $table->string('tempatLahir');
-            $table->date('tanggalLahir');
+            $table->string('tempatLahir')->nullable();
+            $table->date('tanggalLahir')->nullable();
             $table->string('email')->nullable();
             $table->string('noHP')->nullable();
             $table->string('ktp')->nullable();

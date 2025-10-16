@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('setoran', function (Blueprint $table) {
             $table->string('nomorNota')->primary();
             $table->foreignId('skrdId')->constrained('skrd');
-            $table->string('noRef');
+            $table->string('noRef')->nullable();
             $table->date('tanggalBayar');
             $table->integer('jumlahBayar');
-            $table->string('namaPenyetor');
-            $table->string('keteranganBulan');
-            $table->string('buktiBayar');
+            $table->string('namaPenyetor')->nullable();
+            $table->string('keteranganBulan')->nullable();
+            $table->string('buktiBayar')->nullable();
             $table->timestamps();
         });
     }
