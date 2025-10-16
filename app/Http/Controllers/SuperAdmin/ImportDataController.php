@@ -31,5 +31,7 @@ class ImportDataController extends Controller
     public function importExcelRetribusi(Request $request)
     {
         Excel::import( new RetribusiImport , $request->file('file'));
+
+        return back();
     }
 }
