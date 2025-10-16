@@ -216,7 +216,7 @@ const SuperAdminNavigation = () => {
           defaultOpen={isAccordionActive(tagihanItems)}
         /> */}
         <Link
-          className={`block rounded px-3 py-2 transition-all duration-300 ${
+          className={`block whitespace-nowrap rounded px-3 py-2 transition-all duration-300 ${
             route().current("super-admin.surat-tagihan.index")
               ? "bg-[#B3CEAF] font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
@@ -236,7 +236,7 @@ const SuperAdminNavigation = () => {
           defaultOpen={isAccordionActive(pembayaranItems)}
         /> */}
         <AccordionItem
-          title="Rekapitulasi Data"
+          title="Laporan"
           items={rekapitulasiItems}
           defaultOpen={isAccordionActive(rekapitulasiItems)}
         />

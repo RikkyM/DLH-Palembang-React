@@ -22,7 +22,7 @@ const Index = ({ datas, filters, kategori }) => {
       router.get(route("super-admin.sub-kategori.index"), params, {
         preserveState: true,
         replace: true,
-        only: ["datas"],
+        only: ["datas", 'filters'],
         onFinish: () => setIsLoading(false),
       });
     }, 300);

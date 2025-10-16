@@ -3,6 +3,7 @@
 use App\Http\Controllers\SuperAdmin\AccountController;
 use App\Http\Controllers\SuperAdmin\BadanUsahaController;
 use App\Http\Controllers\SuperAdmin\DashboardController;
+use App\Http\Controllers\SuperAdmin\ImportDataController;
 use App\Http\Controllers\SuperAdmin\InvoiceController;
 use App\Http\Controllers\SuperAdmin\KategoriController;
 use App\Http\Controllers\SuperAdmin\KecamatanController;
@@ -69,14 +70,14 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
 
     Route::prefix('rekapitulasi')->name('rekapitulasi.')->group(function () {
         Route::controller(RekapitulasiController::class)->group(function () {
-            Route::prefix('/spkrd')->group(function() {
+            Route::prefix('/spkrd')->group(function () {
                 Route::get('/', 'spkrd')->name('spkrd');
                 Route::get('/detail', 'spkrdDetail')->name('spkrd.detail');
             });
-            Route::prefix('/penerimaan')->group(function() {
+            Route::prefix('/penerimaan')->group(function () {
                 Route::get('/', 'penerimaan')->name('penerimaan');
             });
-            Route::prefix('/nota-tagihan')->group(function() {
+            Route::prefix('/nota-tagihan')->group(function () {
                 Route::get('/', 'notaTagihan')->name('nota-tagihan');
             });
         });
@@ -100,4 +101,10 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
 
     Route::get('excel', [SubKategoriController::class, 'importExcelIndex'])->name('excelIndex');
     Route::post('excel', [SubKategoriController::class, 'importExcel'])->name('excel');
+    Route::controller(ImportDataController::class)->group(function () {
+        Route::get('/pemohon-import', 'importPemohonIndex')->name('pemohon-index');
+        Route::post('/pemohon-import', 'importExcelPemohon')->name('pemohon-import');
+        Route::get('/retribusi-import', 'importRetribusiIndex')->name('retribusi-index');
+        Route::post('/retribusi-import', 'importExcelRetribusi')->name('retribusi-import');
+    });
 });
