@@ -56,6 +56,8 @@ class SetoranImport implements ToCollection, WithHeadingRow, WithCalculatedFormu
                     ->values()
                     ->toArray();
 
+                // $detail = $nomorNota;
+
                 if ($detailSetoran) {
                     Setoran::create([
                         'nomorNota' => $nomorNota,
