@@ -38,7 +38,9 @@ class DashboardService
 
         if ($payments->isEmpty()) {
             $payments = DetailSetoran::with('setoran')
-                ->whereRelation('setoran', 'status', 'Approved')
+                ->whereHas('setoran', fn($q) => $q->where('status', 'Approved')->where('current_stage', 'bendahara'))
+                // ->whereRelation('setoran', 'status', 'Approved')
+                // ->whereRelation('setoran', 'current_stage', 'bendahara')
                 ->whereYear('tanggalBayar', $year)
                 ->get()
                 ->groupBy(fn($item) => date('n', strtotime($item->tanggalBayar)));
@@ -79,7 +81,7 @@ class DashboardService
             'belumTertagih' => $belumTertagih,
             'penerimaanHariIni' => Pembayaran::whereYear('created_at', $year)
                 ->whereDate('created_at', Carbon::today())
-                ->sum('jumlahBayar') ?:DetailSetoran::with('setoran')->whereRelation('setoran', 'status', 'Approved')->whereYear('created_at', $year)
+                ->sum('jumlahBayar') ?: DetailSetoran::with('setoran')->whereRelation('setoran', 'status', 'Approved')->whereYear('created_at', $year)
                 ->whereDate('created_at', Carbon::today())->sum('jumlahBayar'),
             'penerimaanBulanIni' => Pembayaran::whereYear('created_at', $year)
                 ->whereMonth('created_at', Carbon::now()->month)
