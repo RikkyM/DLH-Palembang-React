@@ -303,7 +303,7 @@ const DataSetoran = ({
                       type="date"
                       className="w-full rounded border bg-white p-2"
                       value={tanggal || ""}
-                      onChange={e => {
+                      onChange={(e) => {
                         setTanggal(e.target.value);
                       }}
                     />
@@ -411,7 +411,7 @@ const DataSetoran = ({
                       </td>
                       <td className="text-xs md:text-sm">
                         <div className="max-w-72">
-                          {data.skrd.kecamatanObjekRetribusi}
+                          {data.skrd?.kecamatanObjekRetribusi ?? "-"}
                         </div>
                       </td>
                       <td className="text-center text-xs md:text-sm">
@@ -462,16 +462,20 @@ const DataSetoran = ({
                           : "-"}
                       </td>
                       <td className="text-center text-xs md:text-sm">
-                        <a
-                          href={route("bukti-bayar", {
-                            filename: data.buktiBayar,
-                          })}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-center font-semibold text-amber-600 hover:underline"
-                        >
-                          Bukti Bayar
-                        </a>
+                        {data.buktiBayar ? (
+                          <a
+                            href={route("bukti-bayar", {
+                              filename: data.buktiBayar,
+                            })}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-center font-semibold text-amber-600 hover:underline"
+                          >
+                            Bukti Bayar
+                          </a>
+                        ) : (
+                          <>Tidak ada</>
+                        )}
                       </td>
                       <td
                         className={`whitespace-nowrap text-sm ${data.status === "Processed" ? "text-blue-500" : data.status === "Approved" ? "text-green-500" : data.status === "Cancelled" ? "text-amber-500" : "text-red-500"}`}

@@ -13,6 +13,7 @@ class Setoran extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'nomorNota',
         'skrdId',
         'noRef',
         'tanggalBayar',

@@ -33,23 +33,23 @@ const Show = ({ data, bulan }) => {
         <h2 className="col-span-2 font-semibold">Informasi</h2>
         <div className="col-span-2 grid grid-cols-2 text-sm">
           <p>Nama Pemilik :</p>
-          <p>{data.pemilik.namaPemilik}</p>
+          <p>{data.pemilik?.namaPemilik ?? "-"}</p>
         </div>
         <div className="col-span-2 grid grid-cols-2 text-sm">
           <p>Nomor Induk Kependudukan (NIK) :</p>
-          <p>{data.pemilik.nik}</p>
+          <p>{data.pemilik?.nik ?? "-"}</p>
         </div>
         <div className="col-span-2 grid grid-cols-2 text-sm">
           <p>Alamat :</p>
-          <p>{data.pemilik.alamat}</p>
+          <p>{data.pemilik?.alamat ?? "-"}</p>
         </div>
         <div className="col-span-2 grid grid-cols-2 text-sm">
           <p>Nomor Handphone :</p>
-          <p>{data.pemilik.noHP}</p>
+          <p>{data.pemilik?.noHP ?? "-"}</p>
         </div>
         <div className="col-span-2 grid grid-cols-2 text-sm">
           <p>Jabatan :</p>
-          <p>{data.pemilik.jabatan}</p>
+          <p>{data.pemilik?.jabatan ?? "-"}</p>
         </div>
         <h2 className="col-span-2 font-semibold">UPTD</h2>
         <div className="col-span-2 grid grid-cols-2 text-sm">

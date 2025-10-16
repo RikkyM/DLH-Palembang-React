@@ -85,7 +85,8 @@ class SkrdController extends Controller
         }
 
         if ($search && trim($search) !== '') {
-            $skrd->where('namaObjekRetribusi', 'like', "%{$search}%");
+            $skrd->where('namaObjekRetribusi', 'like', "%{$search}%")
+                ->orWhere('noSkrd', 'like', "%{$search}%");
         }
 
         if ($kategoriId) {
