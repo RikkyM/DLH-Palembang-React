@@ -210,6 +210,7 @@ class RekapitulasiController extends Controller
             ->map(function ($u) {
                 return [
                     'namaUptd' => $u->namaUptd,
+                    'skrd' => $u->skrd->count(),
                     'tagihanPertahun' => $u->skrd->sum('tagihanPerTahunSkrd'),
                     'totalBayar' => $u->skrd->sum(function ($skrd) {
                         $totalSetoran = $skrd->setoran->sum(function ($setoran) {

@@ -2,6 +2,8 @@
 
 namespace App\Imports;
 
+use App\Imports\Setoran\TemplateFirstImport;
+use App\Imports\Setoran\TemplateSecondImport;
 use App\Models\DetailSetoran;
 use App\Models\Setoran;
 use App\Models\Skrd;
@@ -12,91 +14,17 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class SetoranImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
+class SetoranImport implements WithMultipleSheets
 {
-    /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
-    // public function model(array $row)
-    // {
-    //     return new Setoran([
-    //         //
-    //     ]);
-    // }
-
-    public function collection(Collection $rows)
+    public function sheets(): array
     {
-        $setoran = [];
-        $detail = [];
-        foreach ($rows as $index => $row) {
-            // $tanggalBayar = $row['tgl_bayar'];
-            // $jumlahBayar = $row['jmlh_bayar'];
-            $skrd = Skrd::whereNowajibretribusi($row['nomor_spkrd'])->first();
-
-            if ($skrd) {
-                $nomorNota = Setoran::generateNomorNota();
-                $detailSetoran = collect(range(1, 12))->map(function ($i) use ($index, $skrd, $row) {
-                    if ($row['jmlh_bayar' . $i] !== null && $row['tgl_bayar' . $i] !== null) {
-                        return [
-                            'skrdId' => $skrd['id'],
-                            'namaBulan' => Str::title(strtolower(Carbon::create()->month($i)->translatedFormat('F'))),
-                            'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_bayar' . $i])->format('Y-m-d'),
-                            'jumlahBayar' => $row['jmlh_bayar' . $i],
-                            'keterangan' => null,
-                            'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
-                            'updated_at' => now()
-                        ];
-                    }
-                })
-                    ->filter()
-                    ->values()
-                    ->toArray();
-
-                // $detail = $nomorNota;
-
-                if ($detailSetoran) {
-                    Setoran::create([
-                        'nomorNota' => $nomorNota,
-                        'skrdId' => $skrd['id'],
-                        'noRef' => null,
-                        'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_skrd'])->format('Y-m-d'),
-                        'jumlahBayar' => $row['sudah_bayar'],
-                        'jumlahBulan' => count($detailSetoran),
-                        'namaPenyetor' => null,
-                        'keteranganBulan' => null,
-                        'metodeBayar' => null,
-                        'namaBank' => null,
-                        'buktiBayar' => null,
-                        'status' => 'Approved',
-                        'current_stage' => 'bendahara',
-                        'keterangan' => $row['ket'],
-                        'tanggal_diterima' => Carbon::create(2025, 1, 2, 0, 0, 0),
-                        'tanggal_batal' => null,
-                        'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
-                        'updated_at' => now()
-                    ]);
-
-                    foreach ($detailSetoran as $detSet) {
-                        DetailSetoran::create([
-                            'nomorNota' => $nomorNota,
-                            'skrdId' => $skrd['id'],
-                            'namaBulan' => $detSet['namaBulan'],
-                            'tanggalBayar' => $detSet['tanggalBayar'],
-                            'jumlahBayar' => $detSet['jumlahBayar'],
-                            'keterangan' => null,
-                            'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
-                            'updated_at' => now()
-                        ]);
-                    }
-                }
-            }
-            // $setoran[] = $row['nomor_spkrd'] ?? null;
-        }
-
-        // dd($setoran, $detail);
+        return [
+            // 'KALIDONI' => new TemplateFirstImport(),
+            'IT I' => new TemplateSecondImport()
+        ];
     }
+    
 }

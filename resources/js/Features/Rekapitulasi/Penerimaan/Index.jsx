@@ -17,11 +17,6 @@ const Index = ({ datas, filters }) => {
       label: "Wilayah UPTD",
       align: "text-left",
     },
-    {
-      key: "tagihan",
-      label: "Jumlah Tagihan",
-      align: "text-left",
-    },
   ];
 
   const buildParams = (additionalParams = {}) => {
@@ -99,6 +94,11 @@ const Index = ({ datas, filters }) => {
     );
   };
 
+  const calculatePercentage = (part, total) => {
+    if (!total || total === 0) return 0;
+    return ((part / total) * 100).toFixed(2);
+  };
+
   return (
     <>
       <Head title="Penerimaan" />
@@ -161,8 +161,8 @@ const Index = ({ datas, filters }) => {
                   onClick={() => {
                     const params = new URLSearchParams();
 
-                    if (startDate) params.append('tanggal_mulai', startDate);
-                    if (endDate) params.append('tanggal_akhir', endDate);
+                    if (startDate) params.append("tanggal_mulai", startDate);
+                    if (endDate) params.append("tanggal_akhir", endDate);
 
                     window.open(
                       route("export-rekap-retribusi") + "?" + params.toString(),
@@ -235,10 +235,22 @@ const Index = ({ datas, filters }) => {
                       Approval Keuangan
                     </th> */}
                     <th className="sticky top-0 select-none bg-[#F1B174] text-left">
+                      Total SPKRD
+                    </th>
+                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
+                      Jumlah Tagihan
+                    </th>
+                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
                       Total Bayar
                     </th>
                     <th className="sticky top-0 select-none bg-[#F1B174] text-left">
                       Sisa Bayar
+                    </th>
+                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
+                      Persentase Bayar
+                    </th>
+                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
+                      Persentase Belum Bayar
                     </th>
                   </TableHead>
                   {/* <tr className="text-white *:p-2 *:text-xs *:font-medium *:uppercase *:md:text-sm">
@@ -269,37 +281,57 @@ const Index = ({ datas, filters }) => {
                   {datas && (datas.data ?? datas)?.length > 0 ? (
                     <>
                       {datas &&
-                        (datas.data ?? datas).map((data, i) => (
-                          <tr
-                            key={data.id ?? i}
-                            className={`*:p-2 ${i % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
-                            onClick={() => openDetail(data)}
-                          >
-                            <td className="text-left">
-                              <div className="w-10 text-center">
-                                {((datas.current_page ?? 1) - 1) *
-                                  (datas.per_page ??
-                                    (datas.data ?? datas).length) +
-                                  i +
-                                  1}
-                              </div>
-                            </td>
-                            <td>{data.namaUptd}</td>
-                            <td>{formatNumber(data.tagihanPertahun)}</td>
-                            <td>{formatNumber(data.totalBayar)}</td>
-                            <td>
-                              {formatNumber(
-                                data.tagihanPertahun - data.totalBayar,
-                              )}
-                            </td>
-                            {/* <td>{data.namaKategori}</td>
+                        (datas.data ?? datas).map((data, i) => {
+                          const persentaseBayar = calculatePercentage(
+                            data.totalBayar,
+                            data.tagihanPertahun,
+                          );
+                          const persentaseBelumBayar = (
+                            100 - persentaseBayar
+                          ).toFixed(2);
+
+                          return (
+                            <tr
+                              key={data.id ?? i}
+                              className={`*:p-2 ${i % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                              onClick={() => openDetail(data)}
+                            >
+                              <td className="text-left">
+                                <div className="w-10 text-center">
+                                  {((datas.current_page ?? 1) - 1) *
+                                    (datas.per_page ??
+                                      (datas.data ?? datas).length) +
+                                    i +
+                                    1}
+                                </div>
+                              </td>
+                              <td>{data.namaUptd}</td>
+                              <td>{data.skrd}</td>
+                              <td>{formatNumber(data.tagihanPertahun)}</td>
+                              <td>{formatNumber(data.totalBayar)}</td>
+                              <td>
+                                {formatNumber(
+                                  data.tagihanPertahun - data.totalBayar,
+                                )}
+                              </td>
+                              <td>{persentaseBayar}%</td>
+                              <td>{persentaseBelumBayar}%</td>
+
+                              {/* <td>{data.namaKategori}</td>
                         <td>{data.namaSubKategori}</td>
                         <td className="text-center">{data.jumlah}</td> */}
-                          </tr>
-                        ))}
+                            </tr>
+                          );
+                        })}
                       <tr className="sticky bottom-0 bg-white">
                         <td colSpan={2} className="sticky left-0 p-2 font-bold">
                           Total
+                        </td>
+                        <td className="p-2">
+                          {datas.reduce(
+                            (acc, row) => acc + (Number(row?.skrd ?? 0) || 0),
+                            0,
+                          )}
                         </td>
                         <td className="p-2">
                           {formatNumber(
@@ -331,6 +363,43 @@ const Index = ({ datas, filters }) => {
                               return acc + (tagihan - totalBayar);
                             }, 0),
                           )}
+                        </td>
+                        <td>
+                          {(() => {
+                            const totalTagihan = datas.reduce(
+                              (acc, row) =>
+                                acc + (Number(row?.tagihanPertahun ?? 0) || 0),
+                              0,
+                            );
+                            const totalBayar = datas.reduce(
+                              (acc, row) =>
+                                acc + (Number(row?.totalBayar ?? 0) || 0),
+                              0,
+                            );
+                            return (
+                              calculatePercentage(totalBayar, totalTagihan) +
+                              "%"
+                            );
+                          })()}
+                        </td>
+                        <td>
+                          {(() => {
+                            const totalTagihan = datas.reduce(
+                              (acc, row) =>
+                                acc + (Number(row?.tagihanPertahun ?? 0) || 0),
+                              0,
+                            );
+                            const totalBayar = datas.reduce(
+                              (acc, row) =>
+                                acc + (Number(row?.totalBayar ?? 0) || 0),
+                              0,
+                            );
+                            const persentaseBayar = calculatePercentage(
+                              totalBayar,
+                              totalTagihan,
+                            );
+                            return (100 - persentaseBayar).toFixed(2) + "%";
+                          })()}
                         </td>
                       </tr>
                     </>
