@@ -189,46 +189,43 @@ class RekapitulasiController extends Controller
 
         $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
 
-        $query = Uptd::with([
-            'skrd' => function ($q) use ($startDate, $endDate, $rangeCol) {
-                if ($startDate || $endDate) {
-                    $q->when($startDate && $endDate, fn($data) => $data->whereBetween($rangeCol, [$startDate, $endDate]))
-                        ->when($startDate && !$endDate, fn($data) => $data->where($rangeCol, '>=', $startDate))
-                        ->when(!$startDate && $endDate, fn($data) => $data->where($rangeCol, '<=', $endDate));
-                } else {
-                    $q->whereYear($rangeCol, Carbon::now()->year);
-                }
-            },
-            'skrd.pembayaran',
-            'skrd.setoran' => function ($q) {
-                $q->where('status', 'Approved')->where('current_stage', 'bendahara');
-            },
-            'skrd.setoran.detailSetoran'
-        ])
-            ->where('namaUptd', '!=', 'Dinas')
-            ->get(['id', 'namaUptd'])
-            ->map(function ($u) {
-                return [
-                    'namaUptd' => $u->namaUptd,
-                    'skrd' => $u->skrd->count(),
-                    'tagihanPertahun' => $u->skrd->sum('tagihanPerTahunSkrd'),
-                    'totalBayar' => $u->skrd->sum(function ($skrd) {
-                        $totalSetoran = $skrd->setoran->sum(function ($setoran) {
-                            return $setoran->detailSetoran->sum('jumlahBayar');
-                        });
-                        $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar') ?? 0;
-
-                        return $totalSetoran + $totalPembayaran;
-                    })
-                ];
-            })->values();
-
-
-
-        // dd($query);
-
         return Inertia::render('Super-Admin/Rekapitulasi/Penerimaan/Index', [
-            'datas' => $query,
+            'datas' => Inertia::defer(function () use ($startDate, $endDate, $rangeCol) {
+                return
+                    Uptd::with([
+                        'skrd' => function ($q) use ($startDate, $endDate, $rangeCol) {
+                            if ($startDate || $endDate) {
+                                $q->when($startDate && $endDate, fn($data) => $data->whereBetween($rangeCol, [$startDate, $endDate]))
+                                    ->when($startDate && !$endDate, fn($data) => $data->where($rangeCol, '>=', $startDate))
+                                    ->when(!$startDate && $endDate, fn($data) => $data->where($rangeCol, '<=', $endDate));
+                            } else {
+                                $q->whereYear($rangeCol, Carbon::now()->year);
+                            }
+                        },
+                        'skrd.pembayaran',
+                        'skrd.setoran' => function ($q) {
+                            $q->where('status', 'Approved')->where('current_stage', 'bendahara');
+                        },
+                        'skrd.setoran.detailSetoran'
+                    ])
+                    ->where('namaUptd', '!=', 'Dinas')
+                    ->get(['id', 'namaUptd'])
+                    ->map(function ($u) {
+                        return [
+                            'namaUptd' => $u->namaUptd,
+                            'skrd' => $u->skrd->count(),
+                            'tagihanPertahun' => $u->skrd->sum('tagihanPerTahunSkrd'),
+                            'totalBayar' => $u->skrd->sum(function ($skrd) {
+                                $totalSetoran = $skrd->setoran->sum(function ($setoran) {
+                                    return $setoran->detailSetoran->sum('jumlahBayar');
+                                });
+                                $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar') ?? 0;
+
+                                return $totalSetoran + $totalPembayaran;
+                            })
+                        ];
+                    })->values();
+            }),
             'filters' => [
                 'sort' => $getSortBy,
                 'direction' => $getSortDir,

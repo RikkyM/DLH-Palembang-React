@@ -1,4 +1,4 @@
-import { Head, router } from "@inertiajs/react";
+import { Deferred, Head, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import TableHead from "@/Components/TableHead";
 
@@ -41,47 +41,55 @@ const Index = ({ datas, filters }) => {
     return params;
   };
 
-  useEffect(() => {
-    // if (!hasFilter) return;
+  // useEffect(() => {
+  //   if (sort !== filters.sort || direction !== filters.direction) {
+  //     const params = buildParams({
+  //       tanggal_mulai: startDate || undefined,
+  //       tanggal_akhir: endDate || undefined,
+  //     });
 
-    setIsLoading(true);
-    const timeoutId = setTimeout(() => {
-      const params = buildParams();
-
-      router.get(route(`super-admin.rekapitulasi.penerimaan`), params, {
-        preserveState: true,
-        replace: true,
-        only: ["datas", "filters"],
-        onFinish: () => setIsLoading(false),
-      });
-    }, 500);
-
-    return () => {
-      clearTimeout(timeoutId);
-      setIsLoading(false);
-    };
-  }, [sort, direction]);
+  //     router.get(route("super-admin.rekapitulasi.penerimaan"), params, {
+  //       preserveState: false,
+  //       replace: true,
+  //       preserveScroll: true,
+  //       only: ["datas", "filters"],
+  //     });
+  //   }
+  // }, [sort, direction, startDate, endDate]);
 
   const onSubmitFilter = (e) => {
     e.preventDefault();
 
-    const params = buildParams();
+    const params = buildParams({
+      tanggal_mulai: startDate || undefined,
+      tanggal_akhir: endDate || undefined,
+    });
+
+    setIsLoading(true);
+
+    router.get(route("super-admin.rekapitulasi.penerimaan"), params,{
+      preserveState: true,
+      preserveScroll: true,
+      // data: params,
+      only: ["datas", 'filters'],
+      onFinish: () => setIsLoading(false),
+    });
 
     // setHasFilter(true);
-    setIsLoading(true);
-    router.get(
-      route("super-admin.rekapitulasi.penerimaan"),
-      {
-        ...params,
-        tanggal_mulai: startDate || undefined,
-        tanggal_akhir: endDate || undefined,
-      },
-      {
-        preserveState: true,
-        replace: true,
-        onFinish: () => setIsLoading(false),
-      },
-    );
+    // setIsLoading(true);
+    // router.get(route("super-admin.rekapitulasi.penerimaan"), params, {
+    //   preserveState: true,
+    //   preserveScroll: true,
+    //   // only: ['datas', 'filters'],
+    //   replace: true
+    //   // onFinish: () => setIsLoading(false),
+    // });
+
+    // router.reload({
+    //   data: { ...params },
+    //   only: ["datas", 'filters'],
+    //   preserveScroll: true,
+    // });
   };
 
   const formatNumber = (data) => {
@@ -152,7 +160,7 @@ const Index = ({ datas, filters }) => {
               </div>
               <div className="col-span-2 flex w-full flex-col items-end gap-2 text-sm sm:col-span-1 sm:w-max sm:flex-row">
                 <button
-                  disabled={isLoading}
+                  // disabled={isLoading}
                   className="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded bg-black px-4 py-2 text-white sm:w-max"
                 >
                   Cari
@@ -184,7 +192,7 @@ const Index = ({ datas, filters }) => {
         </div>
 
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded-t sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_240px)] overflow-auto rounded-t sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)]`}
         >
           {isLoading ? (
             <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
@@ -210,7 +218,33 @@ const Index = ({ datas, filters }) => {
               Memuat data...
             </div>
           ) : (
-            <>
+            <Deferred
+              data="datas"
+              fallback={
+                <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
+                  <svg
+                    className="h-4 w-4 animate-spin"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    />
+                  </svg>
+                  Memuat data...
+                </div>
+              }
+            >
               <table className="min-w-full divide-y divide-gray-300 p-3">
                 <thead className="truncate">
                   <TableHead
@@ -222,18 +256,6 @@ const Index = ({ datas, filters }) => {
                       setDirection(dir);
                     }}
                   >
-                    {/* <th
-                      colSpan={2}
-                      className="sticky top-0 select-none bg-[#F1B174]"
-                    >
-                      Approval UPTD
-                    </th>
-                    <th
-                      colSpan={2}
-                      className="sticky top-0 select-none bg-[#F1B174]"
-                    >
-                      Approval Keuangan
-                    </th> */}
                     <th className="sticky top-0 select-none bg-[#F1B174] text-left">
                       Total SPKRD
                     </th>
@@ -253,20 +275,6 @@ const Index = ({ datas, filters }) => {
                       Persentase Belum Bayar
                     </th>
                   </TableHead>
-                  {/* <tr className="text-white *:p-2 *:text-xs *:font-medium *:uppercase *:md:text-sm">
-                    <th className="sticky top-9 select-none bg-[#F1B174]">
-                      Total Bayar
-                    </th>
-                    <th className="sticky top-9 select-none bg-[#F1B174]">
-                      Sisa Bayar
-                    </th>
-                    <th className="sticky top-9 select-none bg-[#F1B174]">
-                      Total Bayar
-                    </th>
-                    <th className="sticky top-9 select-none bg-[#F1B174]">
-                      Sisa Bayar
-                    </th>
-                  </tr> */}
                 </thead>
                 <tbody>
                   <tr>
@@ -316,15 +324,11 @@ const Index = ({ datas, filters }) => {
                               </td>
                               <td>{persentaseBayar}%</td>
                               <td>{persentaseBelumBayar}%</td>
-
-                              {/* <td>{data.namaKategori}</td>
-                        <td>{data.namaSubKategori}</td>
-                        <td className="text-center">{data.jumlah}</td> */}
                             </tr>
                           );
                         })}
                       <tr className="sticky bottom-0 bg-white">
-                        <td colSpan={2} className="sticky left-0 p-2 font-bold">
+                        <td colSpan={2} className="p-2 font-bold">
                           Total
                         </td>
                         <td className="p-2">
@@ -342,7 +346,7 @@ const Index = ({ datas, filters }) => {
                             ),
                           )}
                         </td>
-                        <td>
+                        <td className="p-2">
                           {formatNumber(
                             datas.reduce(
                               (acc, row) =>
@@ -351,7 +355,7 @@ const Index = ({ datas, filters }) => {
                             ),
                           )}
                         </td>
-                        <td>
+                        <td className="p-2">
                           {formatNumber(
                             datas.reduce((acc, row) => {
                               {
@@ -364,7 +368,7 @@ const Index = ({ datas, filters }) => {
                             }, 0),
                           )}
                         </td>
-                        <td>
+                        <td className="p-2">
                           {(() => {
                             const totalTagihan = datas.reduce(
                               (acc, row) =>
@@ -382,7 +386,7 @@ const Index = ({ datas, filters }) => {
                             );
                           })()}
                         </td>
-                        <td>
+                        <td className="p-2">
                           {(() => {
                             const totalTagihan = datas.reduce(
                               (acc, row) =>
@@ -416,7 +420,7 @@ const Index = ({ datas, filters }) => {
                   )}
                 </tbody>
               </table>
-            </>
+            </Deferred>
           )}
         </div>
       </section>
