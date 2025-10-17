@@ -1,6 +1,7 @@
 import { Deferred, Head, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import TableHead from "@/Components/TableHead";
+import LoadingTable from "../../../Components/LoadingTable";
 
 const Index = ({ datas, filters }) => {
   const [startDate, setStartDate] = useState(filters.tanggal_mulai ?? "");
@@ -21,10 +22,7 @@ const Index = ({ datas, filters }) => {
 
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
-
-    // if (perPage && perPage !== 10) params.per_page = perPage;
-    // if (startDate) params.tanggal_mulai = startDate;
-    // if (endDate) params.tanggal_akhir = endDate;
+    
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "asc") {
@@ -41,22 +39,6 @@ const Index = ({ datas, filters }) => {
     return params;
   };
 
-  // useEffect(() => {
-  //   if (sort !== filters.sort || direction !== filters.direction) {
-  //     const params = buildParams({
-  //       tanggal_mulai: startDate || undefined,
-  //       tanggal_akhir: endDate || undefined,
-  //     });
-
-  //     router.get(route("super-admin.rekapitulasi.penerimaan"), params, {
-  //       preserveState: false,
-  //       replace: true,
-  //       preserveScroll: true,
-  //       only: ["datas", "filters"],
-  //     });
-  //   }
-  // }, [sort, direction, startDate, endDate]);
-
   const onSubmitFilter = (e) => {
     e.preventDefault();
 
@@ -67,29 +49,12 @@ const Index = ({ datas, filters }) => {
 
     setIsLoading(true);
 
-    router.get(route("super-admin.rekapitulasi.penerimaan"), params,{
+    router.get(route("super-admin.rekapitulasi.penerimaan"), params, {
       preserveState: true,
       preserveScroll: true,
-      // data: params,
-      only: ["datas", 'filters'],
+      only: ["datas", "filters"],
       onFinish: () => setIsLoading(false),
     });
-
-    // setHasFilter(true);
-    // setIsLoading(true);
-    // router.get(route("super-admin.rekapitulasi.penerimaan"), params, {
-    //   preserveState: true,
-    //   preserveScroll: true,
-    //   // only: ['datas', 'filters'],
-    //   replace: true
-    //   // onFinish: () => setIsLoading(false),
-    // });
-
-    // router.reload({
-    //   data: { ...params },
-    //   only: ["datas", 'filters'],
-    //   preserveScroll: true,
-    // });
   };
 
   const formatNumber = (data) => {
@@ -195,56 +160,9 @@ const Index = ({ datas, filters }) => {
           className={`max-h-[calc(100%_-_240px)] overflow-auto rounded-t sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)]`}
         >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
-              <svg
-                className="h-4 w-4 animate-spin"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8z"
-                />
-              </svg>
-              Memuat data...
-            </div>
+            <LoadingTable />
           ) : (
-            <Deferred
-              data="datas"
-              fallback={
-                <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
-                  <svg
-                    className="h-4 w-4 animate-spin"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v8z"
-                    />
-                  </svg>
-                  Memuat data...
-                </div>
-              }
-            >
+            <Deferred data="datas" fallback={<LoadingTable />}>
               <table className="min-w-full divide-y divide-gray-300 p-3">
                 <thead className="truncate">
                   <TableHead
