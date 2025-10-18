@@ -8,8 +8,6 @@ const Detail = ({ datas, bulan, filters }) => {
   const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(datas);
-
   const columns = [
     { key: "id", label: "No", align: "text-center w-10" },
     { key: "noSkrd", label: "No SPKRD", align: "text-left" },

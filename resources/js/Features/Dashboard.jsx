@@ -1,4 +1,4 @@
-import { Head, router } from "@inertiajs/react";
+import { Deferred, Head, Link, router } from "@inertiajs/react";
 
 import { Clock, DollarSign, FileText, Users, Wallet } from "lucide-react";
 import BarChart from "@/Components/Chart/BarChart";
@@ -12,17 +12,19 @@ const DashboardPages = ({
   chartKecamatan,
   rute,
 }) => {
-  const handleChangeYear = (y) => {
-    router.get(route(rute), { year: y }, { preserveState: true });
-  };
   return (
     <section className="relative min-h-screen touch-pan-y overflow-hidden p-3">
-  <Head title="Dashboard"/>
-      <div>
-        {years.map((y) => (
-          <button
+      <Head title="Dashboard" />
+      <Deferred data={["years", "year"]} fallback={<p>Memuat...</p>}>
+        {years?.map((y) => (
+          <Link
             key={y}
-            onClick={() => handleChangeYear(y)}
+            as="button"
+            // onClick={() => handleChangeYear(y)}
+            href={route(rute, { year: y })}
+            preserveScroll
+            replace
+            only={["year", "years", "stats", "chart", "chartKecamatan"]}
             className={`mx-1 rounded px-4 py-2 text-xs outline-none md:text-sm ${
               parseInt(y) === parseInt(year)
                 ? "bg-[#B3CEAF] text-white"
@@ -30,9 +32,9 @@ const DashboardPages = ({
             }`}
           >
             {y}
-          </button>
+          </Link>
         ))}
-      </div>
+      </Deferred>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <div className="order-1 col-span-2 mt-2 grid gap-2 md:grid-cols-2">
           <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
@@ -44,7 +46,9 @@ const DashboardPages = ({
             <div className="flex flex-col text-sm">
               <span className="font-semibold">Jumlah Wajib Retribusi</span>
               <span className="font-semibold text-[#84BAFF]">
-                {stats.jumlahWR}
+                <Deferred data="stats" fallback={<p>Memuat...</p>}>
+                  {stats?.jumlahWR ?? 0}
+                </Deferred>
               </span>
             </div>
           </div>
@@ -57,7 +61,9 @@ const DashboardPages = ({
             <div className="flex flex-col text-sm">
               <span className="font-semibold">Jumlah SKRD</span>
               <span className="font-semibold text-[#4C60AE]">
-                {stats.jumlahSkrd}
+                <Deferred data="stats" fallback={<p>Memuat...</p>}>
+                  {stats?.jumlahSkrd ?? 0}
+                </Deferred>
               </span>
             </div>
           </div>
@@ -70,10 +76,12 @@ const DashboardPages = ({
             <div className="flex flex-col text-sm">
               <span className="font-semibold">Proyeksi Penerimaan</span>
               <span className="flex flex-wrap font-semibold text-green-600">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                }).format(stats.proyeksiPenerimaan)}
+                <Deferred data="stats" fallback={<p>Memuat...</p>}>
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  }).format(stats?.proyeksiPenerimaan) ?? 0}
+                </Deferred>
               </span>
             </div>
           </div>
@@ -86,10 +94,12 @@ const DashboardPages = ({
             <div className="flex flex-col text-sm">
               <span className="font-semibold">Penerimaan</span>
               <span className="flex flex-wrap font-semibold text-green-600">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                }).format(stats.penerimaan)}
+                <Deferred data="stats" fallback={<p>Memuat...</p>}>
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  }).format(stats?.penerimaan) ?? 0}
+                </Deferred>
               </span>
             </div>
           </div>
@@ -102,10 +112,12 @@ const DashboardPages = ({
             <div className="flex flex-col text-sm">
               <span className="font-semibold">Belum Tertagih</span>
               <span className="flex flex-wrap font-semibold text-amber-600">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                }).format(stats.belumTertagih)}
+                <Deferred data="stats" fallback={<p>Memuat...</p>}>
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  }).format(stats?.belumTertagih) ?? 0}
+                </Deferred>
               </span>
             </div>
           </div>
@@ -118,10 +130,12 @@ const DashboardPages = ({
             <div className="flex flex-col text-sm">
               <span className="font-semibold">Penerimaan Hari Ini</span>
               <span className="flex flex-wrap font-semibold text-green-600">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                }).format(stats.penerimaanHariIni)}
+                <Deferred data="stats" fallback={<p>Memuat...</p>}>
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  }).format(stats?.penerimaanHariIni) ?? 0}
+                </Deferred>
               </span>
             </div>
           </div>
@@ -134,10 +148,12 @@ const DashboardPages = ({
             <div className="flex flex-col text-sm">
               <span className="font-semibold">Penerimaan Bulan Ini</span>
               <span className="flex flex-wrap font-semibold text-green-600">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                }).format(stats.penerimaanBulanIni)}
+                <Deferred data="stats" fallback={<p>Memuat...</p>}>
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  }).format(stats?.penerimaanBulanIni) ?? 0}
+                </Deferred>
               </span>
             </div>
           </div>
@@ -150,10 +166,12 @@ const DashboardPages = ({
             <div className="flex flex-col text-sm">
               <span className="font-semibold">Penerimaan Tahun Ini</span>
               <span className="flex flex-wrap font-semibold text-green-600">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                }).format(stats.penerimaanTahunIni)}
+                <Deferred data="stats" fallback={<p>Memuat...</p>}>
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  }).format(stats?.penerimaanTahunIni) ?? 0}
+                </Deferred>
               </span>
             </div>
           </div>
@@ -162,13 +180,40 @@ const DashboardPages = ({
           <h2 className="mb-4 text-lg font-semibold">
             Penerimaan Kecamatan {year}
           </h2>
-          <PieChart labels={chartKecamatan.labels} data={chartKecamatan.data} />
+          {/* {chartKecamatan && (
+            
+          )} */}
+          <Deferred
+            data="chartKecamatan"
+            fallback={
+              <div className="grid h-full w-full place-content-center text-center">
+                Memuat...
+              </div>
+            }
+          >
+            <PieChart
+              labels={chartKecamatan?.labels}
+              data={chartKecamatan?.data}
+            />
+          </Deferred>
         </div>
         <div className="order-2 col-span-2 rounded border border-gray-300 bg-white p-6 shadow lg:order-3">
           <h2 className="mb-4 text-lg font-semibold">
-            Grafik Penerimaan Tahun {year}
+            Grafik Penerimaan Tahun{" "}
+            <Deferred data="year" fallback={<span>Memuat...</span>}>
+              {year}
+            </Deferred>
           </h2>
-          <BarChart labels={chart.labels} data={chart.data} />
+          <Deferred
+            data="chart"
+            fallback={
+              <div className="grid h-full w-full place-content-center p-5 text-center">
+                Memuat...
+              </div>
+            }
+          >
+            <BarChart labels={chart?.labels} data={chart?.data} />
+          </Deferred>
         </div>
       </div>
     </section>

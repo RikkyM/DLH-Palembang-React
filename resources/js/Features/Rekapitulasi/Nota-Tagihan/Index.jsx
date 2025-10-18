@@ -1,7 +1,8 @@
 import { useProvider } from "@/Context/GlobalContext";
 import { useEffect, useState } from "react";
-import { Head, router } from "@inertiajs/react";
+import { Deferred, Head, router } from "@inertiajs/react";
 import TableHead from "@/Components/TableHead";
+import LoadingTable from "../../../Components/LoadingTable";
 
 const Index = ({ datas, filters, role }) => {
   const [startDate, setStartDate] = useState(filters.tanggal_mulai ?? "");
@@ -91,43 +92,31 @@ const Index = ({ datas, filters, role }) => {
     return params;
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    const timeoutId = setTimeout(() => {
-      const params = buildParams();
+  // useEffect(() => {
+  //   const params = buildParams();
 
-      router.get(route(`${routeConfig}.rekapitulasi.nota-tagihan`), params, {
-        preserveState: true,
-        replace: true,
-        only: ["datas", "filters"],
-        onFinish: () => setIsLoading(false),
-      });
-    }, 500);
-
-    return () => {
-      clearTimeout(timeoutId);
-      setIsLoading(false);
-    };
-  }, [sort, direction]);
+  //   router.get(route(`${routeConfig}.rekapitulasi.nota-tagihan`), params, {
+  //     preserveState: true,
+  //     replace: true,
+  //     only: ["datas", "filters"],
+  //     onStart: () => setIsLoading(true),
+  //     onFinish: () => setIsLoading(false),
+  //   });
+  // }, [sort, direction]);
 
   const onSubmitFilter = (e) => {
     e.preventDefault();
-    const params = buildParams();
+    const params = buildParams({
+      tanggal_mulai: startDate || undefined,
+      tanggal_akhir: endDate || undefined,
+    });
 
-    setIsLoading(true);
-    router.get(
-      route(`${routeConfig}.rekapitulasi.nota-tagihan`),
-      {
-        ...params,
-        tanggal_mulai: startDate || undefined,
-        tanggal_akhir: endDate || undefined,
-      },
-      {
-        preserveState: true,
-        preserveScroll: true,
-        onFinish: () => setIsLoading(false),
-      },
-    );
+    router.get(route(`${routeConfig}.rekapitulasi.nota-tagihan`), params, {
+      preserveState: true,
+      preserveScroll: true,
+      onStart: () => setIsLoading(true),
+      onFinish: () => setIsLoading(false),
+    });
   };
 
   return (
@@ -196,7 +185,9 @@ const Index = ({ datas, filters, role }) => {
                     if (endDate) params.append("tanggal_akhir", endDate);
 
                     window.open(
-                      route("export-rekap-nota-tagihan") + "?" + params.toString(),
+                      route("export-rekap-nota-tagihan") +
+                        "?" +
+                        params.toString(),
                       "_blank",
                     );
                   }}
@@ -210,34 +201,13 @@ const Index = ({ datas, filters, role }) => {
         </div>
 
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)]`}
         >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
-              <svg
-                className="h-4 w-4 animate-spin"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8z"
-                />
-              </svg>
-              Memuat data...
-            </div>
+            <LoadingTable />
           ) : (
-            <>
-              <table className="min-w-full divide-y divide-gray-300 p-3">
+            <Deferred data="datas" fallback={<LoadingTable />}>
+              <table className="min-w-full divide-y divide-gray-300 p-3 shadow">
                 <thead>
                   <TableHead
                     columns={columns}
@@ -250,8 +220,8 @@ const Index = ({ datas, filters, role }) => {
                   />
                 </thead>
                 <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
-                  {(datas.data ?? datas)?.length > 0 ? (
-                    (datas.data ?? datas).map((data, index) => (
+                  {datas?.length > 0 ? (
+                    datas.map((data, index) => (
                       <tr
                         key={data.id ?? index}
                         className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
@@ -320,7 +290,7 @@ const Index = ({ datas, filters, role }) => {
                         colSpan={13}
                         className="py-8 text-center text-gray-500"
                       >
-                        {search
+                        {startDate || endDate
                           ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
                           : "Belum ada data surat tagihan"}
                       </td>
@@ -328,7 +298,7 @@ const Index = ({ datas, filters, role }) => {
                   )}
                 </tbody>
               </table>
-            </>
+            </Deferred>
           )}
         </div>
       </section>

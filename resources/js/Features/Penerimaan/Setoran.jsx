@@ -188,8 +188,6 @@ const InputSetoran = ({ skrdOptions = [], metodeOptions = [], role }) => {
       if (allowedTotal > 0) {
         const remainingAllowed = Math.max(allowedTotal - lockedCount, 0);
 
-        console.log(remainingAllowed, activeRows.length, allowedTotal);
-
         if (activeRows.length > remainingAllowed) {
           setError(
             "detailSetoran",
@@ -257,20 +255,8 @@ const InputSetoran = ({ skrdOptions = [], metodeOptions = [], role }) => {
         0,
       );
 
-      // console.log(totalBulanan, lockedCount);
       const jmlBulanInput = Number(data.jumlahBulanBayar || 0);
       const jmlBayarTotal = parseIntIDR(data.jumlahBayar || 0);
-
-      // console.log(
-      //   jmlBulanInput,
-      //   jmlBayarTotal,
-      //   previewData.tarifPertahun,
-      //   previewData.tarifPerbulan,
-      //   lockedCount,
-      //   activeRows.length,
-      //   lockedCount + activeRows.length,
-      //   allowedTotal
-      // );
 
       if (jmlBayarTotal != jmlBulanInput * previewData.tarifPerbulan) {
         setError(

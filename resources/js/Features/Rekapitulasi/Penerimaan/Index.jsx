@@ -1,4 +1,4 @@
-import { Deferred, Head, router } from "@inertiajs/react";
+import { Deferred, Head, Link, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import TableHead from "@/Components/TableHead";
 import LoadingTable from "../../../Components/LoadingTable";
@@ -11,18 +11,18 @@ const Index = ({ datas, filters }) => {
   const [isLoading, setIsLoading] = useState(false);
   // const [hasFilter, setHasFilter] = useState(false);
 
-  const columns = [
-    { key: "id", label: "No", align: "text-center w-10" },
-    {
-      key: "namaKategori",
-      label: "Wilayah UPTD",
-      align: "text-left",
-    },
-  ];
+  // const columns = [
+  //   { key: "id", label: "No", align: "text-center w-10" },
+  //   {
+  //     key: "namaKategori",
+  //     label: "Wilayah UPTD",
+  //     align: "text-left",
+  //   },
+  // ];
 
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
-    
+
     if (sort && sort !== "id") {
       params.sort = sort;
       if (direction && direction.toLowerCase() === "asc") {
@@ -39,23 +39,22 @@ const Index = ({ datas, filters }) => {
     return params;
   };
 
-  const onSubmitFilter = (e) => {
-    e.preventDefault();
+  // const onSubmitFilter = async () => {
+  //   const params = buildParams({
+  //     tanggal_mulai: startDate || undefined,
+  //     tanggal_akhir: endDate || undefined,
+  //   });
 
-    const params = buildParams({
-      tanggal_mulai: startDate || undefined,
-      tanggal_akhir: endDate || undefined,
-    });
-
-    setIsLoading(true);
-
-    router.get(route("super-admin.rekapitulasi.penerimaan"), params, {
-      preserveState: true,
-      preserveScroll: true,
-      only: ["datas", "filters"],
-      onFinish: () => setIsLoading(false),
-    });
-  };
+  //   await router.get(route("super-admin.rekapitulasi.penerimaan"), params, {
+  //     preserveState: true,
+  //     preserveScroll: true,
+  //     replace: true,
+  //     async: true,
+  //     only: ["datas", "filters"],
+  //     onStart: () => setIsLoading(true),
+  //     onFinish: () => setIsLoading(false),
+  //   });
+  // };
 
   const formatNumber = (data) => {
     return (
@@ -78,10 +77,7 @@ const Index = ({ datas, filters }) => {
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex flex-col gap-2 sm:flex-row md:w-auto md:items-center">
-            <form
-              onSubmit={onSubmitFilter}
-              className="grid h-full w-full grid-cols-2 gap-2 md:grid-cols-3 lg:flex"
-            >
+            <div className="grid h-full w-full grid-cols-2 gap-2 md:grid-cols-3 lg:flex">
               <div className="space-y-2 rounded text-sm">
                 <label htmlFor="tanggal_mulai">Tanggal Mulai</label>
                 <input
@@ -124,12 +120,26 @@ const Index = ({ datas, filters }) => {
                 />
               </div>
               <div className="col-span-2 flex w-full flex-col items-end gap-2 text-sm sm:col-span-1 sm:w-max sm:flex-row">
-                <button
+                <Link
+                  as="button"
+                  href={route(
+                    "super-admin.rekapitulasi.penerimaan",
+                    buildParams({
+                      tanggal_mulai: startDate || undefined,
+                      tanggal_akhir: endDate || undefined,
+                    }),
+                  )}
+                  preserveState
+                  preserveScroll
+                  replace
+                  only={["datas", "filters"]}
+                  onStart={() => setIsLoading(true)}
+                  onFinish={() => setIsLoading(false)}
                   // disabled={isLoading}
                   className="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded bg-black px-4 py-2 text-white sm:w-max"
                 >
                   Cari
-                </button>
+                </Link>
                 <button
                   onClick={() => {
                     const params = new URLSearchParams();
@@ -147,7 +157,7 @@ const Index = ({ datas, filters }) => {
                   Excel
                 </button>
               </div>
-            </form>
+            </div>
           </div>
           <div className="self-end">
             <p className="relative text-xs text-red-500 before:text-red-500 before:content-['*']">
@@ -159,40 +169,27 @@ const Index = ({ datas, filters }) => {
         <div
           className={`max-h-[calc(100%_-_240px)] overflow-auto rounded-t sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)]`}
         >
-          {isLoading ? (
+          {/* {isLoading ? (
             <LoadingTable />
           ) : (
-            <Deferred data="datas" fallback={<LoadingTable />}>
-              <table className="min-w-full divide-y divide-gray-300 p-3">
+            
+          )} */}
+          <Deferred data="datas" fallback={<LoadingTable />}>
+            {isLoading && <LoadingTable />}
+
+            {!isLoading && datas && (
+              <table className="min-w-full divide-y divide-gray-300 p-3 shadow">
                 <thead className="truncate">
-                  <TableHead
-                    columns={columns}
-                    sort={sort}
-                    direction={direction}
-                    onSort={(column, dir) => {
-                      setSort(column);
-                      setDirection(dir);
-                    }}
-                  >
-                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
-                      Total SPKRD
-                    </th>
-                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
-                      Jumlah Tagihan
-                    </th>
-                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
-                      Total Bayar
-                    </th>
-                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
-                      Sisa Bayar
-                    </th>
-                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
-                      Persentase Bayar
-                    </th>
-                    <th className="sticky top-0 select-none bg-[#F1B174] text-left">
-                      Persentase Belum Bayar
-                    </th>
-                  </TableHead>
+                  <tr className="text-white *:sticky *:top-0 *:select-none *:bg-[#F1B174] *:p-2 *:text-left *:text-xs *:font-medium *:uppercase *:md:text-sm">
+                    <th>No</th>
+                    <th>Wilayah UPTD</th>
+                    <th>Total SPKRD</th>
+                    <th>Jumlah Tagihan</th>
+                    <th>Total Bayar</th>
+                    <th>Sisa Bayar</th>
+                    <th>Persentase Bayar</th>
+                    <th>Persentase Belum Bayar</th>
+                  </tr>
                 </thead>
                 <tbody>
                   <tr>
@@ -338,8 +335,8 @@ const Index = ({ datas, filters }) => {
                   )}
                 </tbody>
               </table>
-            </Deferred>
-          )}
+            )}
+          </Deferred>
         </div>
       </section>
     </>

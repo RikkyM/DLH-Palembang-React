@@ -79,14 +79,10 @@ const Sidebar = ({ children }) => {
         className={`fixed bottom-0 left-0 top-0 z-30 flex max-h-dvh flex-col bg-white transition-all duration-300 ease-[cubic-bezier(0.65,0.05,0.36,1)] md:relative md:w-72 ${
           isOpen ? "w-72" : "w-0"
         }`}
+        scroll-region="true"
       >
         {/* head */}
         <section className="overflow-hidden">
-          {/* <img
-                        src="/img/logo.png"
-                        alt="logo"
-                        className="w-64 min-w-64 p-7"
-                    /> */}
           <picture>
             <source srcSet="/img/logo.webp" type="image/webp" />
             <img

@@ -296,7 +296,6 @@ const Step2 = ({
             value={data.buktiBayar || ""}
             onChange={(e) => {
               setData("buktiBayar", e.target.files?.[0] ?? null);
-              console.log(data.buktiBayar);
               clearErrors("buktiBayar");
             }}
           />

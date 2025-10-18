@@ -30,8 +30,6 @@ const Akun = ({ userData, role }) => {
 
   const routeConfig = roleConfig[role];
 
-  console.log(routeConfig);
-
   const handleSubmit = (e) => {
     e.preventDefault();
 

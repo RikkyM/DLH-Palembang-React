@@ -171,21 +171,6 @@ class RekapitulasiController extends Controller
     {
         $startDate = $request->get('tanggal_mulai');
         $endDate = $request->get('tanggal_akhir');
-        $getSortBy = $request->get('sort', 'id');
-        $getSortDir = $request->get('direction', 'desc');
-        $getPage = $request->get('per_page', 10);
-
-        $filter = function ($query, $tanggal = 'tanggalBayar') use ($startDate, $endDate) {
-            $query->when($startDate && $endDate, fn($q) => $q->whereBetween($tanggal, [$startDate, $endDate]))
-                ->when($startDate && !$endDate, fn($q) => $q->where($tanggal, '>=', $startDate))
-                ->when(!$startDate && $endDate, fn($q) => $q->where($tanggal, '<=', $endDate));
-        };
-
-        // $setoranFilter = function ($query) use ($filter) {
-        //     $query->where('status', 'Approved')
-        //         ->where('current_stage', 'bendahara');
-        //     $filter($query, 'tanggal_diterima');
-        // };
 
         $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
 
@@ -227,9 +212,6 @@ class RekapitulasiController extends Controller
                     })->values();
             }),
             'filters' => [
-                'sort' => $getSortBy,
-                'direction' => $getSortDir,
-                'per_page' => (int) $getPage,
                 'tanggal_mulai' => $startDate,
                 'tanggal_akhir' => $endDate
             ]
@@ -269,8 +251,6 @@ class RekapitulasiController extends Controller
                 break;
         }
 
-        $invoices = $query->get();
-
         $skrd = Skrd::select('noSkrd', 'noWajibRetribusi', 'namaObjekRetribusi', 'tagihanPerBulanSkrd')
             ->where('noSkrd', '!=', null)
             ->get()
@@ -293,7 +273,7 @@ class RekapitulasiController extends Controller
             });
 
         return Inertia::render('Super-Admin/Rekapitulasi/Nota-Tagihan/Index', [
-            'datas' => $invoices,
+            'datas' => Inertia::defer(fn() => $query->get()),
             'filters' => [
                 'sort' => $getSortBy,
                 'direction' => $getSortDir,
