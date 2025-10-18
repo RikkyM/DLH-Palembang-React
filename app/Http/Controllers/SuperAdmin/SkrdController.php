@@ -4,6 +4,8 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
+use App\Models\Kecamatan;
+use App\Models\Kelurahan;
 use App\Models\Skrd;
 use App\Models\SubKategori;
 use App\Models\User;
@@ -32,6 +34,8 @@ class SkrdController extends Controller
         $sortDir = $request->get('direction', 'desc');
         $kategoriId = $request->get('kategori');
         $subKategoriId = $request->get('sub-kategori');
+        $getKecamatan = $request->get('kecamatan');
+        $getKelurahan = $request->get('kelurahan');
         $petugasId = $request->get('petugas');
         $status = $request->get('status');
         $getBulan = $request->get('bulan');
@@ -93,6 +97,14 @@ class SkrdController extends Controller
             $skrd->where('namaKategori', $kategoriId);
         }
 
+        if ($getKecamatan) {
+            $skrd->where('kecamatanObjekRetribusi', $getKecamatan);
+        }
+
+        if ($getKelurahan) {
+            $skrd->where('kelurahanObjekRetribusi', $getKelurahan);
+        }
+
         if ($subKategoriId) {
             $skrd->where('namaSubKategori', $subKategoriId);
         }
@@ -121,6 +133,23 @@ class SkrdController extends Controller
                 $query->where('namaKategori', $kategoriId);
             })->select('kodeSubKategori', 'namaSubKategori')->get()
             : collect();
+
+        $kecamatan = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
+            ->get()
+            ->map(fn($kec) => [
+                'value' => $kec->namaKecamatan,
+                'label' => $kec->namaKecamatan
+            ]);
+
+        $kelurahan = $getKecamatan
+            ? Kelurahan::with('kecamatan')->select('kodeKelurahan', 'namaKelurahan')->whereRelation('kecamatan', 'namaKecamatan', $getKecamatan)
+            ->get()
+            ->map(fn($kel) => [
+                'value' => $kel->namaKelurahan,
+                'label' => $kel->namaKelurahan
+            ])
+            : collect();
+
         $petugas = User::select('id', 'namaLengkap', 'lokasi')->where('role', 'ROLE_PENDAFTAR')->orderBy('namaLengkap')->get();
 
         $tahunOptions = Skrd::selectRaw('YEAR(created_at) as tahun')
@@ -129,24 +158,28 @@ class SkrdController extends Controller
         $datas = $getPage <= 0 ? $skrd->get() : $skrd->paginate($getPage)->withQueryString();
 
         return Inertia::render('Super-Admin/Data-Input/Skrd/Index', [
-            'datas' => $datas,
+            'datas' => Inertia::defer(fn() => $datas),
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,
                 'sort' => $sortBy,
                 'direction' => $sortDir,
                 'kategori' => $kategoriId,
                 'subKategori' => $subKategoriId,
+                'kecamatan' => $getKecamatan,
+                'kelurahan' => $getKelurahan,
                 'petugas' => $petugasId,
                 'status' => $status,
                 'bulan' => $getBulan,
                 'tahun' => $getTahun,
                 'per_page' => $getPage
             ],
-            'kategoriOptions' => $kategori,
-            'subKategoriOptions' => $subKategori,
-            'petugasOptions' => $petugas,
+            'kategoriOptions' => Inertia::defer(fn() => $kategori),
+            'subKategoriOptions' => Inertia::defer(fn() => $subKategori),
+            'petugasOptions' => Inertia::defer(fn() =>$petugas),
+            'tahunOptions' => Inertia::defer(fn() => $tahunOptions),
+            'kecamatanOptions' => Inertia::defer(fn() =>$kecamatan),
+            'kelurahanOptions' => Inertia::defer(fn() =>$kelurahan),
             'bulan' => $this->getBulan(),
-            'tahunOptions' => $tahunOptions
         ]);
     }
 

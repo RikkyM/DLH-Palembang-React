@@ -358,8 +358,8 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td style="text-align: center; text-transform: uppercase; padding-left: 100px;">{{ $data->pemilik->namaPemilik }}</td>
-                <td style="text-align: center; text-transform: uppercase; padding-left: 100px;">{{ $data->namaPenagih ?? "" }}</td>
+                <td style="text-align: center; text-transform: uppercase; padding-left: 100px;">{{ $data->pemilik?->namaPemilik ?? '-' }}</td>
+                <td style="text-align: center; text-transform: uppercase; padding-left: 100px;">{{ $data?->namaPenagih ?? "-" }}</td>
             </tr>
         </table>
     </div>

@@ -27,6 +27,7 @@ const DashboardPages = ({
             preserveState
             preserveScroll
             replace
+            prefetch
             onStart={() => setLoading(true)}
             onFinish={() => setLoading(false)}
             only={["year", "years", "stats", "chart", "chartKecamatan"]}

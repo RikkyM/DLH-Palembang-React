@@ -23,7 +23,6 @@ const Dialog = ({ isOpen, onClose, item = [], role }) => {
           </button>
         </div>
         <div className="bg-red-500 p-5">
-        {console.log(item)}
           {item &&
             item.map((data, i) => <div key={i}>{roleConfig[data.role]}</div>)}
           {/* {item && item.length === 0 ? (

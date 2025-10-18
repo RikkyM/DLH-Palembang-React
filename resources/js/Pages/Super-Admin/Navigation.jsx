@@ -189,6 +189,10 @@ const SuperAdminNavigation = () => {
     <Sidebar>
       <div className="space-y-1.5 p-3">
         <Link
+          prefetch
+          cacheFor="60s"
+          replace
+          preserveState
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("super-admin.dashboard")
               ? "bg-[#B3CEAF] font-medium text-white"
@@ -216,6 +220,10 @@ const SuperAdminNavigation = () => {
           defaultOpen={isAccordionActive(tagihanItems)}
         /> */}
         <Link
+          prefetch
+          cacheFor="60s"
+          replace
+          preserveState
           className={`block whitespace-nowrap rounded px-3 py-2 transition-all duration-300 ${
             route().current("super-admin.surat-tagihan.index")
               ? "bg-[#B3CEAF] font-medium text-white"

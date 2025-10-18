@@ -9,16 +9,6 @@ const Index = ({ datas, filters }) => {
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
-  // const [hasFilter, setHasFilter] = useState(false);
-
-  // const columns = [
-  //   { key: "id", label: "No", align: "text-center w-10" },
-  //   {
-  //     key: "namaKategori",
-  //     label: "Wilayah UPTD",
-  //     align: "text-left",
-  //   },
-  // ];
 
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
@@ -38,23 +28,6 @@ const Index = ({ datas, filters }) => {
     }
     return params;
   };
-
-  // const onSubmitFilter = async () => {
-  //   const params = buildParams({
-  //     tanggal_mulai: startDate || undefined,
-  //     tanggal_akhir: endDate || undefined,
-  //   });
-
-  //   await router.get(route("super-admin.rekapitulasi.penerimaan"), params, {
-  //     preserveState: true,
-  //     preserveScroll: true,
-  //     replace: true,
-  //     async: true,
-  //     only: ["datas", "filters"],
-  //     onStart: () => setIsLoading(true),
-  //     onFinish: () => setIsLoading(false),
-  //   });
-  // };
 
   const formatNumber = (data) => {
     return (
@@ -216,7 +189,7 @@ const Index = ({ datas, filters }) => {
                           return (
                             <tr
                               key={data.id ?? i}
-                              className={`*:p-2 ${i % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
+                              className={`*:p-2 *:text-xs *:sm:text-sm *:lg:text-base ${i % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                               onClick={() => openDetail(data)}
                             >
                               <td className="text-left">

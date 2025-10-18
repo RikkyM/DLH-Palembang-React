@@ -38,6 +38,14 @@ class SkrdController extends Controller
             $query->where('subKategori', $subKategori);
         }
 
+        if ($kecamatan = $request->kecamatan) {
+            $query->where('kecamatanObjekRetribusi', $kecamatan);
+        }
+
+        if ($kelurahan = $request->kelurahan) {
+            $query->where('kelurahanObjekRetribusi', $kelurahan);
+        }
+
         if ($petugas = $request->petugas) {
             $query->whereHas('user', fn($q) => $q->where('id', $petugas));
         }
@@ -50,7 +58,7 @@ class SkrdController extends Controller
             }
         }
 
-        $data = $query->get();
+        $data = $request->per_page <= 0 ? $query->get() : $query->paginate($request->per_page)->withQueryString();
 
         $pdf = Pdf::loadView('exports.skrd.skrd-pdf', compact('data'))
             ->setPaper('a4', 'landscape')
@@ -63,7 +71,9 @@ class SkrdController extends Controller
                 'chroot' => realpath("")
             ]);
 
-        $fileName = 'laporan-skrd-' . date('Y-m-d-H-i-s') . '.pdf';
+        $kecamatanName = $kecamatan !== null ? str_replace([' ', '-'], '-', strtolower($kecamatan)) : null;
+
+        $fileName = 'laporan-skrd-' . $kecamatanName . '-' . date('Y-m-d-H-i-s') . '.pdf';
 
         return $pdf->download($fileName);
     }
@@ -103,7 +113,11 @@ class SkrdController extends Controller
                 'chroot' => realpath("")
             ]);
 
-        return $pdf->stream("SPKRD-{$data->noWajibRetribusi}.pdf");
+        $raw = str_replace(['/', '\\'], '-', trim($data->noSkrd));
+
+        $filename = "SPKRD-{$raw}.pdf";
+
+        return $pdf->stream($filename);
     }
 
     public function previewPdfLocal($filename)

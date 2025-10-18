@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { router } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { usePagination } from "../hooks/usePagination";
 
 const SmartPagination = ({ datas, className = null, filters = {}, routeName = null }) => {
@@ -38,7 +38,9 @@ const SmartPagination = ({ datas, className = null, filters = {}, routeName = nu
   };
 
   return (
-    <div className={`border-t border-gray-200 bg-white overflow-x-auto px-4 py-3 ${className}`}>
+    <div
+      className={`overflow-x-auto border-t border-gray-200 bg-white px-4 py-3 ${className}`}
+    >
       <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
         <div className="hidden text-xs text-gray-700 md:block lg:text-sm">
           Menampilkan <span className="font-medium">{datas.from || 0}</span>{" "}
@@ -47,7 +49,13 @@ const SmartPagination = ({ datas, className = null, filters = {}, routeName = nu
         </div>
 
         <div className="mx-auto flex items-center gap-1 md:mx-0">
-          <button
+        {console.log(currentPage)}
+          <Link
+            as="button"
+            preserveState
+            preserveScroll
+            replace
+            prefetch
             onClick={() => currentPage > 1 && handlePageClick(currentPage - 1)}
             className={`rounded-lg border border-gray-200 bg-white px-2 py-2 transition-colors duration-200 ${
               currentPage <= 1
@@ -57,7 +65,7 @@ const SmartPagination = ({ datas, className = null, filters = {}, routeName = nu
             disabled={currentPage <= 1}
           >
             <ChevronLeft size={16} />
-          </button>
+          </Link>
 
           {pagesToShow.map((page, index) => {
             if (page === "...") {

@@ -80,6 +80,8 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
               <li key={index}>
                 {item.route ? (
                   <Link
+                    prefetch
+                    cacheFor="60s"
                     replace
                     preserveState
                     href={route(item.route)}

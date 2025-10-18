@@ -24,10 +24,11 @@ Route::prefix('sirep')->group(function () {
             Route::get('/wajib-retribusi/{type}/{filename}', 'getImage')->name('private.file');
         });
 
-        Route::controller(SkrdController::class)->group(function () {
+        Route::prefix('skrd')->controller(SkrdController::class)->group(function () {
             Route::get('/download-pdf', 'downloadPdf')->name('skrd.download-pdf');
             Route::get('/download-excel', 'downloadExcel')->name('skrd.download-excel');
-            Route::get('/{id}/skrd', 'downloadSinglePdf')->name('skrd.download-data-pdf');
+            Route::get('/{id}/skrd', 'downloadSinglePdf')
+                ->name('skrd.download-data-pdf');
             Route::get('/skrd/{filename}', 'previewPdfLocal')->name('skrd.pdf');
             Route::get('/{id}/download-data-excel', 'downloadSingleExcel')->name('skrd.download-data-excel');
         });
