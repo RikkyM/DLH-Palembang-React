@@ -294,14 +294,12 @@ const Index = ({ datas, filters, role }) => {
                               onClick={() => openDetail(data, sub)}
                             >
                               {numberFormat(sub.totalBayar)}
-                              {console.log(sub.totalBayar)}
                             </td>
                             <td
                               className="text-center"
                               onClick={() => openDetail(data, sub)}
                             >
                               {numberFormat(sub.tagihan - sub.totalBayar)}
-                              {console.log(data)}
                             </td>
                           </tr>
                         ))}

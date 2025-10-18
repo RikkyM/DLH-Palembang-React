@@ -192,7 +192,6 @@ const DialogForm = ({
                   : ""
               }
               onChange={(e) => {
-                console.log(e.target.value);
                 setData("tarifPerbulan", e.target.value);
               }}
               readOnly={true}

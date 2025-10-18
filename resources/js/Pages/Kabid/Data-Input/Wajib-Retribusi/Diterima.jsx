@@ -238,9 +238,9 @@ const Diterima = ({
       {},
       {
         preserveScroll: true,
-        onSuccess: () => {
-          console.log("Retribusi berhasil dikirim.");
-        },
+        // onSuccess: () => {
+        //   console.log("Retribusi berhasil dikirim.");
+        // },
         onError: (errors) => {
           console.error("Terjadi kesalahan ketika mengirim");
         },

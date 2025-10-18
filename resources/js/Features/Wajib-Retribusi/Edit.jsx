@@ -84,8 +84,6 @@ const WajibRetribusiEdit = ({
       retribusi.tanggalSkrd || new Date().toISOString().split("T")[0],
   };
 
-  console.log(retribusi.keteranganBulan);
-
   const handleVariabelChange = (variabelName, value) => {
     setData((prevData) => ({
       ...prevData,

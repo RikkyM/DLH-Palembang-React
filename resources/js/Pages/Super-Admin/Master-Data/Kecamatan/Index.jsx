@@ -113,7 +113,6 @@ const Index = ({ datas, filters }) => {
                     <td className="text-center">
                       {(datas.current_page - 1) * datas.per_page + index + 1}
                     </td>
-                    {console.log(data)}
                     <td className="text-left">{data.kodeKecamatan}</td>
                     <td className="text-left">{data.namaKecamatan}</td>
                     <td

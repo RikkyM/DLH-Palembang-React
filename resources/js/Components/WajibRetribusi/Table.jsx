@@ -154,8 +154,6 @@ const Table = ({
               : "diproses"
             : "ditolak";
 
-    console.log(statusParams);
-
     if (role === "ROLE_PENDAFTAR") {
       return (
         <div className="flex flex-col gap-2 *:rounded *:text-xs *:font-medium *:md:text-sm">

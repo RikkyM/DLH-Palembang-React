@@ -2,7 +2,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link, router } from "@inertiajs/react";
 import { usePagination } from "../hooks/usePagination";
 
-const SmartPagination = ({ datas, className = null, filters = {}, routeName = null }) => {
+const SmartPagination = ({
+  datas,
+  className = null,
+  filters = {},
+  routeName = null,
+}) => {
   const { handlePageChange, generatePagesToShow, buildPageUrl } =
     usePagination();
 
@@ -49,7 +54,6 @@ const SmartPagination = ({ datas, className = null, filters = {}, routeName = nu
         </div>
 
         <div className="mx-auto flex items-center gap-1 md:mx-0">
-        {console.log(currentPage)}
           <Link
             as="button"
             preserveState

@@ -35,8 +35,6 @@ const DialogForm = ({ isOpen, onClose, uptdOptions = [], penagih = null, mode = 
     }
   }, [isOpen, penagih, isEditMode]);
 
-  console.log(data)
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
