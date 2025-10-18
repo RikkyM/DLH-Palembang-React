@@ -18,6 +18,7 @@ use App\Http\Controllers\SuperAdmin\UptdController;
 use App\Http\Controllers\SuperAdmin\UserController;
 use App\Http\Controllers\SuperAdmin\WajibRetribusiController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
