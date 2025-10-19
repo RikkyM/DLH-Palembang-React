@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Imports\Setoran\TemplateFirstImport;
 use App\Imports\Setoran\TemplateSecondImport;
+use App\Imports\Setoran\TemplateThirdImport;
 use App\Models\DetailSetoran;
 use App\Models\Setoran;
 use App\Models\Skrd;
@@ -22,11 +23,11 @@ class SetoranImport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
-            // 'KALIDONI' => new TemplateFirstImport(),
-            // 'IT I' => new TemplateSecondImport()
-            // 'IB I' => new TemplateSecondImport()
-            'IB 2' => new TemplateSecondImport()
+            'KALIDONI' => new TemplateFirstImport(),
+            'IT I' => new TemplateSecondImport(),
+            'IB 2' => new TemplateThirdImport(),
+            'Sako' => new TemplateThirdImport(),
+            'Sukarami' => new TemplateThirdImport(),
         ];
     }
-    
 }

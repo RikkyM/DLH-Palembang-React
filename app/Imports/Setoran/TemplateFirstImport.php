@@ -10,15 +10,17 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class TemplateFirstImport implements ToCollection, WithCalculatedFormulas
+class TemplateFirstImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
 {
     /**
      * @param Collection $collection
      */
     public function collection(Collection $rows)
     {
+        $data = [];
         foreach ($rows as $index => $row) {
             $skrd = Skrd::whereNowajibretribusi($row['nomor_spkrd'])->first();
 
@@ -78,5 +80,7 @@ class TemplateFirstImport implements ToCollection, WithCalculatedFormulas
                 }
             }
         }
+
+        // dd($data);
     }
 }
