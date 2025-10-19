@@ -23,7 +23,9 @@ class SetoranImport implements WithMultipleSheets
     {
         return [
             // 'KALIDONI' => new TemplateFirstImport(),
-            'IT I' => new TemplateSecondImport()
+            // 'IT I' => new TemplateSecondImport()
+            // 'IB I' => new TemplateSecondImport()
+            'IB 2' => new TemplateSecondImport()
         ];
     }
     

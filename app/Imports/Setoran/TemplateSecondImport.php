@@ -20,16 +20,60 @@ class TemplateSecondImport implements ToCollection, WithHeadingRow, WithCalculat
      */
     public function collection(Collection $rows)
     {
-
         $data = [];
         $detail = [];
         foreach ($rows as $index => $row) {
-            $skrd = Skrd::whereNoskrd($row['nomor_skrd'])->first();
-
-
+            $skrd = Skrd::whereNoskrd($row['nomor_spkrd'])->first();
 
             if ($skrd && $skrd['noSkrd']) {
                 $nomorNota = Setoran::generateNomorNota();
+
+                // $detailSetoran =
+                //     collect(range(1, 12))->map(
+                //         function ($i) use ($skrd, $row) {
+                //             $bulan =  strtolower(Carbon::create()->month($i)->locale('id')->translatedFormat('M'));
+
+                //             if ($row[$bulan] && $row[$bulan] !== null) {
+                //                 // $parts = explode('/', $row[$bulan]);
+                //                 // $hari = (int) $parts[0];
+                //                 // $bulan = (int) $parts[1];
+
+                //                 $tanggal = trim($row[$bulan]);
+
+                //                 if (!is_numeric($tanggal[0])) {
+                //                     return null;
+                //                 }
+
+                //                 if (strpos($tanggal, '/') === false) {
+                //                     return null;
+                //                 }
+
+                //                 $parts = explode('/', $tanggal);
+
+                //                 $hari = (int) $parts[0];
+                //                 $bulan = (int) $parts[1];
+
+                //                 $formatTanggal = Carbon::createFromDate(now()->year, $bulan, $hari)
+                //                     ->format('Y-m-d');
+
+                //                 return [
+                //                     'namaBulan' => Str::title(strtolower(Carbon::create()->month($i)->translatedFormat('F'))),
+                //                     'tanggalBayar' => $formatTanggal,
+                //                     'jumlahBayar' => $row['tarif_bulan'],
+                //                     'keterangan' => null,
+                //                     'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                //                     'updated_at' => now()
+                //                 ];
+                //             }
+
+                //             // return [
+                //             //     'namaBulan' => strtolower(Carbon::create()->month($i)->locale('id')->translatedFormat('M'))
+                //             // ];
+                //         }
+                //     )
+                //     ->filter()
+                //     ->values()
+                //     ->toArray();
 
                 $detailSetoran =
                     collect(range(1, 12))->map(
@@ -62,7 +106,7 @@ class TemplateSecondImport implements ToCollection, WithHeadingRow, WithCalculat
                                 return [
                                     'namaBulan' => Str::title(strtolower(Carbon::create()->month($i)->translatedFormat('F'))),
                                     'tanggalBayar' => $formatTanggal,
-                                    'jumlahBayar' => $row['per_bulan'],
+                                    // 'jumlahBayar' => $row['tarif_bulan'],
                                     'keterangan' => null,
                                     'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
                                     'updated_at' => now()
@@ -84,7 +128,7 @@ class TemplateSecondImport implements ToCollection, WithHeadingRow, WithCalculat
                         'skrdId' => $skrd['id'],
                         'noRef' => null,
                         'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_spkrd'])->format('Y-m-d'),
-                        'jumlahBayar' => $row['jumlah_tertagih'],
+                        'jumlahBayar' => $row['jumlah_bayar'],
                         'jumlahBulan' => count($detailSetoran),
                         'namaPenyetor' => null,
                         'keteranganBulan' => null,
@@ -100,23 +144,56 @@ class TemplateSecondImport implements ToCollection, WithHeadingRow, WithCalculat
                         'updated_at' => now()
                     ]);
 
-                    foreach ($detailSetoran as $d) {
+                    foreach ($detailSetoran as $det) {
                         DetailSetoran::create([
                             'nomorNota' => $nomorNota,
                             'skrdId' => $skrd['id'],
-                            'namaBulan' => $d['namaBulan'],
-                            'tanggalBayar' =>   $d['tanggalBayar'],
-                            'jumlahBayar' => $d['jumlahBayar'],
+                            'namaBulan' => $det['namaBulan'],
+                            'tanggalBayar' =>   $det['tanggalBayar'],
+                            'jumlahBayar' => $row['per_bulan'],
                             'keterangan' => null,
                             'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
                             'updated_at' => now()
                         ]);
                     }
                 }
+
+                // if ($detailSetoran) {
+                //     Setoran::create([
+                //         'nomorNota' => $nomorNota,
+                //         'skrdId' => $skrd['id'],
+                //         'noRef' => null,
+                //         'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_spkrd'])->format('Y-m-d'),
+                //         'jumlahBayar' => $row['jumlah_tertagih'],
+                //         'jumlahBulan' => count($detailSetoran),
+                //         'namaPenyetor' => null,
+                //         'keteranganBulan' => null,
+                //         'metodeBayar' => null,
+                //         'namaBank' => null,
+                //         'buktiBayar' => null,
+                //         'status' => 'Approved',
+                //         'current_stage' => 'bendahara',
+                //         'keterangan' => null,
+                //         'tanggal_diterima' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                //         'tanggal_batal' => null,
+                //         'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                //         'updated_at' => now()
+                //     ]);
+
+                //     foreach ($detailSetoran as $d) {
+                //         DetailSetoran::create([
+                //             'nomorNota' => $nomorNota,
+                //             'skrdId' => $skrd['id'],
+                //             'namaBulan' => $d['namaBulan'],
+                //             'tanggalBayar' =>   $d['tanggalBayar'],
+                //             'jumlahBayar' => $d['jumlahBayar'],
+                //             'keterangan' => null,
+                //             'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                //             'updated_at' => now()
+                //         ]);
+                //     }
+                // }
             }
-
-
-            // $data[] = $row;
         }
 
         // dd($data, $detail);

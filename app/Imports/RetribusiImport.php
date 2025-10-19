@@ -52,59 +52,6 @@ class RetribusiImport implements ToCollection, WithHeadingRow, WithCalculatedFor
                 $tanggal = Carbon::createFromFormat('d/m/Y', $tanggal)->format('Y-m-d');
             }
 
-            // $data[] = $pendaftar['username'] == 'opet' ? $pendaftar['namaLengkap'] : $row['petugas_pendaftaran'] . ' tidak ada';
-
-            // $data[] = $pendaftar['namaLengkap'] ?? $row['petugas_pendaftaran'] . ' tidak ada';
-
-            // $data[] = $kategori['namaKategori'] ?? $row['rincian_layanan'] . ' tidak ada';
-            // $data[] = $sub['namaSubKategori'] ?? $row['detail_rincian'] . ' tidak ada';
-            // $data[] = $kecamatan['namaKecamatan'] ?? $row['kecamatan'] . ' tidak ada';
-
-            // $data[] = $row['no_spkrd'];
-
-            // $data[] = [
-            //     'noSkrd' => $row['no_spkrd'],
-            //     'noWajibRetribusi' => $row['no_wajib_retribusi'],
-            //     'kodeKategori' => $kategori['kodeKategori'],
-            //     'kodeSubKategori' => $sub['kodeSubKategori'],
-            //     'uptdId' => $uptd['id'],
-            //     'namaObjekRetribusi' => $row['nama_objek_retribusi'],
-            //     'bentukBadanUsaha' => $row['bentuk_badan_usaha'],
-            //     'deskripsiUsaha' => $row['deskripsi_usaha'],
-            //     'alamat' => $row['alamat_objek_retribusi'],
-            //     'kodeKelurahan' => null,
-            //     'kodeKecamatan' => $kecamatan['kodeKecamatan'],
-            //     'keteranganBulan' => $row['keterangan_bulan'],
-            //     'tanggalSkrd' => $tanggal,
-            //     'petugasPendaftarId' => null,
-            //     'status' => 'Finished',
-            //     'current_role' => 'ROLE_KABID',
-            //     'createdThisYear' => 't',
-            //     'keterangan' => null,
-            //     'maksud' => 'Wajib Retribusi Baru',
-            //     'unit' => null,
-            //     'm2' => null,
-            //     'giat' => null,
-            //     'hari' => null,
-            //     'meter' => null,
-            //     'bulan' => $row['jumlah_bulan'],
-            //     'statusTempat' => null,
-            //     'latitude' => null,
-            //     'longitude' => null,
-            //     'image' => null,
-            //     'url_image' => [],
-            //     'file' => null,
-            //     'url_file' => [],
-            //     'linkMap' => null,
-            //     'jenisTarif' => 'tarif',
-            //     'jumlahBangunan' => null,
-            //     'jumlahLantai' => null,
-            //     'keterangan' => null,
-            //     'historyAction' => null,
-            //     'created_at' => now(),
-            //     'updated_at' => now()
-            // ];
-
             $item = [
                 'noSkrd' => $row['no_spkrd'],
                 'noWajibRetribusi' => $row['no_wajib_retribusi'],
