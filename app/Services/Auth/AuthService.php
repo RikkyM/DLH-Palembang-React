@@ -9,7 +9,7 @@ use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
-    private const RATE_LIMIT_MAX_ATTEMPTS = 20;
+    private const RATE_LIMIT_MAX_ATTEMPTS = 40;
 
     public function processLogin($credentials, $userIp)
     {
@@ -76,21 +76,23 @@ class AuthService
 
     private function getRedirectUrl()
     {
-        $user = Auth::user();
-        $userRole = $user->role;
+        if (Auth::check()) {
+            $user = Auth::user();
+            $userRole = $user->role;
 
-        $dashboardRoutes = [
-            'ROLE_SUPERADMIN' => 'super-admin.dashboard',
-            'ROLE_KATIM' => 'katim.dashboard',
-            'ROLE_KASUBAG_TU_UPDT' => 'kasubag.dashboard',
-            'ROLE_KUPTD' => 'kuptd.dashboard',
-            'ROLE_SEKDIN' => 'sekdin.dashboard',
-            'ROLE_BENDAHARA' => 'bendahara.dashboard',
-            'ROLE_KABID' => 'kabid.dashboard',
-            'ROLE_PENDAFTAR' => 'pendaftar.dashboard',
-        ];
+            $dashboardRoutes = [
+                'ROLE_SUPERADMIN' => 'super-admin.dashboard',
+                'ROLE_KATIM' => 'katim.dashboard',
+                'ROLE_KASUBAG_TU_UPDT' => 'kasubag.dashboard',
+                'ROLE_KUPTD' => 'kuptd.dashboard',
+                'ROLE_SEKDIN' => 'sekdin.dashboard',
+                'ROLE_BENDAHARA' => 'bendahara.dashboard',
+                'ROLE_KABID' => 'kabid.dashboard',
+                'ROLE_PENDAFTAR' => 'pendaftar.dashboard',
+            ];
 
-        return $dashboardRoutes[$userRole] ?? 'login';
+            return $dashboardRoutes[$userRole] ?? 'login';
+        }
     }
 
     private function getRateLimitKey($ipAddress)

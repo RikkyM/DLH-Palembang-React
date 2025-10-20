@@ -27,6 +27,10 @@ const Login = () => {
     setIsOpen(false);
   }, [user?.id]);
 
+  useEffect(() => {
+    window.history.replaceState(null, '', route('login'));
+  }, [])
+
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
@@ -34,7 +38,15 @@ const Login = () => {
   const submit = (e) => {
     e.preventDefault();
 
-    post(route("login"));
+    post(route("login"), {
+      preserveScroll: true,
+      onSuccess: () => {
+        window.history.replaceState(null, '', window.location.pathName);
+      },
+      onError: (errors) => {
+        console.error('Login error');
+      }
+    });
   };
 
   return (

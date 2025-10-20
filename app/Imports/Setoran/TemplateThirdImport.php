@@ -41,9 +41,7 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
             $skrd = Skrd::whereNoskrd($row['nomor_wajib_retribusi'])->first() ??
                 Skrd::whereNoskrd($row['nomor_spkrd'])->first();
 
-            // if ($skrd) {
-            //     $data[] = $skrd['noSkrd'];
-            // }
+            // $data[] = $skrd['noSkrd'] ?? null;
 
             if ($skrd) {
                 $nomorNota = Setoran::generateNomorNota();
@@ -110,8 +108,6 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
                 } else {
                     $getTglSpkrd = Date::excelToDateTimeObject($row['tgl_spkrd'])->format('Y-m-d');
                 }
-
-                // $data[] = $getTglSpkrd;
 
                 if ($detailSetoran) {
                     Setoran::create([

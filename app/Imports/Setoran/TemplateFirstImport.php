@@ -80,7 +80,5 @@ class TemplateFirstImport implements ToCollection, WithHeadingRow, WithCalculate
                 }
             }
         }
-
-        // dd($data);
     }
 }

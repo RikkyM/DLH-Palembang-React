@@ -1,4 +1,4 @@
-import { Deferred, Head, Link, router } from "@inertiajs/react";
+import { Deferred, Head, Link, router, usePage } from "@inertiajs/react";
 
 import { Clock, DollarSign, FileText, Users, Wallet } from "lucide-react";
 import BarChart from "@/Components/Chart/BarChart";
@@ -14,6 +14,9 @@ const DashboardPages = ({
   rute,
 }) => {
   const [loading, setLoading] = useState(false);
+  const { props } = usePage();
+
+  console.log(props);
 
   return (
     <section className="relative min-h-screen touch-pan-y overflow-hidden p-3">

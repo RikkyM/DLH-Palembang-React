@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Imports\Setoran\TemplateFirstImport;
+use App\Imports\Setoran\TemplateFourthImport;
 use App\Imports\Setoran\TemplateSecondImport;
 use App\Imports\Setoran\TemplateThirdImport;
 use App\Models\DetailSetoran;
@@ -28,6 +29,12 @@ class SetoranImport implements WithMultipleSheets
             'IB 2' => new TemplateThirdImport(),
             'Sako' => new TemplateThirdImport(),
             'Sukarami' => new TemplateThirdImport(),
+            'IB1' => new TemplateThirdImport(),
+            'KERTAPATI' => new TemplateFourthImport(),
+            'JAKABARING' => new TemplateFourthImport(),
+            'KEMUNING' => new TemplateFourthImport(),
+            'AAL' => new TemplateFourthImport(),
+            // 'BUKIT KECIL' => new TemplateFourthImport(),
         ];
     }
 }

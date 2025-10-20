@@ -42,7 +42,8 @@ class AuthController extends Controller
         }
 
         $redirectRoute = $authService->processLogin($credentials, $request->ip());
-        return redirect()->route($redirectRoute);
+        // return redirect()->route($redirectRoute);
+        return redirect()->intended(route($redirectRoute));
     }
 
     public function logout(Request $request)
@@ -52,6 +53,8 @@ class AuthController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        Inertia::clearHistory();
 
         return redirect()->route('login');
     }

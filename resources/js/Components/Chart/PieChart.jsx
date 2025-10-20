@@ -56,12 +56,25 @@ const PieChart = ({ labels, data }) => {
             color: "#fff",
             font: {
               weight: "bold",
+              size: 12,
+            },
+            anchor: "end",
+            align: "start",
+            offset: 20,
+            clip: false,
+            display: (ctx) => {
+              let value = ctx.dataset.data[ctx.dataIndex];
+
+              const dataArr = ctx.chart.data.datasets[0].data;
+              const total = dataArr.reduce((a, b) => a + b, 0);
+              const pct = (value / total) * 100;
+
+              return pct > 0;
             },
             formatter: (value, ctx) => {
               const dataArr = ctx.chart.data.datasets[0].data;
               const total = dataArr.reduce((a, b) => a + b, 0);
-              const percentage = ((value / total) * 100).toFixed(1) + "%";
-              return percentage;
+              return ((value / total) * 100).toFixed(1) + "%";
             },
           },
           tooltip: {
