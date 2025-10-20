@@ -17,9 +17,9 @@ class DashboardController extends Controller
             'rute' => 'kasubag.dashboard',
             'year' => $year,
             'years' => $dashboardService->getYears(),
-            'stats' => $dashboardService->getStats($year),
-            'chart' => $dashboardService->getChart($year),
-            'chartKecamatan' => $dashboardService->getKecamatanChart($year)
+            'stats' => Inertia::defer(fn() => $dashboardService->getStats($year)),
+            'chart' => Inertia::defer(fn() => $dashboardService->getChart($year)),
+            'chartKecamatan' => Inertia::defer(fn() => $dashboardService->getKecamatanChart($year))
         ]);
     }
 }

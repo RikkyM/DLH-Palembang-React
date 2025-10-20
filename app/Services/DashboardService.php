@@ -8,9 +8,15 @@ use App\Models\Skrd;
 use App\Models\Uptd;
 use App\Models\WajibRetribusi;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardService
 {
+    private function getUptdId()
+    {
+        return Auth::user()->uptdId;
+    }
+
     public function getLastYear()
     {
         return Skrd::pluck('created_at')
@@ -32,23 +38,31 @@ class DashboardService
 
     public function getChart($year)
     {
-        $payments = Pembayaran::whereYear('tanggalBayar', $year)
+        $getPayment = Pembayaran::whereYear('tanggalBayar', $year);
+        $getDetailSetoran = DetailSetoran::with('setoran', 'skrd')
+            ->whereHas('setoran', fn($q) => $q->where('status', 'Approved')->where('current_stage', 'bendahara'));
+
+        // dd($getDetailSetoran->sum('jumlahBayar'));
+
+        if (in_array(Auth::user()->role, ['ROLE_KUPTD', 'ROLE_KASUBAG_TU_UPDT'])) {
+            $getPayment->where('uptdId', $this->getUptdId());
+            $getDetailSetoran->whereRelation('skrd', 'uptdId', $this->getUptdId());
+        }
+
+        $payments = (clone $getPayment)
             ->get()
             ->groupBy(fn($item) => Carbon::parse($item->tanggalBayar)->month);
 
-        if ($payments->isEmpty()) {
-            $payments = DetailSetoran::with('setoran')
-                ->whereHas('setoran', fn($q) => $q->where('status', 'Approved')->where('current_stage', 'bendahara'))
-                // ->whereRelation('setoran', 'status', 'Approved')
-                // ->whereRelation('setoran', 'current_stage', 'bendahara')
-                ->whereYear('tanggalBayar', $year)
-                ->get()
-                ->groupBy(fn($item) => date('n', strtotime($item->tanggalBayar)));
-        }
+        $detailSetoran = (clone $getDetailSetoran)
+            ->get()
+            ->groupBy(fn($item) => Carbon::parse($item->tanggalBayar)->month);
 
         $bayaranPerbulan = [];
         for ($i = 1; $i <= 12; $i++) {
-            $bayaranPerbulan[$i] = $payments->has($i) ? $payments[$i]->sum('jumlahBayar') : 0;
+            $totalPembayaran = $payments->has($i) ? $payments[$i]->sum('jumlahBayar') : 0;
+            $totalDetailSetoran = $detailSetoran->has($i) ? $detailSetoran[$i]->sum('jumlahBayar') : 0;
+
+            $bayaranPerbulan[$i] = $totalPembayaran + $totalDetailSetoran;
         }
 
         $labels = [];
@@ -66,11 +80,35 @@ class DashboardService
 
     public function getStats($year)
     {
-        $jumlahWR = WajibRetribusi::whereYear('created_at', $year)->count();
-        $jumlahSkrd = Skrd::whereYear('created_at', $year)->count();
+        $countWR = WajibRetribusi::whereYear('created_at', $year);
+        $countSkrd = Skrd::whereYear('created_at', $year);
+        $countProyeksi = Skrd::whereYear('created_at', $year);
+        $getPembayaran = Pembayaran::whereYear('created_at', $year);
+        $getDetailSetoran = DetailSetoran::with('setoran', 'skrd')
+            ->whereRelation('setoran', 'status', 'Approved')
+            ->whereRelation('setoran', 'current_stage', 'bendahara')
+            ->whereYear('tanggalBayar', $year);
 
-        $proyeksiPenerimaan = Skrd::whereYear('created_at', $year)->sum('tagihanPerTahunSkrd');
-        $penerimaan = Pembayaran::whereYear('created_at', $year)->sum('jumlahBayar') ?: DetailSetoran::with('setoran')->whereRelation('setoran', 'status', 'Approved')->whereYear('created_at', $year)->sum('jumlahBayar');
+        if (in_array(Auth::user()->role, ['ROLE_KUPTD', 'ROLE_KASUBAG_TU_UPDT'])) {
+            $countWR->where('uptdId', $this->getUptdId());
+            $countSkrd->where('uptdId', $this->getUptdId());
+            $countProyeksi->where('uptdId', $this->getUptdId());
+            $getPembayaran->where('uptdId', $this->getUptdId());
+            $getDetailSetoran->whereRelation('skrd', 'uptdId', $this->getUptdId());
+        }
+
+        // dd((clone $getDetailSetoran)->sum('jumlahBayar'));
+
+        $jumlahWR = $countWR->count();
+        $jumlahSkrd = $countSkrd->count();
+        $proyeksiPenerimaan = $countProyeksi->sum('tagihanPerTahunSkrd');
+
+        $penerimaanPembayaran = (clone $getPembayaran)->sum('jumlahBayar');
+        $penerimaanDetailSetoran = (clone $getDetailSetoran)->sum('jumlahBayar');
+
+        // dd($penerimaanDetailSetoran);
+
+        $penerimaan = $penerimaanPembayaran ?: $penerimaanDetailSetoran;
         $belumTertagih = $proyeksiPenerimaan - $penerimaan;
 
         return [
@@ -79,19 +117,63 @@ class DashboardService
             'proyeksiPenerimaan' => $proyeksiPenerimaan,
             'penerimaan' => $penerimaan,
             'belumTertagih' => $belumTertagih,
-            'penerimaanHariIni' => Pembayaran::whereYear('created_at', $year)
+            'penerimaanHariIni' => (clone $getPembayaran)
                 ->whereDate('created_at', Carbon::today())
-                ->sum('jumlahBayar') ?: DetailSetoran::with('setoran')->whereRelation('setoran', 'status', 'Approved')->whereYear('created_at', $year)
+                ->sum('jumlahBayar') ?: (clone $getDetailSetoran)
                 ->whereDate('created_at', Carbon::today())->sum('jumlahBayar'),
-            'penerimaanBulanIni' => Pembayaran::whereYear('created_at', $year)
+            'penerimaanBulanIni' => (clone $getPembayaran)
                 ->whereMonth('created_at', Carbon::now()->month)
-                ->sum('jumlahBayar') ?: DetailSetoran::with('setoran')->whereRelation('setoran', 'status', 'Approved')->whereYear('created_at', $year)
+                ->sum('jumlahBayar') ?: (clone $getDetailSetoran)
                 ->whereMonth('created_at', Carbon::now()->month)
                 ->sum('jumlahBayar'),
-            'penerimaanTahunIni' => Pembayaran::whereYear('created_at', $year)->sum('jumlahBayar') ?:
-                DetailSetoran::with('setoran')->whereRelation('setoran', 'status', 'Approved')->whereYear('created_at', $year)->sum('jumlahBayar'),
+            'penerimaanTahunIni' => (clone $getPembayaran)->sum('jumlahBayar') ?: (clone $getDetailSetoran)->sum('jumlahBayar'),
         ];
     }
+
+    // public function getKecamatanChart($year)
+    // {
+    //     $getKecamatan = Uptd::with('kecamatan');
+    //     $getPembayaran = Pembayaran::with('uptd.kecamatan')
+    //         ->whereYear('tanggalBayar', $year);
+    //     $getDetailSetoran = DetailSetoran::with(['setoran', 'skrd', 'skrd.uptd.kecamatan'])
+    //         ->whereRelation('setoran', 'status', 'Approved')->whereRelation('setoran', 'current_stage', 'bendahara')
+    //         ->whereYear('tanggalBayar', $year);
+
+    //     // dd(Skrd::where('uptdId', 9)->whereYear('created_at', 2025)->count());
+    //     // dd($getDetailSetoran->count());
+
+    //     if (in_array(Auth::user()->role, ['ROLE_KUPTD', 'ROLE_KASUBAG_TU_UPDT'])) {
+    //         $getKecamatan->where('id', $this->getUptdId());
+    //         $getPembayaran->where('uptdId', $this->getUptdId());
+    //     }
+
+    //     $kecamatan = $getKecamatan->get();
+
+    //     $kategoriPembayaran = $kecamatan->mapWithKeys(fn($uptd) => [
+    //         $uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui" => 0
+    //     ]);
+
+    //     $pembayaranPie = (clone $getPembayaran)
+    //         ->get()
+    //         ->groupBy(fn($p) => $p->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
+    //         ->map(fn($group) => $group->sum('jumlahBayar'));
+
+    //     if ($pembayaranPie->isEmpty()) {
+    //         $pembayaranPie =
+    //             $getDetailSetoran->get()
+    //             ->groupBy(fn($item) => $item->skrd->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
+    //             ->map(fn($item) => $item->sum('jumlahBayar'));
+    //     }
+
+    //     // dd($pembayaranPie);
+
+    //     $kategoriPembayaran = $kategoriPembayaran->merge($pembayaranPie);
+
+    //     return [
+    //         'labels' => $kategoriPembayaran->keys()->toArray(),
+    //         'data' => $kategoriPembayaran->values()->toArray(),
+    //     ];
+    // }
 
     public function getKecamatanChart($year)
     {
@@ -102,19 +184,21 @@ class DashboardService
         ]);
 
         $pembayaranPie = Pembayaran::with('uptd.kecamatan')
-            ->whereYear('tanggalBayar', $year)
-            ->get()
-            ->groupBy(fn($p) => $p->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
-            ->map(fn($group) => $group->sum('jumlahBayar'));
+        ->whereYear('tanggalBayar', $year)
+        ->get()
+        ->groupBy(fn($p) => $p->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
+        ->map(fn($group) => $group->sum('jumlahBayar'));
 
         if ($pembayaranPie->isEmpty()) {
-            $pembayaranPie = DetailSetoran::with(['setoran', 'skrd.uptd.kecamatan'])
-                ->whereRelation('setoran', 'status', 'Approved')
-                ->whereYear('tanggalBayar', $year)
-                ->get()
-                ->groupBy(fn($item) => $item->skrd->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
+            $pembayaranPie = DetailSetoran::with(['setoran', 'skrd', 'skrd.uptd.kecamatan'])
+            ->whereRelation('setoran', 'status', 'Approved')
+            ->whereRelation('setoran', 'current_stage', 'bendahara')
+            ->whereYear('tanggalBayar', $year)
+            ->get()
+            ->groupBy(fn($item) => $item->skrd->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
                 ->map(fn($item) => $item->sum('jumlahBayar'));
         }
+
 
         $kategoriPembayaran = $kategoriPembayaran->merge($pembayaranPie);
 

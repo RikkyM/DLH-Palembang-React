@@ -115,6 +115,7 @@ const Header = ({ title }) => {
               <li>
                 <Link
                   href={route("logout")}
+                  replace
                   method="post"
                   as="button"
                   className="inline-flex w-full items-center gap-1.5 rounded p-1.5 font-medium transition-all duration-200 hover:bg-neutral-200"

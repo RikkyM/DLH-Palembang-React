@@ -191,7 +191,9 @@ class RekapitulasiController extends Controller
                         'skrd.setoran' => function ($q) {
                             $q->where('status', 'Approved')->where('current_stage', 'bendahara');
                         },
-                        'skrd.setoran.detailSetoran'
+                    'skrd.setoran.detailSetoran' 
+                    => fn($q) => $q->whereYear('tanggalBayar', Carbon::now()->year),
+                    // ,
                     ])
                     ->where('namaUptd', '!=', 'Dinas')
                     ->get(['id', 'namaUptd'])
@@ -200,7 +202,7 @@ class RekapitulasiController extends Controller
                             'namaUptd' => $u->namaUptd,
                             'skrd' => $u->skrd->count(),
                             'tagihanPertahun' => $u->skrd->sum('tagihanPerTahunSkrd'),
-                            'totalBayar' => $u->skrd->sum(function ($skrd) {
+                            'totalBayar' => $u->skrd->sum(function ($skrd) {;
                                 $totalSetoran = $skrd->setoran->sum(function ($setoran) {
                                     return $setoran->detailSetoran->sum('jumlahBayar');
                                 });

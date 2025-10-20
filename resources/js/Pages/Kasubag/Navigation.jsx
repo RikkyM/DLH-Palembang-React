@@ -141,6 +141,10 @@ const KasubagNavigation = () => {
     <Sidebar>
       <div className="space-y-1.5 p-3">
         <Link
+          prefetch
+          cacheFor="5m"
+          replace
+          preserveState
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("kasubag.dashboard")
               ? "bg-[#B3CEAF] font-medium text-white"
@@ -167,6 +171,10 @@ const KasubagNavigation = () => {
           defaultOpen={isAccordionActive(tagihanItems)}
         /> */}
         <Link
+          prefetch
+          cacheFor="5m"
+          replace
+          preserveState
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("kasubag.surat-tagihan.index")
               ? "bg-[#B3CEAF] font-medium text-white"

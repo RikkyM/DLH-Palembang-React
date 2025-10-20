@@ -147,6 +147,9 @@ const Sidebar = ({ children }) => {
             <ul className="flex flex-col gap-2 p-1.5 text-xs md:text-sm">
               <li>
                 <Link
+                  prefetch
+                  preserveScroll
+                  preserveState
                   href={route(`${routeConfig}.akun`)}
                   className="inline-flex w-full items-center gap-1.5 rounded p-1.5 font-medium transition-all duration-200 hover:bg-neutral-200"
                 >
@@ -158,6 +161,7 @@ const Sidebar = ({ children }) => {
                 <Link
                   href={route("logout")}
                   method="post"
+                  replace
                   as="button"
                   className="inline-flex w-full items-center gap-1.5 rounded p-1.5 font-medium transition-all duration-200 hover:bg-neutral-200"
                 >

@@ -31,6 +31,7 @@ const DashboardPages = ({
             preserveScroll
             replace
             prefetch
+            cacheFor="2m"
             onStart={() => setLoading(true)}
             onFinish={() => setLoading(false)}
             only={["year", "years", "stats", "chart", "chartKecamatan"]}

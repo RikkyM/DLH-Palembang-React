@@ -24,6 +24,7 @@ const generateColors = (count) => {
 };
 
 const PieChart = ({ labels, data }) => {
+  console.log(data);
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
