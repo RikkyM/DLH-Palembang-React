@@ -171,7 +171,7 @@ const DataSetoran = ({
   const fetchData = () => {
     const params = buildParams();
 
-    router.reload(route(`${routeConfig}.data-setoran.index`), params, {
+    router.get(route(`${routeConfig}.data-setoran.index`), params, {
       preserveState: true,
       replace: true,
       // only: only,
@@ -180,8 +180,6 @@ const DataSetoran = ({
       onFinish: () => setIsLoading(false),
     });
   };
-
-  console.log("start");
 
   useEffect(() => {
     const handleFilterOutside = (e) => {
@@ -195,7 +193,7 @@ const DataSetoran = ({
   }, []);
 
   useEffect(() => {
-    if (!datas) return;
+    // if (!datas) return;
     if (datas) {
       const timeoutId = setTimeout(() => {
         fetchData();
@@ -206,7 +204,7 @@ const DataSetoran = ({
   }, [search]);
 
   useEffect(() => {
-    if (!datas) return;
+    // if (!datas) return;
     if (datas) {
       fetchData();
       // const params = buildParams();

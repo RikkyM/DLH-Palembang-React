@@ -118,13 +118,13 @@ class DashboardService
             'penerimaan' => $penerimaan,
             'belumTertagih' => $belumTertagih,
             'penerimaanHariIni' => (clone $getPembayaran)
-                ->whereDate('created_at', Carbon::today())
+                ->whereDate('tanggalBayar', Carbon::today())
                 ->sum('jumlahBayar') ?: (clone $getDetailSetoran)
-                ->whereDate('created_at', Carbon::today())->sum('jumlahBayar'),
+                ->whereDate('tanggalBayar', Carbon::today())->sum('jumlahBayar'),
             'penerimaanBulanIni' => (clone $getPembayaran)
-                ->whereMonth('created_at', Carbon::now()->month)
+                ->whereMonth('tanggalBayar', Carbon::now()->month)
                 ->sum('jumlahBayar') ?: (clone $getDetailSetoran)
-                ->whereMonth('created_at', Carbon::now()->month)
+                ->whereMonth('tanggalBayar', Carbon::now()->month)
                 ->sum('jumlahBayar'),
             'penerimaanTahunIni' => (clone $getPembayaran)->sum('jumlahBayar') ?: (clone $getDetailSetoran)->sum('jumlahBayar'),
         ];

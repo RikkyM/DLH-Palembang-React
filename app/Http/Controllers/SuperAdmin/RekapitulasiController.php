@@ -191,9 +191,9 @@ class RekapitulasiController extends Controller
                         'skrd.setoran' => function ($q) {
                             $q->where('status', 'Approved')->where('current_stage', 'bendahara');
                         },
-                    'skrd.setoran.detailSetoran' 
-                    => fn($q) => $q->whereYear('tanggalBayar', Carbon::now()->year),
-                    // ,
+                        'skrd.setoran.detailSetoran'
+                        => fn($q) => $q->whereYear('tanggalBayar', Carbon::now()->year),
+                        // ,
                     ])
                     ->where('namaUptd', '!=', 'Dinas')
                     ->get(['id', 'namaUptd'])
