@@ -512,16 +512,16 @@ const Index = ({
                         </td>
                         {/* <td>{data.noPendaftaran}</td> */}
                         <td>{data.noWajibRetribusi ?? "-"}</td>
-                        <td>{data.pemilik.namaPemilik}</td>
+                        <td>{data.pemilik?.namaPemilik ?? "-"}</td>
                         <td>{data.namaObjekRetribusi}</td>
                         <td>
                           <div className="w-72">{data.alamat}</div>
                         </td>
                         <td className="whitespace-nowrap">
-                          {data.kelurahan.namaKelurahan}
+                          {data.kelurahan?.namaKelurahan ?? "-"}
                         </td>
                         <td className="whitespace-nowrap">
-                          {data.kecamatan.namaKecamatan}
+                          {data.kecamatan?.namaKecamatan ?? "-"}
                         </td>
                         <td>{data.kategori.namaKategori}</td>
                         <td>{data.sub_kategori.namaSubKategori}</td>
@@ -576,7 +576,7 @@ const Index = ({
                             minimumFractionDigits: 0,
                           }).format(data.tarifPertahun) || 0}
                         </td>
-                        <td>{data.user.namaLengkap}</td>
+                        <td>{data.user?.namaLengkap ?? "-"}</td>
                         <td>
                           <span
                             className={`select-none rounded py-2 font-medium ${
