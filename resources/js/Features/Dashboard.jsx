@@ -14,9 +14,6 @@ const DashboardPages = ({
   rute,
 }) => {
   const [loading, setLoading] = useState(false);
-  const { props } = usePage();
-
-  console.log(props);
 
   return (
     <section className="relative min-h-screen touch-pan-y overflow-hidden p-3">
@@ -94,6 +91,7 @@ const DashboardPages = ({
                     (new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
+                      minimumFractionDigits: 0,
                     }).format(stats?.proyeksiPenerimaan) ??
                       0)}
                 </Deferred>
@@ -115,6 +113,7 @@ const DashboardPages = ({
                     (new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
+                      minimumFractionDigits: 0,
                     }).format(stats?.penerimaan) ??
                       0)}
                 </Deferred>
@@ -136,6 +135,7 @@ const DashboardPages = ({
                     (new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
+                      minimumFractionDigits: 0,
                     }).format(stats?.belumTertagih) ??
                       0)}
                 </Deferred>
@@ -157,6 +157,7 @@ const DashboardPages = ({
                     (new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
+                      minimumFractionDigits: 0,
                     }).format(stats?.penerimaanHariIni) ??
                       0)}
                 </Deferred>
@@ -178,6 +179,7 @@ const DashboardPages = ({
                     (new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
+                      minimumFractionDigits: 0,
                     }).format(stats?.penerimaanBulanIni) ??
                       0)}
                 </Deferred>
@@ -199,6 +201,7 @@ const DashboardPages = ({
                     (new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
+                      minimumFractionDigits: 0,
                     }).format(stats?.penerimaanTahunIni) ??
                       0)}
                 </Deferred>

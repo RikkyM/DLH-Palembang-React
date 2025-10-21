@@ -111,6 +111,19 @@ class DashboardService
         $penerimaan = $penerimaanPembayaran ?: $penerimaanDetailSetoran;
         $belumTertagih = $proyeksiPenerimaan - $penerimaan;
 
+        // $p = (clone $getDetailSetoran)
+        //     ->whereMonth('created_at', Carbon::now()->month)
+        //     // ->whereDate('created_at', Carbon::today())
+        //     // ->pluck('created_at')
+        //     ->get()
+        //     ->map(fn($m) => [
+        //         'nomorNota' => $m->nomorNota,
+        //         'tanggal' => Carbon::parse($m->created_at)->format('d')
+        //     ])->values();
+        // // ->sum('jumlahBayar');
+
+        // dd($p);
+
         return [
             'jumlahWR' => $jumlahWR,
             'jumlahSkrd' => $jumlahSkrd,
@@ -118,13 +131,13 @@ class DashboardService
             'penerimaan' => $penerimaan,
             'belumTertagih' => $belumTertagih,
             'penerimaanHariIni' => (clone $getPembayaran)
-                ->whereDate('tanggalBayar', Carbon::today())
+                ->whereDate('created_at', Carbon::today())
                 ->sum('jumlahBayar') ?: (clone $getDetailSetoran)
-                ->whereDate('tanggalBayar', Carbon::today())->sum('jumlahBayar'),
+                ->whereDate('created_at', Carbon::today())->sum('jumlahBayar'),
             'penerimaanBulanIni' => (clone $getPembayaran)
-                ->whereMonth('tanggalBayar', Carbon::now()->month)
+                ->whereMonth('created_at', Carbon::now()->month)
                 ->sum('jumlahBayar') ?: (clone $getDetailSetoran)
-                ->whereMonth('tanggalBayar', Carbon::now()->month)
+                ->whereMonth('created_at', Carbon::now()->month)
                 ->sum('jumlahBayar'),
             'penerimaanTahunIni' => (clone $getPembayaran)->sum('jumlahBayar') ?: (clone $getDetailSetoran)->sum('jumlahBayar'),
         ];
@@ -184,18 +197,18 @@ class DashboardService
         ]);
 
         $pembayaranPie = Pembayaran::with('uptd.kecamatan')
-        ->whereYear('tanggalBayar', $year)
-        ->get()
-        ->groupBy(fn($p) => $p->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
-        ->map(fn($group) => $group->sum('jumlahBayar'));
+            ->whereYear('tanggalBayar', $year)
+            ->get()
+            ->groupBy(fn($p) => $p->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
+            ->map(fn($group) => $group->sum('jumlahBayar'));
 
         if ($pembayaranPie->isEmpty()) {
             $pembayaranPie = DetailSetoran::with(['setoran', 'skrd', 'skrd.uptd.kecamatan'])
-            ->whereRelation('setoran', 'status', 'Approved')
-            ->whereRelation('setoran', 'current_stage', 'bendahara')
-            ->whereYear('tanggalBayar', $year)
-            ->get()
-            ->groupBy(fn($item) => $item->skrd->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
+                ->whereRelation('setoran', 'status', 'Approved')
+                ->whereRelation('setoran', 'current_stage', 'bendahara')
+                ->whereYear('tanggalBayar', $year)
+                ->get()
+                ->groupBy(fn($item) => $item->skrd->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
                 ->map(fn($item) => $item->sum('jumlahBayar'));
         }
 
