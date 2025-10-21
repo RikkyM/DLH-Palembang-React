@@ -92,7 +92,7 @@ class SetoranController extends Controller
         $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render('Super-Admin/Pembayaran/Data-Setoran/Data-Setoran', [
-            'datas' => $datas,
+            'datas' => Inertia::defer(fn() => $datas),
             'filters' => [
                 'search' => ($getSearch && trim($getSearch) === '') ? $getSearch : null,
                 'sort' => $sortBy,

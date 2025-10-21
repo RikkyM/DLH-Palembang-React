@@ -61,8 +61,6 @@ class TemplateSecondImport implements ToCollection, WithHeadingRow, WithCalculat
                                     'tanggalBayar' => $formatTanggal,
                                     'jumlahBayar' => $row['per_bulan'],
                                     'keterangan' => null,
-                                    'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
-                                    'updated_at' => now()
                                 ];
                             }
 
@@ -72,14 +70,16 @@ class TemplateSecondImport implements ToCollection, WithHeadingRow, WithCalculat
                         }
                     )
                     ->filter()
-                    ->values()
-                    ->toArray();
-                if ($detailSetoran) {
+                    ->values();
+
+                if ($detailSetoran->isNotEmpty()) {
+                    $tanggalDiterima = $detailSetoran->pluck('tanggalBayar')[count($detailSetoran) - 1];
+
                     Setoran::create([
                         'nomorNota' => $nomorNota,
                         'skrdId' => $skrd['id'],
                         'noRef' => null,
-                        'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_spkrd'])->format('Y-m-d'),
+                        'tanggalBayar' => Carbon::now(),
                         'jumlahBayar' => $row['jumlah_tertagih'],
                         'jumlahBulan' => count($detailSetoran),
                         'namaPenyetor' => null,
@@ -90,9 +90,9 @@ class TemplateSecondImport implements ToCollection, WithHeadingRow, WithCalculat
                         'status' => 'Approved',
                         'current_stage' => 'bendahara',
                         'keterangan' => null,
-                        'tanggal_diterima' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                        'tanggal_diterima' => $tanggalDiterima,
                         'tanggal_batal' => null,
-                        'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                        'created_at' => Carbon::now(),
                         'updated_at' => now()
                     ]);
 

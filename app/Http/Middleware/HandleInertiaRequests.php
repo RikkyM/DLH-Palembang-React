@@ -40,10 +40,10 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             [
-                'auth' => Inertia::lazy(fn() => [
+                'auth' => Inertia::defer(fn() => [
                     'user' => $request->user()?->loadMissing(['uptd.kecamatan'])
                 ]),
-                'inbox' => Inertia::lazy(fn() => WajibRetribusi::with(['kecamatan', 'uptd.kecamatan'])->select('status', 'current_role')->get())
+                'inbox' => Inertia::defer(fn() => WajibRetribusi::with(['kecamatan', 'uptd.kecamatan'])->select('status', 'current_role')->get())
             ]
         ];
     }

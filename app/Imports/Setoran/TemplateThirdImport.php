@@ -89,32 +89,30 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
                                     'tanggalBayar' => $formatTanggal,
                                     'jumlahBayar' => $row['per_bulan'],
                                     'keterangan' => null,
-                                    'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
-                                    'updated_at' => now()
                                 ];
                             }
                         }
                     )
                     ->filter()
-                    ->values()
-                    ->toArray();
+                    ->values();
 
-                $getTglSpkrd = null;
-                if (!is_numeric($row['tgl_spkrd'])) {
-                    $capTgl = Str::title(strtolower($row['tgl_spkrd']));
-                    $replaceDate = str_replace(array_keys($bulanIndonesia), array_values($bulanIndonesia), $capTgl);
+                // $getTglSpkrd = null;
+                // if (!is_numeric($row['tgl_spkrd'])) {
+                //     $capTgl = Str::title(strtolower($row['tgl_spkrd']));
+                //     $replaceDate = str_replace(array_keys($bulanIndonesia), array_values($bulanIndonesia), $capTgl);
 
-                    $getTglSpkrd = Carbon::parse($replaceDate)->format('Y-m-d');
-                } else {
-                    $getTglSpkrd = Date::excelToDateTimeObject($row['tgl_spkrd'])->format('Y-m-d');
-                }
+                //     $getTglSpkrd = Carbon::parse($replaceDate)->format('Y-m-d');
+                // } else {
+                //     $getTglSpkrd = Date::excelToDateTimeObject($row['tgl_spkrd'])->format('Y-m-d');
+                // }
 
-                if ($detailSetoran) {
+                if ($detailSetoran->isNotEmpty()) {
+                    $tanggalDiterima = $detailSetoran->pluck('tanggalBayar')[count($detailSetoran) - 1];
                     Setoran::create([
                         'nomorNota' => $nomorNota,
                         'skrdId' => $skrd['id'],
                         'noRef' => null,
-                        'tanggalBayar' => $getTglSpkrd,
+                        'tanggalBayar' => Carbon::now(),
                         // 'jumlahBayar' => count($detailSetoran) * $row['tarif_bulan'],
                         'jumlahBayar' => $row['jumlah_bayar'] ?? count($detailSetoran) * $row['per_bulan'],
                         'jumlahBulan' => count($detailSetoran),
@@ -126,9 +124,9 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
                         'status' => 'Approved',
                         'current_stage' => 'bendahara',
                         'keterangan' => null,
-                        'tanggal_diterima' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                        'tanggal_diterima' => $tanggalDiterima,
                         'tanggal_batal' => null,
-                        'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                        'created_at' => Carbon::now(),
                         'updated_at' => now()
                     ]);
 
@@ -140,7 +138,7 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
                             'tanggalBayar' =>   $det['tanggalBayar'],
                             'jumlahBayar' => $det['jumlahBayar'],
                             'keterangan' => null,
-                            'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                            'created_at' => Carbon::now(),
                             'updated_at' => now()
                         ]);
                     }

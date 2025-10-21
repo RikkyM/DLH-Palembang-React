@@ -28,8 +28,8 @@ const Login = () => {
   }, [user?.id]);
 
   useEffect(() => {
-    window.history.replaceState(null, '', route('login'));
-  }, [])
+    window.history.replaceState(null, "", route("login"));
+  }, []);
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -40,12 +40,13 @@ const Login = () => {
 
     post(route("login"), {
       preserveScroll: true,
+      replace: true,
       onSuccess: () => {
-        window.history.replaceState(null, '', window.location.pathName);
+        window.history.replaceState(null, "", window.location.pathName);
       },
       onError: (errors) => {
-        console.error('Login error');
-      }
+        console.error("Login error");
+      },
     });
   };
 

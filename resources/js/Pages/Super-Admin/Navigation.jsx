@@ -191,7 +191,6 @@ const SuperAdminNavigation = () => {
         <Link
           prefetch
           cacheFor="5m"
-          replace
           preserveScroll
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("super-admin.dashboard")
@@ -222,7 +221,6 @@ const SuperAdminNavigation = () => {
         <Link
           prefetch
           cacheFor="5m"
-          replace
           preserveScroll
           className={`block whitespace-nowrap rounded px-3 py-2 transition-all duration-300 ${
             route().current("super-admin.surat-tagihan.index")

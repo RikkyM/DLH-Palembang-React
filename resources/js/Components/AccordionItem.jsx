@@ -82,7 +82,6 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
                   <Link
                     prefetch
                     cacheFor="5m"
-                    replace
                     preserveScroll
                     href={route(item.route)}
                     className={`inline-flex w-full justify-between rounded p-2 transition-all duration-300 ${

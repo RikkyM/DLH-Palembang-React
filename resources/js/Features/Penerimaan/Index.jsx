@@ -11,8 +11,9 @@ import {
 import SearchableSelect from "@/Components/SearchableSelect";
 import TableHead from "@/Components/TableHead";
 import { useEffect, useRef, useState } from "react";
-import { Head, router } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import SmartPagination from "@/Components/SmartPagination";
+import LoadingTable from "@/Components/LoadingTable";
 import Confirmation from "./Confirmation";
 
 const DataSetoran = ({
@@ -167,6 +168,21 @@ const DataSetoran = ({
     return params;
   };
 
+  const fetchData = () => {
+    const params = buildParams();
+
+    router.reload(route(`${routeConfig}.data-setoran.index`), params, {
+      preserveState: true,
+      replace: true,
+      // only: only,
+      only: ["datas", "skrdOptions", "metodeOptions", "filters"],
+      onStart: () => setIsLoading(true),
+      onFinish: () => setIsLoading(false),
+    });
+  };
+
+  console.log("start");
+
   useEffect(() => {
     const handleFilterOutside = (e) => {
       if (filterRef.current && !filterRef.current.contains(e.target)) {
@@ -179,23 +195,31 @@ const DataSetoran = ({
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
-    const timeoutId = setTimeout(() => {
-      const params = buildParams();
+    if (!datas) return;
+    if (datas) {
+      const timeoutId = setTimeout(() => {
+        fetchData();
+      }, 500);
 
-      router.get(route(`${routeConfig}.data-setoran.index`), params, {
-        preserveState: true,
-        replace: true,
-        only: ["datas", "skrdOptions", "metodeOptions", "filters"],
-        onFinish: () => setIsLoading(false),
-      });
-    }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [search]);
 
-    return () => {
-      clearTimeout(timeoutId);
-      setIsLoading(false);
-    };
-  }, [search, sort, direction, skrd, metode, perPage, tanggal]);
+  useEffect(() => {
+    if (!datas) return;
+    if (datas) {
+      fetchData();
+      // const params = buildParams();
+
+      // router.get(route(`${routeConfig}.data-setoran.index`), params, {
+      //   preserveState: true,
+      //   replace: true,
+      //   only: ["datas", "skrdOptions", "metodeOptions", "filters"],
+      //   onStart: () => setIsLoading(true),
+      //   onFinish: () => setIsLoading(false),
+      // });
+    }
+  }, [sort, direction, skrd, metode, perPage, tanggal]);
 
   const actionButtons = (data) => {
     const isCurrentStage =
@@ -352,28 +376,7 @@ const DataSetoran = ({
           className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
         >
           {isLoading ? (
-            <div className="mb-2 flex h-16 items-center justify-center gap-2 bg-white px-2 text-sm text-gray-500 shadow">
-              <svg
-                className="h-4 w-4 animate-spin"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8z"
-                />
-              </svg>
-              Memuat data...
-            </div>
+            <LoadingTable />
           ) : (
             <table className="min-w-full divide-y divide-gray-300 p-3">
               <thead className="truncate">
@@ -388,8 +391,8 @@ const DataSetoran = ({
                 />
               </thead>
               <tbody>
-                {(datas.data ?? datas)?.length > 0 ? (
-                  (datas.data ?? datas).map((data, index) => (
+                {(datas?.data ?? datas)?.length > 0 ? (
+                  (datas?.data ?? datas).map((data, index) => (
                     <tr
                       key={data.id ?? index}
                       className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
@@ -499,14 +502,16 @@ const DataSetoran = ({
                           <ReceiptText size={20} />
                         </Link> */}
                         <div className="flex flex-col gap-1.5">
-                          <a
+                          <Link
+                            preserveState
+                            preserveScroll
                             title="Detail"
                             href={route(`${routeConfig}.data-setoran.show`, {
                               data: data.nomorNota,
                             })}
                           >
                             <Eye className="size-5" />
-                          </a>
+                          </Link>
                           {data.status === "Approved" &&
                             data.current_stage === "bendahara" && (
                               <a
@@ -556,7 +561,7 @@ const DataSetoran = ({
                       colSpan="12"
                       className="py-8 text-center text-xs text-gray-500 md:text-sm"
                     >
-                      {search
+                      {filters
                         ? "Tidak ada data yang ditemukan untuk pencarian tersebut"
                         : "Belum ada data setoran"}
                     </td>

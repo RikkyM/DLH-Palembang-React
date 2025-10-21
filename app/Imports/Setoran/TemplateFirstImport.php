@@ -34,21 +34,65 @@ class TemplateFirstImport implements ToCollection, WithHeadingRow, WithCalculate
                             'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_bayar' . $i])->format('Y-m-d'),
                             'jumlahBayar' => $row['jmlh_bayar' . $i],
                             'keterangan' => null,
-                            'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
-                            'updated_at' => now()
                         ];
                     }
                 })
                     ->filter()
-                    ->values()
-                    ->toArray();
+                    ->values();
 
-                if ($detailSetoran) {
+                // if ($detailSetoran->isNotEmpty()) {
+                //     $groupTanggal = $detailSetoran->groupBy('tanggalBayar');
+
+                //     foreach ($groupTanggal as $tanggalBayar => $details) {
+                //         $nomorNota = Setoran::generateNomorNota();
+                //         $totalBayar = $details->sum('jumlahBayar');
+                //         $jumlahBulan = $details->count();
+
+                //         Setoran::create([
+                //             'nomorNota' => $nomorNota,
+                //             'skrdId' => $skrd['id'],
+                //             'noRef' => null,
+                //             'tanggalBayar' => $tanggalBayar,
+                //             'jumlahBayar' => $totalBayar,
+                //             'jumlahBulan' => $jumlahBulan,
+                //             'namaPenyetor' => null,
+                //             'keteranganBulan' => null,
+                //             'metodeBayar' => null,
+                //             'namaBank' => null,
+                //             'buktiBayar' => null,
+                //             'status' => 'Approved',
+                //             'current_stage' => 'bendahara',
+                //             'keterangan' => $row['ket'],
+                //             'tanggal_diterima' => Carbon::parse($tanggalBayar)->startOfDay(),
+                //             'tanggal_batal' => null,
+                //             'created_at' => Carbon::parse($tanggalBayar)->startOfDay(),
+                //             'updated_at' => now()
+                //         ]);
+
+                //         foreach ($details as $detSet) {
+                //             DetailSetoran::create([
+                //                 'nomorNota' => $nomorNota,
+                //                 'skrdId' => $skrd['id'],
+                //                 'namaBulan' => $detSet['namaBulan'],
+                //                 'tanggalBayar' => $detSet['tanggalBayar'],
+                //                 'jumlahBayar' => $detSet['jumlahBayar'],
+                //                 'keterangan' => null,
+                //                 'created_at' => Carbon::parse($detSet['tanggalBayar'])->startOfDay(),
+                //                 'updated_at' => now()
+                //             ]);
+                //         }
+                //     }
+                // }
+
+                if ($detailSetoran->isNotEmpty()) {
+                    $tanggalDiterima = $detailSetoran->pluck('tanggalBayar')[count($detailSetoran) - 1];
+                    // $data[] = $detailSetoran;
                     Setoran::create([
                         'nomorNota' => $nomorNota,
                         'skrdId' => $skrd['id'],
                         'noRef' => null,
-                        'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_skrd'])->format('Y-m-d'),
+                        // 'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_skrd'])->format('Y-m-d'),
+                        'tanggalBayar' => Carbon::now(),
                         'jumlahBayar' => $row['sudah_bayar'],
                         'jumlahBulan' => count($detailSetoran),
                         'namaPenyetor' => null,
@@ -59,9 +103,9 @@ class TemplateFirstImport implements ToCollection, WithHeadingRow, WithCalculate
                         'status' => 'Approved',
                         'current_stage' => 'bendahara',
                         'keterangan' => $row['ket'],
-                        'tanggal_diterima' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                        'tanggal_diterima' => $tanggalDiterima,
                         'tanggal_batal' => null,
-                        'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                        'created_at' => Carbon::now(),
                         'updated_at' => now()
                     ]);
 
@@ -73,12 +117,15 @@ class TemplateFirstImport implements ToCollection, WithHeadingRow, WithCalculate
                             'tanggalBayar' => $detSet['tanggalBayar'],
                             'jumlahBayar' => $detSet['jumlahBayar'],
                             'keterangan' => null,
-                            'created_at' => Carbon::create(2025, 1, 2, 0, 0, 0),
+                            // 'created_at' => Carbon::parse($detSet['tanggalBayar'])->startOfDay(),
+                            'created_at' => Carbon::now(),
                             'updated_at' => now()
                         ]);
                     }
                 }
+                // dd($data);
             }
         }
+        // dd($data);
     }
 }

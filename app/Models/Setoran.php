@@ -27,7 +27,9 @@ class Setoran extends Model
         'status',
         'current_stage',
         'tanggal_diterima',
-        'tanggal_batal'
+        'tanggal_batal',
+        "created_at",
+        "updated_at",
     ];
 
     protected static function booted()
