@@ -137,6 +137,9 @@ const KuptdNavigation = () => {
     <Sidebar>
       <div className="space-y-1.5 p-3">
         <Link
+          prefetch
+          cacheFor="5m"
+          preserveScroll
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("kuptd.dashboard")
               ? "bg-[#B3CEAF] font-medium text-white"
@@ -163,6 +166,9 @@ const KuptdNavigation = () => {
           defaultOpen={isAccordionActive(tagihanItems)}
         /> */}
         <Link
+          prefetch
+          cacheFor="5m"
+          preserveScroll
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("kuptd.surat-tagihan.index")
               ? "bg-[#B3CEAF] font-medium text-white"

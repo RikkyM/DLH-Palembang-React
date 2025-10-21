@@ -107,6 +107,9 @@ const KabidNavigation = () => {
     <Sidebar>
       <div className="space-y-1.5 p-3">
         <Link
+          prefetch
+          cacheFor="5m"
+          preserveScroll
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("kabid.dashboard")
               ? "bg-[#B3CEAF] font-medium text-white"
