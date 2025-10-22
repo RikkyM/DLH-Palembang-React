@@ -37,10 +37,9 @@ class TemplateFourthImport implements ToCollection, WithHeadingRow, WithCalculat
 
         $data = [];
         foreach ($rows as $index => $row) {
-            $skrd = Skrd::whereNoskrd($row['nomor_spkrd'])->first();
+            $skrd = Skrd::whereNoskrd($row['nomor_wajib_retribusi'])->first();
 
-            // $data[] = $skrd['noWajibRetribusi'] ?? null;
-
+            // $data[] = $skrd['noSkrd'] ?? $row['nomor_wajib_retribusi'] . ' cek dulu';
             if ($skrd) {
                 $nomorNota = Setoran::generateNomorNota();
 
@@ -94,54 +93,44 @@ class TemplateFourthImport implements ToCollection, WithHeadingRow, WithCalculat
                     ->filter()
                     ->values();
 
-                // $getTglSpkrd = null;
-                // if (!is_numeric($row['tgl_spkrd'])) {
-                //     $capTgl = Str::title(strtolower($row['tgl_spkrd']));
-                //     $replaceDate = str_replace(array_keys($bulanIndonesia), array_values($bulanIndonesia), $capTgl);
+                // if ($detailSetoran->isNotEmpty()) {
+                //     $tanggalDiterima = $detailSetoran->pluck('tanggalBayar')[count($detailSetoran) - 1];
 
-                //     $getTglSpkrd = Carbon::parse($replaceDate)->format('Y-m-d');
-                // } else {
-                //     $getTglSpkrd = Date::excelToDateTimeObject($row['tgl_spkrd'])->format('Y-m-d');
+                //     Setoran::create([
+                //         'nomorNota' => $nomorNota,
+                //         'skrdId' => $skrd['id'],
+                //         'noRef' => null,
+                //         'tanggalBayar' => Carbon::now(),
+                //         // 'jumlahBayar' => count($detailSetoran) * $row['tarif_bulan'],
+                //         'jumlahBayar' => $row['jumlah_bayar'] ?? count($detailSetoran) * $row['per_bulan'],
+                //         'jumlahBulan' => count($detailSetoran),
+                //         'namaPenyetor' => null,
+                //         'keteranganBulan' => null,
+                //         'metodeBayar' => null,
+                //         'namaBank' => null,
+                //         'buktiBayar' => null,
+                //         'status' => 'Approved',
+                //         'current_stage' => 'bendahara',
+                //         'keterangan' => null,
+                //         'tanggal_diterima' => $tanggalDiterima,
+                //         'tanggal_batal' => null,
+                //         'created_at' => Carbon::now(),
+                //         'updated_at' => now()
+                //     ]);
+
+                //     foreach ($detailSetoran as $det) {
+                //         DetailSetoran::create([
+                //             'nomorNota' => $nomorNota,
+                //             'skrdId' => $skrd['id'],
+                //             'namaBulan' => $det['namaBulan'],
+                //             'tanggalBayar' =>   $det['tanggalBayar'],
+                //             'jumlahBayar' => $det['jumlahBayar'],
+                //             'keterangan' => null,
+                //             'created_at' => Carbon::now(),
+                //             'updated_at' => now()
+                //         ]);
+                //     }
                 // }
-
-                if ($detailSetoran->isNotEmpty()) {
-                    $tanggalDiterima = $detailSetoran->pluck('tanggalBayar')[count($detailSetoran) - 1];
-
-                    Setoran::create([
-                        'nomorNota' => $nomorNota,
-                        'skrdId' => $skrd['id'],
-                        'noRef' => null,
-                        'tanggalBayar' => Carbon::now(),
-                        // 'jumlahBayar' => count($detailSetoran) * $row['tarif_bulan'],
-                        'jumlahBayar' => $row['jumlah_bayar'] ?? count($detailSetoran) * $row['per_bulan'],
-                        'jumlahBulan' => count($detailSetoran),
-                        'namaPenyetor' => null,
-                        'keteranganBulan' => null,
-                        'metodeBayar' => null,
-                        'namaBank' => null,
-                        'buktiBayar' => null,
-                        'status' => 'Approved',
-                        'current_stage' => 'bendahara',
-                        'keterangan' => null,
-                        'tanggal_diterima' => $tanggalDiterima,
-                        'tanggal_batal' => null,
-                        'created_at' => Carbon::now(),
-                        'updated_at' => now()
-                    ]);
-
-                    foreach ($detailSetoran as $det) {
-                        DetailSetoran::create([
-                            'nomorNota' => $nomorNota,
-                            'skrdId' => $skrd['id'],
-                            'namaBulan' => $det['namaBulan'],
-                            'tanggalBayar' =>   $det['tanggalBayar'],
-                            'jumlahBayar' => $det['jumlahBayar'],
-                            'keterangan' => null,
-                            'created_at' => Carbon::now(),
-                            'updated_at' => now()
-                        ]);
-                    }
-                }
             }
         }
         // dd($data);

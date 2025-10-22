@@ -41,7 +41,11 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
             $skrd = Skrd::whereNoskrd($row['nomor_wajib_retribusi'])->first() ??
                 Skrd::whereNoskrd($row['nomor_spkrd'])->first();
 
-            // $data[] = $skrd['noSkrd'] ?? null;
+            // if (!empty($skrd)) {
+            // $data[] = $skrd['noSkrd'];
+            // $data[] = $skrd['noSkrd'] ?? $row['nomor_wajib_retribusi'] . ' cek dulu';
+
+            // }
 
             if ($skrd) {
                 $nomorNota = Setoran::generateNomorNota();
