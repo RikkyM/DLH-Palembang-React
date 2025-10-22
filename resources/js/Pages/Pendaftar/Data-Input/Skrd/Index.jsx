@@ -428,6 +428,7 @@ const Index = ({
                 if (kelurahan) params.append("kelurahan", kelurahan);
                 if (perPage) params.append("per_page", perPage);
                 if (status) params.append("status", status);
+                if (tahunFilter) params.append("tahun", tahunFilter);
 
                 window.open(
                   route("skrd.download-excel") + "?" + params.toString(),
