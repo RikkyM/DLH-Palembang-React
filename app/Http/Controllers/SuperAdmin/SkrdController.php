@@ -142,7 +142,9 @@ class SkrdController extends Controller
             ]);
 
         $kelurahan = $getKecamatan
-            ? Kelurahan::with('kecamatan')->select('kodeKelurahan', 'namaKelurahan')->whereRelation('kecamatan', 'namaKecamatan', $getKecamatan)
+            ? Kelurahan::with('kecamatan')
+            ->select('kodeKelurahan', 'namaKelurahan')
+            ->whereRelation('kecamatan', 'namaKecamatan', $getKecamatan)
             ->get()
             ->map(fn($kel) => [
                 'value' => $kel->namaKelurahan,
@@ -173,13 +175,13 @@ class SkrdController extends Controller
                 'tahun' => $getTahun,
                 'per_page' => $getPage
             ],
-            'kategoriOptions' => Inertia::defer(fn() => $kategori),
-            'subKategoriOptions' => Inertia::defer(fn() => $subKategori),
-            'petugasOptions' => Inertia::defer(fn() =>$petugas),
-            'tahunOptions' => Inertia::defer(fn() => $tahunOptions),
-            'kecamatanOptions' => Inertia::defer(fn() =>$kecamatan),
-            'kelurahanOptions' => Inertia::defer(fn() =>$kelurahan),
+            'kategoriOptions' => $kategori,
+            'subKategoriOptions' => $subKategori,
+            'petugasOptions' => $petugas,
+            'kecamatanOptions' => $kecamatan,
+            'kelurahanOptions' => $kelurahan,
             'bulan' => $this->getBulan(),
+            'tahunOptions' => $tahunOptions,
         ]);
     }
 

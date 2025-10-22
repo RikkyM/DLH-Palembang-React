@@ -3,8 +3,10 @@
 namespace App\Exports;
 
 use App\Models\Skrd;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -30,8 +32,10 @@ class SkrdDataExport implements FromView, ShouldAutoSize, WithStyles
 
     public function view(): View
     {
+        Carbon::setLocale('id');
+
         $query = Skrd::query()
-            ->with(['user:id,namaLengkap,lokasi', 'pembayaran' => function($query) {
+            ->with(['user:id,namaLengkap,lokasi', 'pembayaran' => function ($query) {
                 $query->select('skrdId', 'jumlahBayar', 'tanggalBayar', 'pembayaranBulan')->orderBy('tanggalBayar');
             }])
             ->addSelect([
@@ -66,6 +70,13 @@ class SkrdDataExport implements FromView, ShouldAutoSize, WithStyles
         }
 
         $data = $r->per_page != null ? $query->take((int) $r->get('per_page', 10))->get() : $query->get();
+
+        $p = collect(range(1, 12))->map(
+            fn($q, $i) =>
+            Str::title(strtolower(Carbon::create()->month($i + 1)->locale('id')->translatedFormat('F')))
+        );
+
+        dd($p);
 
         return view('exports.skrd.skrd-excel', compact('data'));
     }

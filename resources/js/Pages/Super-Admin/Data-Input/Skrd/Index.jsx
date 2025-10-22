@@ -1,4 +1,4 @@
-import { ChevronDown, FileClock, FileText, Filter, Search } from "lucide-react";
+import { ChevronDown, FileText, Filter, Search } from "lucide-react";
 import Layout from "../../Layout";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -7,8 +7,8 @@ import LoadingTable from "@/Components/LoadingTable";
 import TableHead from "@/Components/TableHead";
 import { Deferred, Head, router } from "@inertiajs/react";
 import React from "react";
-import { useProvider } from "@/Context/GlobalContext";
-import Dialog from "./Dialog";
+// import { useProvider } from "@/Context/GlobalContext";
+// import Dialog from "./Dialog";
 
 const Index = ({
   datas,
@@ -21,7 +21,7 @@ const Index = ({
   petugasOptions = [],
   tahunOptions = [],
 }) => {
-  const { modalState, openModal, closeModal } = useProvider();
+  // const { modalState, openModal, closeModal } = useProvider();
   const [search, setSearch] = useState(filters.search || "");
   const [kategori, setKategori] = useState(filters.kategori || "");
   const [subKategori, setSubKategori] = useState(filters.subKategori || "");
@@ -435,7 +435,7 @@ const Index = ({
                 if (petugas) params.append("petugas", petugas);
                 if (status) params.append("status", status);
                 if (perPage) params.append("per_page", perPage);
-                // if (tahunFilter) params.append("tahun", tahunFilter);
+                if (tahunFilter) params.append("tahun", tahunFilter);
                 window.open(
                   route("skrd.download-pdf") + "?" + params.toString(),
                   "_blank",
@@ -453,6 +453,8 @@ const Index = ({
                 if (kategori) params.append("kategori", kategori);
                 if (subKategori) params.append("sub-kategori", subKategori);
                 if (petugas) params.append("petugas", petugas);
+                if (kecamatan) params.append("kecamatan", kecamatan);
+                if (kelurahan) params.append("kelurahan", kelurahan);
                 if (perPage) params.append("per_page", perPage);
                 if (status) params.append("status", status);
 
@@ -680,11 +682,11 @@ const Index = ({
           {!isLoading && <SmartPagination datas={datas} filters={allFilters} />}
         </Deferred>
       </section>
-      <Dialog
+      {/* <Dialog
         isOpen={modalState.type === "history"}
         onClose={closeModal}
         item={modalState.data}
-      />
+      /> */}
     </Layout>
   );
 };

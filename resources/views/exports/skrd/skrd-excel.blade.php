@@ -24,6 +24,10 @@
         </tr>
     </thead>
     <tbody>
+        {{-- @php
+            $data = [];
+            $data[] = [1, 2, 3];
+        @endphp --}}
         @foreach ($data as $index => $item)
             <tr>
                 <td>{{ $item->noSkrd }}</td>
@@ -53,11 +57,13 @@
                             return $jumlahBulan > 0 ? $pembayaran->jumlahBayar / $jumlahBulan : 0;
                         });
 
+                        // $data[] = $totalBayarBulan;
+
                         $tanggalBayarBulan = $pembayaranBulan->first()
                             ? \Carbon\Carbon::parse($pembayaranBulan->first()->tanggalBayar)->format('d-m-Y')
                             : '-';
                     @endphp
-                    <td>{{ $totalBayarBulan > 0 ? $bulan : '-' }}</td>
+                    <td>{{ $totalBayarBulan > 0 ? 'Rp '. number_format($totalBayarBulan, 0, ',', '.') : '-' }}</td>
                     <td>{{ $tanggalBayarBulan }}</td>
                 @endfor
                 <td>
@@ -69,5 +75,8 @@
                 </td>
             </tr>
         @endforeach
+        {{-- @php
+            dd($data);
+        @endphp --}}
     </tbody>
 </table>

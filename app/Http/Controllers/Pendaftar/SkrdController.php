@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Pendaftar;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
+use App\Models\Kecamatan;
+use App\Models\Kelurahan;
 use App\Models\Skrd;
 use App\Models\SubKategori;
 use Carbon\Carbon;
@@ -31,6 +33,8 @@ class SkrdController extends Controller
         $getSortDir = $request->get('direction', 'desc');
         $getKategori = $request->get('kategori');
         $getSubKategori = $request->get('sub-kategori');
+        $getKecamatan = $request->get('kecamatan');
+        $getKelurahan = $request->get('kelurahan');
         $getStatus = $request->get('status');
         $getBulan = $request->get('bulan');
         $getTahun = $request->get('tahun');
@@ -57,7 +61,8 @@ class SkrdController extends Controller
                 'namaSubKategori',
                 'namaPendaftar',
                 'created_at',
-                'fileSkrd'
+                'fileSkrd',
+                'historyAction'
             ])
             ->addSelect([
                 'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
@@ -82,11 +87,20 @@ class SkrdController extends Controller
         }
 
         if ($getSearch && trim($getSearch) !== '') {
-            $skrd->where('namaObjekRetribusi', 'like', "%{$getSearch}%");
+            $skrd->where('namaObjekRetribusi', 'like', "%{$getSearch}%")
+                ->orWhere('noSkrd', 'like', "%{$getSearch}%");
         }
 
         if ($getKategori) {
             $skrd->where('namaKategori', $getKategori);
+        }
+
+        if ($getKecamatan) {
+            $skrd->where('kecamatanObjekRetribusi', $getKecamatan);
+        }
+
+        if ($getKelurahan) {
+            $skrd->where('kelurahanObjekRetribusi', $getKelurahan);
         }
 
         if ($getSubKategori) {
@@ -114,19 +128,39 @@ class SkrdController extends Controller
             })->select('kodeSubKategori', 'namaSubKategori')->get()
             : collect();
 
+        $kecamatan = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
+            ->get()
+            ->map(fn($kec) => [
+                'value' => $kec->namaKecamatan,
+                'label' => $kec->namaKecamatan,
+            ]);
+
+        $kelurahan = $getKecamatan
+            ? Kelurahan::with('kecamatan')
+            ->select('kodeKelurahan', 'namaKelurahan')
+            ->whereRelation('kecamatan', 'namaKecamatan', $getKecamatan)
+            ->get()
+            ->map(fn($kel) => [
+                'value' => $kel->namaKelurahan,
+                'label' => $kel->namaKelurahan
+            ])
+            : collect();
+
         $tahunOptions = Skrd::selectRaw('YEAR(created_at) as tahun')
             ->distinct()->orderByDesc('tahun')->pluck('tahun');
 
         $datas = $getPage <= 0 ? $skrd->get() : $skrd->paginate($getPage)->withQueryString();
 
         return Inertia::render('Pendaftar/Data-Input/Skrd/Index', [
-            'datas' => $datas,
+            'datas' => Inertia::defer(fn() => $datas),
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
                 'sort' => $getSortBy,
                 'direction' => $getSortDir,
                 'kategori' => $getKategori,
                 'subKategori' => $getSubKategori,
+                'kecamatan' => $getKecamatan,
+                'kelurahan' => $getKelurahan,
                 'status' => $getStatus,
                 'bulan' => $getBulan,
                 'tahun' => $getTahun,
@@ -134,8 +168,10 @@ class SkrdController extends Controller
             ],
             'kategoriOptions' => $kategori,
             'subKategoriOptions' => $subKategori,
+            'kecamatanOptions' => $kecamatan,
+            'kelurahanOptions' => $kelurahan,
             'bulan' => $this->getBulan(),
-            'tahunOptions' => $tahunOptions
+            'tahunOptions' => $tahunOptions,
         ]);
     }
 
