@@ -193,7 +193,7 @@ class WajibRetribusiController extends Controller
             ->values()
             ->map(fn($t) => ['value' => $t, 'label' => $t]);
 
-            $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
+        $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render("Kabid/Data-Input/Wajib-Retribusi/{$view}", [
             'datas' => $datas,
@@ -309,7 +309,7 @@ class WajibRetribusiController extends Controller
      */
     public function show($status, WajibRetribusi $retribusi)
     {
-        $retribusi->load(['pemilik', 'kelurahan', 'kecamatan', 'kategori', 'subKategori', 'uptd']);
+        $retribusi->load(['pemilik', 'kelurahan', 'kecamatan', 'kategori', 'subKategori', 'uptd', 'penagih']);
 
         $pemohonOptions = Pemilik::select('id', 'namaPemilik')
             ->orderBy('namaPemilik')
@@ -422,7 +422,7 @@ class WajibRetribusiController extends Controller
 
         $dataSkrd = [
             'noWajibRetribusi' => $retribusi->noWajibRetribusi,
-            'noSkrd' => $retribusi->noSkrd,
+            'noSkrd' => $retribusi->noSkrd ?? Skrd::generateNoSkrd(),
             'uptdId' => $retribusi->uptdId,
             'namaPendaftar' => $retribusi->user->namaLengkap,
             'namaObjekRetribusi' => $retribusi->namaObjekRetribusi,

@@ -5,6 +5,7 @@ namespace App\Exports;
 use App\Models\Skrd;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -65,26 +66,33 @@ class SkrdDataExport implements FromView, ShouldAutoSize, WithStyles, WithColumn
                     $query->select('skrdId', 'jumlahBayar', 'tanggalBayar', 'pembayaranBulan')->orderBy('tanggalBayar');
                 },
                 'setoran' => fn($q) => $q->where('status', 'Approved'),
-                'detailSetoran.setoran' => fn($q) => $q->orderBy('tanggalBayar')
+                'detailSetoran',
+                'detailSetoran.setoran'
             ])
-            ->addSelect([
-                'skrd.*',
-                'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
-                    ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
-                    ->whereColumn('skrdId', 'skrd.id'),
-                'setoran_sum_jumlah' => DB::table('setoran')
-                    ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
-                    ->whereColumn('skrdId', 'skrd.id'),
-                DB::raw("({$paidEfektif}) as jumlah_tertagih"),
-                DB::raw("(COALESCE(tagihanPerTahunSkrd,0) - ({$paidEfektif})) as sisa_tertagih"),
-                DB::raw("
+            ->orderByDesc('id');
+
+        if (in_array(Auth::user()->role, ['ROLE_KUPTD', 'ROLE_KASUBAG_TU_UPDT'])) {
+            $query->where('uptdId', Auth::user()->uptdId);
+        }
+
+        $query->addSelect([
+            'skrd.*',
+            'pembayaran_sum_jumlah_bayar' => DB::table('pembayaran')
+                ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
+                ->whereColumn('skrdId', 'skrd.id'),
+            'setoran_sum_jumlah' => DB::table('setoran')
+                ->selectRaw('COALESCE(SUM(jumlahBayar), 0)')
+                ->whereColumn('skrdId', 'skrd.id'),
+            DB::raw("({$paidEfektif}) as jumlah_tertagih"),
+            DB::raw("(COALESCE(tagihanPerTahunSkrd,0) - ({$paidEfektif})) as sisa_tertagih"),
+            DB::raw("
                     CASE
                     WHEN COALESCE(tagihanPerTahunSkrd,0) = 0 THEN 'Tidak Ada Tagihan'
                     WHEN (COALESCE(tagihanPerTahunSkrd,0) - ({$paidEfektif})) <= 0 THEN 'Lunas'
                     ELSE 'Belum Lunas'
                     END as status_bayar
                 "),
-            ]);
+        ]);
 
         $r = $this->request;
 
@@ -171,8 +179,6 @@ class SkrdDataExport implements FromView, ShouldAutoSize, WithStyles, WithColumn
 
             return [$m => $nama];
         });
-
-        // dd($data);
 
         return view('exports.skrd.skrd-excel', compact('data', 'bulanMap'));
     }

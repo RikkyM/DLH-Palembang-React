@@ -25,10 +25,10 @@ class WajibRetribusiRequest extends FormRequest
         $isEdit = $this->isMethod('put') || $this->isMethod('patch');
         $rules = [
             'noSkrd' => $isEdit ? [
-                'sometimes',
+                'nullable',
                 Rule::unique('wajib_retribusi', 'noSkrd')->ignore($this->retribusi, 'id')
             ] : [
-                'required',
+                'nullable',
                 Rule::unique('wajib_retribusi', 'noSkrd')
             ],
             'namaObjekRetribusi' => 'required|string',
@@ -68,13 +68,13 @@ class WajibRetribusiRequest extends FormRequest
         ];
 
         if ($this->isMethod('post')) {
-            $rules['noWajibRetribusi'] = 'required|unique:wajib_retribusi,noWajibRetribusi';
+            $rules['noWajibRetribusi'] = 'sometimes|nullable|unique:wajib_retribusi,noWajibRetribusi';
             // $rules['fotoBangunan'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
             $rules['fotoBerkas'] = 'sometimes|nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
         }
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {
-            $rules['noWajibRetribusi'] = 'sometimes|unique:wajib_retribusi,noWajibRetribusi,' . $this->retribusi;
+            $rules['noWajibRetribusi'] = 'sometimes|nullable|unique:wajib_retribusi,noWajibRetribusi,' . $this->retribusi;
             // $rules['fotoBangunan'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
             $rules['fotoBerkas'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
         }

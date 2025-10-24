@@ -69,7 +69,7 @@
                     @endphp
                     {{-- <td>{{ $totalBayarBulan > 0 ? $totalBayarBulan : null }}</td>
                     <td>{{ $tanggalBayarBulan }}</td> --}}
-                    <td>{{ $jumlahBayarBulan && $jumlahBayarBulan > 0 ? $jumlahBayarBulan : null }}</td>
+                    <td>{{ $jumlahBayarBulan > 0 ? $jumlahBayarBulan : '-' }}</td>
 
                     {{-- Kolom "TGL BAYAR" bulan ini --}}
                     <td>{{ $tanggalBayarBulan ?? '-' }}</td>

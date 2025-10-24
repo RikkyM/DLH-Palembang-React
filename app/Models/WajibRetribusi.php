@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\Cast\String_;
 
 class WajibRetribusi extends Model
 {
@@ -89,47 +88,81 @@ class WajibRetribusi extends Model
     /**
      * Method generate nomor wajib retribusi
      */
-    protected static function generateNoWajibRetribusi()
+    public static function generateNoWajibRetribusi()
     {
         return DB::transaction(function () {
             $tahun = date('Y');
 
-            $lastWajib = WajibRetribusi::whereYear('updated_at', $tahun)
+            $lastWajib = WajibRetribusi::whereYear('created_at', $tahun)
                 ->whereNotNull('noWajibRetribusi')
                 ->where('noWajibRetribusi', '!=', '')
                 ->lockForUpdate()
                 ->get()
-                ->map(function ($item) {
-                    $parts = explode('.', $item->noWajibRetribusi);
+                // ->map(function ($item) {
+                //     $parts = explode('.', $item->noWajibRetribusi);
 
-                    if (count($parts) === 3) {
-                        $nomor = (int) $parts[1];
-                        $tahun = (int) $parts[2];
-                    } else {
-                        $nomor = (int) $parts[0];
-                        $tahun = (int) $parts[1];
-                    }
+                //     if (count($parts) === 3) {
+                //         $nomor = $parts[1];
+                //         $tahun = $parts[2];
+                //     } elseif (count($parts) === 2) { 
+                //         $nomor = $parts[0];
+                //         $tahun = $parts[1];
+                //     } else {
+                //         return null;
+                //     }
 
-                    $item->nomor_urut = $nomor;
-                    $item->tahun_urut = $tahun;
+                //     // dd($parts[1]);
 
-                    return $item;
-                })
+                //     $item->nomor_urut = $nomor;
+                //     $item->tahun_urut = $tahun;
+
+                //     return $item;
+                // })
                 ->sortByDesc('tahun_urut')
                 ->sortByDesc('nomor_urut')
                 ->first();
 
+
+            $query = WajibRetribusi::whereYear('created_at', date('Y'))
+                ->whereNotNull('noWajibRetribusi')
+                ->where('noWajibRetribusi', '!=', '')
+                ->get()
+                ->sortByDesc('id')
+                ->first();
+
+
             $lastNumber = 0;
-            if ($lastWajib) {
-                $parts = explode('.', $lastWajib->noWajibRetribusi);
-                $lastNumber = count($parts) === 3 ? intval($parts[1]) : intval($parts[0]);
+            if ($query) {
+                $parts = explode('.', $query->noWajibRetribusi);
+                // dd($parts);
+                if (count($parts) > 3) {
+                    $lastNumber = intval($parts[0]);
+                } elseif (count($parts) === 3) {
+                    $lastNumber = intval($parts[1]);
+                } elseif (count($parts) === 2) {
+                    $lastNumber = intval($parts[0]);
+                } else {
+                    $lastNumber = 0;
+                }
             }
 
-            $nextWajib = $lastNumber + 1;
-            $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
-            // dd($formatted);
+            $nextNumber = $lastNumber + 1;
+            $format = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+            
+            return $format . '.' . date('Y');
 
-            return $formatted . '.' . $tahun;
+
+            // $lastNumber = 0;
+            // if ($lastWajib) {
+            //     $parts = explode('.', $lastWajib->noWajibRetribusi);
+            //     $lastNumber = count($parts) === 3 ? intval($parts[1]) : intval($parts[0]);
+            // }
+
+            // $nextWajib = $lastNumber + 1;
+            // $formatted = str_pad($nextWajib, 3, '0', STR_PAD_LEFT);
+            // dd($formatted, $lastWajib);
+
+            // return $formatted . '.' . $tahun;
         });
     }
 

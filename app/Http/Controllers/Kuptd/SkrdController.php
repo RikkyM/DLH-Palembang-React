@@ -57,7 +57,8 @@ class SkrdController extends Controller
                 'namaSubKategori',
                 'namaPendaftar',
                 'created_at',
-                'fileSkrd'
+                'fileSkrd',
+                'historyAction'
             ])
             ->where('uptdId', auth()->user()->uptdId)
             ->addSelect([
@@ -83,7 +84,8 @@ class SkrdController extends Controller
         }
 
         if ($getSearch && trim($getSearch) !== '') {
-            $skrd->where('namaObjekRetribusi', 'like', "%{$getSearch}%");
+            $skrd->where('namaObjekRetribusi', 'like', "%{$getSearch}%")
+                ->orWhere('noSkrd', 'like', "%{$getSearch}%");
         }
 
         if ($getKategori) {
@@ -121,7 +123,7 @@ class SkrdController extends Controller
         $datas = $getPage <= 0 ? $skrd->get() : $skrd->paginate($getPage)->withQueryString();
 
         return Inertia::render('Kuptd/Data-Input/Skrd/Index', [
-            'datas' => $datas,
+            'datas' => Inertia::defer(fn() => $datas),
             'filters' => [
                 'search' => $getSearch && trim($getSearch) !== '' ? $getSearch : null,
                 'sort' => $getSortBy,

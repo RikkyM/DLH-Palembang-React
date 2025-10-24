@@ -8,7 +8,7 @@ const KuptdNavigation = () => {
   const { auth, inbox } = props[0];
 
   let data = inbox.filter(
-    (i) => i.kodeKecamatan === auth.user?.uptd?.kecamatan?.kodeKecamatan,
+    (i) => i.kodeKecamatan === auth.user?.uptd?.kodeKecamatan,
   );
 
   const permohonanItems = [

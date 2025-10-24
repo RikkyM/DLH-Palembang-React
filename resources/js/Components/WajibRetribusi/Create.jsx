@@ -18,6 +18,7 @@ const WajibRetribusiCreate = ({
   badanUsahaOptions = [],
   userRole = "ROLE_PENDAFTAR",
   customProps = {},
+  generateWr = null,
 }) => {
   const [mapReset, setMapReset] = useState(0);
 
@@ -43,7 +44,7 @@ const WajibRetribusiCreate = ({
   const initialData = {
     namaObjekRetribusi: "",
     noSkrd: "",
-    noWajibRetribusi: "",
+    noWajibRetribusi: generateWr || "",
     pemilikId: "",
     penagihId: "",
     alamatObjekRetribusi: "",
@@ -359,7 +360,8 @@ const WajibRetribusiCreate = ({
   return (
     <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
       <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-5">
-        <div className="col-span-3 grid w-full gap-5 lg:col-span-3 lg:grid-cols-4">
+        {/* <div className="col-span-3 grid w-full gap-5 lg:col-span-3 lg:grid-cols-4"> */}
+        <div className="col-span-3 grid w-full gap-5 lg:col-span-3 lg:grid-cols-3">
           <FormInput className="lg:col-span-1">
             <Label
               htmlFor="namaObjekRetribusi"
@@ -391,12 +393,13 @@ const WajibRetribusiCreate = ({
             </Label>
             <Input
               id="noWajibRetribusi"
-              className={`${errors.noWajibRetribusi && "border border-red-500"}`}
+              className={`${errors.noWajibRetribusi && "border border-red-500"} read-only:bg-transparent read-only:cursor-default read-only:selection:bg-transparent`}
               placeholder="Nomor Objek Retribusi..."
-              value={data.noWajibRetribusi}
+              value={data.noWajibRetribusi || generateWr}
               onChange={(e) =>
                 handleInputChange("noWajibRetribusi", e.target.value)
               }
+              // readOnly={true}
             />
             {errors.noWajibRetribusi && (
               <span className="text-xs text-red-500">
@@ -404,7 +407,7 @@ const WajibRetribusiCreate = ({
               </span>
             )}
           </FormInput>
-          <FormInput className="lg:col-span-1">
+          {/* <FormInput className="lg:col-span-1">
             <Label
               htmlFor="noSkrd"
               className="after:text-red-500 after:content-['*']"
@@ -421,7 +424,7 @@ const WajibRetribusiCreate = ({
             {errors.noSkrd && (
               <span className="text-xs text-red-500">{errors.noSkrd}</span>
             )}
-          </FormInput>
+          </FormInput> */}
           <FormInput className="lg:col-span-1">
             <Label htmlFor="tanggalSkrd">Tanggal SPKRD</Label>
             <Input

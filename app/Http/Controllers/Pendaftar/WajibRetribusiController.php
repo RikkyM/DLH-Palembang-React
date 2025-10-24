@@ -413,7 +413,12 @@ class WajibRetribusiController extends Controller
                 ];
             });
 
-        return Inertia::render('Pendaftar/Data-Input/Wajib-Retribusi/Create', [
+        $generateNoWR = WajibRetribusi::generateNoWajibRetribusi();
+
+        // dd($generateNoWR);
+
+        return Inertia::render('Pendaftar/Data-Input/Wajib-Retribusi/Create',  [
+            'generateWr' => $generateNoWR,
             'pemohonOptions' => $pemohonOptions,
             'kecamatanOptions' => $kecamatanOptions,
             'kelurahanOptions' => $kelurahanOptions,
@@ -427,8 +432,10 @@ class WajibRetribusiController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(WajibRetribusiRequest $request)
-    {
+    public function store(
+        WajibRetribusiRequest $request
+        // Request $request
+    ) {
         $validated = $request->validated();
 
         $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
@@ -482,7 +489,6 @@ class WajibRetribusiController extends Controller
 
             $tarifPertahun = $tarif * $nilaiRumus;
             $tarifPerbulan = $tarif * $nilaiRumusPerbulan;
-
         }
 
 
@@ -592,6 +598,8 @@ class WajibRetribusiController extends Controller
                     ]
                 ]
             ];
+
+            // dd($dataToSave);
 
             WajibRetribusi::create($dataToSave);
 

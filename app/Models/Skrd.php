@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use League\Flysystem\ChecksumProvider;
 
 class Skrd extends Model
 {
@@ -46,6 +48,69 @@ class Skrd extends Model
         "updated_at",
         "varetribusi"
     ];
+
+    public static function generateNoSkrd()
+    {
+        return DB::transaction(function () {
+            $getYear = date('Y');
+
+            $getSkrd = self::whereYear('created_at', $getYear)
+                ->whereNotNull('noSkrd')
+                ->where('noSkrd', '!=', '')
+                ->lockForUpdate()
+                ->orderByDesc('nomorOnly')
+                ->get();
+
+            $getFormat = '/SPKRD/DLH/' . $getYear;
+
+            $validated = $getSkrd->filter(function ($q) use ($getFormat) {
+                // return strpos($q->noSkrd, $getFormat) !== false;
+                // return preg_match('/^\d+\/SPKRD\/DLH\/\d{4}$/', $q->noSkrd);
+                return preg_match("/^\d+" . preg_quote($getFormat, '/') . '$/', $q->noSkrd);
+            });
+
+            if ($validated->isEmpty()) {
+                return '001' . $getFormat;
+            }
+
+            $maxNumber = 0;
+
+            foreach ($validated as $skrd) {
+                if (preg_match('/^(\d+)\//', $skrd->noSkrd, $matches)) {
+                    $number = (int) $matches[1];
+                    if ($number > $maxNumber) {
+                        $maxNumber = $number;
+                    }
+                }
+            }
+
+            $newNumber = $maxNumber + 1;
+
+            $format = str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+
+            return $format . $getFormat;
+        });
+    }
+
+    // public static function normalizeSkrd($noSkrd)
+    // {
+    //     if (preg_match('/^(\d+)\.[A-Z]\/SPKRD\/DLH\/(\d{4})$/', $noSkrd, $matches)) {
+    //         $number = $matches[1] + 1;
+    //         $year = $matches[2];
+    //         $format = str_pad($number, 3, '0', STR_PAD_LEFT);
+    //         return $format . '/SPKRD/DLH/' . $year;
+    //     }
+
+    //     if (preg_match('/^\d+\.[A-Z]\.\d+\.\d{4}$/', $noSkrd)) {
+    //         return self::generateNoSkrd();
+    //     }
+
+    //     if (preg_match('/^\d+\/SPKRD\/DLH\/\d{4}$/', $noSkrd, $matches)) {
+    //         return $noSkrd;
+    //     }
+
+    //     return self::generateNoSkrd();
+    // }
 
     public static function boot()
     {
