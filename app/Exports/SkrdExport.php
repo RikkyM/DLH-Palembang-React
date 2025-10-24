@@ -6,10 +6,11 @@ use App\Models\Skrd;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class SkrdExport implements FromArray, ShouldAutoSize, WithStyles
+class SkrdExport implements FromArray, ShouldAutoSize, WithStyles, WithColumnFormatting
 {
     protected $id;
 
@@ -113,6 +114,29 @@ class SkrdExport implements FromArray, ShouldAutoSize, WithStyles
     {
         return [
             1 => ['font' => ['bold' => true]]
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        $formatIDR = '_("Rp"* #,##0_);_("Rp"* (#,##0);_("Rp"* "-"_);_(@_)';
+        return [
+            'K' => $formatIDR,
+            'L' => $formatIDR,
+            'M' => $formatIDR,
+            'N' => $formatIDR,
+            'O' => $formatIDR,
+            'Q' => $formatIDR,
+            'S' => $formatIDR,
+            'U' => $formatIDR,
+            'W' => $formatIDR,
+            'Y' => $formatIDR,
+            'AA' => $formatIDR,
+            'AC' => $formatIDR,
+            'AE' => $formatIDR,
+            'AG' => $formatIDR,
+            'AI' => $formatIDR,
+            'AK' => $formatIDR,
         ];
     }
 }

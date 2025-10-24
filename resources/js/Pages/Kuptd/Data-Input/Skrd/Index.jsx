@@ -524,12 +524,24 @@ const Index = ({
                               <button
                                 className="flex items-center gap-1.5 whitespace-nowrap outline-none"
                                 onClick={(e) => {
-                                  window.open(
-                                    route("skrd.pdf", {
-                                      filename: data.fileSkrd,
-                                    }),
-                                    "_blank",
-                                  );
+                                  e.preventDefault();
+                                  if (data.fileSkrd !== null) {
+                                    window.open(
+                                      route("skrd.pdf", {
+                                        filename: data.fileSkrd,
+                                      }),
+                                      "_blank",
+                                    );
+                                  }
+
+                                  if (data.fileSkrd === null) {
+                                    window.open(
+                                      route("skrd.download-data-pdf", {
+                                        id: data.id,
+                                      }),
+                                      "_blank",
+                                    );
+                                  }
                                 }}
                               >
                                 <FileText size={20} /> SKRD
