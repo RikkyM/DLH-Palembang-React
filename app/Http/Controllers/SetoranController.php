@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SetoranExport;
 use App\Models\Setoran;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SetoranController extends Controller
 {
@@ -31,5 +33,15 @@ class SetoranController extends Controller
             ]);
 
         return $pdf->stream('setoran.pdf');
+    }
+
+    public function exportSetoran(Request $request)
+    {
+        $filename = 'Setoran-' . Date('d-m-Y_H:i:s') . '.xlsx';
+
+        return Excel::download(
+            new SetoranExport($request),
+            $filename
+        );
     }
 }

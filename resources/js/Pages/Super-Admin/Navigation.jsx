@@ -91,8 +91,12 @@ const SuperAdminNavigation = () => {
       ],
     },
     {
-      label: "Retribusi",
+      label: "Penerimaan",
       route: "super-admin.rekapitulasi.penerimaan",
+      activeRoute: [
+        "super-admin.rekapitulasi.penerimaan",
+        "super-admin.rekapitulasi.penerimaan.detail"
+      ],
     },
     {
       label: "Nota Tagihan",

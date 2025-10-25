@@ -62,7 +62,7 @@ const Index = ({ users, uptd, filters }) => {
     <Layout title="USER / PEGAWAI">
       <Head title="User / Pegawai" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
-        <div className="mb-3 flex w-full flex-col items-center justify-between gap-3 rounded bg-white p-2 md:flex-row md:gap-0">
+        <div className="mb-3 flex w-full flex-col items-end justify-between flex-wrap gap-3 rounded bg-white p-2 md:flex-row md:gap-3">
           <label
             htmlFor="search"
             className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
@@ -78,12 +78,12 @@ const Index = ({ users, uptd, filters }) => {
               onChange={(e) => setSearch(e.target.value)}
             />
           </label>
-          <div className="flex gap-1.5">
+          <div className="flex gap-1.5 w-max">
             <a
               href={route("super-admin.export-user")}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-1.5 rounded bg-green-700 px-3 py-2 text-sm text-white outline-none md:w-auto"
+              className="flex  items-center justify-center gap-1.5 rounded bg-green-700 px-3 py-2 text-sm text-white outline-none md:w-auto"
             >
               <span>Excel</span>
             </a>

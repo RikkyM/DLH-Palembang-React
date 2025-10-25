@@ -15,13 +15,6 @@ const BendaharaNavigation = () => {
     },
   ];
 
-  // const tagihanItems = [
-  //   {
-  //     label: "Data Surat Tagihan",
-  //     route: "bendahara.surat-tagihan.index",
-  //   },
-  // ];
-
   const penerimaanItems = [
     {
       label: "Data Setoran",
@@ -30,6 +23,29 @@ const BendaharaNavigation = () => {
         "bendahara.data-setoran.index",
         "bendahara.data-setoran.show",
       ],
+    },
+  ];
+
+  const laporanItems = [
+    {
+      label: "Jumlah SPKRD",
+      route: "bendahara.rekapitulasi.spkrd",
+      activeRoute: [
+        "bendahara.rekapitulasi.spkrd",
+        "bendahara.rekapitulasi.spkrd.detail",
+      ],
+    },
+    {
+      label: "Penerimaan",
+      route: "bendahara.rekapitulasi.penerimaan",
+      activeRoute: [
+        "bendahara.rekapitulasi.penerimaan",
+        "bendahara.rekapitulasi.penerimaan.detail",
+      ],
+    },
+    {
+      label: "Nota Tagihan",
+      route: "bendahara.rekapitulasi.nota-tagihan",
     },
   ];
 
@@ -108,10 +124,17 @@ const BendaharaNavigation = () => {
         >
           Nota Tagihan
         </Link>
+
         <AccordionItem
           title="Penerimaan"
           items={penerimaanItems}
           defaultOpen={isAccordionActive(penerimaanItems)}
+        />
+        
+        <AccordionItem
+          title="Laporan"
+          items={laporanItems}
+          defaultOpen={isAccordionActive(laporanItems)}
         />
 
         <div className="py-3">

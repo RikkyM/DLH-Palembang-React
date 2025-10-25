@@ -359,7 +359,7 @@ const DataSetoran = ({
                   params.append("per_page", perPage);
 
                 window.open(
-                  route("export-pemohon") + "?" + params.toString(),
+                  route("export-setoran") + "?" + params.toString(),
                   "_blank",
                 );
               }}

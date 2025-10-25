@@ -3,15 +3,17 @@
 namespace App\Exports;
 
 use App\Models\Uptd;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class RekapRetribusiExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
+class RekapRetribusiExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithColumnFormatting
 {
     protected $request;
 
@@ -30,7 +32,11 @@ class RekapRetribusiExport implements FromCollection, WithHeadings, WithMapping,
         $filter = function ($query, $tanggal = 'tanggalBayar') use ($startDate, $endDate) {
             $query->when($startDate && $endDate, fn($q) => $q->whereBetween($tanggal, [$startDate, $endDate]))
                 ->when($startDate && !$endDate, fn($q) => $q->where($tanggal, '>=', $startDate))
-                ->when(!$startDate && $endDate, fn($q) => $q->where($tanggal, '<=', $endDate));
+                ->when(!$startDate && $endDate, fn($q) => $q->where($tanggal, '<=', $endDate))
+                ->when(!$startDate && !$endDate, fn($q) => $q->whereBetween($tanggal, [
+                    Carbon::now()->startOfYear()->toDateString(),
+                    Carbon::now()->endOfYear()->toDateString()
+                ]));
         };
 
         $rangeCol = DB::raw('DATE(COALESCE(tanggalSkrd, created_at))');
@@ -59,9 +65,10 @@ class RekapRetribusiExport implements FromCollection, WithHeadings, WithMapping,
                 return [
                     'id'        => $i,
                     'namaUptd'        => $u->namaUptd,
+                    'skrd'            => $u->skrd->count(),
                     'tagihanPertahun' => $tagihanPertahun,
                     'totalBayar'      => $totalBayar,
-                    'sisaBayar'       => $tagihanPertahun - $totalBayar,
+                    'sisaBayar'       => ($tagihanPertahun - $totalBayar),
                 ];
             })->values();
     }
@@ -71,21 +78,32 @@ class RekapRetribusiExport implements FromCollection, WithHeadings, WithMapping,
         return [
             $row['id'] + 1,
             $row['namaUptd'] ?? '',
-            'Rp ' . number_format($row['tagihanPertahun'] ?? 0, 0, ',', '.'),
-            'Rp ' . number_format($row['totalBayar'] ?? 0, 0, ',', '.'),
-            'Rp ' . number_format($row['sisaBayar'] ?? 0, 0, ',', '.')
+            (string) $row['skrd'] ?? "'0",
+            (string) $row['tagihanPertahun'] ?? 0,
+            (string) $row['totalBayar'] ?? 0,
+            (string) $row['sisaBayar'] ?? 0,
         ];
     }
 
     public function headings(): array
     {
-        return ['no', 'WILAYAH UPTD', 'JUMLAH TAGIHAN', 'TOTAL BAYAR', 'SISA BAYAR'];
+        return ['No', 'Total SPKRD', 'WILAYAH UPTD', 'JUMLAH TAGIHAN', 'TOTAL BAYAR', 'SISA BAYAR'];
     }
 
     public function styles(Worksheet $sheet)
     {
         return [
             1 => ['font' => ['bold' => true]]
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        $formatIDR = '_("Rp"* #,##0_);_("Rp"* (#,##0);_("Rp"* "-"_);_(@_)';
+        return [
+            'D' => $formatIDR,
+            'E' => $formatIDR,
+            'F' => $formatIDR
         ];
     }
 }

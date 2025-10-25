@@ -22,13 +22,6 @@ const Index = ({ datas, filters, role }) => {
 
   const routeConfig = roleConfig[role];
 
-  // const columns = [
-  //   { key: "id", label: "No", align: "text-center w-10" },
-  //   { key: "namaKategori", label: "Kategori", align: "text-left" },
-  //   { key: "namaSubKategori", label: "Sub Kategori", align: "text-left" },
-  //   { key: "jumlah", label: "Jumlah", align: "text-center" },
-  // ];
-
   const numberFormat = (data) => {
     return (
       new Intl.NumberFormat("id-ID", {
@@ -111,7 +104,6 @@ const Index = ({ datas, filters, role }) => {
 
     router.get(route(`${routeConfig}.rekapitulasi.spkrd.detail`), params, {
       preserveScroll: true,
-      replace: false,
     });
   };
 
@@ -224,15 +216,6 @@ const Index = ({ datas, filters, role }) => {
             <>
               <table className="min-w-full divide-y divide-gray-300 p-3">
                 <thead className="truncate">
-                  {/* <TableHead
-                    columns={columns}
-                    sort={sort}
-                    direction={direction}
-                    onSort={(column, dir) => {
-                      setSort(column);
-                      setDirection(dir);
-                    }}
-                  /> */}
                   <tr className="text-white *:sticky *:top-0 *:z-0 *:cursor-pointer *:select-none *:bg-[#F1B174] *:p-2 *:text-xs *:font-medium *:uppercase *:md:text-sm">
                     <th className="sticky top-0 z-0 w-10 cursor-pointer select-none bg-[#F1B174] text-center">
                       no

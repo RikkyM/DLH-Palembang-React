@@ -144,13 +144,16 @@ class RekapitulasiController extends Controller
 
         abort_unless($kategori && $subKategori, 422, 'Kategori & Sub Kategori wajib.');
 
+        $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
+
         $query = Skrd::with('setoran', 'detailSetoran', 'pembayaran')
-            ->when($startDate, fn($q) => $q->whereDate('created_at', '>=', $startDate))
-            ->when($endDate, fn($q)   => $q->whereDate('created_at', '<=', $endDate))
+            ->when($startDate, fn($q) => $q->whereDate($rangeCol, '>=', $startDate))
+            ->when($endDate, fn($q)   => $q->whereDate($rangeCol, '<=', $endDate))
             ->where('namaKategori', $kategori)
             ->where('namaSubKategori', $subKategori);
 
         $datas =  $query->orderBy($getSortBy, $getSortDir)->get();
+
         // $datas = $getPage <= 0
         //     ? $query->orderBy($getSortBy, $getSortDir)->get()
         //     : $query->orderBy($getSortBy, $getSortDir)->paginate($getPage)->withQueryString();
@@ -174,49 +177,104 @@ class RekapitulasiController extends Controller
 
         $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
 
-        return Inertia::render('Super-Admin/Rekapitulasi/Penerimaan/Index', [
-            'datas' => Inertia::defer(function () use ($startDate, $endDate, $rangeCol) {
-                return
-                    Uptd::with([
-                        'skrd' => function ($q) use ($startDate, $endDate, $rangeCol) {
-                            if ($startDate || $endDate) {
-                                $q->when($startDate && $endDate, fn($data) => $data->whereBetween($rangeCol, [$startDate, $endDate]))
-                                    ->when($startDate && !$endDate, fn($data) => $data->where($rangeCol, '>=', $startDate))
-                                    ->when(!$startDate && $endDate, fn($data) => $data->where($rangeCol, '<=', $endDate));
-                            } else {
-                                $q->whereYear($rangeCol, Carbon::now()->year);
-                            }
-                        },
-                        'skrd.pembayaran',
-                        'skrd.setoran' => function ($q) {
-                            $q->where('status', 'Approved')->where('current_stage', 'bendahara');
-                        },
-                        'skrd.setoran.detailSetoran'
-                        => fn($q) => $q->whereYear('tanggalBayar', Carbon::now()->year),
-                        // ,
-                    ])
-                    ->where('namaUptd', '!=', 'Dinas')
-                    ->get(['id', 'namaUptd'])
-                    ->map(function ($u) {
-                        return [
-                            'namaUptd' => $u->namaUptd,
-                            'skrd' => $u->skrd->count(),
-                            'tagihanPertahun' => $u->skrd->sum('tagihanPerTahunSkrd'),
-                            'totalBayar' => $u->skrd->sum(function ($skrd) {;
-                                $totalSetoran = $skrd->setoran->sum(function ($setoran) {
-                                    return $setoran->detailSetoran->sum('jumlahBayar');
-                                });
-                                $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar') ?? 0;
+        $datas =
+            Uptd::with([
+                'skrd' => function ($q) use ($startDate, $endDate, $rangeCol) {
+                    if ($startDate || $endDate) {
+                        $q->when($startDate && $endDate, fn($data) => $data->whereBetween($rangeCol, [$startDate, $endDate]))
+                            ->when($startDate && !$endDate, fn($data) => $data->where($rangeCol, '>=', $startDate))
+                            ->when(!$startDate && $endDate, fn($data) => $data->where($rangeCol, '<=', $endDate));
+                    } else {
+                        $q->whereYear($rangeCol, Carbon::now()->year);
+                    }
+                },
+                'skrd.pembayaran',
+                'skrd.setoran' => function ($q) {
+                    $q->where('status', 'Approved')->where('current_stage', 'bendahara');
+                },
+                'skrd.setoran.detailSetoran'
+                => fn($q) => $q->whereYear('tanggalBayar', Carbon::now()->year),
+                // ,
+            ])
+            ->where('namaUptd', '!=', 'Dinas')
+            ->get(['id', 'namaUptd'])
+            ->map(function ($u) {
+                return [
+                    'namaUptd' => $u->namaUptd,
+                    'skrd' => $u->skrd->count(),
+                    'tagihanPertahun' => $u->skrd->sum('tagihanPerTahunSkrd'),
+                    'totalBayar' => $u->skrd->sum(function ($skrd) {;
+                        $totalSetoran = $skrd->setoran->sum(function ($setoran) {
+                            return $setoran->detailSetoran->sum('jumlahBayar');
+                        });
+                        $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar') ?? 0;
 
-                                return $totalSetoran + $totalPembayaran;
-                            })
-                        ];
-                    })->values();
-            }),
+                        return $totalSetoran + $totalPembayaran;
+                    })
+                ];
+            })->values();
+
+        return Inertia::render('Super-Admin/Rekapitulasi/Penerimaan/Index', [
+            // 'datas' => Inertia::defer(function () use ($startDate, $endDate, $rangeCol) {
+            //     return
+
+            // }),
+            'datas' => $datas,
             'filters' => [
                 'tanggal_mulai' => $startDate,
                 'tanggal_akhir' => $endDate
-            ]
+            ],
+            'role' => Auth::user()->role,
+        ]);
+    }
+
+    public function penerimaanDetail(Request $request)
+    {
+        $startDate = $request->get('tanggal_mulai');
+        $endDate = $request->get('tanggal_akhir');
+        $uptd = $request->get('uptd');
+
+        $getSortBy = $request->get('sort', 'created_at');
+        $getSortDir = $request->get('direction', 'desc');
+
+        // abort_unless($uptd, 422, 'UPTD wajib diisi.');
+
+        $rangeCol = DB::raw('DATE(COALESCE(tanggalSkrd, created_at))');
+
+        $datas =
+            Skrd::with('setoran', 'uptd', 'detailSetoran', 'pembayaran')
+            ->when(
+                $startDate || $endDate,
+                function ($q) use ($startDate, $endDate, $rangeCol) {
+                    if ($startDate && $endDate) {
+                        [$from, $to] = $startDate <= $endDate ? [$startDate, $endDate] : [$endDate, $startDate];
+                        $q->whereBetween($rangeCol, [$from, $to]);
+                    } elseif ($startDate) {
+                        $q->where($rangeCol, '>=', $startDate);
+                    } else {
+                        $q->where($rangeCol, '<=', $endDate);
+                    }
+                },
+                function ($q) use ($rangeCol) {
+                    $q->whereBetween($rangeCol, [
+                        Carbon::now()->startOfYear()->toDateString(),
+                        Carbon::now()->endOfYear()->toDateString(),
+                    ]);
+                }
+            )
+
+            ->whereRelation('uptd', 'namaUptd', $uptd)
+            ->orderBy($getSortBy, $getSortDir)
+            ->get();
+
+        return Inertia::render('Super-Admin/Rekapitulasi/Penerimaan/Detail', [
+            'datas' => Inertia::defer(fn() => $datas),
+            'filters' => [
+                'tanggal_mulai' => $startDate,
+                'tanggal_akhir' => $endDate,
+                'uptd' => $uptd,
+            ],
+            'bulan' => $this->getBulan()
         ]);
     }
 

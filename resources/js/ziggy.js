@@ -1,5 +1,4 @@
 const Ziggy = {
-  
   port: 8000,
   defaults: {},
   routes: {

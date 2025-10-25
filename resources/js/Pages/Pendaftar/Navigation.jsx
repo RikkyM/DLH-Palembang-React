@@ -59,6 +59,29 @@ const PendaftarNavigation = () => {
     },
   ];
 
+  const laporanItems = [
+    {
+      label: "Jumlah SPKRD",
+      route: "pendaftar.rekapitulasi.spkrd",
+      activeRoute: [
+        "pendaftar.rekapitulasi.spkrd",
+        "pendaftar.rekapitulasi.spkrd.detail",
+      ],
+    },
+    {
+      label: "Penerimaan",
+      route: "pendaftar.rekapitulasi.penerimaan",
+      activeRoute: [
+        "pendaftar.rekapitulasi.penerimaan",
+        "pendaftar.rekapitulasi.penerimaan.detail",
+      ],
+    },
+    {
+      label: "Nota Tagihan",
+      route: "pendaftar.rekapitulasi.nota-tagihan",
+    },
+  ];
+
   // const settingItems = [
   //   {
   //     label: "Uptd",
@@ -143,6 +166,11 @@ const PendaftarNavigation = () => {
           title="Inbox Data"
           items={inboxItems}
           defaultOpen={isAccordionActive(inboxItems)}
+        />
+        <AccordionItem
+          title="Laporan"
+          items={laporanItems}
+          defaultOpen={isAccordionActive(laporanItems)}
         />
 
         <div className="py-3">

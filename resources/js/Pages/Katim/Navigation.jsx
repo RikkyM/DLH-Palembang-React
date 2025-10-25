@@ -63,6 +63,29 @@ const KatimNavigation = () => {
     },
   ];
 
+  const laporanItems = [
+    {
+      label: "Jumlah SPKRD",
+      route: "katim.rekapitulasi.spkrd",
+      activeRoute: [
+        "katim.rekapitulasi.spkrd",
+        "katim.rekapitulasi.spkrd.detail",
+      ],
+    },
+    {
+      label: "Penerimaan",
+      route: "katim.rekapitulasi.penerimaan",
+      activeRoute: [
+        "katim.rekapitulasi.penerimaan",
+        "katim.rekapitulasi.penerimaan.detail",
+      ],
+    },
+    {
+      label: "Nota Tagihan",
+      route: "katim.rekapitulasi.nota-tagihan",
+    },
+  ];
+
   // const settingItems = [
   //   {
   //     label: "Uptd",
@@ -147,6 +170,11 @@ const KatimNavigation = () => {
           title="Inbox Data"
           items={inboxItems}
           defaultOpen={isAccordionActive(inboxItems)}
+        />
+        <AccordionItem
+          title="Laporan"
+          items={laporanItems}
+          defaultOpen={isAccordionActive(laporanItems)}
         />
         <div className="py-3">
           <Calendar />

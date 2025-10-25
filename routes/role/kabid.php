@@ -4,6 +4,7 @@ use App\Http\Controllers\Kabid\AccountController;
 use App\Http\Controllers\Kabid\DashboardController;
 use App\Http\Controllers\Kabid\SkrdController;
 use App\Http\Controllers\Kabid\WajibRetribusiController;
+use App\Http\Controllers\RekapitulasiController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('role:ROLE_KABID')->prefix('kabid')->name('kabid.')->group(function () {
@@ -24,6 +25,24 @@ Route::middleware('role:ROLE_KABID')->prefix('kabid')->name('kabid.')->group(fun
         });
 
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
+    });
+
+    Route::prefix('rekapitulasi')->name('rekapitulasi.')->group(function () {
+        Route::controller(RekapitulasiController::class)->group(function () {
+            Route::prefix('/spkrd')->group(function () {
+                Route::get('/', 'spkrd')->name('spkrd');
+                Route::get('/detail', 'spkrdDetail')
+                ->name('spkrd.detail');
+            });
+            Route::prefix('/penerimaan')->group(function () {
+                Route::get('/', 'penerimaan')->name('penerimaan');
+                Route::get('/detail', 'penerimaanDetail')
+                ->name('penerimaan.detail');
+            });
+            Route::prefix('/nota-tagihan')->group(function () {
+                Route::get('/', 'notaTagihan')->name('nota-tagihan');
+            });
+        });
     });
 
     Route::get('/akun', [AccountController::class, 'index'])->name('akun');

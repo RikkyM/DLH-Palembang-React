@@ -1,14 +1,25 @@
 import { Deferred, Head, Link, router } from "@inertiajs/react";
-import { useEffect, useState } from "react";
-import TableHead from "@/Components/TableHead";
-import LoadingTable from "../../../Components/LoadingTable";
+import { useState } from "react";
+import LoadingTable from "@/Components/LoadingTable";
 
-const Index = ({ datas, filters }) => {
+const Index = ({ datas, filters, role }) => {
   const [startDate, setStartDate] = useState(filters.tanggal_mulai ?? "");
   const [endDate, setEndDate] = useState(filters.tanggal_akhir ?? "");
   const [sort, setSort] = useState(filters.sort || null);
   const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const roleConfig = {
+    ROLE_SUPERADMIN: "super-admin",
+    ROLE_PENDAFTAR: "pendaftar",
+    ROLE_KUPTD: "kuptd",
+    ROLE_KATIM: "katim",
+    ROLE_KABID: "kabid",
+    ROLE_KASUBAG_TU_UPDT: "kasubag",
+    ROLE_BENDAHARA: "bendahara",
+  };
+
+  const routeConfig = roleConfig[role];
 
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
@@ -42,6 +53,20 @@ const Index = ({ datas, filters }) => {
   const calculatePercentage = (part, total) => {
     if (!total || total === 0) return 0;
     return ((part / total) * 100).toFixed(2);
+  };
+
+  const openDetail = (data) => {
+    router.get(
+      route(`${routeConfig}.rekapitulasi.penerimaan.detail`),
+      {
+        uptd: data.namaUptd,
+        tanggal_mulai: startDate || filters.tanggal_mulai || null,
+        tanggal_akhir: endDate || filters.tanggal_akhir || null,
+      },
+      {
+        preserveScroll: true,
+      },
+    );
   };
 
   return (
@@ -96,10 +121,10 @@ const Index = ({ datas, filters }) => {
                 <Link
                   as="button"
                   href={route(
-                    "super-admin.rekapitulasi.penerimaan",
+                    `${routeConfig}.rekapitulasi.penerimaan`,
                     buildParams({
-                      tanggal_mulai: startDate || undefined,
-                      tanggal_akhir: endDate || undefined,
+                      ...(startDate && { tanggal_mulai: startDate }),
+                      ...(endDate && { tanggal_akhir: endDate }),
                     }),
                   )}
                   preserveState
@@ -165,15 +190,6 @@ const Index = ({ datas, filters }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    {/* <td>1</td>
-                  <td>TEST</td>
-                  <td>3</td>
-                  <td>10000</td>
-                  <td>10000</td>
-                  <td>10000</td>
-                  <td>10000</td> */}
-                  </tr>
                   {datas && (datas.data ?? datas)?.length > 0 ? (
                     <>
                       {datas &&
@@ -187,10 +203,23 @@ const Index = ({ datas, filters }) => {
                           ).toFixed(2);
 
                           return (
-                            <tr
+                            <Link
                               key={data.id ?? i}
-                              className={`*:p-2 *:text-xs *:sm:text-sm *:lg:text-base ${i % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
-                              onClick={() => openDetail(data)}
+                              className={`*:cursor-pointer *:p-2 *:text-xs *:sm:text-sm *:lg:text-base ${i % 2 === 0 ? "bg-[#B3CEAF] hover:bg-[#A0BD9A]" : "bg-white hover:bg-neutral-200"}`}
+                              as="tr"
+                              href={route(
+                                `${routeConfig}.rekapitulasi.penerimaan.detail`,
+                                {
+                                  tanggal_mulai:
+                                    startDate || filters.tanggal_mulai || "",
+                                  tanggal_akhir:
+                                    endDate || filters.tanggal_akhir || "",
+                                  uptd: data.namaUptd,
+                                },
+                              )}
+                              preserveState
+                              prefetch
+                              preserveScroll
                             >
                               <td className="text-left">
                                 <div className="w-10 text-center">
@@ -212,7 +241,7 @@ const Index = ({ datas, filters }) => {
                               </td>
                               <td>{persentaseBayar}%</td>
                               <td>{persentaseBelumBayar}%</td>
-                            </tr>
+                            </Link>
                           );
                         })}
                       <tr className="sticky bottom-0 bg-white">

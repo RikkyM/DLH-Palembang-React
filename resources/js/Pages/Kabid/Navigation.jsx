@@ -51,28 +51,28 @@ const KabidNavigation = () => {
     },
   ];
 
-  // const settingItems = [
-  //   {
-  //     label: "Uptd",
-  //     // route: "super-admin.uptd",
-  //   },
-  //   {
-  //     label: "User / Pegawai",
-  //     // route: "super-admin.user",
-  //   },
-  //   {
-  //     label: "Kecamatan",
-  //   },
-  //   {
-  //     label: "Kelurahan",
-  //   },
-  //   {
-  //     label: "Kategori",
-  //   },
-  //   {
-  //     label: "Sub Kategori",
-  //   },
-  // ];
+  const laporanItems = [
+    {
+      label: "Jumlah SPKRD",
+      route: "kabid.rekapitulasi.spkrd",
+      activeRoute: [
+        "kabid.rekapitulasi.spkrd",
+        "kabid.rekapitulasi.spkrd.detail",
+      ],
+    },
+    {
+      label: "Penerimaan",
+      route: "kabid.rekapitulasi.penerimaan",
+      activeRoute: [
+        "kabid.rekapitulasi.penerimaan",
+        "kabid.rekapitulasi.penerimaan.detail",
+      ],
+    },
+    {
+      label: "Nota Tagihan",
+      route: "kabid.rekapitulasi.nota-tagihan",
+    },
+  ];
 
   const isAccordionActive = (items) =>
     items.some((item) => {
@@ -130,6 +130,12 @@ const KabidNavigation = () => {
           title="Inbox Data"
           items={inboxInputs}
           defaultOpen={isAccordionActive(inboxInputs)}
+        />
+
+        <AccordionItem
+          title="Laporan"
+          items={laporanItems}
+          defaultOpen={isAccordionActive(laporanItems)}
         />
 
         <div className="py-3">
