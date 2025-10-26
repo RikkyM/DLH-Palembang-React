@@ -363,7 +363,7 @@ const Step2 = ({
                   return (
                     <tr key={i} className="*:py-1.5">
                       <td className="text-center">{i + 1}</td>
-                      <td className="px-2 text-center">
+                      <td className="px-2 text-center max-w-20">
                         <button
                           type="button"
                           onClick={() => toggleBulan(i)}
@@ -372,9 +372,16 @@ const Step2 = ({
                             locked
                               ? "cursor-not-allowed border-slate-300 bg-slate-300 text-slate-600"
                               : row.aktif
-                                ? "border-[#B3CEAF] bg-[#B3CEAF]/20 text-[#2b5d22]"
+                                ? "border-red-500 bg-red-400/20 text-red-600"
                                 : "border-slate-300 bg-slate-200 text-slate-600"
                           }`}
+                          // className={`rounded border px-2 py-0.5 text-xs shadow ${
+                          //   locked
+                          //     ? "cursor-not-allowed border-slate-300 bg-slate-300 text-slate-600"
+                          //     : row.aktif
+                          //       ? "border-[#B3CEAF] bg-[#B3CEAF]/20 text-[#2b5d22]"
+                          //       : "border-slate-300 bg-slate-200 text-slate-600"
+                          // }`}
                           title={
                             locked
                               ? "Sudah dibayar (terkunci)"
@@ -383,7 +390,11 @@ const Step2 = ({
                                 : "Aktifkan"
                           }
                         >
-                          {locked ? "Sudah" : row.aktif ? "Aktif" : "Nonaktif"}
+                          {locked
+                            ? "Sudah"
+                            : row.aktif
+                              ? "Nonaktifkan"
+                              : "Aktifkan"}
                         </button>
                       </td>
 

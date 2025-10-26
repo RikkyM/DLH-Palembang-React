@@ -87,11 +87,7 @@ const Index = ({
   const filterRef = useRef(null);
 
   const columns = [
-    {
-      key: "id",
-      label: "No",
-      align: "text-center min-w-20 max-w-20 left-0 z-10 bg-red-500",
-    },
+    { key: "id", label: "No", align: "text-center" },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
@@ -100,7 +96,7 @@ const Index = ({
     {
       key: "noSkrd",
       label: "no spkrd",
-      align: "text-left truncate max-w-32 left-20",
+      align: "text-left truncate",
     },
     {
       key: "created_at",
