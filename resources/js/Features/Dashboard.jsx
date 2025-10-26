@@ -67,7 +67,7 @@ const DashboardPages = ({
               </div>
             </div>
             <div className="flex flex-col text-sm">
-              <span className="font-semibold">Jumlah SKRD</span>
+              <span className="font-semibold">Jumlah SPKRD</span>
               <span className="font-semibold text-[#4C60AE]">
                 <Deferred data="stats" fallback={<p>Memuat...</p>}>
                   {loading && <p>Memuat...</p>}
