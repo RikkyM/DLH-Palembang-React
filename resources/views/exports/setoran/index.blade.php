@@ -92,7 +92,7 @@
                                 <td style="vertical-align: top; padding: 3px 4px;">Terbilang</td>
                                 <td style="width: 20px; vertical-align: top; padding: 3px 4px;">:</td>
                                 <td style="width: 420px; padding: 3px 4px; text-transform: capitalize;">
-                                    {{ terbilang($setoran->jumlahBayar) }}</td>
+                                    {{ terbilang($setoran->jumlahBayar) }} Rupiah</td>
                             </tr>
                             <tr>
                                 <td style="vertical-align: top; padding: 3px 4px;">Untuk Pembayaran</td>
