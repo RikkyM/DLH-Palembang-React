@@ -37,7 +37,9 @@ class TemplateFourthImport implements ToCollection, WithHeadingRow, WithCalculat
 
         $data = [];
         foreach ($rows as $index => $row) {
-            $skrd = Skrd::whereNoskrd($row['nomor_wajib_retribusi'])->first();
+            $skrd = Skrd::whereNoskrd($row['nomor_spkrd'])->first();
+
+            $data[] = $skrd['noSkrd'] ?? $row['nomor_spkrd'] . ' test';
 
             // $data[] = $skrd ?? $row['nomor_wajib_retribusi'] . ' cek dulu';
             // if ($skrd) {
@@ -133,6 +135,6 @@ class TemplateFourthImport implements ToCollection, WithHeadingRow, WithCalculat
             //     // }
             // }
         }
-        // dd($data);
+        dd($data);
     }
 }

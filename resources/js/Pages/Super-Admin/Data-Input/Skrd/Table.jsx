@@ -45,14 +45,14 @@ const Table = ({
               key={data.id || index}
               className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
             >
-              <td className="sticky left-0 text-center">
+              <td className="text-center">
                 {((datas.current_page ?? 1) - 1) *
                   (datas.per_page ?? (datas.data ?? datas).length) +
                   index +
                   1}
               </td>
-              <td className="sticky left-16">{data.noWajibRetribusi}</td>
-              <td className="sticky left-[12rem+3rem]">{data.noSkrd}</td>
+              <td>{data.noWajibRetribusi}</td>
+              <td>{data.noSkrd}</td>
               <td>
                 {new Date(data.created_at)
                   .toLocaleDateString("en-GB")

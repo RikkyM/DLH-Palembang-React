@@ -22,7 +22,7 @@ class TemplateFirstImport implements ToCollection, WithHeadingRow, WithCalculate
     {
         $data = [];
         foreach ($rows as $index => $row) {
-            $skrd = Skrd::whereNowajibretribusi($row['nomor_spkrd'])->first();
+            $skrd = Skrd::whereNoskrd($row['nomor_spkrd'])->first();
 
             if ($skrd) {
                 $nomorNota = Setoran::generateNomorNota();

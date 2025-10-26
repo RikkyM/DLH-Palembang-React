@@ -42,7 +42,7 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
                 Skrd::whereNoskrd($row['nomor_spkrd'])->first();
 
             // if (!empty($skrd)) {
-            // $data[] = $skrd['noSkrd'];
+            // $data[] = $skrd['noSkrd'] ?? $row['nomor_spkrd'] . ' test';
             // $data[] = $skrd['noSkrd'] ?? $row['nomor_wajib_retribusi'] . ' cek dulu';
 
             // }
