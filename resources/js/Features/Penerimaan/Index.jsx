@@ -518,7 +518,7 @@ const DataSetoran = ({
                                 })}
                                 target="_blank"
                                 rel="noreferrer noopener"
-                                title="Bukti Setoran"
+                                title="Nota Bayar"
                               >
                                 <ReceiptText className="size-5" />
                               </a>
