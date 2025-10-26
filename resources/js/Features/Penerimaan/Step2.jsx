@@ -266,7 +266,7 @@ const Step2 = ({
             </Label>
             <Input
               id="keteranganBulan"
-              placeholder={`ex. Januari s.d Desember ${ new Date().getFullYear()}`}
+              placeholder={`ex. Januari s.d Desember ${new Date().getFullYear()}`}
               className={`${errors.keteranganBulan && "border border-red-500"}`}
               value={data.keteranganBulan || ""}
               onChange={(e) => {
@@ -315,8 +315,12 @@ const Step2 = ({
         </FormInput>
         <div className="col-span-2">
           <div className="flex items-center justify-between p-2">
-            <div className="text-sm font-semibold md:text-lg">
+            <div className="text-sm font-semibold md:text-lg flex items-center gap-1.5 lg:gap-3 flex-wrap">
               <h2>Detail Input Setoran</h2>
+              <span className="text-xs text-red-500 font-normal">
+                (pilih bulan yang sesuai dengan yang dibayar tekan tombol
+                aktifkan)
+              </span>
             </div>
             {/* <div className="flex gap-2">
               <button
@@ -363,7 +367,7 @@ const Step2 = ({
                   return (
                     <tr key={i} className="*:py-1.5">
                       <td className="text-center">{i + 1}</td>
-                      <td className="px-2 text-center max-w-44">
+                      <td className="max-w-44 px-2 text-center">
                         <button
                           type="button"
                           onClick={() => toggleBulan(i)}
