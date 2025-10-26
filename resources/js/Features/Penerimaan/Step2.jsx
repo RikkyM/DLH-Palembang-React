@@ -262,7 +262,7 @@ const Step2 = ({
               htmlFor="keteranganBulan"
               className="after:text-red-500 after:content-['*']"
             >
-              Keterangan Bulan
+              Bulan Bayar
             </Label>
             <Input
               id="keteranganBulan"
@@ -274,9 +274,14 @@ const Step2 = ({
                 clearErrors("keteranganBulan");
               }}
             />
-            {errors.keteranganBulan && (
+
+            {errors.keteranganBulan ? (
               <span className="text-xs text-red-500">
                 {errors.keteranganBulan}
+              </span>
+            ) : (
+              <span className="text-xs text-red-500">
+                *Jangan Lupa masukan tahun
               </span>
             )}
           </FormInput>
@@ -315,9 +320,9 @@ const Step2 = ({
         </FormInput>
         <div className="col-span-2">
           <div className="flex items-center justify-between p-2">
-            <div className="text-sm font-semibold md:text-lg flex items-center gap-1.5 lg:gap-3 flex-wrap">
+            <div className="flex flex-wrap items-center gap-1.5 text-sm font-semibold md:text-lg lg:gap-3">
               <h2>Detail Input Setoran</h2>
-              <span className="text-xs text-red-500 font-normal">
+              <span className="text-xs font-normal text-red-500">
                 (pilih bulan yang sesuai dengan yang dibayar tekan tombol
                 aktifkan)
               </span>
