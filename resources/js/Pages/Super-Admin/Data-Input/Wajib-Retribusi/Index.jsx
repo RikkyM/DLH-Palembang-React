@@ -419,12 +419,11 @@ const Index = ({
             </label>
           </div>
           <div className="flex w-full flex-wrap items-center justify-end gap-1.5 *:text-xs md:w-max md:justify-start *:md:text-sm">
-            {/* <Link
-              href={route("super-admin.wajib-retribusi.create")}
-              className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
+            <div
+              className="rounded bg-green-200 px-3 py-1.5 text-sm font-medium text-white"
             >
               Tambah
-            </Link> */}
+            </div>
             <button
               onClick={() => {
                 const params = new URLSearchParams();

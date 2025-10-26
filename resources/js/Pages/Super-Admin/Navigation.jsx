@@ -72,6 +72,10 @@ const SuperAdminNavigation = () => {
 
   const penerimaanItems = [
     {
+      label: "Input-Setoran",
+      route: "super-admin.input-setoran",
+    },
+    {
       label: "Data Setoran",
       route: "super-admin.data-setoran.index",
       activeRoute: [
@@ -91,7 +95,7 @@ const SuperAdminNavigation = () => {
       ],
     },
     {
-      label: "Penerimaan",
+      label: "Retribusi",
       route: "super-admin.rekapitulasi.penerimaan",
       activeRoute: [
         "super-admin.rekapitulasi.penerimaan",

@@ -41,9 +41,9 @@ const Index = ({ datas, filters, uptdOptions = [] }) => {
       <Head title="Penagih" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
-          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
-            <div className="flex w-full items-center gap-2 sm:w-max">
-              <div className="relative flex w-full gap-2 sm:w-max">
+          <div className="flex w-full gap-2 sm:flex-row md:w-auto md:items-center">
+            <div className="flex w-full items-center gap-2 w-max">
+              <div className="relative flex w-full gap-2 w-max">
                 <label
                   htmlFor="showData"
                   className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"
@@ -92,7 +92,7 @@ const Index = ({ datas, filters, uptdOptions = [] }) => {
               onClick={() => {
                 openModal("create");
               }}
-              className="flex w-full items-center justify-center gap-1.5 rounded bg-green-500 px-3 py-2 text-sm text-white outline-none md:w-auto"
+              className="flex w-full items-center justify-center gap-1.5 rounded bg-green-500 px-3 py-1.5 text-sm text-white outline-none md:w-auto"
             >
               <span>Tambah Data</span>
             </button>

@@ -1,4 +1,4 @@
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import { lazy, Suspense, useMemo, useState } from "react";
 import { CreditCard, FileText, User } from "lucide-react";
 const Step1 = lazy(() => import("./Step1"));
@@ -10,6 +10,8 @@ const namaBulanID = (i) =>
   new Date(0, i).toLocaleString("id-ID", { month: "long" });
 
 const InputSetoran = ({ skrdOptions = [], metodeOptions = [], role }) => {
+  const { props } = usePage();
+  const { auth } = props[0];
   const [step, setStep] = useState(1);
   const [previewData, setPreviewData] = useState({
     namaObjekRetribusi: "",
@@ -440,13 +442,19 @@ const InputSetoran = ({ skrdOptions = [], metodeOptions = [], role }) => {
                 Selanjutnya
               </button>
             )}
-            {step === 3 && (
+            {step === 3 && auth.user.role !== "ROLE_SUPERADMIN" ? (
               <button
                 type="submit"
                 className="rounded border bg-white px-3 py-1.5 text-sm shadow"
               >
                 {processing ? "Menyimpan..." : "Simpan Data"}
               </button>
+            ) : (
+              <div
+                className="rounded border bg-white text-gray-400 px-3 py-1.5 text-sm shadow"
+              >
+                {processing ? "Menyimpan..." : "Simpan Data"}
+              </div>
             )}
           </div>
         </div>

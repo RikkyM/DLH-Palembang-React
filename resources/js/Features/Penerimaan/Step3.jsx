@@ -1,3 +1,5 @@
+import { usePage } from "@inertiajs/react";
+
 const namaBulanID = (i) =>
   new Date(0, i).toLocaleString("id-ID", { month: "long" });
 
@@ -134,9 +136,7 @@ const Step3 = ({ data, previewData }) => {
               </td>
             </tr>
             <tr>
-              <td className="whitespace-nowrap align-top">
-                Jumlah Bulan
-              </td>
+              <td className="whitespace-nowrap align-top">Jumlah Bulan</td>
               <td className="px-1.5 align-top">:</td>
               <td className="align-top">{data.jumlahBulanBayar} Bulan</td>
             </tr>
@@ -188,7 +188,7 @@ const Step3 = ({ data, previewData }) => {
         </div>
       </div>
       <div className="overflow-auto">
-        <h2 className="text-sm font-semibold lg:text-base mb-2">
+        <h2 className="mb-2 text-sm font-semibold lg:text-base">
           Detail Pembayaran
         </h2>
         <table className="w-full">

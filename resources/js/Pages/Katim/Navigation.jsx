@@ -73,7 +73,7 @@ const KatimNavigation = () => {
       ],
     },
     {
-      label: "Penerimaan",
+      label: "Retribusi",
       route: "katim.rekapitulasi.penerimaan",
       activeRoute: [
         "katim.rekapitulasi.penerimaan",

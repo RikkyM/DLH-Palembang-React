@@ -36,7 +36,7 @@ const BendaharaNavigation = () => {
       ],
     },
     {
-      label: "Penerimaan",
+      label: "Retribusi",
       route: "bendahara.rekapitulasi.penerimaan",
       activeRoute: [
         "bendahara.rekapitulasi.penerimaan",

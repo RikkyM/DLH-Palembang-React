@@ -61,7 +61,7 @@ const KabidNavigation = () => {
       ],
     },
     {
-      label: "Penerimaan",
+      label: "Retribusi",
       route: "kabid.rekapitulasi.penerimaan",
       activeRoute: [
         "kabid.rekapitulasi.penerimaan",

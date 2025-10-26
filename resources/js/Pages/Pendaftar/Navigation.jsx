@@ -69,7 +69,7 @@ const PendaftarNavigation = () => {
       ],
     },
     {
-      label: "Penerimaan",
+      label: "Retribusi",
       route: "pendaftar.rekapitulasi.penerimaan",
       activeRoute: [
         "pendaftar.rekapitulasi.penerimaan",
