@@ -5,7 +5,9 @@ const Table = ({
   TableHead,
   columns,
   sort,
+  setSort,
   direction,
+  setDirection,
   bulan,
   datas,
   fmtIDR,
@@ -43,14 +45,14 @@ const Table = ({
               key={data.id || index}
               className={`*:p-2 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
             >
-              <td className="text-center">
+              <td className="sticky left-0 text-center">
                 {((datas.current_page ?? 1) - 1) *
                   (datas.per_page ?? (datas.data ?? datas).length) +
                   index +
                   1}
               </td>
-              <td>{data.noWajibRetribusi}</td>
-              <td>{data.noSkrd}</td>
+              <td className="sticky left-16">{data.noWajibRetribusi}</td>
+              <td className="sticky left-[12rem+3rem]">{data.noSkrd}</td>
               <td>
                 {new Date(data.created_at)
                   .toLocaleDateString("en-GB")

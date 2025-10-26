@@ -87,16 +87,20 @@ const Index = ({
   const filterRef = useRef(null);
 
   const columns = [
-    { key: "id", label: "No", align: "text-center" },
     {
-      key: "noSkrd",
-      label: "no spkrd",
-      align: "text-left truncate",
+      key: "id",
+      label: "No",
+      align: "text-center min-w-20 max-w-20 left-0 z-10 bg-red-500",
     },
     {
       key: "noWajibRetribusi",
       label: "no wajib retribusi",
       align: "text-left truncate",
+    },
+    {
+      key: "noSkrd",
+      label: "no spkrd",
+      align: "text-left truncate max-w-32 left-20",
     },
     {
       key: "created_at",
@@ -476,7 +480,9 @@ const Index = ({
                   TableHead={TableHead}
                   columns={columns}
                   sort={sort}
+                  setSort={setSort}
                   direction={direction}
+                  setDirection={setDirection}
                   bulan={bulan}
                   datas={datas}
                   fmtIDR={fmtIDR}
