@@ -363,7 +363,7 @@ const Step2 = ({
                   return (
                     <tr key={i} className="*:py-1.5">
                       <td className="text-center">{i + 1}</td>
-                      <td className="px-2 text-center max-w-20">
+                      <td className="px-2 text-center max-w-44">
                         <button
                           type="button"
                           onClick={() => toggleBulan(i)}
