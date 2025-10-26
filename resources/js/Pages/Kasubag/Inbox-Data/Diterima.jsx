@@ -42,7 +42,7 @@ const Diterima = ({
     },
     {
       key: "penanggungJawab",
-      label: "penanggung jawab",
+      label: "pemohon",
       align: "text-left truncate",
     },
     {
@@ -266,7 +266,7 @@ const Diterima = ({
                     options={pjOptions}
                     value={pj}
                     onChange={(val) => setpj(val)}
-                    placeholder="Pilih Penanggung Jawab"
+                    placeholder="Pilih Pemohon"
                   />
                   <SearchableSelect
                     id="tahunList"

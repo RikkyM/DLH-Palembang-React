@@ -47,7 +47,7 @@ const Diproses = ({
     },
     {
       key: "penanggungJawab",
-      label: "penanggung jawab",
+      label: "pemohon",
       align: "text-left truncate",
     },
     {
@@ -323,7 +323,7 @@ const Diproses = ({
                     options={pjList}
                     value={pj}
                     onChange={(val) => setpj(val)}
-                    placeholder="Pilih Penanggung Jawab"
+                    placeholder="Pilih Pemohon"
                   />
                 </div>
               </div>

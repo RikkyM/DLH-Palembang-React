@@ -50,7 +50,7 @@ const Diterima = ({
     },
     {
       key: "penanggungJawab",
-      label: "penanggung jawab",
+      label: "pemohon",
       align: "text-left truncate",
     },
     {
@@ -344,7 +344,7 @@ const Diterima = ({
                     options={pjList}
                     value={pj}
                     onChange={(val) => setpj(val)}
-                    placeholder="Pilih Penanggung Jawab"
+                    placeholder="Pilih Pemohon"
                   />
                 </div>
               </div>

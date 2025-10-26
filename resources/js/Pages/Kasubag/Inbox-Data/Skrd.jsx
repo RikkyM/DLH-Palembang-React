@@ -80,7 +80,7 @@ const Skrd = ({
     { key: "id", label: "No", align: "text-center" },
     {
       key: "noSkrd",
-      label: "no skrd",
+      label: "no spkrd",
       align: "text-left truncate",
     },
     {
@@ -90,7 +90,7 @@ const Skrd = ({
     },
     {
       key: "created_at",
-      label: "tanggal skrd",
+      label: "tanggal spkrd",
       align: "text-left truncate",
     },
     {

@@ -124,7 +124,7 @@ const DataSetoran = ({
   const columns = [
     { key: "created_at", label: "no", align: "text-left" },
     { key: "nomorNota", label: "nomor nota", align: "text-left" },
-    { key: "noSkrd", label: "nomor skrd", align: "text-left" },
+    { key: "noSkrd", label: "nomor spkrd", align: "text-left" },
     {
       key: "namaObjekRetribusi",
       label: "nama objek retribusi",
