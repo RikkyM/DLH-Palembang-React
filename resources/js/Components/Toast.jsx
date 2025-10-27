@@ -30,7 +30,7 @@ const Toast = ({ message, type = "success", duration = 3500, onDone }) => {
 
   return (
     <div
-      className={`${smallWidth} ${mediumWidth} ${typeClass} absolute rounded bg-green-500 p-2.5 text-sm font-semibold text-white transition-all duration-[.3s]`}
+      className={`${smallWidth} ${mediumWidth} ${typeClass} absolute w-max rounded bg-green-500 p-2.5 text-xs font-semibold text-white transition-all duration-[.3s] md:text-sm`}
     >
       {message}
     </div>

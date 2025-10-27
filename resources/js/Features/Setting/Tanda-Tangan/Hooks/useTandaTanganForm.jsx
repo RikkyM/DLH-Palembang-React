@@ -1,5 +1,5 @@
 import { useForm } from "@inertiajs/react";
-import { useToast } from "../../../../Context/ToastContext";
+import { useToast } from "@/Context/ToastContext";
 
 export function useTandaTanganForm(sigData) {
   const { showToast } = useToast();
