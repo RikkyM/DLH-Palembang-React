@@ -245,7 +245,7 @@ const Index = ({ datas, filters, role }) => {
                           );
                         })}
                       <tr className="sticky bottom-0 bg-white">
-                        <td colSpan={2} className="p-2 font-bold">
+                        <td colSpan={2} className="p-2 font-bold ">
                           Total
                         </td>
                         <td className="p-2">

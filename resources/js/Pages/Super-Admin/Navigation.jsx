@@ -146,7 +146,7 @@ const SuperAdminNavigation = () => {
   const settingItems = [
     {
       label: "Penanda Tangan",
-      // route: "super-admin.uptd.index",
+      route: "super-admin.penanda-tangan",
     },
     {
       label: "Data Instansi",

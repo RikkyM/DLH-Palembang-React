@@ -1,9 +1,12 @@
-import Layout from '../Layout';
+import Layout from "../Layout";
+import TandaTangan from "@/features/Setting/Tanda-Tangan/TandaTangan"
 
-const Index = () => {
+const Index = (props) => {
   return (
-    <Layout></Layout>
-  )
-}
+    <Layout title="Penanda Tangan">
+      <TandaTangan {...props} />
+    </Layout>
+  );
+};
 
-export default Index
+export default Index;

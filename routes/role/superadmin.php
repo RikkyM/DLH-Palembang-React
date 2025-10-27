@@ -12,6 +12,7 @@ use App\Http\Controllers\SuperAdmin\PemohonController;
 use App\Http\Controllers\SuperAdmin\PenagihController;
 use App\Http\Controllers\SuperAdmin\RekapitulasiController;
 use App\Http\Controllers\SuperAdmin\SetoranController;
+use App\Http\Controllers\SuperAdmin\SettingController;
 use App\Http\Controllers\SuperAdmin\SkrdController;
 use App\Http\Controllers\SuperAdmin\SubKategoriController;
 use App\Http\Controllers\SuperAdmin\UptdController;
@@ -98,6 +99,11 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::resource('/kategori', KategoriController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/sub-kategori', SubKategoriController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('/badan-usaha', BadanUsahaController::class)->only(['index', 'store', 'update']);
+    });
+
+    Route::prefix('setting')->controller(SettingController::class)->group(function() {
+        Route::get('/penanda-tangan', 'TandaTangan')->name('penanda-tangan');
+        Route::put('/penanda-tangan', 'TandaTanganUpdate')->name('penanda-tangan-update');
     });
 
     Route::get('/akun', [AccountController::class, 'index'])->name('akun');

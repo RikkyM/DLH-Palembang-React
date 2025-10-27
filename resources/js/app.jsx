@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { GlobalProvider } from "./Context/GlobalContext";
 import "../css/app.css";
 import "react-calendar/dist/Calendar.css";
+import { ToastProvider } from "./Context/ToastContext";
 
 createInertiaApp({
   progress: false,
@@ -13,10 +14,12 @@ createInertiaApp({
   setup({ el, App, props }) {
     createRoot(el).render(
       <GlobalProvider>
-        <App {...props} />
+        <ToastProvider>
+          <App {...props} />
+        </ToastProvider>
       </GlobalProvider>,
     );
   },
 }).then(() => {
-  document.getElementById('app').removeAttribute('data-page')
+  document.getElementById("app").removeAttribute("data-page");
 });
