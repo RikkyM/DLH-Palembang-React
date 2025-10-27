@@ -86,12 +86,12 @@ class TemplateFirstImport implements ToCollection, WithHeadingRow, WithCalculate
 
                 if ($detailSetoran->isNotEmpty()) {
                     $tanggalDiterima = $detailSetoran->pluck('tanggalBayar')[count($detailSetoran) - 1];
-                    // $data[] = $detailSetoran;
+
                     Setoran::create([
                         'nomorNota' => $nomorNota,
                         'skrdId' => $skrd['id'],
                         'noRef' => null,
-                        // 'tanggalBayar' => Date::excelToDateTimeObject($row['tgl_skrd'])->format('Y-m-d'),
+                        'namaKecamatan' => Str::title(strtolower($row['kecamatan'])),
                         'tanggalBayar' => Carbon::now(),
                         'jumlahBayar' => $row['sudah_bayar'],
                         'jumlahBulan' => count($detailSetoran),
@@ -114,10 +114,10 @@ class TemplateFirstImport implements ToCollection, WithHeadingRow, WithCalculate
                             'nomorNota' => $nomorNota,
                             'skrdId' => $skrd['id'],
                             'namaBulan' => $detSet['namaBulan'],
+                            'namaKecamatan' => Str::title(strtolower($row['kecamatan'])),
                             'tanggalBayar' => $detSet['tanggalBayar'],
                             'jumlahBayar' => $detSet['jumlahBayar'],
                             'keterangan' => null,
-                            // 'created_at' => Carbon::parse($detSet['tanggalBayar'])->startOfDay(),
                             'created_at' => Carbon::now(),
                             'updated_at' => now()
                         ]);

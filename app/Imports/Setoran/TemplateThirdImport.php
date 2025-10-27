@@ -112,12 +112,13 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
 
                 if ($detailSetoran->isNotEmpty()) {
                     $tanggalDiterima = $detailSetoran->pluck('tanggalBayar')[count($detailSetoran) - 1];
+
                     Setoran::create([
                         'nomorNota' => $nomorNota,
                         'skrdId' => $skrd['id'],
                         'noRef' => null,
+                        'namaKecamatan' => Str::title(strtolower($row['kecamatan'])),
                         'tanggalBayar' => Carbon::now(),
-                        // 'jumlahBayar' => count($detailSetoran) * $row['tarif_bulan'],
                         'jumlahBayar' => $row['jumlah_bayar'] ?? count($detailSetoran) * $row['per_bulan'],
                         'jumlahBulan' => count($detailSetoran),
                         'namaPenyetor' => null,
@@ -139,6 +140,7 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
                             'nomorNota' => $nomorNota,
                             'skrdId' => $skrd['id'],
                             'namaBulan' => $det['namaBulan'],
+                            'namaKecamatan' => Str::title(strtolower($row['kecamatan'])),
                             'tanggalBayar' =>   $det['tanggalBayar'],
                             'jumlahBayar' => $det['jumlahBayar'],
                             'keterangan' => null,
@@ -149,7 +151,5 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
                 }
             }
         }
-
-        // dd($data);
     }
 }

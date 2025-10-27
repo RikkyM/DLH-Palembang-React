@@ -16,6 +16,7 @@ class Setoran extends Model
         'nomorNota',
         'skrdId',
         'noRef',
+        'namaKecamatan',
         'tanggalBayar',
         'jumlahBayar',
         'jumlahBulan',

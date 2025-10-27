@@ -79,6 +79,7 @@ class TemplateSecondImport implements ToCollection, WithHeadingRow, WithCalculat
                         'nomorNota' => $nomorNota,
                         'skrdId' => $skrd['id'],
                         'noRef' => null,
+                        'namaKecamatan' => Str::title(strtolower($row['kecamatan'])),
                         'tanggalBayar' => Carbon::now(),
                         'jumlahBayar' => $row['jumlah_tertagih'],
                         'jumlahBulan' => count($detailSetoran),
@@ -101,6 +102,7 @@ class TemplateSecondImport implements ToCollection, WithHeadingRow, WithCalculat
                             'nomorNota' => $nomorNota,
                             'skrdId' => $skrd['id'],
                             'namaBulan' => $d['namaBulan'],
+                            'namaKecamatan' => Str::title(strtolower($row['kecamatan'])),
                             'tanggalBayar' =>   $d['tanggalBayar'],
                             'jumlahBayar' => $d['jumlahBayar'],
                             'keterangan' => null,
@@ -113,7 +115,6 @@ class TemplateSecondImport implements ToCollection, WithHeadingRow, WithCalculat
         }
 
         // dd($data, $detail);
-        // dd($data);
         // dd($detail);
     }
 }

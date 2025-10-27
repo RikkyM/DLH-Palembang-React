@@ -12,6 +12,7 @@ class DetailSetoran extends Model
         'skrdId',
         'nomorNota',
         'namaBulan',
+        'namaKecamatan',
         'tanggalBayar',
         'jumlahBayar',
         'keterangan',
