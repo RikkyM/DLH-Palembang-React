@@ -104,6 +104,8 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
     Route::prefix('setting')->controller(SettingController::class)->group(function() {
         Route::get('/penanda-tangan', 'TandaTangan')->name('penanda-tangan');
         Route::put('/penanda-tangan', 'TandaTanganUpdate')->name('penanda-tangan-update');
+        Route::get('/data-instansi', 'dataInstansi')->name('data-instansi');
+        Route::get('/informasi', 'informasi')->name('informasi');
     });
 
     Route::get('/akun', [AccountController::class, 'index'])->name('akun');

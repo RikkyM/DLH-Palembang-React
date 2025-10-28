@@ -197,6 +197,8 @@ const WajibRetribusiCreate = ({
   };
 
   const handleClearForm = () => {
+    if (userRole === "ROLE_SUPERADMIN") return null;
+
     setData({
       ...initialData,
       variabelValues: {},
@@ -317,13 +319,12 @@ const WajibRetribusiCreate = ({
     return total || 0;
   };
 
-
   useEffect(() => {
-      const total = calculateTotal();
+    const total = calculateTotal();
 
-      if (data.totalRetribusi !== total) {
-        setData("totalRetribusi", total);
-      }
+    if (data.totalRetribusi !== total) {
+      setData("totalRetribusi", total);
+    }
   }, [
     data.variabelValues,
     data.tarifRetribusi,
@@ -344,7 +345,7 @@ const WajibRetribusiCreate = ({
       totalRetribusi: total,
     };
 
-    console.log(submitData)
+    console.log(submitData);
 
     post(route(currentConfig.submitRoute), {
       data: submitData,
@@ -393,7 +394,7 @@ const WajibRetribusiCreate = ({
             </Label>
             <Input
               id="noWajibRetribusi"
-              className={`${errors.noWajibRetribusi && "border border-red-500"} read-only:bg-transparent read-only:cursor-default read-only:selection:bg-transparent`}
+              className={`${errors.noWajibRetribusi && "border border-red-500"} read-only:cursor-default read-only:bg-transparent read-only:selection:bg-transparent`}
               placeholder="Nomor Objek Retribusi..."
               value={data.noWajibRetribusi || generateWr}
               onChange={(e) =>
@@ -749,7 +750,9 @@ const WajibRetribusiCreate = ({
               : JSON.parse(selectedSubKategori.variabel || "[]");
           }
 
-          {/* console.log(variabelArray); */}
+          {
+            /* console.log(variabelArray); */
+          }
 
           const inputFields = ["unit", "m2", "giat", "hari", "meter"];
 
@@ -990,11 +993,7 @@ const WajibRetribusiCreate = ({
         </FormInput>
         <div className="col-span-3 grid gap-5 lg:grid-cols-3">
           <FormInput className="col-span-2 md:col-span-1">
-            <Label
-              htmlFor="fotoBangunan"
-            >
-              Upload Foto Bangunan
-            </Label>
+            <Label htmlFor="fotoBangunan">Upload Foto Bangunan</Label>
             <Input
               type="file"
               id="fotoBangunan"
@@ -1081,13 +1080,19 @@ const WajibRetribusiCreate = ({
           >
             Clear Form
           </button>
-          <button
-            type="submit"
-            disabled={processing}
-            className="order-1 rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:bg-blue-300 md:order-2"
-          >
-            {processing ? "Submitting..." : "Submit Data"}
-          </button>
+          {userRole === "ROLE_SUPERADMIN" ? (
+            <div className="order-1 rounded bg-blue-500/50 px-4 py-2 text-white transition-colors md:order-2">
+              Submit Data
+            </div>
+          ) : (
+            <button
+              type="submit"
+              disabled={processing}
+              className="order-1 rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:bg-blue-300 md:order-2"
+            >
+              {processing ? "Submitting..." : "Submit Data"}
+            </button>
+          )}
         </div>
       </form>
     </section>

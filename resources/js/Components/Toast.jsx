@@ -1,17 +1,30 @@
+import { Check, TriangleAlert, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const Toast = ({ message, type = "success", duration = 3500, onDone }) => {
   const [visible, setVisible] = useState(false);
 
+  const defaultClass =
+    "absolute w-max rounded-md bg-white px-3 py-3 text-xs text-black transition-all duration-[.3s] shadow-sm border border-gray-300 font-medium flex gap-1 items-center";
   const smallWidth = `left-1/2 -translate-x-1/2 ${visible ? "bottom-3" : "bottom-0 opacity-0"}`;
-  const mediumWidth = `md:bottom-5 md:left-auto md:translate-x-0 ${visible ? "md:right-5" : "md:right-0 opacity-0"}`;
+  const mediumWidth = `md:bottom-5 md:left-auto md:translate-x-0 md:text-sm ${visible ? "md:right-5" : "md:right-0 opacity-0"}`;
 
-  const typeClass =
+  const Icon =
+    type === "success" ? Check : type === "error" ? X : TriangleAlert;
+
+  const iconClass =
     type === "success"
-      ? "bg-green-500"
+      ? "text-green-500"
       : type === "error"
-        ? "bg-red-500"
-        : "bg-gray-500";
+        ? "text-red-500"
+        : "text-yellow-500";
+
+  // const typeClass =
+  //   type === "success"
+  //     ? "bg-white"
+  //     : type === "error"
+  //       ? "bg-red-500"
+  //       : "bg-gray-500";
 
   useEffect(() => {
     if (!message) return;
@@ -29,10 +42,8 @@ const Toast = ({ message, type = "success", duration = 3500, onDone }) => {
   if (!message) return null;
 
   return (
-    <div
-      className={`${smallWidth} ${mediumWidth} ${typeClass} absolute w-max rounded bg-green-500 p-2.5 text-xs font-semibold text-white transition-all duration-[.3s] md:text-sm`}
-    >
-      {message}
+    <div className={`${defaultClass} ${smallWidth} ${mediumWidth}`}>
+      <Icon className={`${iconClass} size-5`} /> {message}
     </div>
   );
 };

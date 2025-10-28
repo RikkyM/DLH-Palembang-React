@@ -41,4 +41,14 @@ class SettingController extends Controller
 
         return back()->with('success', 'Data berhasil disimpan.');
     }
+
+    public function dataInstansi()
+    {
+        return Inertia::render('Super-Admin/Setting/DataInstansi');
+    }
+
+    public function informasi()
+    {
+        return Inertia::render('Super-Admin/Setting/Informasi');
+    }
 }

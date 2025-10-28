@@ -13,7 +13,7 @@ export function useTandaTanganForm(sigData) {
     kota: sigData.kota ?? "",
   };
 
-  const { data, setData, processing, errors, clearErrors, put, reset } =
+  const { data, setData, processing, errors, clearErrors, put } =
     useForm(initialData);
 
   const handleSubmit = (e) => {

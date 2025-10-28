@@ -13,12 +13,12 @@ const TandaTanganForm = ({ data, errors, processing, onChange, onSubmit }) => {
           className="grid grid-cols-1 gap-3 text-sm lg:grid-cols-2"
         >
           <FormInput className="lg:col-span-2">
-            <Label htmlFor="nama" className="text-xs md:text-base">
+            <Label htmlFor="nama" className="text-xs md:text-sm">
               Nama
             </Label>
             <Input
               id="nama"
-              className={`${errors.nama && "border border-red-500"} text-xs md:text-base`}
+              className={`${errors.nama && "border border-red-500"} text-xs md:text-sm`}
               value={data.nama}
               onChange={(e) => onChange("nama", e.target.value)}
             />
@@ -27,12 +27,12 @@ const TandaTanganForm = ({ data, errors, processing, onChange, onSubmit }) => {
             )}
           </FormInput>
           <FormInput>
-            <Label className="text-xs md:text-base" htmlFor="nip">
+            <Label className="text-xs md:text-sm" htmlFor="nip">
               NIP
             </Label>
             <Input
               id="nip"
-              className={`${errors.nip && "border border-red-500"} text-xs md:text-base`}
+              className={`${errors.nip && "border border-red-500"} text-xs md:text-sm`}
               value={data.nip}
               onChange={(e) => onChange("nip", e.target.value)}
             />
@@ -41,12 +41,12 @@ const TandaTanganForm = ({ data, errors, processing, onChange, onSubmit }) => {
             )}
           </FormInput>
           <FormInput>
-            <Label className="text-xs md:text-base" htmlFor="pangkat">
+            <Label className="text-xs md:text-sm" htmlFor="pangkat">
               Pangkat
             </Label>
             <Input
               id="pangkat"
-              className={`${errors.pangkat && "border border-red-500"} text-xs md:text-base`}
+              className={`${errors.pangkat && "border border-red-500"} text-xs md:text-sm`}
               value={data.pangkat}
               onChange={(e) => onChange("pangkat", e.target.value)}
             />
@@ -55,12 +55,12 @@ const TandaTanganForm = ({ data, errors, processing, onChange, onSubmit }) => {
             )}
           </FormInput>
           <FormInput>
-            <Label className="text-xs md:text-base" htmlFor="golongan">
+            <Label className="text-xs md:text-sm" htmlFor="golongan">
               Golongan
             </Label>
             <Input
               id="golongan"
-              className={`${errors.golongan && "border border-red-500"} text-xs md:text-base`}
+              className={`${errors.golongan && "border border-red-500"} text-xs md:text-sm`}
               value={data.golongan}
               onChange={(e) => onChange("golongan", e.target.value)}
             />
@@ -69,12 +69,12 @@ const TandaTanganForm = ({ data, errors, processing, onChange, onSubmit }) => {
             )}
           </FormInput>
           <FormInput>
-            <Label className="text-xs md:text-base" htmlFor="jabatan1">
+            <Label className="text-xs md:text-sm" htmlFor="jabatan1">
               Jabatan 1
             </Label>
             <Input
               id="jabatan1"
-              className={`${errors.jabatan1 && "border border-red-500"} text-xs md:text-base`}
+              className={`${errors.jabatan1 && "border border-red-500"} text-xs md:text-sm`}
               value={data.jabatan1}
               onChange={(e) => onChange("jabatan1", e.target.value)}
             />
@@ -83,12 +83,12 @@ const TandaTanganForm = ({ data, errors, processing, onChange, onSubmit }) => {
             )}
           </FormInput>
           <FormInput>
-            <Label className="text-xs md:text-base" htmlFor="jabatan2">
+            <Label className="text-xs md:text-sm" htmlFor="jabatan2">
               Jabatan 2
             </Label>
             <Input
               id="jabatan2"
-              className={`${errors.jabatan2 && "border border-red-500"} text-xs md:text-base`}
+              className={`${errors.jabatan2 && "border border-red-500"} text-xs md:text-sm`}
               value={data.jabatan2}
               onChange={(e) => onChange("jabatan2", e.target.value)}
             />
@@ -97,12 +97,12 @@ const TandaTanganForm = ({ data, errors, processing, onChange, onSubmit }) => {
             )}
           </FormInput>
           <FormInput>
-            <Label className="text-xs md:text-base" htmlFor="kota">
+            <Label className="text-xs md:text-sm" htmlFor="kota">
               Kota
             </Label>
             <Input
               id="kota"
-              className={`${errors.kota && "border border-red-500"} text-xs md:text-base`}
+              className={`${errors.kota && "border border-red-500"} text-xs md:text-sm`}
               value={data.kota}
               onChange={(e) => onChange("kota", e.target.value)}
             />
@@ -114,7 +114,7 @@ const TandaTanganForm = ({ data, errors, processing, onChange, onSubmit }) => {
             <button
               type="submit"
               disabled={processing}
-              className={`w-max text-xs md:text-base rounded px-3 py-1.5 font-semibold text-white ${processing ? "pointer-events-none bg-green-300" : "pointer-events-auto bg-green-500"}`}
+              className={`w-max text-xs md:text-sm font-medium rounded px-3 py-1.5 text-white ${processing ? "pointer-events-none bg-green-300" : "pointer-events-auto bg-green-500"}`}
             >
               {processing ? "Menyimpan..." : "Simpan"}
             </button>

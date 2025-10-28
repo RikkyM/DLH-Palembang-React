@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../../Layout";
 import TableHead from "@/Components/TableHead";
-import { Head, router } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 
 import { ChevronDown, Download, FileText, Filter, Search } from "lucide-react";
 import SearchableSelect from "@/Components/SearchableSelect";
@@ -419,11 +419,12 @@ const Index = ({
             </label>
           </div>
           <div className="flex w-full flex-wrap items-center justify-end gap-1.5 *:text-xs md:w-max md:justify-start *:md:text-sm">
-            <div
-              className="rounded bg-green-200 px-3 py-1.5 text-sm font-medium text-white"
+            <Link
+              href={route("super-admin.wajib-retribusi.create")}
+              className="rounded bg-green-500 px-3 py-1.5 text-sm font-medium text-white"
             >
               Tambah
-            </div>
+            </Link>
             <button
               onClick={() => {
                 const params = new URLSearchParams();

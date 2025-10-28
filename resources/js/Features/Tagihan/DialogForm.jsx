@@ -6,6 +6,8 @@ import React, { useEffect } from "react";
 import FormInput from "@/Components/FormInput";
 import Label from "@/Components/Label";
 import Input from "@/Components/Input";
+import { useToast } from "@/Context/ToastContext";
+import { roleConfig } from "@/Constants/RoleConfig";
 
 const DialogForm = ({
   isOpen,
@@ -13,15 +15,11 @@ const DialogForm = ({
   invoice = null,
   mode = "create",
   retribusiOptions = null,
-  role
+  role,
 }) => {
-  const isEditMode = mode === "edit" && invoice;
+  const { showToast } = useToast();
 
-  const roleConfig = {
-    ROLE_SUPERADMIN: "super-admin",
-    ROLE_KUPTD: "kuptd",
-    ROLE_KASUBAG_TU_UPDT: "kasubag"
-  };
+  const isEditMode = mode === "edit" && invoice;
 
   const routeConfig = roleConfig[role];
 
@@ -60,7 +58,7 @@ const DialogForm = ({
           namaObjekRetribusi: invoice.skrd.namaObjekRetribusi,
           tarifPerbulan: invoice.skrd.tagihanPerBulanSkrd,
           jumlahBulan: invoice.jumlah_bulan,
-          satuan: invoice.satuan
+          satuan: invoice.satuan,
         });
       } else {
         setData(initialData);
@@ -98,10 +96,11 @@ const DialogForm = ({
     post(route(`${routeConfig}.surat-tagihan.store`), {
       onSuccess: () => {
         setData(initialData);
+        showToast("Berhasil membuat nota tagihan.", "success");
         onClose();
       },
       onError: (e) => {
-        console.error(e);
+        showToast("Terjadi kesalahan ketika membuat nota tagihan.", "error");
       },
     });
   };

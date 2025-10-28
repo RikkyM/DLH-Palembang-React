@@ -7,7 +7,6 @@ const TandaTangan = ({ signatureData: sigData }) => {
 
   return (
     <>
-      
       <TandaTanganForm
         data={data}
         errors={errors}

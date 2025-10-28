@@ -329,94 +329,94 @@ class WajibRetribusiController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    // public function create()
-    // {
-    //     $pemohonOptions = Pemilik::select('id', 'namaPemilik')
-    //         ->orderBy('namaPemilik')
-    //         ->get()
-    //         ->map(function ($pemohon) {
-    //             return [
-    //                 'value' => $pemohon->id,
-    //                 'label' => $pemohon->namaPemilik
-    //             ];
-    //         });
+    public function create()
+    {
+        $pemohonOptions = Pemilik::select('id', 'namaPemilik')
+            ->orderBy('namaPemilik')
+            ->get()
+            ->map(function ($pemohon) {
+                return [
+                    'value' => $pemohon->id,
+                    'label' => $pemohon->namaPemilik
+                ];
+            });
 
-    //     $kecamatanOptions = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
-    //         ->get()
-    //         ->map(function ($kecamatan) {
-    //             return [
-    //                 'value' => $kecamatan->kodeKecamatan,
-    //                 'label' => $kecamatan->namaKecamatan
-    //             ];
-    //         });
+        $kecamatanOptions = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
+            ->get()
+            ->map(function ($kecamatan) {
+                return [
+                    'value' => $kecamatan->kodeKecamatan,
+                    'label' => $kecamatan->namaKecamatan
+                ];
+            });
 
-    //     $kelurahanOptions = Kelurahan::select('kodeKelurahan', 'namaKelurahan', 'kodeKecamatan')
-    //         ->get()
-    //         ->groupBy('kodeKecamatan')
-    //         ->map(function ($groupedKelurahan) {
-    //             return $groupedKelurahan->map(function ($kelurahan) {
-    //                 return [
-    //                     'value' => $kelurahan->kodeKelurahan,
-    //                     'label' => $kelurahan->namaKelurahan
-    //                 ];
-    //             })->values();
-    //         });
+        $kelurahanOptions = Kelurahan::select('kodeKelurahan', 'namaKelurahan', 'kodeKecamatan')
+            ->get()
+            ->groupBy('kodeKecamatan')
+            ->map(function ($groupedKelurahan) {
+                return $groupedKelurahan->map(function ($kelurahan) {
+                    return [
+                        'value' => $kelurahan->kodeKelurahan,
+                        'label' => $kelurahan->namaKelurahan
+                    ];
+                })->values();
+            });
 
-    //     $kategoriOptions = Kategori::select('kodeKategori', 'namaKategori')
-    //         ->get()
-    //         ->map(function ($kategori) {
-    //             return [
-    //                 'value' => $kategori->kodeKategori,
-    //                 'label' => $kategori->namaKategori
-    //             ];
-    //         });
+        $kategoriOptions = Kategori::select('kodeKategori', 'namaKategori')
+            ->get()
+            ->map(function ($kategori) {
+                return [
+                    'value' => $kategori->kodeKategori,
+                    'label' => $kategori->namaKategori
+                ];
+            });
 
-    //     $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'rumus', 'variabel', 'tarif', 'tarif2')
-    //         ->get()
-    //         ->groupBy('kodeKategori')
-    //         ->map(function ($groupedSubKategori) {
-    //             return $groupedSubKategori->map(function ($subKategori) {
-    //                 return [
-    //                     'value' => $subKategori->kodeSubKategori,
-    //                     'label' => $subKategori->namaSubKategori,
-    //                     'rumus' => $subKategori->rumus,
-    //                     'variabel' => $subKategori->variabel,
-    //                     'tarif' => $subKategori->tarif,
-    //                     'tarif2' => $subKategori->tarif2
-    //                 ];
-    //             })->values();
-    //         });
+        $subKategoriOptions = SubKategori::select('kodeSubKategori', 'namaSubKategori', 'kodeKategori', 'rumus', 'variabel', 'tarif', 'tarif2')
+            ->get()
+            ->groupBy('kodeKategori')
+            ->map(function ($groupedSubKategori) {
+                return $groupedSubKategori->map(function ($subKategori) {
+                    return [
+                        'value' => $subKategori->kodeSubKategori,
+                        'label' => $subKategori->namaSubKategori,
+                        'rumus' => $subKategori->rumus,
+                        'variabel' => $subKategori->variabel,
+                        'tarif' => $subKategori->tarif,
+                        'tarif2' => $subKategori->tarif2
+                    ];
+                })->values();
+            });
 
-    //     $badanUsahaOptions = BadanUsaha::select('id', 'namaBadanUsaha')
-    //         ->orderBy('id')
-    //         ->get()
-    //         ->map(function ($usaha) {
-    //             return [
-    //                 'value' => $usaha->namaBadanUsaha,
-    //                 'label' => $usaha->namaBadanUsaha,
-    //             ];
-    //         });
+        $badanUsahaOptions = BadanUsaha::select('id', 'namaBadanUsaha')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($usaha) {
+                return [
+                    'value' => $usaha->namaBadanUsaha,
+                    'label' => $usaha->namaBadanUsaha,
+                ];
+            });
 
-    //     $penagihOptions = Penagih::select('id', 'nama')
-    //         ->orderBy('id')
-    //         ->get()
-    //         ->map(function ($penagih) {
-    //             return [
-    //                 'value' => $penagih->id,
-    //                 'label' => $penagih->nama
-    //             ];
-    //         });
+        $penagihOptions = Penagih::select('id', 'nama')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($penagih) {
+                return [
+                    'value' => $penagih->id,
+                    'label' => $penagih->nama
+                ];
+            });
 
-    //     return Inertia::render('Super-Admin/Data-Input/Wajib-Retribusi/Create', [
-    //         'pemohonOptions' => $pemohonOptions,
-    //         'kecamatanOptions' => $kecamatanOptions,
-    //         'kelurahanOptions' => $kelurahanOptions,
-    //         'kategoriOptions' => $kategoriOptions,
-    //         'subKategoriOptions' => $subKategoriOptions,
-    //         'penagihOptions' => $penagihOptions,
-    //         'badanUsahaOptions' => $badanUsahaOptions
-    //     ]);
-    // }
+        return Inertia::render('Super-Admin/Data-Input/Wajib-Retribusi/Create', [
+            'pemohonOptions' => $pemohonOptions,
+            'kecamatanOptions' => $kecamatanOptions,
+            'kelurahanOptions' => $kelurahanOptions,
+            'kategoriOptions' => $kategoriOptions,
+            'subKategoriOptions' => $subKategoriOptions,
+            'penagihOptions' => $penagihOptions,
+            'badanUsahaOptions' => $badanUsahaOptions
+        ]);
+    }
 
     /**
      * Store a newly created resource in storage.

@@ -150,11 +150,11 @@ const SuperAdminNavigation = () => {
     },
     {
       label: "Data Instansi",
-      // route: "super-admin.user.index",
+      route: "super-admin.data-instansi",
     },
     {
       label: "Informasi",
-      // route: "super-admin.kecamatan.index",
+      route: "super-admin.informasi",
     },
   ];
 

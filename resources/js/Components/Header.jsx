@@ -2,6 +2,7 @@ import { Ellipsis, LogOutIcon, Menu, User } from "lucide-react";
 import { useProvider } from "../Context/GlobalContext";
 import { useEffect, useRef, useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
+import { roleConfig } from "@/Constants/RoleConfig";
 
 const Header = ({ title }) => {
   const { toggleSidebar } = useProvider();
@@ -11,16 +12,6 @@ const Header = ({ title }) => {
   const { props } = usePage();
 
   const user = props[0]?.auth?.user;
-
-  const roleConfig = {
-    ROLE_SUPERADMIN: "super-admin",
-    ROLE_PENDAFTAR: "pendaftar",
-    ROLE_KUPTD: "kuptd",
-    ROLE_KATIM: "katim",
-    ROLE_KABID: "kabid",
-    ROLE_KASUBAG_TU_UPDT: "kasubag",
-    ROLE_BENDAHARA: "bendahara",
-  };
 
   const routeConfig = roleConfig[user.role];
 
