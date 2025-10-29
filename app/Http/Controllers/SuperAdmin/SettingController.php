@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Instansi;
 use App\Models\TandaTangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -44,7 +45,10 @@ class SettingController extends Controller
 
     public function dataInstansi()
     {
-        return Inertia::render('Super-Admin/Setting/DataInstansi');
+        $instansi = Instansi::query()->firstOrNew([]);
+        return Inertia::render('Super-Admin/Setting/DataInstansi', [
+            'instansi' => $instansi->only(['id', 'namaInstansi', 'noTelepon', 'email', 'website', 'instagram', 'tiktok'])
+        ]);
     }
 
     public function informasi()

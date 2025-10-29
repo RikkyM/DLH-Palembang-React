@@ -180,7 +180,7 @@ const Index = ({ datas, filters, role }) => {
                 <thead className="truncate">
                   <tr className="text-white *:sticky *:top-0 *:select-none *:bg-[#F1B174] *:p-2 *:text-left *:text-xs *:font-medium *:uppercase *:md:text-sm">
                     <th>No</th>
-                    <th>Wilayah UPTD</th>
+                    <th>Wilayah Kecamatan</th>
                     <th>Total SPKRD</th>
                     <th>Jumlah Tagihan</th>
                     <th>Total Bayar</th>
