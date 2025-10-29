@@ -103,6 +103,14 @@ const SuperAdminNavigation = () => {
       ],
     },
     {
+      label: "Retribusi UPTD",
+      // route: "super-admin.rekapitulasi.penerimaan",
+      // activeRoute: [
+      //   "super-admin.rekapitulasi.penerimaan",
+      //   "super-admin.rekapitulasi.penerimaan.detail"
+      // ],
+    },
+    {
       label: "Nota Tagihan",
       route: "super-admin.rekapitulasi.nota-tagihan",
     },
