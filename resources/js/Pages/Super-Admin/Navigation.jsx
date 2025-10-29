@@ -95,7 +95,7 @@ const SuperAdminNavigation = () => {
       ],
     },
     {
-      label: "Retribusi",
+      label: "Retribusi Kecamatan",
       route: "super-admin.rekapitulasi.penerimaan",
       activeRoute: [
         "super-admin.rekapitulasi.penerimaan",
