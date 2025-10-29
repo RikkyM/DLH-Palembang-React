@@ -407,6 +407,16 @@ class WajibRetribusiController extends Controller
                 ];
             });
 
+        $uptdOptions = Uptd::select('id', 'namaUptd')
+        ->orderBy('id')
+        ->get()
+        ->map(function ($usaha) {
+            return [
+                'value' => $usaha->id,
+                'label' => $usaha->namaUptd,
+            ];
+        });
+
         return Inertia::render('Super-Admin/Data-Input/Wajib-Retribusi/Create', [
             'pemohonOptions' => $pemohonOptions,
             'kecamatanOptions' => $kecamatanOptions,
@@ -414,7 +424,8 @@ class WajibRetribusiController extends Controller
             'kategoriOptions' => $kategoriOptions,
             'subKategoriOptions' => $subKategoriOptions,
             'penagihOptions' => $penagihOptions,
-            'badanUsahaOptions' => $badanUsahaOptions
+            'badanUsahaOptions' => $badanUsahaOptions,
+            'uptdOptions' => $uptdOptions
         ]);
     }
 
