@@ -1,4 +1,4 @@
-import { Deferred, Head, Link} from "@inertiajs/react";
+import { Deferred, Head, Link } from "@inertiajs/react";
 import { useState } from "react";
 import { roleConfig } from "@/Constants/roleConfig";
 import LoadingTable from "@/Components/LoadingTable";
@@ -6,49 +6,13 @@ import LoadingTable from "@/Components/LoadingTable";
 const Index = ({ datas, filters, role }) => {
   const [startDate, setStartDate] = useState(filters.tanggal_mulai ?? "");
   const [endDate, setEndDate] = useState(filters.tanggal_akhir ?? "");
-  const [sort, setSort] = useState(filters.sort || null);
-  const [direction, setDirection] = useState(filters.direction || null);
   const [isLoading, setIsLoading] = useState(false);
 
   const routeConfig = roleConfig[role];
 
-  const buildParams = (additionalParams = {}) => {
-    const params = { ...additionalParams };
-
-    if (sort && sort !== "id") {
-      params.sort = sort;
-      if (direction && direction.toLowerCase() === "asc") {
-        params.direction = "asc";
-      }
-    } else if (
-      sort === "id" &&
-      direction &&
-      direction.toLowerCase() === "asc"
-    ) {
-      params.sort = sort;
-      params.direction = "asc";
-    }
-    return params;
-  };
-
-  const formatNumber = (data) => {
-    return (
-      new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-      }).format(data) ?? 0
-    );
-  };
-
-  const calculatePercentage = (part, total) => {
-    if (!total || total === 0) return 0;
-    return ((part / total) * 100).toFixed(2);
-  };
-
   return (
     <>
-      <Head title="Retribusi UPTD" />
+      <Head title="Retribusi Kecamatan" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex flex-col gap-2 sm:flex-row md:w-auto md:items-center">
@@ -97,13 +61,10 @@ const Index = ({ datas, filters, role }) => {
               <div className="col-span-2 flex w-full flex-col items-end gap-2 text-sm sm:col-span-1 sm:w-max sm:flex-row">
                 <Link
                   as="button"
-                  href={route(
-                    `${routeConfig}.rekapitulasi.penerimaan`,
-                    buildParams({
-                      ...(startDate && { tanggal_mulai: startDate }),
-                      ...(endDate && { tanggal_akhir: endDate }),
-                    }),
-                  )}
+                  href={route(`${routeConfig}.rekapitulasi.penerimaan`, {
+                    ...(startDate && { tanggal_mulai: startDate }),
+                    ...(endDate && { tanggal_akhir: endDate }),
+                  })}
                   preserveState
                   preserveScroll
                   replace
@@ -123,7 +84,9 @@ const Index = ({ datas, filters, role }) => {
                     if (endDate) params.append("tanggal_akhir", endDate);
 
                     window.open(
-                      route("export-rekap-retribusi") + "?" + params.toString(),
+                      route("export-rekap-retribusi-kecamatan") +
+                        "?" +
+                        params.toString(),
                       "_blank",
                     );
                   }}
@@ -141,14 +104,7 @@ const Index = ({ datas, filters, role }) => {
           </div>
         </div>
 
-        <div
-          className={`max-h-[calc(100%_-_240px)] overflow-auto rounded-t sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)]`}
-        >
-          {/* {isLoading ? (
-            <LoadingTable />
-          ) : (
-            
-          )} */}
+        <div className="max-h-[calc(100%_-_240px)] overflow-auto rounded-t sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)]">
           <Deferred data="datas" fallback={<LoadingTable />}>
             {isLoading && <LoadingTable />}
 
@@ -157,7 +113,7 @@ const Index = ({ datas, filters, role }) => {
                 <thead className="truncate">
                   <tr className="text-white *:sticky *:top-0 *:select-none *:bg-[#F1B174] *:p-2 *:text-left *:text-xs *:font-medium *:uppercase *:md:text-sm">
                     <th>No</th>
-                    <th>UPTD</th>
+                    <th>Kecamatan</th>
                     <th>Total SPKRD</th>
                     <th>Jumlah Tagihan</th>
                     <th>Total Bayar</th>
@@ -166,7 +122,7 @@ const Index = ({ datas, filters, role }) => {
                     <th>Persentase Belum Bayar</th>
                   </tr>
                 </thead>
-                <tbody>
+                {/* <tbody>
                   {datas && (datas.data ?? datas)?.length > 0 ? (
                     <>
                       {datas &&
@@ -252,9 +208,6 @@ const Index = ({ datas, filters, role }) => {
                         <td className="p-2">
                           {formatNumber(
                             datas.reduce((acc, row) => {
-                              {
-                                /* acc + (Number(row?.tagihanPertahun ?? 0) || 0), */
-                              }
                               const tagihan = Number(row?.tagihanPertahun ?? 0);
                               const totalBayar = Number(row?.totalBayar ?? 0);
 
@@ -312,7 +265,7 @@ const Index = ({ datas, filters, role }) => {
                       </td>
                     </tr>
                   )}
-                </tbody>
+                </tbody> */}
               </table>
             )}
           </Deferred>

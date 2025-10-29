@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RekapitulasiController;
 use App\Http\Controllers\SuperAdmin\AccountController;
 use App\Http\Controllers\SuperAdmin\BadanUsahaController;
 use App\Http\Controllers\SuperAdmin\DashboardController;
@@ -10,7 +11,7 @@ use App\Http\Controllers\SuperAdmin\KecamatanController;
 use App\Http\Controllers\SuperAdmin\KelurahanController;
 use App\Http\Controllers\SuperAdmin\PemohonController;
 use App\Http\Controllers\SuperAdmin\PenagihController;
-use App\Http\Controllers\SuperAdmin\RekapitulasiController;
+// use App\Http\Controllers\SuperAdmin\RekapitulasiController;
 use App\Http\Controllers\SuperAdmin\SetoranController;
 use App\Http\Controllers\SuperAdmin\SettingController;
 use App\Http\Controllers\SuperAdmin\SkrdController;
@@ -77,7 +78,12 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
                 Route::get('/detail', 'spkrdDetail')
                     ->name('spkrd.detail');
             });
-            Route::prefix('/penerimaan')->group(function () {
+            Route::prefix('/retribusi-kecamatan')->group(function () {
+                Route::get('/', 'retribusiKecamatan')->name('retribusi-kecamatan');
+                Route::get('/detail', 'detailRetribusiKecamatan')
+                    ->name('retribusi-kecamatan.detail');
+            });
+            Route::prefix('/retribusi-uptd')->group(function () {
                 Route::get('/', 'penerimaan')->name('penerimaan');
                 Route::get('/detail', 'penerimaanDetail')
                     ->name('penerimaan.detail');
@@ -101,7 +107,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::resource('/badan-usaha', BadanUsahaController::class)->only(['index', 'store', 'update']);
     });
 
-    Route::prefix('setting')->controller(SettingController::class)->group(function() {
+    Route::prefix('setting')->controller(SettingController::class)->group(function () {
         Route::get('/penanda-tangan', 'TandaTangan')->name('penanda-tangan');
         Route::put('/penanda-tangan', 'TandaTanganUpdate')->name('penanda-tangan-update');
         Route::get('/data-instansi', 'dataInstansi')->name('data-instansi');

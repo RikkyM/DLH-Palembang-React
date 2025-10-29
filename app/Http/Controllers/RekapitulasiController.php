@@ -153,6 +153,23 @@ class RekapitulasiController extends Controller
         ]);
     }
 
+    public function retribusiKecamatan(Request $request)
+    {
+        $startDate = $request->get('tanggal_mulai');
+        $endDate = $request->get('tanggal_akhir');
+
+        $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
+
+        return Inertia::render("{$this->getRole()}/Rekapitulasi/Retribusi-Kecamatan/Index", [
+            'datas' => Inertia::defer(fn() => collect()),
+            'filters' => [
+                'tanggal_mulai' => $startDate,
+                'tanggal_akhir' => $endDate
+            ],
+            'role' => Auth::user()->role,
+        ]);
+    }
+
     public function penerimaan(Request $request)
     {
         $startDate = $request->get('tanggal_mulai');
@@ -177,7 +194,6 @@ class RekapitulasiController extends Controller
                 },
                 'skrd.setoran.detailSetoran'
                 => fn($q) => $q->whereYear('tanggalBayar', Carbon::now()->year),
-                // ,
             ])
             ->where('namaUptd', '!=', 'Dinas')
             ->get(['id', 'namaUptd'])

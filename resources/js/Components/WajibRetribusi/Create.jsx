@@ -1075,7 +1075,7 @@ const WajibRetribusiCreate = ({
           />
           <DropdownInput
             id="uptd"
-            label="Nama UPTD"
+            label="UPTD Penanggung Jawab"
             placeholder="Pilih UPTD..."
             value={data.uptdId}
             onChange={(value) => handleInputChange("uptdId", value)}

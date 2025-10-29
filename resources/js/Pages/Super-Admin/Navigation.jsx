@@ -96,19 +96,19 @@ const SuperAdminNavigation = () => {
     },
     {
       label: "Retribusi Kecamatan",
+      route: "super-admin.rekapitulasi.retribusi-kecamatan",
+      activeRoute: [
+        "super-admin.rekapitulasi.retribusi-kecamatan",
+        "super-admin.rekapitulasi.retribusi-kecamatan.detail"
+      ],
+    },
+    {
+      label: "Retribusi UPTD",
       route: "super-admin.rekapitulasi.penerimaan",
       activeRoute: [
         "super-admin.rekapitulasi.penerimaan",
         "super-admin.rekapitulasi.penerimaan.detail"
       ],
-    },
-    {
-      label: "Retribusi UPTD",
-      // route: "super-admin.rekapitulasi.penerimaan",
-      // activeRoute: [
-      //   "super-admin.rekapitulasi.penerimaan",
-      //   "super-admin.rekapitulasi.penerimaan.detail"
-      // ],
     },
     {
       label: "Nota Tagihan",

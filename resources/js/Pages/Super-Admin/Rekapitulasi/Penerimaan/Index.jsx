@@ -3,7 +3,7 @@ import Penerimaan from '@/Features/Rekapitulasi/Penerimaan/Index';
 
 const Index = (props) => {
   return (
-    <Layout title="Penerimaan">
+    <Layout title="Retribusi UPTD">
       <Penerimaan {...props} />
     </Layout>
   );

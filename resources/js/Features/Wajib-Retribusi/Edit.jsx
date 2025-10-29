@@ -52,6 +52,7 @@ const WajibRetribusiEdit = ({
     noWajibRetribusi: retribusi.noWajibRetribusi || "",
     pemilikId: retribusi.pemilikId || "",
     penagihId: retribusi.penagihId || "",
+    uptdId: retribusi.uptdId || "",
     alamatObjekRetribusi: retribusi.alamat || "",
     rt: retribusi.rt || "",
     rw: retribusi.rw || "",
@@ -294,7 +295,6 @@ const WajibRetribusiEdit = ({
 
     return total || 0;
   };
-  
 
   useEffect(() => {
     const total = calculateTotal();
@@ -1061,6 +1061,19 @@ const WajibRetribusiEdit = ({
             onChange={(value) => handleInputChange("penagihId", value)}
             options={penagihOptions}
             error={errors.penagihId}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2 md:col-span-1"
+          />
+          <DropdownInput
+            id="uptd"
+            label="UPTD Penanggung Jawab"
+            placeholder="Pilih UPTD..."
+            value={data.uptdId}
+            onChange={(value) => handleInputChange("uptdId", value)}
+            options={uptdOptions}
+            error={errors.uptdId}
             required={true}
             valueKey="value"
             labelKey="label"

@@ -445,6 +445,7 @@ class WajibRetribusiController extends Controller
         WajibRetribusiRequest $request
         // Request $request
     ) {
+        dd($request->all());
         $validated = $request->validated();
 
         $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
@@ -557,7 +558,7 @@ class WajibRetribusiController extends Controller
                 'kodeSubKategori' => $request->kodeSubKategori,
                 'kodeKelurahan' => $request->kodeKelurahan,
                 'kodeKecamatan' => $request->kodeKecamatan,
-                'uptdId' => $uptd->id,
+                'uptdId' => $request->uptdId,
                 'pemilikId' => $request->pemilikId,
                 'penagihId' => $request->penagihId,
                 'petugasPendaftarId' => Auth::user()->id,
@@ -607,8 +608,6 @@ class WajibRetribusiController extends Controller
                     ]
                 ]
             ];
-
-            // dd($dataToSave);
 
             WajibRetribusi::create($dataToSave);
 
@@ -800,7 +799,7 @@ class WajibRetribusiController extends Controller
                 'kodeSubKategori' => $request->kodeSubKategori,
                 'kodeKelurahan' => $request->kodeKelurahan,
                 'kodeKecamatan' => $request->kodeKecamatan,
-                'uptdId' => $uptd->id,
+                'uptdId' => $request->uptdId,
                 'pemilikId' => $request->pemilikId,
                 'penagihId' => $request->penagihId,
                 'petugasPendaftarId' => Auth::user()->id,
@@ -843,8 +842,6 @@ class WajibRetribusiController extends Controller
                 ])
             ];
 
-            // dd($dataToUpdate);
-
             $retribusi->update($dataToUpdate);
 
             DB::commit();
@@ -852,6 +849,7 @@ class WajibRetribusiController extends Controller
             return redirect()->route("pendaftar.wajib-retribusi.{$status}")->with('success', 'Data berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollback();
+            report($e);
             return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data.']);
         }
 
