@@ -16,6 +16,7 @@ const WajibRetribusiCreate = ({
   subKategoriOptions = [],
   penagihOptions = [],
   badanUsahaOptions = [],
+  uptdOptions = [],
   userRole = "ROLE_PENDAFTAR",
   customProps = {},
   generateWr = null,
@@ -47,6 +48,7 @@ const WajibRetribusiCreate = ({
     noWajibRetribusi: generateWr || "",
     pemilikId: "",
     penagihId: "",
+    uptdId: "",
     alamatObjekRetribusi: "",
     rt: "",
     rw: "",
@@ -991,7 +993,7 @@ const WajibRetribusiCreate = ({
             resetTrigger={mapReset}
           />
         </FormInput>
-        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
+        <div className="col-span-3 grid gap-5 lg:grid-cols-4">
           <FormInput className="col-span-2 md:col-span-1">
             <Label htmlFor="fotoBangunan">Upload Foto Bangunan</Label>
             <Input
@@ -1066,6 +1068,19 @@ const WajibRetribusiCreate = ({
             onChange={(value) => handleInputChange("penagihId", value)}
             options={penagihOptions}
             error={errors.penagihId}
+            required={true}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2 md:col-span-1"
+          />
+          <DropdownInput
+            id="uptd"
+            label="Nama UPTD"
+            placeholder="Pilih UPTD..."
+            value={data.uptdId}
+            onChange={(value) => handleInputChange("uptdId", value)}
+            options={uptdOptions}
+            error={errors.uptdId}
             required={true}
             valueKey="value"
             labelKey="label"

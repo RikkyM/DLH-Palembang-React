@@ -413,9 +413,17 @@ class WajibRetribusiController extends Controller
                 ];
             });
 
-        $generateNoWR = WajibRetribusi::generateNoWajibRetribusi();
+        $uptdOptions = Uptd::select('id', 'namaUptd')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($usaha) {
+                return [
+                    'value' => $usaha->id,
+                    'label' => $usaha->namaUptd,
+                ];
+            });
 
-        // dd($generateNoWR);
+        $generateNoWR = WajibRetribusi::generateNoWajibRetribusi();
 
         return Inertia::render('Pendaftar/Data-Input/Wajib-Retribusi/Create',  [
             'generateWr' => $generateNoWR,
@@ -425,7 +433,8 @@ class WajibRetribusiController extends Controller
             'kategoriOptions' => $kategoriOptions,
             'subKategoriOptions' => $subKategoriOptions,
             'penagihOptions' => $penagihOptions,
-            'badanUsahaOptions' => $badanUsahaOptions
+            'badanUsahaOptions' => $badanUsahaOptions,
+            'uptdOptions' => $uptdOptions
         ]);
     }
 
