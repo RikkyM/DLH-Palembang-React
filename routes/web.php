@@ -36,6 +36,7 @@ Route::prefix('sirep')->group(function () {
         Route::get('/export-pemohon', [PemohonController::class, 'exportPemohon'])->name('export-pemohon');
         Route::get('/export-setoran', [SetoranController::class, 'exportSetoran'])->name('export-setoran');
         Route::get('/export-rekap-spkrd', [RekapitulasiController::class, 'exportSpkrd'])->name('export-rekap-spkrd');
+        Route::get('/export-penerimaan-kecamatan', [RekapitulasiController::class, 'exportPenerimaanKecamatan'])->name('export-penerimaan-kecamatan');
         Route::get('/export-rekap-retribusi', [RekapitulasiController::class, 'exportRetribusi'])->name('export-rekap-retribusi');
         Route::get('/export-rekap-nota-tagihan', [RekapitulasiController::class, 'exportInvoice'])->name('export-rekap-nota-tagihan');
 

@@ -10,6 +10,21 @@ const Index = ({ datas, filters, role }) => {
 
   const routeConfig = roleConfig[role];
 
+  const calculatePercentage = (part, total) => {
+    if (!total || total === 0) return 0;
+    return ((part / total) * 100).toFixed(2);
+  };
+
+  const formatNumber = (data) => {
+    return (
+      new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(data) ?? 0
+    );
+  };
+
   return (
     <>
       <Head title="Retribusi Kecamatan" />
@@ -61,7 +76,7 @@ const Index = ({ datas, filters, role }) => {
               <div className="col-span-2 flex w-full flex-col items-end gap-2 text-sm sm:col-span-1 sm:w-max sm:flex-row">
                 <Link
                   as="button"
-                  href={route(`${routeConfig}.rekapitulasi.penerimaan`, {
+                  href={route(`${routeConfig}.rekapitulasi.retribusi-kecamatan`, {
                     ...(startDate && { tanggal_mulai: startDate }),
                     ...(endDate && { tanggal_akhir: endDate }),
                   })}
@@ -84,7 +99,7 @@ const Index = ({ datas, filters, role }) => {
                     if (endDate) params.append("tanggal_akhir", endDate);
 
                     window.open(
-                      route("export-rekap-retribusi-kecamatan") +
+                      route("export-penerimaan-kecamatan") +
                         "?" +
                         params.toString(),
                       "_blank",
@@ -122,7 +137,7 @@ const Index = ({ datas, filters, role }) => {
                     <th>Persentase Belum Bayar</th>
                   </tr>
                 </thead>
-                {/* <tbody>
+                <tbody>
                   {datas && (datas.data ?? datas)?.length > 0 ? (
                     <>
                       {datas &&
@@ -141,13 +156,13 @@ const Index = ({ datas, filters, role }) => {
                               className={`*:cursor-pointer *:p-2 *:text-xs *:sm:text-sm *:lg:text-base ${i % 2 === 0 ? "bg-[#B3CEAF] hover:bg-[#A0BD9A]" : "bg-white hover:bg-neutral-200"}`}
                               as="tr"
                               href={route(
-                                `${routeConfig}.rekapitulasi.penerimaan.detail`,
+                                `${routeConfig}.rekapitulasi.retribusi-kecamatan.detail`,
                                 {
                                   tanggal_mulai:
                                     startDate || filters.tanggal_mulai || "",
                                   tanggal_akhir:
                                     endDate || filters.tanggal_akhir || "",
-                                  uptd: data.namaUptd,
+                                  kecamatan: data.namaKecamatan,
                                 },
                               )}
                               preserveState
@@ -163,8 +178,8 @@ const Index = ({ datas, filters, role }) => {
                                     1}
                                 </div>
                               </td>
-                              <td>{data.namaUptd}</td>
-                              <td>{data.skrd}</td>
+                              <td>{data.namaKecamatan}</td>
+                              <td>{data.kecamatan}</td>
                               <td>{formatNumber(data.tagihanPertahun)}</td>
                               <td>{formatNumber(data.totalBayar)}</td>
                               <td>
@@ -265,7 +280,7 @@ const Index = ({ datas, filters, role }) => {
                       </td>
                     </tr>
                   )}
-                </tbody> */}
+                </tbody>
               </table>
             )}
           </Deferred>

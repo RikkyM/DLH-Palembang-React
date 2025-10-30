@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RekapPenerimaanKecamatanExport;
 use App\Exports\RekapRetribusiExport;
 use App\Exports\RekapSpkrdExport;
 use App\Models\Invoice;
+use App\Models\Kecamatan;
 use App\Models\Skrd;
 use App\Models\Uptd;
 use Carbon\Carbon;
@@ -160,13 +162,104 @@ class RekapitulasiController extends Controller
 
         $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
 
+        $datas = Kecamatan::with([
+            'uptd.skrd' => function ($q) use ($startDate, $endDate, $rangeCol) {
+                if ($startDate || $endDate) {
+                    $q->when($startDate && $endDate, fn($data) => $data->whereBetween($rangeCol, [$startDate, $endDate]))
+                        ->when($startDate && !$endDate, fn($data) => $data->where($rangeCol, '>=', $startDate))
+                        ->when(!$startDate && $endDate, fn($data) => $data->where($rangeCol, '<=', $endDate));
+                } else {
+                    $q->whereYear($rangeCol, Carbon::now()->year);
+                }
+            },
+            'uptd.skrd.pembayaran',
+            'uptd.skrd.setoran' => function ($q) {
+                $q->where('status', 'Approved')->where('current_stage', 'bendahara');
+            },
+            'uptd.skrd.setoran.detailSetoran' => fn($q) => $q->whereYear('tanggalBayar', Carbon::now()->year),
+        ])
+            ->get()
+            ->map(function ($kecamatan) {
+                return [
+                    'namaKecamatan' => $kecamatan->namaKecamatan,
+                    'kecamatan' => $kecamatan->uptd->skrd->count(),
+                    'tagihanPertahun' => $kecamatan->uptd->skrd->sum('tagihanPerTahunSkrd'),
+                    'totalBayar' => $kecamatan->uptd->skrd->sum(function ($skrd) {
+                        $totalSetoran = $skrd->setoran->sum(function ($s) {
+                            return $s->detailSetoran->sum('jumlahBayar');
+                        });
+                        $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar') ?? 0;
+
+                        return $totalSetoran + $totalPembayaran;
+                    })
+                ];
+            })
+            ->values();
+
+        // dd($datas);
+
         return Inertia::render("{$this->getRole()}/Rekapitulasi/Retribusi-Kecamatan/Index", [
-            'datas' => Inertia::defer(fn() => collect()),
+            'datas' => Inertia::defer(fn() => $datas),
             'filters' => [
                 'tanggal_mulai' => $startDate,
                 'tanggal_akhir' => $endDate
             ],
             'role' => Auth::user()->role,
+        ]);
+    }
+
+    public function detailRetribusiKecamatan(Request $request)
+    {
+        $startDate = $request->get('tanggal_mulai');
+        $endDate = $request->get('tanggal_akhir');
+        $kecamatan = $request->get('kecamatan');
+
+        $getSortBy = $request->get('sort', 'id');
+        $getSortDir = $request->get('direction', 'desc');
+
+        $rangeCol = DB::raw('DATE(COALESCE(tanggalSkrd, created_at))');
+
+        $datas = Kecamatan::with([
+            'uptd.skrd' => function ($q) use ($startDate, $endDate, $rangeCol, $getSortBy, $getSortDir) {
+                $q->when(
+                    $startDate || $endDate,
+                    function ($q) use ($startDate, $endDate, $rangeCol) {
+                        if ($startDate && $endDate) {
+                            [$from, $to] = $startDate <= $endDate ? [$startDate, $endDate] : [$endDate, $startDate];
+                            $q->whereBetween($rangeCol, [$from, $to]);
+                        } elseif ($startDate) {
+                            $q->where($rangeCol, '>=', $startDate);
+                        } else {
+                            $q->where($rangeCol, '<=', $endDate);
+                        }
+                    },
+                    function ($q) use ($rangeCol) {
+                        $q->whereBetween($rangeCol, [
+                            Carbon::now()->startOfYear()->toDateString(),
+                            Carbon::now()->endOfYear()->toDateString(),
+                        ]);
+                    }
+                );
+                $q->orderBy($getSortBy, $getSortDir);
+            },
+            'uptd.skrd.setoran',
+            'uptd.skrd.detailSetoran',
+            'uptd.skrd.pembayaran'
+        ])
+            ->where('namaKecamatan', $kecamatan)
+            ->first()
+            ->uptd->skrd;
+
+        return Inertia::render("{$this->getRole()}/Rekapitulasi/Retribusi-Kecamatan/Detail", [
+            'datas' => Inertia::defer(fn() => $datas),
+            'filters' => [
+                'tanggal_mulai' => $startDate,
+                'tanggal_akhir' => $endDate,
+                'kecamatan' => $kecamatan,
+                'sort' => $getSortBy,
+                'direction' => $getSortDir
+            ],
+            'bulan' => $this->getBulan(),
         ]);
     }
 
@@ -356,6 +449,16 @@ class RekapitulasiController extends Controller
 
         return Excel::download(
             new RekapRetribusiExport($request),
+            $filename
+        );
+    }
+
+    public function exportPenerimaanKecamatan(Request $request)
+    {
+        $filename = 'Rekap-Penerimaan-Kecamatan-' . Date('d-m-Y_H:i:s') . '.xlsx';
+
+        return Excel::download(
+            new RekapPenerimaanKecamatanExport($request),
             $filename
         );
     }

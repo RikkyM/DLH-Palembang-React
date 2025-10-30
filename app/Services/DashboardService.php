@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Models\DetailSetoran;
+use App\Models\Kecamatan;
 use App\Models\Pembayaran;
 use App\Models\Skrd;
 use App\Models\Uptd;
 use App\Models\WajibRetribusi;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardService
 {
@@ -80,8 +82,17 @@ class DashboardService
 
     public function getStats($year)
     {
+        $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
+
         $countWR = WajibRetribusi::whereYear('created_at', $year);
         $countSkrd = Skrd::whereYear('created_at', $year);
+        $perKecamatan = Kecamatan::with(['uptd.skrd' => fn($q) => $q->whereYear($rangeCol, Carbon::now()->year)])
+            ->get()
+            ->sum(fn($kec) => $kec->uptd->skrd->count());
+        $perUptd = Uptd::with(['skrd' => fn($q) => $q->whereYear($rangeCol, Carbon::now()->year)])
+            ->get()
+            ->sum(fn($u) => $u->skrd->count());
+        // dd($p, $s);
         $countProyeksi = Skrd::whereYear('created_at', $year);
         $getPembayaran = Pembayaran::whereYear('created_at', $year);
         $getDetailSetoran = DetailSetoran::with('setoran', 'skrd')
@@ -129,6 +140,7 @@ class DashboardService
             'jumlahSkrd' => $jumlahSkrd,
             'proyeksiPenerimaan' => $proyeksiPenerimaan,
             'penerimaan' => $penerimaan,
+            'perKecamatan' => $perKecamatan,
             'belumTertagih' => $belumTertagih,
             'penerimaanHariIni' => (clone $getPembayaran)
                 ->whereDate('created_at', Carbon::today())

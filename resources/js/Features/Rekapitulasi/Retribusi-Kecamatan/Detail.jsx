@@ -3,12 +3,12 @@ import { useState } from "react";
 import LoadingTable from "@/Components/LoadingTable";
 import React from "react";
 
-const Detail = ({ datas, bulan, filters }) => {
+const Detail = ({ datas, bulan }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
     <>
-      <Head title="Detail Rekapitulasi SPKRD" />
+      <Head title="Detail Retribusi Kecamatan" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className={`max-h-[calc(100%)] overflow-auto rounded`}>
           <Deferred data="datas" fallback={<LoadingTable />}>
@@ -26,16 +26,12 @@ const Detail = ({ datas, bulan, filters }) => {
                   <tr className="text-white *:bg-[#F1B174] *:p-2 *:text-xs *:font-medium *:uppercase *:md:text-sm">
                     <th className="sticky top-0 w-10 text-center">id</th>
                     <th className="sticky top-0 text-left">No SPKRD</th>
-                    <th className="sticky top-0 text-left">
-                      Nama Wajib Retribusi
-                    </th>
+                    <th className="sticky top-0 text-left">Nama Wajib Retribusi</th>
                     <th className="sticky top-0 text-left">Nama Kecamatan</th>
                     <th className="sticky top-0 text-left">Kategori</th>
                     <th className="sticky top-0 text-left">Sub Kategori</th>
                     <th className="sticky top-0 text-left">Tarif Perbulan</th>
-                    <th className="sticky top-0 text-left">
-                      Tanggal Bayar (Bank)
-                    </th>
+                    <th className="sticky top-0 text-left">Tanggal Bayar (Bank)</th>
                     {bulan.map((bulan, i) => (
                       <React.Fragment key={i}>
                         <th className="sticky top-0 select-none bg-[#F1B174]">
