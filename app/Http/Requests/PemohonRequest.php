@@ -44,7 +44,7 @@ class PemohonRequest extends FormRequest
         }
 
         return [
-            'nik' => 'sometimes|digits:16|unique:pemilik,nik,' . $pemilikId,
+            'nik' => 'sometimes|nullable|digits:16|unique:pemilik,nik,' . $pemilikId,
             'namaPemilik' => 'required|string|min:5',
             'alamat' => 'required|string|min:5|max:255',
             'tempatLahir' => 'required|string|min:3',

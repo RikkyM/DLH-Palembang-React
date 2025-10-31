@@ -445,7 +445,6 @@ class WajibRetribusiController extends Controller
         WajibRetribusiRequest $request
         // Request $request
     ) {
-        dd($request->all());
         $validated = $request->validated();
 
         $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
@@ -615,7 +614,7 @@ class WajibRetribusiController extends Controller
             return redirect()->route('pendaftar.wajib-retribusi.index')->with('success', 'Data berhasil disimpan.');
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
+            report($e);
             return back()->withErrors(['server' => 'Terjadi kesalahan saat menyimpan data.']);
         }
     }

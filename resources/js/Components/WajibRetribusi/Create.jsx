@@ -22,6 +22,7 @@ const WajibRetribusiCreate = ({
   generateWr = null,
 }) => {
   const [mapReset, setMapReset] = useState(0);
+  const isReadOnly = true;
 
   const roleConfig = {
     ROLE_SUPERADMIN: {
@@ -398,11 +399,14 @@ const WajibRetribusiCreate = ({
               id="noWajibRetribusi"
               className={`${errors.noWajibRetribusi && "border border-red-500"} read-only:cursor-default read-only:bg-transparent read-only:selection:bg-transparent`}
               placeholder="Nomor Objek Retribusi..."
-              value={data.noWajibRetribusi || generateWr}
-              onChange={(e) =>
-                handleInputChange("noWajibRetribusi", e.target.value)
+              value={
+                isReadOnly ? (generateWr ?? "") : (data.noWajibRetribusi ?? "")
               }
-              // readOnly={true}
+              onChange={(e) => {
+                if (!isReadOnly)
+                  handleInputChange("noWajibRetribusi", e.target.value);
+              }}
+              readOnly={isReadOnly}
             />
             {errors.noWajibRetribusi && (
               <span className="text-xs text-red-500">
