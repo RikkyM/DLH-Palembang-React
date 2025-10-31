@@ -197,8 +197,9 @@ const Index = ({ datas, filters, role }) => {
                           Total
                         </td>
                         <td className="p-2">
+                        {console.log(datas)}
                           {datas.reduce(
-                            (acc, row) => acc + (Number(row?.skrd ?? 0) || 0),
+                            (acc, row) => acc + (Number(row?.kecamatan ?? 0) || 0),
                             0,
                           )}
                         </td>

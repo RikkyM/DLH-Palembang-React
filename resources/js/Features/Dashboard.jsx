@@ -1,4 +1,4 @@
-import { Deferred, Head, Link, router, usePage } from "@inertiajs/react";
+import { Deferred, Head, Link } from "@inertiajs/react";
 
 import { Clock, DollarSign, FileText, Users, Wallet } from "lucide-react";
 import BarChart from "@/Components/Chart/BarChart";
@@ -105,7 +105,7 @@ const DashboardPages = ({
               </div>
             </div>
             <div className="flex flex-col text-sm">
-              <span className="font-semibold">Penerimaan</span>
+              <span className="font-semibold">Penerimaan Kecamatan</span>
               <span className="flex flex-wrap font-semibold text-green-600">
                 <Deferred data="stats" fallback={<p>Memuat...</p>}>
                   {loading && <p>Memuat...</p>}
@@ -114,7 +114,7 @@ const DashboardPages = ({
                       style: "currency",
                       currency: "IDR",
                       minimumFractionDigits: 0,
-                    }).format(stats?.penerimaan) ??
+                    }).format(stats?.perKecamatan) ??
                       0)}
                 </Deferred>
               </span>
@@ -138,6 +138,10 @@ const DashboardPages = ({
                       minimumFractionDigits: 0,
                     }).format(stats?.belumTertagih) ??
                       0)}
+                  <span className="text-xs ml-5 text-black">
+                    {" "}
+                    belum tahu di kurangi dengan yang mana
+                  </span>
                 </Deferred>
               </span>
             </div>
@@ -193,7 +197,7 @@ const DashboardPages = ({
               </div>
             </div>
             <div className="flex flex-col text-sm">
-              <span className="font-semibold">Penerimaan Tahun Ini</span>
+              <span className="font-semibold">Penerimaan UPTD</span>
               <span className="flex flex-wrap font-semibold text-green-600">
                 <Deferred data="stats" fallback={<p>Memuat...</p>}>
                   {loading && <p>Memuat...</p>}
@@ -202,7 +206,7 @@ const DashboardPages = ({
                       style: "currency",
                       currency: "IDR",
                       minimumFractionDigits: 0,
-                    }).format(stats?.penerimaanTahunIni) ??
+                    }).format(stats?.perUptd) ??
                       0)}
                 </Deferred>
               </span>

@@ -176,7 +176,7 @@ class RekapitulasiController extends Controller
             'uptd.skrd.setoran' => function ($q) {
                 $q->where('status', 'Approved')->where('current_stage', 'bendahara');
             },
-            'uptd.skrd.setoran.detailSetoran' => fn($q) => $q->whereYear('tanggalBayar', Carbon::now()->year),
+            'uptd.skrd.setoran.detailSetoran'
         ])
             ->get()
             ->map(function ($kecamatan) {
@@ -220,7 +220,7 @@ class RekapitulasiController extends Controller
         $rangeCol = DB::raw('DATE(COALESCE(tanggalSkrd, created_at))');
 
         $datas = Kecamatan::with([
-            'uptd.skrd' => function ($q) use ($startDate, $endDate, $rangeCol, $getSortBy, $getSortDir) {
+            'uptd.skrd' => function ($q) use ($startDate, $endDate, $rangeCol) {
                 $q->when(
                     $startDate || $endDate,
                     function ($q) use ($startDate, $endDate, $rangeCol) {
@@ -240,7 +240,6 @@ class RekapitulasiController extends Controller
                         ]);
                     }
                 );
-                $q->orderBy($getSortBy, $getSortDir);
             },
             'uptd.skrd.setoran',
             'uptd.skrd.detailSetoran',
@@ -286,7 +285,6 @@ class RekapitulasiController extends Controller
                     $q->where('status', 'Approved')->where('current_stage', 'bendahara');
                 },
                 'skrd.setoran.detailSetoran'
-                => fn($q) => $q->whereYear('tanggalBayar', Carbon::now()->year),
             ])
             ->where('namaUptd', '!=', 'Dinas')
             ->get(['id', 'namaUptd'])

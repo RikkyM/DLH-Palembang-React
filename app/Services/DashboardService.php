@@ -44,8 +44,6 @@ class DashboardService
         $getDetailSetoran = DetailSetoran::with('setoran', 'skrd')
             ->whereHas('setoran', fn($q) => $q->where('status', 'Approved')->where('current_stage', 'bendahara'));
 
-        // dd($getDetailSetoran->sum('jumlahBayar'));
-
         if (in_array(Auth::user()->role, ['ROLE_KUPTD', 'ROLE_KASUBAG_TU_UPDT'])) {
             $getPayment->where('uptdId', $this->getUptdId());
             $getDetailSetoran->whereRelation('skrd', 'uptdId', $this->getUptdId());
@@ -86,14 +84,45 @@ class DashboardService
 
         $countWR = WajibRetribusi::whereYear('created_at', $year);
         $countSkrd = Skrd::whereYear('created_at', $year);
-        $perKecamatan = Kecamatan::with(['uptd.skrd' => fn($q) => $q->whereYear($rangeCol, Carbon::now()->year)])
+
+        $perKecamatan = Kecamatan::with([
+            'uptd.skrd' =>
+            fn($query) => $query->whereYear($rangeCol, $year)
+                ->when(
+                    in_array(Auth::user()->role, ['ROLE_KUPTD', 'ROLE_KASUBAG_TU_UPDT']),
+                    fn($q) => $q->where('uptdId', $this->getUptdId())
+                ),
+            'uptd.skrd.pembayaran',
+            'uptd.skrd.setoran' => fn($q) => $q->where('status', 'Approved')->where('current_stage', 'bendahara'),
+            'uptd.skrd.setoran.detailSetoran'
+        ])
             ->get()
-            ->sum(fn($kec) => $kec->uptd->skrd->count());
-        $perUptd = Uptd::with(['skrd' => fn($q) => $q->whereYear($rangeCol, Carbon::now()->year)])
+            ->sum(fn($kec) => $kec->uptd->skrd->sum(function ($s) {
+                $totalSetoran = $s->setoran->sum(fn($s) => $s->detailSetoran->sum('jumlahBayar'));
+                $totalPembayaran = $s->pembayaran->sum('jumlahBayar') ?? 0;
+                return $totalSetoran + $totalPembayaran;
+            }));
+
+        $perUptd = Uptd::with(
+            [
+                'skrd' => fn($q) => $q->whereYear($rangeCol, $year)
+                    ->when(
+                        in_array(Auth::user()->role, ['ROLE_KUPTD', 'ROLE_KASUBAG_TU_UPDT']),
+                        fn($q) => $q->where('uptdId', $this->getUptdId())
+                    ),
+                'skrd.pembayaran',
+                'skrd.setoran' => fn($q) => $q->where('status', 'Approved')->where('current_stage', 'bendahara'),
+                'skrd.setoran.detailSetoran'
+            ]
+        )
             ->get()
-            ->sum(fn($u) => $u->skrd->count());
-        // dd($p, $s);
-        $countProyeksi = Skrd::whereYear('created_at', $year);
+            ->sum(fn($u) => $u->skrd->sum(function ($s) {
+                $totalSetoran = $s->setoran->sum(fn($s) => $s->detailSetoran->sum('jumlahBayar') ?? 0);
+                $totalPembayaran = $s->pembayaran->sum('jumlahBayar') ?? 0;
+                return $totalSetoran + $totalPembayaran;
+            }));
+
+        $countProyeksi = Skrd::whereYear($rangeCol, $year);
         $getPembayaran = Pembayaran::whereYear('created_at', $year);
         $getDetailSetoran = DetailSetoran::with('setoran', 'skrd')
             ->whereRelation('setoran', 'status', 'Approved')
@@ -108,8 +137,6 @@ class DashboardService
             $getDetailSetoran->whereRelation('skrd', 'uptdId', $this->getUptdId());
         }
 
-        // dd((clone $getDetailSetoran)->sum('jumlahBayar'));
-
         $jumlahWR = $countWR->count();
         $jumlahSkrd = $countSkrd->count();
         $proyeksiPenerimaan = $countProyeksi->sum('tagihanPerTahunSkrd');
@@ -122,25 +149,13 @@ class DashboardService
         $penerimaan = $penerimaanPembayaran ?: $penerimaanDetailSetoran;
         $belumTertagih = $proyeksiPenerimaan - $penerimaan;
 
-        // $p = (clone $getDetailSetoran)
-        //     ->whereMonth('created_at', Carbon::now()->month)
-        //     // ->whereDate('created_at', Carbon::today())
-        //     // ->pluck('created_at')
-        //     ->get()
-        //     ->map(fn($m) => [
-        //         'nomorNota' => $m->nomorNota,
-        //         'tanggal' => Carbon::parse($m->created_at)->format('d')
-        //     ])->values();
-        // // ->sum('jumlahBayar');
-
-        // dd($p);
-
         return [
             'jumlahWR' => $jumlahWR,
             'jumlahSkrd' => $jumlahSkrd,
             'proyeksiPenerimaan' => $proyeksiPenerimaan,
             'penerimaan' => $penerimaan,
             'perKecamatan' => $perKecamatan,
+            'perUptd' => $perUptd,
             'belumTertagih' => $belumTertagih,
             'penerimaanHariIni' => (clone $getPembayaran)
                 ->whereDate('created_at', Carbon::today())

@@ -16,11 +16,6 @@ class Kecamatan extends Model
         'slug'
     ];
 
-    public function uptd()
-    {
-        return $this->hasOne(Uptd::class, 'kodeKecamatan', 'kodeKecamatan');
-    }
-
     protected static function booted()
     {
         static::creating(function ($kecamatan) {
@@ -36,5 +31,22 @@ class Kecamatan extends Model
 
             $kecamatan->kodeKecamatan = str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
         });
+    }
+
+    public function uptd()
+    {
+        return $this->hasOne(Uptd::class, 'kodeKecamatan', 'kodeKecamatan');
+    }
+
+    public function skrds()
+    {
+        return $this->hasManyThrough(
+            Skrd::class,
+            Uptd::class,
+            'kodeKecamatan',
+            'uptdId',
+            'kodeKecamatan',
+            'id'
+        );
     }
 }
