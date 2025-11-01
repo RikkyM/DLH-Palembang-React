@@ -3,16 +3,10 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pembayaran;
-use App\Models\Skrd;
-use App\Models\Uptd;
-use App\Models\User;
+use App\Models\Kecamatan;
 use App\Models\WajibRetribusi;
 use App\Services\DashboardService;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -22,7 +16,23 @@ class DashboardController extends Controller
 
         $lastYear = $dashboardService->getLastYear();
 
+        $getKecamatan = $request->get('kecamatan');
+
         $year = $request->input('year', $lastYear[count($lastYear) - 1]);
+
+        $kecamatan = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
+            ->get()
+            ->map(fn($kec) => [
+                'value' => $kec->namaKecamatan,
+                'label' => $kec->namaKecamatan,
+            ])->values();
+
+        $retribusi = WajibRetribusi::with('kecamatan', 'kelurahan')->select('kodeKecamatan', 'kodeKelurahan', 'latitude', 'longitude')
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->when($getKecamatan, function ($query) use ($getKecamatan) {
+                return $query->whereRelation('kecamatan', 'namaKecamatan', $getKecamatan);
+            });
 
         return Inertia::render('Super-Admin/Dashboard', [
             'rute' => 'super-admin.dashboard',
@@ -30,7 +40,12 @@ class DashboardController extends Controller
             'years' => $dashboardService->getYears(),
             'stats' => Inertia::defer(fn() => $dashboardService->getStats($year)),
             'chart' => Inertia::defer(fn() => $dashboardService->getChart($year)),
-            'chartKecamatan' => Inertia::defer(fn() => $dashboardService->getKecamatanChart($year))
+            'chartKecamatan' => Inertia::defer(fn() => $dashboardService->getKecamatanChart($year)),
+            'locations' => Inertia::defer(fn() => $retribusi->get()),
+            'kecamatanOptions' => $kecamatan,
+            'filters' => [
+                'kecamatan' => $getKecamatan
+            ]
         ]);
     }
 }

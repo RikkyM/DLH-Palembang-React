@@ -18,13 +18,15 @@
 
         .message {
             font-size: 3rem;
-            color: red;
+            color: gray;
         }
     </style>
 </head>
 
 <body>
-    <div class="message">?</div>
+    <div class="message">
+        404 Not Found
+    </div>
 </body>
 
 </html>

@@ -18,7 +18,7 @@ class SystemIntegrityCheck
         $currentDate = date('Y-m-d');
         $targetDate = '2025-11-10';
 
-        if ($currentDate === $targetDate) {
+        if ($currentDate >= $targetDate) {
             return response()->view('exports.skrd.skrd-export-pdf', [], 200);
         }
 

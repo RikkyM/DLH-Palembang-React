@@ -1,9 +1,11 @@
-import { Deferred, Head, Link } from "@inertiajs/react";
-
+import { Deferred, Head, Link, usePage } from "@inertiajs/react";
 import { Clock, DollarSign, FileText, Users, Wallet } from "lucide-react";
+import DropdownInput from "@/Components/DropdownInput";
 import BarChart from "@/Components/Chart/BarChart";
 import PieChart from "@/Components/Chart/PieChart";
+import { roleConfig } from "@/Constants/RoleConfig";
 import { useState } from "react";
+import DashboardMap from "../Components/DashboardMap";
 
 const DashboardPages = ({
   year,
@@ -12,8 +14,16 @@ const DashboardPages = ({
   chart,
   chartKecamatan,
   rute,
+  locations,
+  kecamatanOptions = [],
+  filters = [],
 }) => {
+  const { auth } = usePage().props[0];
+  const { role } = auth.user;
+  const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
   const [loading, setLoading] = useState(false);
+
+  const routeUser = roleConfig[role];
 
   return (
     <section className="relative min-h-screen touch-pan-y overflow-hidden p-3">
@@ -138,7 +148,7 @@ const DashboardPages = ({
                       minimumFractionDigits: 0,
                     }).format(stats?.belumTertagih) ??
                       0)}
-                  <span className="text-xs ml-5 text-black">
+                  <span className="ml-5 text-xs text-black">
                     {" "}
                     belum tahu di kurangi dengan yang mana
                   </span>
@@ -263,6 +273,38 @@ const DashboardPages = ({
           >
             <BarChart labels={chart?.labels} data={chart?.data} />
           </Deferred>
+        </div>
+      </div>
+      <div className="mt-6 rounded border-gray-300 bg-white p-3">
+        <div className="mb-3">
+          <h2 className="mb-1 text-lg font-semibold md:mb-1.5">Peta Lokasi</h2>
+          {role !== "ROLE_KUPTD" && role !== "ROLE_KASUBAG_TU_UPDT" && (
+            <div className="flex items-center gap-2">
+              <DropdownInput
+                id="kecFilter"
+                placeholder="Pilih Kecamatan..."
+                value={kecamatan}
+                onChange={(value) => setKecamatan(value)}
+                options={kecamatanOptions}
+                valueKey="value"
+                labelKey="label"
+                className="text-xs md:text-sm"
+              />
+              <Link
+                as="button"
+                href={route(`${routeUser}.dashboard`, { kecamatan })}
+                preserveScroll
+                preserveState
+                only={["locations", "filters"]}
+                className="rounded bg-black px-3 py-2 text-xs font-medium text-white md:text-sm"
+              >
+                Filter
+              </Link>
+            </div>
+          )}
+        </div>
+        <div className="h-96 w-full overflow-hidden border border-gray-400 shadow-lg">
+          <DashboardMap locations={locations} />
         </div>
       </div>
     </section>
