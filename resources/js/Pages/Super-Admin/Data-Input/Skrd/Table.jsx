@@ -1,3 +1,4 @@
+import { router } from "@inertiajs/react";
 import { FileText } from "lucide-react";
 import React, { memo } from "react";
 
