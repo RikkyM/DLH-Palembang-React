@@ -73,7 +73,15 @@ const KatimNavigation = () => {
       ],
     },
     {
-      label: "Retribusi",
+      label: "Retribusi Kecamatan",
+      route: "katim.rekapitulasi.retribusi-kecamatan",
+      activeRoute: [
+        "katim.rekapitulasi.retribusi-kecamatan",
+        "katim.rekapitulasi.retribusi-kecamatan.detail",
+      ],
+    },
+    {
+      label: "Retribusi UPTD",
       route: "katim.rekapitulasi.penerimaan",
       activeRoute: [
         "katim.rekapitulasi.penerimaan",

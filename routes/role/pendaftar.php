@@ -33,19 +33,24 @@ Route::middleware('role:ROLE_PENDAFTAR')->prefix('pendaftar')->name('pendaftar.'
         Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
     });
 
-    Route::prefix('rekapitulasi')->name('rekapitulasi.')->group(function () {
+    Route::prefix('laporan')->name('rekapitulasi.')->group(function () {
         Route::controller(RekapitulasiController::class)->group(function () {
             Route::prefix('/spkrd')->group(function () {
                 Route::get('/', 'spkrd')->name('spkrd');
                 Route::get('/detail', 'spkrdDetail')
                     ->name('spkrd.detail');
             });
-            Route::prefix('/penerimaan')->group(function () {
+            Route::prefix('/retribusi-kecamatan')->group(function () {
+                Route::get('/', 'retribusiKecamatan')->name('retribusi-kecamatan');
+                Route::get('/detail', 'detailRetribusiKecamatan')
+                    ->name('retribusi-kecamatan.detail');
+            });
+            Route::prefix('/retribusi-uptd')->group(function () {
                 Route::get('/', 'penerimaan')->name('penerimaan');
                 Route::get('/detail', 'penerimaanDetail')
                     ->name('penerimaan.detail');
             });
-            Route::prefix('/nota-tagihan')->group(function() {
+            Route::prefix('/nota-tagihan')->group(function () {
                 Route::get('/', 'notaTagihan')->name('nota-tagihan');
             });
         });

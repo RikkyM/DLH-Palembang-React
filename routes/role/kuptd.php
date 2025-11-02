@@ -6,6 +6,7 @@ use App\Http\Controllers\Kuptd\InvoiceController;
 use App\Http\Controllers\Kuptd\SetoranController;
 use App\Http\Controllers\Kuptd\SkrdController;
 use App\Http\Controllers\Kuptd\WajibRetribusiController;
+use App\Http\Controllers\RekapitulasiController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('role:ROLE_KUPTD')->prefix('kuptd')->name('kuptd.')->group(function () {
@@ -44,6 +45,29 @@ Route::middleware('role:ROLE_KUPTD')->prefix('kuptd')->name('kuptd.')->group(fun
             ->where(['data' => '.*']);
         Route::put('/data-setoran', [SetoranController::class, 'update'])
             ->name('data-setoran.update');
+    });
+
+    Route::prefix('laporan')->name('rekapitulasi.')->group(function () {
+        Route::controller(RekapitulasiController::class)->group(function () {
+            Route::prefix('/spkrd')->group(function () {
+                Route::get('/', 'spkrd')->name('spkrd');
+                Route::get('/detail', 'spkrdDetail')
+                    ->name('spkrd.detail');
+            });
+            Route::prefix('/retribusi-kecamatan')->group(function () {
+                Route::get('/', 'retribusiKecamatan')->name('retribusi-kecamatan');
+                Route::get('/detail', 'detailRetribusiKecamatan')
+                    ->name('retribusi-kecamatan.detail');
+            });
+            Route::prefix('/retribusi-uptd')->group(function () {
+                Route::get('/', 'penerimaan')->name('penerimaan');
+                Route::get('/detail', 'penerimaanDetail')
+                    ->name('penerimaan.detail');
+            });
+            Route::prefix('/nota-tagihan')->group(function () {
+                Route::get('/', 'notaTagihan')->name('nota-tagihan');
+            });
+        });
     });
 
     Route::get('/akun', [AccountController::class, 'index'])->name('akun');

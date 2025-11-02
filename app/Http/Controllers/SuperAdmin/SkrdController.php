@@ -208,7 +208,8 @@ class SkrdController extends Controller
     {
 
         return Inertia::render('Super-Admin/Data-Input/Skrd/Show/Index', [
-            'data' => $skrd->load(['user', 'pembayaran', 'pemilik', 'uptd', 'setoran', 'detailSetoran.setoran']),
+            'user' => User::select('id', 'namaLengkap', 'role')->get(),
+            'data' => $skrd->load(['pembayaran', 'pemilik', 'uptd', 'setoran', 'detailSetoran.setoran']),
             'bulan' => $this->getBulan()
         ]);
     }

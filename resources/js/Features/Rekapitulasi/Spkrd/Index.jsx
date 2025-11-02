@@ -291,7 +291,7 @@ const Index = ({ datas, filters, role }) => {
                   ) : startDate || endDate ? (
                     <tr>
                       <td
-                        colSpan="4"
+                        colSpan="7"
                         className="py-8 text-center text-xs text-gray-500 lg:text-sm"
                       >
                         SPKRD tidak ditemukan.

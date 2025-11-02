@@ -60,13 +60,6 @@ const KasubagNavigation = () => {
     },
   ];
 
-  // const tagihanItems = [
-  //   {
-  //     label: "Data Surat Tagihan",
-  //     route: "kasubag.surat-tagihan.index",
-  //   },
-  // ];
-
   const penerimaanItems = [
     {
       label: "Input-Setoran",
@@ -79,28 +72,36 @@ const KasubagNavigation = () => {
     },
   ];
 
-  // const settingItems = [
-  //   {
-  //     label: "Uptd",
-  //     // route: "super-admin.uptd",
-  //   },
-  //   {
-  //     label: "User / Pegawai",
-  //     // route: "super-admin.user",
-  //   },
-  //   {
-  //     label: "Kecamatan",
-  //   },
-  //   {
-  //     label: "Kelurahan",
-  //   },
-  //   {
-  //     label: "Kategori",
-  //   },
-  //   {
-  //     label: "Sub Kategori",
-  //   },
-  // ];
+const rekapitulasiItems = [
+  {
+    label: "Jumlah SPKRD",
+    route: "kasubag.rekapitulasi.spkrd",
+    activeRoute: [
+      "kasubag.rekapitulasi.spkrd",
+      "kasubag.rekapitulasi.spkrd.detail",
+    ],
+  },
+  {
+    label: "Retribusi Kecamatan",
+    route: "kasubag.rekapitulasi.retribusi-kecamatan",
+    activeRoute: [
+      "kasubag.rekapitulasi.retribusi-kecamatan",
+      "kasubag.rekapitulasi.retribusi-kecamatan.detail",
+    ],
+  },
+  {
+    label: "Retribusi UPTD",
+    route: "kasubag.rekapitulasi.penerimaan",
+    activeRoute: [
+      "kasubag.rekapitulasi.penerimaan",
+      "kasubag.rekapitulasi.penerimaan.detail",
+    ],
+  },
+  {
+    label: "Nota Tagihan",
+    route: "kasubag.rekapitulasi.nota-tagihan",
+  },
+];
 
   const isAccordionActive = (items) =>
     items.some((item) => {
@@ -188,6 +189,11 @@ const KasubagNavigation = () => {
           title="Penerimaan"
           items={penerimaanItems}
           defaultOpen={isAccordionActive(penerimaanItems)}
+        />
+        <AccordionItem
+          title="Laporan"
+          items={rekapitulasiItems}
+          defaultOpen={isAccordionActive(rekapitulasiItems)}
         />
 
         <div className="py-3">

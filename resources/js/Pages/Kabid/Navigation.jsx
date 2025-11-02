@@ -61,7 +61,15 @@ const KabidNavigation = () => {
       ],
     },
     {
-      label: "Retribusi",
+      label: "Retribusi Kecamatan",
+      route: "kabid.rekapitulasi.retribusi-kecamatan",
+      activeRoute: [
+        "kabid.rekapitulasi.retribusi-kecamatan",
+        "kabid.rekapitulasi.retribusi-kecamatan.detail",
+      ],
+    },
+    {
+      label: "Retribusi UPTD",
       route: "kabid.rekapitulasi.penerimaan",
       activeRoute: [
         "kabid.rekapitulasi.penerimaan",

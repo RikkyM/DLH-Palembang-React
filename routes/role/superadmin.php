@@ -71,7 +71,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
             ->where(['data' => '.*']);
     });
 
-    Route::prefix('rekapitulasi')->name('rekapitulasi.')->group(function () {
+    Route::prefix('laporan')->name('rekapitulasi.')->group(function () {
         Route::controller(RekapitulasiController::class)->group(function () {
             Route::prefix('/spkrd')->group(function () {
                 Route::get('/', 'spkrd')->name('spkrd');

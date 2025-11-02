@@ -1,4 +1,20 @@
-const Show = ({ data, bulan }) => {
+import { roleConfig } from "@/Constants/RoleConfig";
+import { Check, EllipsisVertical } from "lucide-react";
+import React from "react";
+
+const Show = ({ user, data, bulan }) => {
+  const findUser = (usr) => {
+    return user.find((item) => item.id === usr.userId);
+  };
+
+  const getMessageHistory = {
+    Submited: "Pendaftaran Retribusi",
+    Send: "Dikirim",
+    Approved: "Diterima",
+    Rejected: "Ditolak",
+    Finished: "Disetujui",
+  };
+
   return (
     <section className="p-3">
       <div className="mb-3 grid w-full grid-cols-2 justify-between rounded bg-white p-5 md:flex-row md:items-center md:gap-2">
@@ -7,7 +23,7 @@ const Show = ({ data, bulan }) => {
             onClick={() => {
               window.open(
                 route("skrd.pdf", {
-                  filename: data.fileSkrd
+                  filename: data.fileSkrd,
                 }),
                 "_blank",
               );
@@ -154,6 +170,57 @@ const Show = ({ data, bulan }) => {
               })}
             </tbody>
           </table>
+        </div>
+        <div className="col-span-2 grid grid-cols-1 gap-2 text-sm">
+          <h2 className="font-bold">History Retribusi</h2>
+          {data.historyAction && data.historyAction.length > 0
+            ? JSON.parse(data.historyAction).map((d, i) => {
+                return (
+                  <React.Fragment key={i}>
+                    <div className="w-full max-w-96 capitalize">
+                      <div className="flex gap-1.5 rounded bg-[#B3CEAF] p-3">
+                        <div className="flex h-max max-w-max justify-center self-center rounded-full border-[1px] border-green-400 bg-green-300 p-1">
+                          {d.action !== "Rejected" ? (
+                            <div className="flex h-max w-max items-center rounded-full border-[1px] border-green-500 bg-green-300 p-1">
+                              <Check className="max-h-3 max-w-3 stroke-2 text-green-500 lg:max-h-5 lg:max-w-5" />
+                            </div>
+                          ) : (
+                            d.action
+                          )}
+                        </div>
+                        <div className="font-semibold">
+                          <h3 className="text-xs md:text-sm">
+                            {getMessageHistory[d.action] ?? "-"}
+                          </h3>
+                          <p className="text-xs font-medium">
+                            {new Date(d.actionDate).toLocaleDateString(
+                              "id-ID",
+                              {
+                                day: "2-digit",
+                                month: "long",
+                                year: "2-digit",
+                              },
+                            )}
+                          </p>
+                          <p className="flex flex-wrap items-center text-xs">
+                            {findUser(d).namaLengkap}
+                            <span className="flex items-center font-medium">
+                              <span className="px-1">•</span>
+                              {roleConfig[findUser(d).role]}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                      {d.action !== "Finished" && (
+                        <div className="flex w-full justify-center bg-transparent p-1">
+                          <EllipsisVertical />
+                        </div>
+                      )}
+                    </div>
+                  </React.Fragment>
+                );
+              })
+            : "-"}
         </div>
       </div>
     </section>

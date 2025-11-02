@@ -1,8 +1,7 @@
-import { useProvider } from "@/Context/GlobalContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Deferred, Head, router } from "@inertiajs/react";
 import TableHead from "@/Components/TableHead";
-import LoadingTable from "../../../Components/LoadingTable";
+import LoadingTable from "@/Components/LoadingTable";
 
 const Index = ({ datas, filters, role }) => {
   const [startDate, setStartDate] = useState(filters.tanggal_mulai ?? "");

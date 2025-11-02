@@ -29,6 +29,7 @@ class SetoranImport implements WithMultipleSheets
             'BUKIT KECIL' => new TemplateThirdImport(),
             'SU1' => new TemplateThirdImport(),
             'SU2' => new TemplateThirdImport(),
+            // 'SEMABOR' => new TemplateThirdImport(),
         ];
     }
 }

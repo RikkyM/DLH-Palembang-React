@@ -110,8 +110,9 @@ const DashboardPages = ({
           </div>
           <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
             <div className="flex items-center gap-2">
-              <div className="rounded-full bg-[#2BBB7A] p-2">
-                <DollarSign className="size-5 text-white" />
+              <div className="flex size-9 items-center justify-center rounded-full bg-[#2BBB7A] p-2 font-medium text-white">
+                {/* <DollarSign className="size-5 text-white" /> */}
+                <span>Rp</span>
               </div>
             </div>
             <div className="flex flex-col text-sm">
@@ -148,18 +149,15 @@ const DashboardPages = ({
                       minimumFractionDigits: 0,
                     }).format(stats?.belumTertagih) ??
                       0)}
-                  <span className="ml-5 text-xs text-black">
-                    {" "}
-                    belum tahu di kurangi dengan yang mana
-                  </span>
                 </Deferred>
               </span>
             </div>
           </div>
           <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
             <div className="flex items-center gap-2">
-              <div className="rounded-full bg-[#2BBB7A] p-2">
-                <DollarSign className="size-5 text-white" />
+              <div className="flex size-9 items-center justify-center rounded-full bg-[#2BBB7A] p-2 font-medium text-white">
+                {/* <DollarSign className="size-5 text-white" /> */}
+                <span>Rp</span>
               </div>
             </div>
             <div className="flex flex-col text-sm">
@@ -180,8 +178,9 @@ const DashboardPages = ({
           </div>
           <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
             <div className="flex items-center gap-2">
-              <div className="rounded-full bg-[#2BBB7A] p-2">
-                <DollarSign className="size-5 text-white" />
+              <div className="flex size-9 items-center justify-center rounded-full bg-[#2BBB7A] p-2 font-medium text-white">
+                {/* <DollarSign className="size-5 text-white" /> */}
+                <span>Rp</span>
               </div>
             </div>
             <div className="flex flex-col text-sm">
@@ -202,8 +201,9 @@ const DashboardPages = ({
           </div>
           <div className="flex items-center gap-3 rounded border border-gray-300 bg-white px-4 py-7 shadow">
             <div className="flex items-center gap-2">
-              <div className="rounded-full bg-[#2BBB7A] p-2">
-                <DollarSign className="size-5 text-white" />
+              <div className="flex size-9 items-center justify-center rounded-full bg-[#2BBB7A] p-2 font-medium text-white">
+                {/* <DollarSign className="size-5 text-white" /> */}
+                <span>Rp</span>
               </div>
             </div>
             <div className="flex flex-col text-sm">
@@ -300,6 +300,19 @@ const DashboardPages = ({
               >
                 Filter
               </Link>
+              {kecamatan && (
+                <Link
+                  as="button"
+                  href={route(`${routeUser}.dashboard`, { kecamatan: null })}
+                  preserveScroll
+                  preserveState
+                  only={["locations", "filters"]}
+                  onSuccess={() => setKecamatan("")}
+                  className="rounded bg-red-500 px-3 py-2 text-xs font-medium text-white md:text-sm"
+                >
+                  Clear
+                </Link>
+              )}
             </div>
           )}
         </div>

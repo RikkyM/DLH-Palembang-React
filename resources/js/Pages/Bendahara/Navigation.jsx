@@ -36,7 +36,15 @@ const BendaharaNavigation = () => {
       ],
     },
     {
-      label: "Retribusi",
+      label: "Retribusi Kecamatan",
+      route: "bendahara.rekapitulasi.retribusi-kecamatan",
+      activeRoute: [
+        "bendahara.rekapitulasi.retribusi-kecamatan",
+        "bendahara.rekapitulasi.retribusi-kecamatan.detail",
+      ],
+    },
+    {
+      label: "Retribusi UPTD",
       route: "bendahara.rekapitulasi.penerimaan",
       activeRoute: [
         "bendahara.rekapitulasi.penerimaan",
@@ -130,7 +138,7 @@ const BendaharaNavigation = () => {
           items={penerimaanItems}
           defaultOpen={isAccordionActive(penerimaanItems)}
         />
-        
+
         <AccordionItem
           title="Laporan"
           items={laporanItems}

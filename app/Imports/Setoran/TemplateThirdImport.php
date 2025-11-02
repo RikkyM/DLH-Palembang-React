@@ -47,6 +47,8 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
 
             // }
 
+            // $data[] = $skrd ?? "-";
+
             if ($skrd) {
                 $nomorNota = Setoran::generateNomorNota();
 
@@ -151,5 +153,6 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
                 }
             }
         }
+        // dd($data);
     }
 }

@@ -69,7 +69,15 @@ const PendaftarNavigation = () => {
       ],
     },
     {
-      label: "Retribusi",
+      label: "Retribusi Kecamatan",
+      route: "pendaftar.rekapitulasi.retribusi-kecamatan",
+      activeRoute: [
+        "pendaftar.rekapitulasi.retribusi-kecamatan",
+        "pendaftar.rekapitulasi.retribusi-kecamatan.detail",
+      ],
+    },
+    {
+      label: "Retribusi UPTD",
       route: "pendaftar.rekapitulasi.penerimaan",
       activeRoute: [
         "pendaftar.rekapitulasi.penerimaan",
@@ -85,11 +93,11 @@ const PendaftarNavigation = () => {
   // const settingItems = [
   //   {
   //     label: "Uptd",
-  //     // route: "super-admin.uptd",
+  //     // route: "pendaftar.uptd",
   //   },
   //   {
   //     label: "User / Pegawai",
-  //     // route: "super-admin.user",
+  //     // route: "pendaftar.user",
   //   },
   //   {
   //     label: "Kecamatan",

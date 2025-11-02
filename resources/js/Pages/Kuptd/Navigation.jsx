@@ -75,28 +75,36 @@ const KuptdNavigation = () => {
     },
   ];
 
-  // const settingItems = [
-  //   {
-  //     label: "Uptd",
-  //     // route: "super-admin.uptd",
-  //   },
-  //   {
-  //     label: "User / Pegawai",
-  //     // route: "super-admin.user",
-  //   },
-  //   {
-  //     label: "Kecamatan",
-  //   },
-  //   {
-  //     label: "Kelurahan",
-  //   },
-  //   {
-  //     label: "Kategori",
-  //   },
-  //   {
-  //     label: "Sub Kategori",
-  //   },
-  // ];
+  const rekapitulasiItems = [
+    {
+      label: "Jumlah SPKRD",
+      route: "kuptd.rekapitulasi.spkrd",
+      activeRoute: [
+        "kuptd.rekapitulasi.spkrd",
+        "kuptd.rekapitulasi.spkrd.detail",
+      ],
+    },
+    {
+      label: "Retribusi Kecamatan",
+      route: "kuptd.rekapitulasi.retribusi-kecamatan",
+      activeRoute: [
+        "kuptd.rekapitulasi.retribusi-kecamatan",
+        "kuptd.rekapitulasi.retribusi-kecamatan.detail",
+      ],
+    },
+    {
+      label: "Retribusi UPTD",
+      route: "kuptd.rekapitulasi.penerimaan",
+      activeRoute: [
+        "kuptd.rekapitulasi.penerimaan",
+        "kuptd.rekapitulasi.penerimaan.detail",
+      ],
+    },
+    {
+      label: "Nota Tagihan",
+      route: "kuptd.rekapitulasi.nota-tagihan",
+    },
+  ];
 
   const isAccordionActive = (items) =>
     items.some((item) => {
@@ -182,6 +190,11 @@ const KuptdNavigation = () => {
           title="Penerimaan"
           items={penerimaanItems}
           defaultOpen={isAccordionActive(penerimaanItems)}
+        />
+        <AccordionItem
+          title="Laporan"
+          items={rekapitulasiItems}
+          defaultOpen={isAccordionActive(rekapitulasiItems)}
         />
 
         <div className="py-3">

@@ -36,7 +36,7 @@ const TableHead = ({ columns, sort, direction, onSort, rowSpan = 0, colSpan = 0,
         </th>
       ))}
       {children}
-      {!url.includes("rekapitulasi") && (
+      {!url.includes("laporan") && (
         <th className="sticky right-0 top-0 z-10 bg-[#F1B174] text-right text-white">
           Aksi
         </th>
