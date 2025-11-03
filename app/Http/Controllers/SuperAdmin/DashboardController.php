@@ -4,9 +4,11 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kecamatan;
+use App\Models\Skrd;
 use App\Models\WajibRetribusi;
 use App\Services\DashboardService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -19,6 +21,7 @@ class DashboardController extends Controller
         $getKecamatan = $request->get('kecamatan');
 
         $year = $request->input('year', $lastYear[count($lastYear) - 1]);
+        $tahun = $request->get('tahun', (string) $lastYear[count($lastYear) - 1]);
 
         $kecamatan = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
             ->get()
@@ -27,12 +30,25 @@ class DashboardController extends Controller
                 'label' => $kec->namaKecamatan,
             ])->values();
 
-        $retribusi = WajibRetribusi::with('kecamatan', 'kelurahan')->select('kodeKecamatan', 'kodeKelurahan', 'latitude', 'longitude')
+        $rangeCol = DB::raw('DATE(COALESCE(tanggalSkrd, created_at))');
+
+        $retribusi = WajibRetribusi::with('kecamatan', 'kelurahan')->select('noSkrd', 'namaObjekRetribusi', 'kodeKecamatan', 'kodeKelurahan', 'latitude', 'longitude', 'created_at')
             ->whereNotNull('latitude')
             ->whereNotNull('longitude')
+            ->whereYear($rangeCol, $tahun)
             ->when($getKecamatan, function ($query) use ($getKecamatan) {
                 return $query->whereRelation('kecamatan', 'namaKecamatan', $getKecamatan);
             });
+
+        $yearsOptions = WajibRetribusi::selectRaw('YEAR(created_at) as year')
+            ->union(Skrd::selectRaw('YEAR(created_at) as year'))
+            ->distinct()
+            ->orderBy('year', 'asc')
+            ->pluck('year')
+            ->map(fn($y) => [
+                'label' => (string) $y,
+                'value' => (string) $y
+            ]);
 
         return Inertia::render('Super-Admin/Dashboard', [
             'rute' => 'super-admin.dashboard',
@@ -43,8 +59,10 @@ class DashboardController extends Controller
             'chartKecamatan' => Inertia::defer(fn() => $dashboardService->getKecamatanChart($year)),
             'locations' => Inertia::defer(fn() => $retribusi->get()),
             'kecamatanOptions' => $kecamatan,
+            'yearOptions' => $yearsOptions,
             'filters' => [
-                'kecamatan' => $getKecamatan
+                'kecamatan' => $getKecamatan,
+                'tahun' => $tahun
             ]
         ]);
     }

@@ -1,5 +1,5 @@
 import { Deferred, Head, Link, usePage } from "@inertiajs/react";
-import { Clock, DollarSign, FileText, Users, Wallet } from "lucide-react";
+import { Clock, FileText, Users, Wallet } from "lucide-react";
 import DropdownInput from "@/Components/DropdownInput";
 import BarChart from "@/Components/Chart/BarChart";
 import PieChart from "@/Components/Chart/PieChart";
@@ -15,12 +15,14 @@ const DashboardPages = ({
   chartKecamatan,
   rute,
   locations,
+  yearOptions,
   kecamatanOptions = [],
   filters = [],
 }) => {
   const { auth } = usePage().props[0];
   const { role } = auth.user;
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
+  const [mapYear, setMapYear] = useState(filters.tahun ?? year.toString());
   const [loading, setLoading] = useState(false);
 
   const routeUser = roleConfig[role];
@@ -33,7 +35,7 @@ const DashboardPages = ({
           <Link
             key={y}
             as="button"
-            href={route(rute, { year: y })}
+            href={route(rute, { kecamatan, year: y })}
             preserveState
             preserveScroll
             replace
@@ -41,7 +43,15 @@ const DashboardPages = ({
             cacheFor="2m"
             onStart={() => setLoading(true)}
             onFinish={() => setLoading(false)}
-            only={["year", "years", "stats", "chart", "chartKecamatan"]}
+            only={[
+              "year",
+              "years",
+              "stats",
+              "chart",
+              "chartKecamatan",
+              "locations",
+              "filters",
+            ]}
             className={`mx-1 rounded px-4 py-2 text-xs outline-none md:text-sm ${
               parseInt(y) === parseInt(year)
                 ? "bg-[#B3CEAF] text-white"
@@ -290,9 +300,22 @@ const DashboardPages = ({
                 labelKey="label"
                 className="text-xs md:text-sm"
               />
+              <DropdownInput
+                id="thnFilter"
+                placeholder="Pilih Tahun..."
+                value={mapYear || year.toString()}
+                onChange={(value) => setMapYear(value)}
+                options={yearOptions}
+                valueKey="value"
+                labelKey="label"
+                className="text-xs md:text-sm"
+              />
               <Link
                 as="button"
-                href={route(`${routeUser}.dashboard`, { kecamatan })}
+                href={route(`${routeUser}.dashboard`, {
+                  tahun: mapYear,
+                  ...(kecamatan && {kecamatan}),
+                })}
                 preserveScroll
                 preserveState
                 only={["locations", "filters"]}
@@ -303,11 +326,14 @@ const DashboardPages = ({
               {kecamatan && (
                 <Link
                   as="button"
-                  href={route(`${routeUser}.dashboard`, { kecamatan: null })}
+                  href={route(`${routeUser}.dashboard`)}
                   preserveScroll
                   preserveState
                   only={["locations", "filters"]}
-                  onSuccess={() => setKecamatan("")}
+                  onSuccess={() => {
+                    setKecamatan("");
+                    setMapYear(year.toString());
+                  }}
                   className="rounded bg-red-500 px-3 py-2 text-xs font-medium text-white md:text-sm"
                 >
                   Clear
@@ -316,7 +342,7 @@ const DashboardPages = ({
             </div>
           )}
         </div>
-        <div className="h-96 w-full overflow-hidden border border-gray-400 shadow-lg">
+        <div className="h-[600px] w-full overflow-hidden border border-gray-400 shadow-lg">
           <DashboardMap locations={locations} />
         </div>
       </div>

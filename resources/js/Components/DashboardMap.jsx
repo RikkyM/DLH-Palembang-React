@@ -49,8 +49,8 @@ const DashboardMap = ({ locations }) => {
       scrollWheelZoom={true}
       zoom={12}
       center={defaultCenter}
-      preferCanvas // ⬅️ penting
-      zoomAnimation={false} // kurangi animasi
+      preferCanvas
+      zoomAnimation={false}
       fadeAnimation={false}
       markerZoomAnimation={false}
       keepBuffer={2}
@@ -81,17 +81,25 @@ const DashboardMap = ({ locations }) => {
               <Popup>
                 <div className="text-xs leading-[10px]">
                   <p>
+                    <strong>No SPRKD:</strong>{" "}
+                    {location?.noSkrd ?? "-"}
+                  </p>
+                  <p>
+                    <strong>Nama Wajib Retribusi:</strong>{" "}
+                    {location?.namaObjekRetribusi}
+                  </p>
+                  <p className="capitalize">
                     <strong>Kecamatan:</strong>{" "}
-                    {location.kecamatan.namaKecamatan}
+                    {location.kecamatan?.namaKecamatan.toLowerCase() ?? "-"}
                   </p>
-                  <p>
+                  <p className="capitalize">
                     <strong>Kelurahan:</strong>{" "}
-                    {location.kelurahan.namaKelurahan}
+                    {location.kelurahan?.namaKelurahan.toLowerCase() ?? "-"}
                   </p>
-                  <p>
+                  {/* <p>
                     <strong>Koordinat:</strong> {lat.toFixed(6)},{" "}
                     {lng.toFixed(6)}
-                  </p>
+                  </p> */}
                   <a
                     target="_blank"
                     href={`https://www.google.com/maps?q=${lat},${lng}`}

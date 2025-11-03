@@ -47,8 +47,6 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
 
             // }
 
-            // $data[] = $skrd ?? "-";
-
             if ($skrd) {
                 $nomorNota = Setoran::generateNomorNota();
 
@@ -114,6 +112,28 @@ class TemplateThirdImport implements ToCollection, WithHeadingRow, WithCalculate
 
                 if ($detailSetoran->isNotEmpty()) {
                     $tanggalDiterima = $detailSetoran->pluck('tanggalBayar')[count($detailSetoran) - 1];
+                    
+                    // $data[] = [
+                    //     'nomorNota' => $nomorNota,
+                    //     'skrdId' => $skrd['id'],
+                    //     'noRef' => null,
+                    //     'namaKecamatan' => Str::title(strtolower($row['kecamatan'])),
+                    //     'tanggalBayar' => Carbon::now(),
+                    //     'jumlahBayar' => $row['jumlah_bayar'] ?? count($detailSetoran) * $row['per_bulan'],
+                    //     'jumlahBulan' => count($detailSetoran),
+                    //     'namaPenyetor' => null,
+                    //     'keteranganBulan' => null,
+                    //     'metodeBayar' => null,
+                    //     'namaBank' => null,
+                    //     'buktiBayar' => null,
+                    //     'status' => 'Approved',
+                    //     'current_stage' => 'bendahara',
+                    //     'keterangan' => null,
+                    //     'tanggal_diterima' => $tanggalDiterima,
+                    //     'tanggal_batal' => null,
+                    //     'created_at' => Carbon::now(),
+                    //     'updated_at' => now()
+                    // ];
 
                     Setoran::create([
                         'nomorNota' => $nomorNota,
