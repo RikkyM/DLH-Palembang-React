@@ -331,9 +331,6 @@ class WajibRetribusiController extends Controller
     {
         $pemohonOptions = Pemilik::select('id', 'namaPemilik')
             ->orderBy('namaPemilik')
-            // ->whereHas('uptd', function($q) {
-            //     $q->where('id', auth()->user()->uptdId);
-            // })
             ->get()
             ->map(function ($pemohon) {
                 return [
@@ -344,9 +341,6 @@ class WajibRetribusiController extends Controller
 
         $kecamatanOptions = Kecamatan::select('kodeKecamatan', 'namaKecamatan')
             ->orderBy('namaKecamatan')
-            // ->whereHas('uptd', function ($q) {
-            //     $q->where('id', auth()->user()->uptdId);
-            // })
             ->get()
             ->map(function ($kecamatan) {
                 return [
@@ -423,6 +417,83 @@ class WajibRetribusiController extends Controller
                 ];
             });
 
+        $wrOptions = WajibRetribusi::select([
+            'id',
+            'namaObjekRetribusi',
+            'noWajibRetribusi',
+            'pemilikId',
+            'penagihId',
+            'bulan',
+            'image',
+            'file',
+            'alamat',
+            'rt',
+            'rw',
+            'kodeKecamatan',
+            'kodeKelurahan',
+            'bentukBadanUsaha',
+            'deskripsiUsaha',
+            'kodeKategori',
+            'kodeSubKategori',
+            'statusTempat',
+            'jumlahBangunan',
+            'jumlahLantai',
+            'linkMap',
+            'latitude',
+            'longitude',
+            'penagihId',
+            'uptdId',
+            'tarifPerbulan',
+            'keteranganBulan',
+            'unit',
+            'm2',
+            'giat',
+            'hari',
+            'meter'
+        ])
+            ->whereNotNull('noWajibRetribusi')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($wr) {
+                return [
+                    'value' => $wr->id,
+                    'label' => "{$wr->noWajibRetribusi} - {$wr->namaObjekRetribusi}",
+                    'payload' => [
+                        'pemilikId'            => $wr->pemilikId,
+                        'penagihId'            => $wr->penagihId,
+                        'fotoBangunanName'         => $wr->image ?? null,
+                        'fotoBerkasName'           => $wr->file ?? null,
+                        'namaObjekRetribusi'   => $wr->namaObjekRetribusi,
+                        'alamat' => $wr->alamat,
+                        'rt' => $wr->rt,
+                        'rw'  => $wr->rw,
+                        'kodeKecamatan'        => $wr->kodeKecamatan,
+                        'kodeKelurahan'        => $wr->kodeKelurahan,
+                        'bentukBadanUsaha'          => $wr->bentukBadanUsaha,
+                        'deskripsiUsaha'            => $wr->deskripsiUsaha,
+                        'kodeKategori'         => $wr->kodeKategori,
+                        'kodeSubKategori'      => $wr->kodeSubKategori,
+                        'statusTempat'         => $wr->statusTempat,
+                        'bulan'                => (int) $wr->bulan,
+                        'jBangunan'            => $wr->jumlahBangunan,
+                        'jLantai'              => $wr->jumlahLantai,
+                        'linkMap'              => $wr->linkMap ?? "",
+                        'latitude'             => $wr->latitude,
+                        'longitude'            => $wr->longitude,
+                        'penagihId'            => $wr->penagihId,
+                        'uptdId'               => $wr->uptdId,
+                        'tarifRetribusi'        => (int) $wr->tarifPerbulan,
+                        'totalRetribusi'        => (int) $wr->tarifPertahun,
+                        'keteranganBulan'      => $wr->keteranganBulan ?? "",
+                        'unit'                 => $wr->unit ?? null,
+                        'm2'                   => $wr->m2 ?? null,
+                        'giat'                 => $wr->giat ?? null,
+                        'hari'                 => $wr->hari ?? null,
+                        'meter'                => $wr->meter ?? null,
+                    ]
+                ];
+            });
+
         $generateNoWR = WajibRetribusi::generateNoWajibRetribusi();
 
         return Inertia::render('Pendaftar/Data-Input/Wajib-Retribusi/Create',  [
@@ -434,7 +505,8 @@ class WajibRetribusiController extends Controller
             'subKategoriOptions' => $subKategoriOptions,
             'penagihOptions' => $penagihOptions,
             'badanUsahaOptions' => $badanUsahaOptions,
-            'uptdOptions' => $uptdOptions
+            'uptdOptions' => $uptdOptions,
+            'wrOptions' => $wrOptions
         ]);
     }
 
@@ -446,6 +518,7 @@ class WajibRetribusiController extends Controller
         // Request $request
     ) {
         $validated = $request->validated();
+        // dd($request->all());
 
         $sub = SubKategori::where('kodeSubKategori', $validated['kodeSubKategori'])->firstOrFail();
 

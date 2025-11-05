@@ -17,6 +17,7 @@ const WajibRetribusiCreate = ({
   penagihOptions = [],
   badanUsahaOptions = [],
   uptdOptions = [],
+  wrOptions = [],
   userRole = "ROLE_PENDAFTAR",
   customProps = {},
   generateWr = null,
@@ -50,13 +51,13 @@ const WajibRetribusiCreate = ({
     pemilikId: "",
     penagihId: "",
     uptdId: "",
-    alamatObjekRetribusi: "",
+    alamat: "",
     rt: "",
     rw: "",
     kodeKecamatan: "",
     kodeKelurahan: "",
-    bentukUsaha: "",
-    deskripsi: "",
+    bentukBadanUsaha: "",
+    deskripsiUsaha: "",
     kodeKategori: "",
     kodeSubKategori: "",
     statusTempat: "",
@@ -97,16 +98,6 @@ const WajibRetribusiCreate = ({
     { value: "SEWA", label: "SEWA" },
   ];
 
-  // const bentukUsaha = [
-  //   { value: "Perorangan", label: "Perorangan" },
-  //   { value: "CV", label: "CV" },
-  //   { value: "PT", label: "PT" },
-  //   { value: "Koperasi", label: "Koperasi" },
-  //   { value: "BUMN", label: "BUMN" },
-  //   { value: "Instansi Pemerintah", label: "Instansi Pemerintah" },
-  //   { value: "FIRMA", label: "FIRMA" },
-  // ];
-
   const handleLocationChange = useCallback(
     (lat, lng) => {
       if (lat != null && lng != null) {
@@ -121,7 +112,11 @@ const WajibRetribusiCreate = ({
   );
 
   const handleFileChange = (field, file) => {
-    setData(field, file);
+    setData((prev) => ({
+      ...prev,
+      [field]: file,
+      [`${field}Name`]: null,
+    }));
     if (errors[field]) {
       clearErrors(field);
     }
@@ -290,14 +285,12 @@ const WajibRetribusiCreate = ({
 
       let result = 0;
       try {
-        // evaluasi aman untuk ekspresi aritmatika
         result = Function(`"use strict"; return (${formula})`)();
       } catch (error) {
         console.error("Error evaluate formula:", error, { formula });
         result = 0;
       }
 
-      // Jika rumus TIDAK mengandung 'bulan', baru kalikan dengan bulan di luar
       const formulaHasBulan = /\bbulan\b/i.test(rawFormula);
       if (!formulaHasBulan) {
         result *= getVal("bulan");
@@ -306,15 +299,13 @@ const WajibRetribusiCreate = ({
       return (result || 0) * tarif;
     }
 
-    // TANPA rumus: kalikan semua variabel kecuali 'bulan'
     let total = tarif;
     variabelArray.forEach((field) => {
-      if (field?.toLowerCase() === "bulan") return; // hindari double count
+      if (field?.toLowerCase() === "bulan") return;
       const value = getVal(field);
       if (value > 0) total *= value;
     });
 
-    // Tambahkan bulan hanya jika tidak ada di variabelArray
     if (!variabelArray.map((v) => String(v).toLowerCase()).includes("bulan")) {
       total *= getVal("bulan");
     }
@@ -348,8 +339,6 @@ const WajibRetribusiCreate = ({
       totalRetribusi: total,
     };
 
-    console.log(submitData);
-
     post(route(currentConfig.submitRoute), {
       data: submitData,
       onSuccess: () => {
@@ -361,11 +350,43 @@ const WajibRetribusiCreate = ({
     });
   };
 
+  const handlePickWr = (wrId) => {
+    const selected = wrOptions.find((o) => o.value === wrId);
+    if (!selected) return;
+
+    const p = selected.payload || {};
+
+    clearErrors();
+
+    const willChangeKategori =
+      p.kodeKategori && p.kodeKategori !== data.kodeKategori;
+
+    setData((prev) => ({
+      ...prev,
+      ...p,
+      fotoBerkas: null,
+      variabelValues: { bulan: p.bulan},
+      ...(willChangeKategori
+        ? { kodeSubKategori: p.kodeSubKategori ?? "" }
+        : {}),
+    }));
+  };
+
   return (
     <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
       <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-5">
         {/* <div className="col-span-3 grid w-full gap-5 lg:col-span-3 lg:grid-cols-4"> */}
-        <div className="col-span-3 grid w-full gap-5 lg:col-span-3 lg:grid-cols-3">
+        <div className="col-span-3 grid w-full gap-5 lg:col-span-3 lg:grid-cols-4">
+          <DropdownInput
+            id="objekRetribusi"
+            label="Objek Retribusi"
+            placeholder="Pilih No. Objek Retribusi"
+            onChange={handlePickWr}
+            options={wrOptions}
+            valueKey="value"
+            labelKey="label"
+            className="col-span-2 md:col-span-1"
+          />
           <FormInput className="lg:col-span-1">
             <Label
               htmlFor="namaObjekRetribusi"
@@ -461,24 +482,20 @@ const WajibRetribusiCreate = ({
         />
         <FormInput className="col-span-3">
           <Label
-            htmlFor="alamatObjekRetribusi"
+            htmlFor="alamat"
             className="after:text-red-500 after:content-['*']"
           >
             Alamat Objek Retribusi
           </Label>
           <Input
-            id="alamatObjekRetribusi"
-            className={`${errors.alamatObjekRetribusi && "border border-red-500"}`}
+            id="alamat"
+            className={`${errors.alamat && "border border-red-500"}`}
             placeholder="Alamat Objek Retribusi..."
-            value={data.alamatObjekRetribusi}
-            onChange={(e) =>
-              handleInputChange("alamatObjekRetribusi", e.target.value)
-            }
+            value={data.alamat}
+            onChange={(e) => handleInputChange("alamat", e.target.value)}
           />
-          {errors.alamatObjekRetribusi && (
-            <span className="text-xs text-red-500">
-              {errors.alamatObjekRetribusi}
-            </span>
+          {errors.alamat && (
+            <span className="text-xs text-red-500">{errors.alamat}</span>
           )}
         </FormInput>
         <div className="col-span-3 grid gap-5 lg:grid-cols-4">
@@ -570,13 +587,13 @@ const WajibRetribusiCreate = ({
         </div>
         <div className="col-span-3 grid gap-5 lg:grid-cols-2">
           <DropdownInput
-            id="bentukUsaha"
+            id="bentukBadanUsaha"
             label="Bentuk Badan Usaha"
             placeholder="Pilih Bentuk Badan Usaha"
-            value={data.bentukUsaha}
-            onChange={(value) => handleInputChange("bentukUsaha", value)}
+            value={data.bentukBadanUsaha}
+            onChange={(value) => handleInputChange("bentukBadanUsaha", value)}
             options={badanUsahaOptions}
-            error={errors.bentukUsaha}
+            error={errors.bentukBadanUsaha}
             required={true}
             valueKey="value"
             labelKey="label"
@@ -584,20 +601,24 @@ const WajibRetribusiCreate = ({
           />
           <FormInput className="col-span-2 md:col-span-1">
             <Label
-              htmlFor="deskripsi"
+              htmlFor="deskripsiUsaha"
               className="after:text-red-500 after:content-['*']"
             >
               Deskripsi Usaha
             </Label>
             <Input
-              id="deskripsi"
-              className={`${errors.deskripsi && "border border-red-500"}`}
-              placeholder="Deskripsi Usaha Contoh: warung nasi / toko sepatu / warung gado-gado..."
-              value={data.deskripsi}
-              onChange={(e) => handleInputChange("deskripsi", e.target.value)}
+              id="deskripsiUsaha"
+              className={`${errors.deskripsiUsaha && "border border-red-500"}`}
+              placeholder="deskripsiUsaha Usaha Contoh: warung nasi / toko sepatu / warung gado-gado..."
+              value={data.deskripsiUsaha}
+              onChange={(e) =>
+                handleInputChange("deskripsiUsaha", e.target.value)
+              }
             />
-            {errors.deskripsi && (
-              <span className="text-xs text-red-500">{errors.deskripsi}</span>
+            {errors.deskripsiUsaha && (
+              <span className="text-xs text-red-500">
+                {errors.deskripsiUsaha}
+              </span>
             )}
           </FormInput>
         </div>
@@ -659,7 +680,7 @@ const WajibRetribusiCreate = ({
               id="bulan"
               className={`${errors["variabelValues.bulan"] && "border border-red-500"}`}
               placeholder="Jumlah Bulan..."
-              value={data.variabelValues.bulan || ""}
+              value={data.variabelValues.bulan}
               onKeyDown={(e) => {
                 if (!isAllowedKey(e)) {
                   e.preventDefault();
@@ -754,10 +775,6 @@ const WajibRetribusiCreate = ({
             variabelArray = Array.isArray(selectedSubKategori.variabel)
               ? selectedSubKategori.variabel
               : JSON.parse(selectedSubKategori.variabel || "[]");
-          }
-
-          {
-            /* console.log(variabelArray); */
           }
 
           const inputFields = ["unit", "m2", "giat", "hari", "meter"];
@@ -1013,9 +1030,9 @@ const WajibRetribusiCreate = ({
                 {errors.fotoBangunan}
               </span>
             )}
-            {data.fotoBangunan && (
+            {data && data.fotoBangunanName && (
               <span className="text-xs text-green-600">
-                File dipilih: {data.fotoBangunan.name}
+                File dipilih: {data.fotoBangunanName}
               </span>
             )}
           </FormInput>
@@ -1032,6 +1049,12 @@ const WajibRetribusiCreate = ({
             {errors.fotoBerkas && (
               <span className="text-xs text-red-500">{errors.fotoBerkas}</span>
             )}
+            {data && data.fotoBerkasName && (
+              <span className="text-xs text-green-600">
+                File dipilih: {data.fotoBerkasName}
+              </span>
+            )}
+
             {data.fotoBerkas && (
               <span className="text-xs text-green-600">
                 File dipilih: {data.fotoBerkas.name}
