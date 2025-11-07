@@ -99,7 +99,7 @@ const SuperAdminNavigation = () => {
       route: "super-admin.rekapitulasi.retribusi-kecamatan",
       activeRoute: [
         "super-admin.rekapitulasi.retribusi-kecamatan",
-        "super-admin.rekapitulasi.retribusi-kecamatan.detail"
+        "super-admin.rekapitulasi.retribusi-kecamatan.detail",
       ],
     },
     {
@@ -107,7 +107,7 @@ const SuperAdminNavigation = () => {
       route: "super-admin.rekapitulasi.penerimaan",
       activeRoute: [
         "super-admin.rekapitulasi.penerimaan",
-        "super-admin.rekapitulasi.penerimaan.detail"
+        "super-admin.rekapitulasi.penerimaan.detail",
       ],
     },
     {
@@ -209,6 +209,10 @@ const SuperAdminNavigation = () => {
     <Sidebar>
       <div className="space-y-1.5 p-3">
         <Link
+          prefetch
+          cacheFor="60s"
+          preserveScroll
+          preserveState
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("super-admin.dashboard")
               ? "bg-[#B3CEAF] font-medium text-white"
@@ -236,6 +240,8 @@ const SuperAdminNavigation = () => {
           defaultOpen={isAccordionActive(tagihanItems)}
         /> */}
         <Link
+          prefetch
+          cacheFor="60s"
           className={`block whitespace-nowrap rounded px-3 py-2 transition-all duration-300 ${
             route().current("super-admin.surat-tagihan.index")
               ? "bg-[#B3CEAF] font-medium text-white"
@@ -271,6 +277,8 @@ const SuperAdminNavigation = () => {
           defaultOpen={isAccordionActive(settingItems)}
         />
         <Link
+          prefetch
+          cacheFor="60s"
           className={`pointer-events-none block rounded px-3 py-2 text-neutral-500 transition-all duration-300`}
           disabled={true}
           // ${
