@@ -442,20 +442,19 @@ const InputSetoran = ({ skrdOptions = [], metodeOptions = [], role }) => {
                 Selanjutnya
               </button>
             )}
-            {step === 3 && auth.user.role !== "ROLE_SUPERADMIN" ? (
-              <button
-                type="submit"
-                className="rounded border bg-white px-3 py-1.5 text-sm shadow"
-              >
-                {processing ? "Menyimpan..." : "Simpan Data"}
-              </button>
-            ) : (
-              <div
-                className="rounded border bg-white text-gray-400 px-3 py-1.5 text-sm shadow"
-              >
-                {processing ? "Menyimpan..." : "Simpan Data"}
-              </div>
-            )}
+            {step === 3 &&
+              (auth?.user?.role !== "ROLE_SUPERADMIN" ? (
+                <button
+                  type="submit"
+                  className="rounded border bg-white px-3 py-1.5 text-sm shadow"
+                >
+                  {processing ? "Menyimpan..." : "Simpan Data"}
+                </button>
+              ) : (
+                <div className="rounded border bg-white px-3 py-1.5 text-sm text-gray-400 shadow">
+                  Simpan Data
+                </div>
+              ))}
           </div>
         </div>
       </form>

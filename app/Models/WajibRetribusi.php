@@ -91,7 +91,7 @@ class WajibRetribusi extends Model
     public static function generateNoWajibRetribusi()
     {
         return DB::transaction(function () {
-            $tahun = date('Y');
+            $tahun = (int) TahunRetribusi::first()->tahun;
 
             $lastWajib = WajibRetribusi::whereYear('created_at', $tahun)
                 ->whereNotNull('noWajibRetribusi')
@@ -123,7 +123,7 @@ class WajibRetribusi extends Model
                 ->first();
 
 
-            $query = WajibRetribusi::whereYear('created_at', date('Y'))
+            $query = WajibRetribusi::whereYear('created_at', $tahun)
                 ->whereNotNull('noWajibRetribusi')
                 ->where('noWajibRetribusi', '!=', '')
                 ->get()
@@ -149,7 +149,7 @@ class WajibRetribusi extends Model
             $nextNumber = $lastNumber + 1;
             $format = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
             
-            return $format . '.' . date('Y');
+            return $format . '.' . $tahun;
 
 
             // $lastNumber = 0;

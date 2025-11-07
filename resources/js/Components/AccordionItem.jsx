@@ -80,9 +80,6 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
               <li key={index}>
                 {item.route ? (
                   <Link
-                    prefetch
-                    cacheFor="5m"
-                    preserveScroll
                     href={route(item.route)}
                     className={`inline-flex w-full justify-between rounded p-2 transition-all duration-300 ${
                       isItemActive(item)

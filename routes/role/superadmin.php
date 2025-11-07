@@ -111,7 +111,10 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::get('/penanda-tangan', 'TandaTangan')->name('penanda-tangan');
         Route::put('/penanda-tangan', 'TandaTanganUpdate')->name('penanda-tangan-update');
         Route::get('/data-instansi', 'dataInstansi')->name('data-instansi');
+        Route::put('/data-instansi', 'dataInstansiUpdate')->name('data-instansi-update');
         Route::get('/informasi', 'informasi')->name('informasi');
+        Route::get('/tahun-retribusi', 'tahunRetribusi')->name('tahun-retribusi');
+        Route::put('/tahun-retribusi', 'tahunRetribusiUpdate')->name('tahun-retribusi-update');
     });
 
     Route::get('/akun', [AccountController::class, 'index'])->name('akun');

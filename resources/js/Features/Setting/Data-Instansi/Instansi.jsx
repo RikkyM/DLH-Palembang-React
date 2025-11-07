@@ -11,6 +11,7 @@ const Instansi = ({ instansi }) => {
       <Head title="Data Instansi" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <InstansiForm
+          instansi={instansi}
           data={data}
           errors={errors}
           processing={processing}

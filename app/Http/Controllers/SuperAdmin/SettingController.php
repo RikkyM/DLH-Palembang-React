@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Instansi;
+use App\Models\TahunRetribusi;
 use App\Models\TandaTangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,10 +14,8 @@ class SettingController extends Controller
 {
     public function TandaTangan()
     {
-        // dd(TandaTangan::findOrFail(1));
         return Inertia::render('Super-Admin/Setting/TandaTangan', [
-            // 'signatureData' => Inertia::defer(fn() => TandaTangan::firstOrFail())
-            'signatureData' => TandaTangan::firstOrFail()
+            'signatureData' => TandaTangan::first()
         ]);
     }
 
@@ -32,23 +31,55 @@ class SettingController extends Controller
             'kota' => 'required'
         ]);
 
-        // dd($validated);
+        // $tandaTangan = TandaTangan::first();
 
-        DB::transaction(function () use ($validated) {
-            $tandaTangan = TandaTangan::firstOrFail();
+        // $tandaTangan->update($validated);
+        TandaTangan::updateOrCreate($validated);
 
-            $tandaTangan->update($validated);
-        });
-
-        return back()->with('success', 'Data berhasil disimpan.');
+        return redirect()->route('super-admin.penanda-tangan')->with('success', 'Data berhasil disimpan.');
     }
 
     public function dataInstansi()
     {
-        $instansi = Instansi::query()->firstOrNew([]);
+        $instansi = Instansi::first();
         return Inertia::render('Super-Admin/Setting/DataInstansi', [
-            'instansi' => $instansi->only(['id', 'namaInstansi', 'noTelepon', 'email', 'website', 'instagram', 'tiktok'])
+            'instansi' => $instansi
         ]);
+    }
+
+    public function dataInstansiUpdate(Request $request)
+    {
+        $validated = $request->validate([
+            'namaInstansi' => 'required',
+            'alamatInstansi' => "required",
+            'noTelepon' => "required",
+            'email' => "required",
+            'website' => "required",
+            'instagram' => "required",
+            'tiktok' => "required",
+        ]);
+
+        Instansi::firstOrNew([])->fill($validated)->save();
+
+        return back()->with('success', 'Data berhasil disimpan.');
+    }
+
+    public function tahunRetribusi()
+    {
+        return Inertia::render('Super-Admin/Setting/Tahun-Retribusi', [
+            'itm' => TahunRetribusi::first()
+        ]);
+    }
+
+    public function tahunRetribusiUpdate(Request $request)
+    {
+        $validated = $request->validate([
+            'tahun' => 'required|max:4'
+        ]);
+
+        TahunRetribusi::firstOrNew([])->fill($validated)->save();
+
+        return back()->with('success', 'Data berhasil diupdate.');
     }
 
     public function informasi()

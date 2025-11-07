@@ -1,6 +1,6 @@
 import DropdownInput from "@/Components/DropdownInput";
 import MapPicker from "@/Components/MapPicker";
-import { useForm } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import "leaflet/dist/leaflet.css";
 import { useCallback, useEffect, useState } from "react";
 import { isAllowedKey } from "@/Utils/inputValidators";
@@ -365,7 +365,7 @@ const WajibRetribusiCreate = ({
       ...prev,
       ...p,
       fotoBerkas: null,
-      variabelValues: { bulan: p.bulan},
+      variabelValues: { bulan: p.bulan },
       ...(willChangeKategori
         ? { kodeSubKategori: p.kodeSubKategori ?? "" }
         : {}),
@@ -374,9 +374,10 @@ const WajibRetribusiCreate = ({
 
   return (
     <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
+      <Head title="Buat Retribusi" />
       <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-5">
         {/* <div className="col-span-3 grid w-full gap-5 lg:col-span-3 lg:grid-cols-4"> */}
-        <div className="col-span-3 grid w-full gap-5 lg:col-span-3 lg:grid-cols-4">
+        <div className="col-span-3 grid w-full gap-5 lg:col-span-3 lg:grid-cols-2">
           <DropdownInput
             id="objekRetribusi"
             label="Objek Retribusi"
@@ -385,7 +386,7 @@ const WajibRetribusiCreate = ({
             options={wrOptions}
             valueKey="value"
             labelKey="label"
-            className="col-span-2 md:col-span-1"
+            className="w-full md:col-span-1"
           />
           <FormInput className="lg:col-span-1">
             <Label
@@ -396,7 +397,7 @@ const WajibRetribusiCreate = ({
             </Label>
             <Input
               id="namaObjekRetribusi"
-              className={`${errors.namaObjekRetribusi && "border border-red-500"}`}
+              className={`${errors.namaObjekRetribusi && "border border-red-500"} w-full`}
               placeholder="Nama Objek Retribusi..."
               value={data.namaObjekRetribusi}
               onChange={(e) =>
@@ -453,7 +454,7 @@ const WajibRetribusiCreate = ({
               <span className="text-xs text-red-500">{errors.noSkrd}</span>
             )}
           </FormInput> */}
-          <FormInput className="lg:col-span-1">
+          {/* <FormInput className="lg:col-span-1">
             <Label htmlFor="tanggalSkrd">Tanggal SPKRD</Label>
             <Input
               type="date"
@@ -465,7 +466,7 @@ const WajibRetribusiCreate = ({
             {errors.tanggalSkrd && (
               <span className="text-xs text-red-500">{errors.tanggalSkrd}</span>
             )}
-          </FormInput>
+          </FormInput> */}
         </div>
         <DropdownInput
           id="pemohon"
@@ -498,7 +499,7 @@ const WajibRetribusiCreate = ({
             <span className="text-xs text-red-500">{errors.alamat}</span>
           )}
         </FormInput>
-        <div className="col-span-3 grid gap-5 lg:grid-cols-4">
+        <div className="col-span-3 grid gap-5 grid-cols-2 lg:grid-cols-4">
           <FormInput className="col-span-2 md:col-span-1">
             <Label
               htmlFor="rt"
@@ -528,7 +529,7 @@ const WajibRetribusiCreate = ({
               <span className="text-xs text-red-500">{errors.rt}</span>
             )}
           </FormInput>
-          <FormInput className="col-span-2 md:col-span-1">
+          <FormInput className="col-span-2 col-span-2 md:col-span-1">
             <Label
               htmlFor="rw"
               className="after:text-red-500 after:content-['*']"
@@ -585,7 +586,7 @@ const WajibRetribusiCreate = ({
             className="col-span-2 md:col-span-1"
           />
         </div>
-        <div className="col-span-3 grid gap-5 lg:grid-cols-2">
+        <div className="col-span-3 grid gap-5 grid-cols-2 lg:grid-cols-2">
           <DropdownInput
             id="bentukBadanUsaha"
             label="Bentuk Badan Usaha"
@@ -622,7 +623,7 @@ const WajibRetribusiCreate = ({
             )}
           </FormInput>
         </div>
-        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
+        <div className="col-span-3 grid gap-5 grid-cols-2 lg:grid-cols-3">
           <DropdownInput
             id="jenisTarif"
             label="Pilih Layanan"
@@ -830,7 +831,7 @@ const WajibRetribusiCreate = ({
             </div>
           );
         })()}
-        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
+        <div className="col-span-3 grid gap-5 grid-cols-2 lg:grid-cols-3">
           <DropdownInput
             id="statusTempat"
             label="Status Tempat"
@@ -912,7 +913,7 @@ const WajibRetribusiCreate = ({
             )}
           </FormInput>
         </div>
-        <div className="col-span-3 grid gap-5 lg:grid-cols-3">
+        <div className="col-span-3 grid gap-5 grid-cols-2 lg:grid-cols-3">
           <FormInput className="col-span-2 md:col-span-1">
             <Label
               htmlFor="latitude"
@@ -1015,11 +1016,12 @@ const WajibRetribusiCreate = ({
           />
         </FormInput>
         <div className="col-span-3 grid gap-5 lg:grid-cols-4">
-          <FormInput className="col-span-2 md:col-span-1">
+          <FormInput className="md:col-span-1">
             <Label htmlFor="fotoBangunan">Upload Foto Bangunan</Label>
             <Input
               type="file"
               id="fotoBangunan"
+              className="w-full"
               accept="image/*"
               onChange={(e) =>
                 handleFileChange("fotoBangunan", e.target.files[0])
@@ -1036,12 +1038,13 @@ const WajibRetribusiCreate = ({
               </span>
             )}
           </FormInput>
-          <FormInput className="col-span-2 md:col-span-1">
+          <FormInput className="md:col-span-1">
             <Label htmlFor="fotoBerkas">Upload Foto Berkas</Label>
             <Input
               type="file"
               accept="image/*,application/pdf"
               id="fotoBerkas"
+              className="w-full"
               onChange={(e) =>
                 handleFileChange("fotoBerkas", e.target.files[0])
               }
@@ -1061,6 +1064,7 @@ const WajibRetribusiCreate = ({
               </span>
             )}
           </FormInput>
+
           {/* <FormInput className="col-span-2 md:col-span-1">
             <Label
               htmlFor="penagih"
@@ -1098,7 +1102,7 @@ const WajibRetribusiCreate = ({
             required={true}
             valueKey="value"
             labelKey="label"
-            className="col-span-2 md:col-span-1"
+            className="md:col-span-1"
           />
           <DropdownInput
             id="uptd"
@@ -1111,7 +1115,7 @@ const WajibRetribusiCreate = ({
             required={true}
             valueKey="value"
             labelKey="label"
-            className="col-span-2 md:col-span-1"
+            className="md:col-span-1"
           />
         </div>
         <div className="col-span-3 flex flex-col gap-1.5 text-sm md:flex-row md:justify-end md:gap-4">
@@ -1123,7 +1127,7 @@ const WajibRetribusiCreate = ({
             Clear Form
           </button>
           {userRole === "ROLE_SUPERADMIN" ? (
-            <div className="order-1 rounded bg-blue-500/50 px-4 py-2 text-white transition-colors md:order-2">
+            <div className="order-1 rounded bg-blue-500/50 px-4 py-2 text-center text-white transition-colors md:order-2">
               Submit Data
             </div>
           ) : (

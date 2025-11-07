@@ -114,9 +114,9 @@ const TandaTanganForm = ({ data, errors, processing, onChange, onSubmit }) => {
             <button
               type="submit"
               disabled={processing}
-              className={`w-max text-xs md:text-sm font-medium rounded px-3 py-1.5 text-white ${processing ? "pointer-events-none bg-green-300" : "pointer-events-auto bg-green-500"}`}
+              className={`w-max text-xs md:text-sm font-medium rounded px-3 py-1.5 text-white ${processing ? "pointer-events-none bg-blue-300" : "pointer-events-auto bg-blue-500"}`}
             >
-              {processing ? "Menyimpan..." : "Simpan"}
+              {processing ? "Loading..." : "Update"}
             </button>
           </div>
         </form>

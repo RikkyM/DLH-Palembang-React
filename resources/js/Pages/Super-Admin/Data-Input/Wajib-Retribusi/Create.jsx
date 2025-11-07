@@ -3,8 +3,6 @@ import MapPicker from "@/Components/MapPicker";
 import Layout from "../../Layout";
 import { useForm } from "@inertiajs/react";
 import "leaflet/dist/leaflet.css";
-import { useCallback, useEffect, useState } from "react";
-import { isAllowedKey } from "@/Utils/inputValidators";
 import WajibRetribusiCreate from "../../../../Components/WajibRetribusi/Create";
 
 const Create = (props
