@@ -212,13 +212,12 @@ const SuperAdminNavigation = () => {
           prefetch
           cacheFor="60s"
           preserveScroll
-          preserveState
+          href={route("super-admin.dashboard")}
           className={`block rounded px-3 py-2 transition-all duration-300 ${
             route().current("super-admin.dashboard")
               ? "bg-[#B3CEAF] font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
           }`}
-          href={route("super-admin.dashboard")}
         >
           Dashboard
         </Link>
