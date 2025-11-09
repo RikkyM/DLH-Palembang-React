@@ -113,6 +113,7 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
         Route::get('/data-instansi', 'dataInstansi')->name('data-instansi');
         Route::put('/data-instansi', 'dataInstansiUpdate')->name('data-instansi-update');
         Route::get('/informasi', 'informasi')->name('informasi');
+        Route::put('/informasi', 'informasiUpdate')->name('informasi-update');
         Route::get('/tahun-retribusi', 'tahunRetribusi')->name('tahun-retribusi');
         Route::put('/tahun-retribusi', 'tahunRetribusiUpdate')->name('tahun-retribusi-update');
     });

@@ -1,12 +1,12 @@
-import Layout from "../Layout"
+import Layout from "../Layout";
+import Index from "@/Features/Setting/Informasi/Index";
 
-
-const Informasi = () => {
+const Informasi = (props) => {
   return (
     <Layout title="Informasi">
-        Informasi
+      <Index {...props} />
     </Layout>
-  )
-}
+  );
+};
 
-export default Informasi
+export default Informasi;

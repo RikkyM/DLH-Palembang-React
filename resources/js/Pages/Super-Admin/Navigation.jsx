@@ -56,11 +56,11 @@ const SuperAdminNavigation = () => {
       ],
       badge: inbox.filter((i) => i.status === "Rejected").length || "",
     },
-    {
-      label: "Inbox Selesai (SPKRD)",
-      route: "super-admin.skrd.index",
-      activeRoute: "super-admin.skrd.*",
-    },
+    // {
+    //   label: "Inbox Selesai (SPKRD)",
+    //   route: "super-admin.skrd.index",
+    //   activeRoute: "super-admin.skrd.*",
+    // },
   ];
 
   // const tagihanItems = [
@@ -251,11 +251,24 @@ const SuperAdminNavigation = () => {
         >
           Nota Tagihan
         </Link>
+
         <AccordionItem
           title="Penerimaan"
           items={penerimaanItems}
           defaultOpen={isAccordionActive(penerimaanItems)}
         />
+        <Link
+          prefetch
+          cacheFor="60s"
+          className={`block whitespace-nowrap rounded px-3 py-2 transition-all duration-300 ${
+            route().current("super-admin.skrd.*")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("super-admin.skrd.index")}
+        >
+          Kartu Kendali
+        </Link>
         {/* <AccordionItem
           title="Pembayaran"
           items={pembayaranItems}
