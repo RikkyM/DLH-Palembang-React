@@ -2,6 +2,7 @@
 
 namespace App\Services\Auth;
 
+use App\Models\Informasi;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;

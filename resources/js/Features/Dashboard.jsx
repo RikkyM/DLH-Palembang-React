@@ -6,6 +6,7 @@ import PieChart from "@/Components/Chart/PieChart";
 import { roleConfig } from "@/Constants/RoleConfig";
 import { useState } from "react";
 import DashboardMap from "../Components/DashboardMap";
+import { useProvider } from "../Context/GlobalContext";
 
 const DashboardPages = ({
   year,
@@ -19,8 +20,11 @@ const DashboardPages = ({
   kecamatanOptions = [],
   filters = [],
 }) => {
-  const { auth } = usePage().props[0];
+  const { modalState, openModal, closeModal } = useProvider();
+  const { props } = usePage();
+  const { auth, announcement } = props[0];
   const { role } = auth.user;
+
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || "");
   const [mapYear, setMapYear] = useState(filters.tahun ?? year.toString());
   const [loading, setLoading] = useState(false);
@@ -314,7 +318,7 @@ const DashboardPages = ({
                 as="button"
                 href={route(`${routeUser}.dashboard`, {
                   tahun: mapYear,
-                  ...(kecamatan && {kecamatan}),
+                  ...(kecamatan && { kecamatan }),
                 })}
                 preserveScroll
                 preserveState

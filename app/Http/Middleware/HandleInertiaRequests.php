@@ -43,7 +43,8 @@ class HandleInertiaRequests extends Middleware
                 'auth' => [
                     'user' => $request->user()?->loadMissing(['uptd.kecamatan'])
                 ],
-                'inbox' => Inertia::defer(fn() => WajibRetribusi::with(['kecamatan', 'uptd.kecamatan'])->select('kodeKecamatan', 'status', 'current_role')->get())
+                'inbox' => Inertia::defer(fn() => WajibRetribusi::with(['kecamatan', 'uptd.kecamatan'])->select('kodeKecamatan', 'status', 'current_role')->get()),
+                'announcement' => fn () => $request->session()->get('announcement')
             ]
         ];
     }
