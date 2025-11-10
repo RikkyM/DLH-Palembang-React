@@ -52,11 +52,11 @@ const PendaftarNavigation = () => {
       ],
       badge: inbox.filter((i) => i.status === "Rejected").length || "",
     },
-    {
-      label: "Inbox Selesai (SPKRD)",
-      route: "pendaftar.skrd.index",
-      activeRoute: "pendaftar.skrd.*",
-    },
+    // {
+    //   label: "Inbox Selesai (SPKRD)",
+    //   route: "pendaftar.skrd.index",
+    //   activeRoute: "pendaftar.skrd.*",
+    // },
   ];
 
   const laporanItems = [
