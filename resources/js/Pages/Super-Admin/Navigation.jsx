@@ -95,7 +95,7 @@ const SuperAdminNavigation = () => {
       ],
     },
     {
-      label: "Rekap PerKecamatan",
+      label: "Per Kecamatan",
       route: "super-admin.rekapitulasi.retribusi-kecamatan",
       activeRoute: [
         "super-admin.rekapitulasi.retribusi-kecamatan",
@@ -103,7 +103,7 @@ const SuperAdminNavigation = () => {
       ],
     },
     {
-      label: "Rekap PerUPTD P. Jawab",
+      label: "Per UPTD P. Jawab",
       route: "super-admin.rekapitulasi.penerimaan",
       activeRoute: [
         "super-admin.rekapitulasi.penerimaan",
@@ -274,7 +274,7 @@ const SuperAdminNavigation = () => {
           defaultOpen={isAccordionActive(pembayaranItems)}
         /> */}
         <AccordionItem
-          title="Laporan"
+          title="Laporan Rekapitulasi"
           items={rekapitulasiItems}
           defaultOpen={isAccordionActive(rekapitulasiItems)}
         />
