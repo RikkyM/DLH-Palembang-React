@@ -86,18 +86,18 @@ class DashboardService
         $countSkrd = Skrd::whereYear('created_at', $year);
 
         $perKecamatan = Kecamatan::with([
-            'uptd.skrd' =>
+            'skrds' =>
             fn($query) => $query->whereYear($rangeCol, $year)
                 ->when(
                     in_array(Auth::user()->role, ['ROLE_KUPTD', 'ROLE_KASUBAG_TU_UPDT']),
                     fn($q) => $q->where('uptdId', $this->getUptdId())
                 ),
-            'uptd.skrd.pembayaran',
-            'uptd.skrd.setoran' => fn($q) => $q->where('status', 'Approved')->where('current_stage', 'bendahara'),
-            'uptd.skrd.setoran.detailSetoran'
+            'skrds.pembayaran',
+            'skrds.setoran' => fn($q) => $q->where('status', 'Approved')->where('current_stage', 'bendahara'),
+            'skrds.setoran.detailSetoran'
         ])
             ->get()
-            ->sum(fn($kec) => $kec->uptd->skrd->sum(function ($s) {
+            ->sum(fn($kec) => $kec->skrds->sum(function ($s) {
                 $totalSetoran = $s->setoran->sum(fn($s) => $s->detailSetoran->sum('jumlahBayar'));
                 $totalPembayaran = $s->pembayaran->sum('jumlahBayar') ?? 0;
                 return $totalSetoran + $totalPembayaran;
@@ -170,26 +170,30 @@ class DashboardService
 
     public function getKecamatanChart($year)
     {
-        $kecamatan = Uptd::with('kecamatan')->get();
+        $kecamatan = Kecamatan::with('skrds')->get();
 
-        $kategoriPembayaran = $kecamatan->mapWithKeys(fn($uptd) => [
-            $uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui" => 0
+        $kategoriPembayaran = $kecamatan->mapWithKeys(fn($kec) => [
+            $kec->namaKecamatan ?? "Tidak Diketahui" => 0
         ]);
 
-        $pembayaranPie = Pembayaran::with('uptd.kecamatan')
+        $pembayaranPie = Pembayaran::with('skrd.kecamatan')
             ->whereYear('tanggalBayar', $year)
             ->get()
-            ->groupBy(fn($p) => $p->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
+            ->groupBy(fn($p) => $p->skrd->kecamatanObjekRetribusi ?? "Tidak Diketahui")
             ->map(fn($group) => $group->sum('jumlahBayar'));
 
+        // dd($pembayaranPie);
+
         if ($pembayaranPie->isEmpty()) {
-            $pembayaranPie = DetailSetoran::with(['setoran', 'skrd', 'skrd.uptd.kecamatan'])
+            $pembayaranPie = DetailSetoran::with(['setoran', 'skrd', 'skrd.kecamatan'])
                 ->whereRelation('setoran', 'status', 'Approved')
                 ->whereRelation('setoran', 'current_stage', 'bendahara')
                 ->whereYear('tanggalBayar', $year)
                 ->get()
-                ->groupBy(fn($item) => $item->skrd->uptd->kecamatan->namaKecamatan ?? "Tidak Diketahui")
+                ->groupBy(fn($item) => $item->skrd->kecamatanObjekRetribusi ?? "Tidak Diketahui")
                 ->map(fn($item) => $item->sum('jumlahBayar'));
+
+            // dd($pembayaranPie);
         }
 
 
@@ -200,4 +204,41 @@ class DashboardService
             'data' => $kategoriPembayaran->values()->toArray(),
         ];
     }
+
+    // public function getKecamatanChart($year)
+    // {
+    //     $kecamatan = Kecamatan::with('skrds')->get();
+
+    //     $kategoriPembayaran = $kecamatan->mapWithKeys(fn($kec) => [
+    //         $kec->namaKecamatan ?? "Tidak Diketahui" => 0
+    //     ]);
+
+    //     $pembayaranPie = Pembayaran::with('skrd.kecamatan')
+    //     ->whereYear('tanggalBayar',
+    //         '2024'
+    //     )
+    //     ->get()
+    //     ->groupBy(fn($p) => $p->skrd->kecamatanObjekRetribusi ?? "Tidak Diketahui")
+    //     ->map(fn($group) => $group->sum('jumlahBayar'));
+
+    //     // dd($pembayaranPie);
+
+    //     if ($pembayaranPie->isEmpty()) {
+    //         $pembayaranPie = DetailSetoran::with(['setoran', 'skrd', 'skrd.uptd.kecamatan'])
+    //         ->whereRelation('setoran', 'status', 'Approved')
+    //         ->whereRelation('setoran', 'current_stage', 'bendahara')
+    //         ->whereYear('tanggalBayar', $year)
+    //         ->get()
+    //             ->groupBy(fn($item) => $item->skrd->kecamatanObjekRetribusi ?? "Tidak Diketahui")
+    //             ->map(fn($item) => $item->sum('jumlahBayar'));
+    //     }
+
+
+    //     $kategoriPembayaran = $kategoriPembayaran->merge($pembayaranPie);
+
+    //     return [
+    //         'labels' => $kategoriPembayaran->keys()->toArray(),
+    //         'data' => $kategoriPembayaran->values()->toArray(),
+    //     ];
+    // }
 }

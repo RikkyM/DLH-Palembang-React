@@ -163,7 +163,7 @@ class RekapitulasiController extends Controller
         $rangeCol = DB::raw("DATE(COALESCE(tanggalSkrd, created_at))");
 
         $datas = Kecamatan::with([
-            'uptd.skrd' => function ($q) use ($startDate, $endDate, $rangeCol) {
+            'skrds' => function ($q) use ($startDate, $endDate, $rangeCol) {
                 if ($startDate || $endDate) {
                     $q->when($startDate && $endDate, fn($data) => $data->whereBetween($rangeCol, [$startDate, $endDate]))
                         ->when($startDate && !$endDate, fn($data) => $data->where($rangeCol, '>=', $startDate))
@@ -172,19 +172,19 @@ class RekapitulasiController extends Controller
                     $q->whereYear($rangeCol, Carbon::now()->year);
                 }
             },
-            'uptd.skrd.pembayaran',
-            'uptd.skrd.setoran' => function ($q) {
+            'skrds.pembayaran',
+            'skrds.setoran' => function ($q) {
                 $q->where('status', 'Approved')->where('current_stage', 'bendahara');
             },
-            'uptd.skrd.setoran.detailSetoran'
+            'skrds.setoran.detailSetoran',
         ])
             ->get()
             ->map(function ($kecamatan) {
                 return [
                     'namaKecamatan' => $kecamatan->namaKecamatan,
-                    'kecamatan' => $kecamatan->uptd->skrd->count(),
-                    'tagihanPertahun' => $kecamatan->uptd->skrd->sum('tagihanPerTahunSkrd'),
-                    'totalBayar' => $kecamatan->uptd->skrd->sum(function ($skrd) {
+                    'kecamatan' => $kecamatan->skrds->count(),
+                    'tagihanPertahun' => $kecamatan->skrds->sum('tagihanPerTahunSkrd'),
+                    'totalBayar' => $kecamatan->skrds->sum(function ($skrd) {
                         $totalSetoran = $skrd->setoran->sum(function ($s) {
                             return $s->detailSetoran->sum('jumlahBayar');
                         });
@@ -195,8 +195,6 @@ class RekapitulasiController extends Controller
                 ];
             })
             ->values();
-
-        // dd($datas);
 
         return Inertia::render("{$this->getRole()}/Rekapitulasi/Retribusi-Kecamatan/Index", [
             'datas' => Inertia::defer(fn() => $datas),
@@ -220,7 +218,7 @@ class RekapitulasiController extends Controller
         $rangeCol = DB::raw('DATE(COALESCE(tanggalSkrd, created_at))');
 
         $datas = Kecamatan::with([
-            'uptd.skrd' => function ($q) use ($startDate, $endDate, $rangeCol) {
+            'skrds' => function ($q) use ($startDate, $endDate, $rangeCol) {
                 $q->when(
                     $startDate || $endDate,
                     function ($q) use ($startDate, $endDate, $rangeCol) {
@@ -241,13 +239,13 @@ class RekapitulasiController extends Controller
                     }
                 );
             },
-            'uptd.skrd.setoran',
-            'uptd.skrd.detailSetoran',
-            'uptd.skrd.pembayaran'
+            'skrds.setoran',
+            'skrds.detailSetoran',
+            'skrds.pembayaran'
         ])
             ->where('namaKecamatan', $kecamatan)
             ->first()
-            ->uptd->skrd;
+            ->skrds;
 
         return Inertia::render("{$this->getRole()}/Rekapitulasi/Retribusi-Kecamatan/Detail", [
             'datas' => Inertia::defer(fn() => $datas),

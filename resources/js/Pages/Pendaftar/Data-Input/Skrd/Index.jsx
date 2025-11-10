@@ -548,7 +548,9 @@ const Index = ({
                             return (
                               <React.Fragment key={i}>
                                 <td className="text-center">
-                                  {pembayaranUntukBulan ? i + 1 : "-"}
+                                  {pembayaranUntukBulan
+                                    ? fmtIDR(data.tagihanPerBulanSkrd ?? "-")
+                                    : "-"}
                                 </td>
                                 <td className="text-center">
                                   {pembayaranUntukBulan

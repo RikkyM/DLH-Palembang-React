@@ -199,4 +199,9 @@ class Skrd extends Model
     {
         return $this->belongsTo(WajibRetribusi::class, 'noWajibRetribusi', 'noWajibRetribusi');
     }
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class, 'namaKecamatan', 'kecamatanObjekRetribusi');
+    }
 }

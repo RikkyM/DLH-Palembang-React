@@ -84,7 +84,7 @@ const Table = ({
               </td>
               <td>{fmtIDR(paidEffective(data))}</td>
               <td>{fmtIDR(sisaTagihan(data))}</td>
-              <td>{data.namaPendaftar}</td>
+              <td>{data.namaPendaftar ?? '-'}</td>
               <td>{data.namaPenagih ?? "-"}</td>
               <td className="text-left">
                 {sisaTagihan(data) === 0 ? (
@@ -111,7 +111,10 @@ const Table = ({
                 return (
                   <React.Fragment key={i}>
                     <td className="text-center">
-                      {pembayaranUntukBulan ? i + 1 : "-"}
+                      {pembayaranUntukBulan
+                        ? fmtIDR(data.tagihanPerBulanSkrd ?? "-")
+                        : "-"}
+                      {/* {fmtIDR(data.tagihanPerBulanSkrd ?? "-")} */}
                     </td>
                     <td className="text-center">
                       {pembayaranUntukBulan

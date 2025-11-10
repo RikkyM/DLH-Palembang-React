@@ -4,7 +4,8 @@ import L from "leaflet";
 import { useMemo } from "react";
 
 const DefaultIcon = L.icon({
-  iconUrl: "/img/KLHK_2024.webp",
+  // iconUrl: "/img/KLHK_2024.webp",
+  iconUrl: "/img/logo_palembang.webp",
   className: "bg-[#B3CEAF] rounded-full ",
   iconSize: [25, 25],
 });

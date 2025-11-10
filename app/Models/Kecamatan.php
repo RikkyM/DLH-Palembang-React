@@ -38,15 +38,25 @@ class Kecamatan extends Model
         return $this->hasOne(Uptd::class, 'kodeKecamatan', 'kodeKecamatan');
     }
 
+    // public function skrds()
+    // {
+    //     return $this->hasManyThrough(
+    //         Skrd::class,
+    //         WajibRetribusi::class,
+    //         'kodeKecamatan',
+    //         'kodeKecamatan',
+    //         'kodeKecamatan',
+    //         'id'
+    //     );
+    // }
+
+    public function retribusi()
+    {
+        return $this->hasMany(WajibRetribusi::class, 'kodeKecamatan', 'kodeKecamatan');
+    }
+
     public function skrds()
     {
-        return $this->hasManyThrough(
-            Skrd::class,
-            Uptd::class,
-            'kodeKecamatan',
-            'uptdId',
-            'kodeKecamatan',
-            'id'
-        );
+        return $this->hasMany(Skrd::class, 'kecamatanObjekRetribusi', 'namaKecamatan');
     }
 }

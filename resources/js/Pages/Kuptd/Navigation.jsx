@@ -53,11 +53,11 @@ const KuptdNavigation = () => {
       ],
       badge: data.filter((i) => i.status === "Rejected").length || "",
     },
-    {
-      label: "Inbox Selesai (SPKRD)",
-      route: "kuptd.skrd.index",
-      activeRoute: "kuptd.skrd.*",
-    },
+    // {
+    //   label: "Inbox Selesai (SPKRD)",
+    //   route: "kuptd.skrd.index",
+    //   activeRoute: "kuptd.skrd.*",
+    // },
   ];
 
   // const tagihanItems = [
@@ -191,6 +191,18 @@ const KuptdNavigation = () => {
           items={penerimaanItems}
           defaultOpen={isAccordionActive(penerimaanItems)}
         />
+        <Link
+          prefetch
+          cacheFor="60s"
+          className={`block whitespace-nowrap rounded px-3 py-2 transition-all duration-300 ${
+            route().current("kuptd.skrd.*")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("kuptd.skrd.index")}
+        >
+          Kartu Kendali
+        </Link>
         <AccordionItem
           title="Laporan"
           items={rekapitulasiItems}

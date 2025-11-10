@@ -53,11 +53,11 @@ const KasubagNavigation = () => {
       ],
       badge: data.filter((i) => i.status === "Rejected").length || "",
     },
-    {
-      label: "Inbox Selesai (SPKRD)",
-      route: "kasubag.skrd.index",
-      activeRoute: "kasubag.skrd.*",
-    },
+    // {
+    //   label: "Inbox Selesai (SPKRD)",
+    //   route: "kasubag.skrd.index",
+    //   activeRoute: "kasubag.skrd.*",
+    // },
   ];
 
   const penerimaanItems = [
@@ -72,36 +72,36 @@ const KasubagNavigation = () => {
     },
   ];
 
-const rekapitulasiItems = [
-  {
-    label: "Jumlah SPKRD",
-    route: "kasubag.rekapitulasi.spkrd",
-    activeRoute: [
-      "kasubag.rekapitulasi.spkrd",
-      "kasubag.rekapitulasi.spkrd.detail",
-    ],
-  },
-  {
-    label: "Retribusi Kecamatan",
-    route: "kasubag.rekapitulasi.retribusi-kecamatan",
-    activeRoute: [
-      "kasubag.rekapitulasi.retribusi-kecamatan",
-      "kasubag.rekapitulasi.retribusi-kecamatan.detail",
-    ],
-  },
-  {
-    label: "Retribusi UPTD",
-    route: "kasubag.rekapitulasi.penerimaan",
-    activeRoute: [
-      "kasubag.rekapitulasi.penerimaan",
-      "kasubag.rekapitulasi.penerimaan.detail",
-    ],
-  },
-  {
-    label: "Nota Tagihan",
-    route: "kasubag.rekapitulasi.nota-tagihan",
-  },
-];
+  const rekapitulasiItems = [
+    {
+      label: "Jumlah SPKRD",
+      route: "kasubag.rekapitulasi.spkrd",
+      activeRoute: [
+        "kasubag.rekapitulasi.spkrd",
+        "kasubag.rekapitulasi.spkrd.detail",
+      ],
+    },
+    {
+      label: "Retribusi Kecamatan",
+      route: "kasubag.rekapitulasi.retribusi-kecamatan",
+      activeRoute: [
+        "kasubag.rekapitulasi.retribusi-kecamatan",
+        "kasubag.rekapitulasi.retribusi-kecamatan.detail",
+      ],
+    },
+    {
+      label: "Retribusi UPTD",
+      route: "kasubag.rekapitulasi.penerimaan",
+      activeRoute: [
+        "kasubag.rekapitulasi.penerimaan",
+        "kasubag.rekapitulasi.penerimaan.detail",
+      ],
+    },
+    {
+      label: "Nota Tagihan",
+      route: "kasubag.rekapitulasi.nota-tagihan",
+    },
+  ];
 
   const isAccordionActive = (items) =>
     items.some((item) => {
@@ -190,6 +190,18 @@ const rekapitulasiItems = [
           items={penerimaanItems}
           defaultOpen={isAccordionActive(penerimaanItems)}
         />
+        <Link
+          prefetch
+          cacheFor="60s"
+          className={`block whitespace-nowrap rounded px-3 py-2 transition-all duration-300 ${
+            route().current("kasubag.skrd.*")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("kasubag.skrd.index")}
+        >
+          Kartu Kendali
+        </Link>
         <AccordionItem
           title="Laporan"
           items={rekapitulasiItems}
