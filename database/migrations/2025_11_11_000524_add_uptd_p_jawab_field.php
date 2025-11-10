@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('skrd', function (Blueprint $table) {
-            $table->string('utpd_p_jawab')->nullable()->after('kecamatanObjekRetribusi');
+            $table->string('uptd_p_jawab')->nullable()->after('kecamatanObjekRetribusi');
         });
     }
 
