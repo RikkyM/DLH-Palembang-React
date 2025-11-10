@@ -269,7 +269,7 @@ class RekapitulasiController extends Controller
 
         $datas =
             Uptd::with([
-                'skrd' => function ($q) use ($startDate, $endDate, $rangeCol) {
+                'skrds' => function ($q) use ($startDate, $endDate, $rangeCol) {
                     if ($startDate || $endDate) {
                         $q->when($startDate && $endDate, fn($data) => $data->whereBetween($rangeCol, [$startDate, $endDate]))
                             ->when($startDate && !$endDate, fn($data) => $data->where($rangeCol, '>=', $startDate))
@@ -278,20 +278,20 @@ class RekapitulasiController extends Controller
                         $q->whereYear($rangeCol, Carbon::now()->year);
                     }
                 },
-                'skrd.pembayaran',
-                'skrd.setoran' => function ($q) {
+                'skrds.pembayaran',
+                'skrds.setoran' => function ($q) {
                     $q->where('status', 'Approved')->where('current_stage', 'bendahara');
                 },
-                'skrd.setoran.detailSetoran'
+                'skrds.setoran.detailSetoran'
             ])
             ->where('namaUptd', '!=', 'Dinas')
             ->get(['id', 'namaUptd'])
             ->map(function ($u) {
                 return [
                     'namaUptd' => $u->namaUptd,
-                    'skrd' => $u->skrd->count(),
-                    'tagihanPertahun' => $u->skrd->sum('tagihanPerTahunSkrd'),
-                    'totalBayar' => $u->skrd->sum(function ($skrd) {;
+                    'skrd' => $u->skrds->count(),
+                    'tagihanPertahun' => $u->skrds->sum('tagihanPerTahunSkrd'),
+                    'totalBayar' => $u->skrds->sum(function ($skrd) {;
                         $totalSetoran = $skrd->setoran->sum(function ($setoran) {
                             return $setoran->detailSetoran->sum('jumlahBayar');
                         });
@@ -301,6 +301,8 @@ class RekapitulasiController extends Controller
                     })
                 ];
             })->values();
+
+            // dd($datas);
 
         return Inertia::render("{$this->getRole()}/Rekapitulasi/Penerimaan/Index", [
             'datas' => Inertia::defer(fn() => $datas),

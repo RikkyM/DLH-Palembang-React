@@ -24,6 +24,11 @@ class Uptd extends Model
         return $this->hasMany(Skrd::class, 'uptdId', 'id');
     }
 
+    public function skrds()
+    {
+        return $this->hasMany(Skrd::class, 'uptd_p_jawab', 'namaUptd');
+    }
+
     public function kecamatan()
     {
         return $this->belongsTo(Kecamatan::class, 'kodeKecamatan', 'kodeKecamatan');
