@@ -87,7 +87,7 @@ const SuperAdminNavigation = () => {
 
   const rekapitulasiItems = [
     {
-      label: "Jumlah SPKRD",
+      label: "SPKRD",
       route: "super-admin.rekapitulasi.spkrd",
       activeRoute: [
         "super-admin.rekapitulasi.spkrd",
