@@ -95,7 +95,7 @@ const SuperAdminNavigation = () => {
       ],
     },
     {
-      label: "Laporan Rekap PerKecamatan",
+      label: "Rekap PerKecamatan",
       route: "super-admin.rekapitulasi.retribusi-kecamatan",
       activeRoute: [
         "super-admin.rekapitulasi.retribusi-kecamatan",
@@ -103,7 +103,7 @@ const SuperAdminNavigation = () => {
       ],
     },
     {
-      label: "Laporan Rekap PerUPTD Penanggung Jawab",
+      label: "Rekap PerUPTD P. Jawab",
       route: "super-admin.rekapitulasi.penerimaan",
       activeRoute: [
         "super-admin.rekapitulasi.penerimaan",
