@@ -22,6 +22,7 @@ class Skrd extends Model
         "deskripsiUsaha",
         "kelurahanObjekRetribusi",
         "kecamatanObjekRetribusi",
+        'uptd_p_jawab',
         "alamatObjekRetribusi",
         "namaKategori",
         "namaSubKategori",

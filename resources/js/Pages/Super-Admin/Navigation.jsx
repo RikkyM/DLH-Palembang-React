@@ -94,6 +94,7 @@ const SuperAdminNavigation = () => {
         "super-admin.rekapitulasi.spkrd.detail",
       ],
     },
+    // uptdpjawab
     {
       label: "Per Kecamatan",
       route: "super-admin.rekapitulasi.retribusi-kecamatan",
