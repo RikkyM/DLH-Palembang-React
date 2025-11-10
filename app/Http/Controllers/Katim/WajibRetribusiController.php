@@ -303,6 +303,24 @@ class WajibRetribusiController extends Controller
         );
     }
 
+    public function selesai(Request $request)
+    {
+        return $this->renderWajibRetribusi(
+            $request,
+            null,
+            'Selesai',
+            fn($q) => $q->where(function ($data) {
+                $data->where(function ($d) {
+                    $d->where('status', 'Finished')
+                        ->where('current_role', 'ROLE_KABID');
+                })->orWhere(function ($d) {
+                    $d->where('status', 'Approved')
+                        ->where('current_role', null);
+                });
+            })
+        );
+    }
+
     /**
      * Show the form for creating a new resource.
      */

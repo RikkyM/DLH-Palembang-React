@@ -72,16 +72,20 @@ const Table = ({
                 ? "text-amber-500"
                 : data.status == "Rejected"
                   ? "text-red-500"
-                  : data.status === "Approved" &&
-                    data.current_role == null &&
-                    "text-green-500"
+                  : data.status === "Finished"
+                    ? "text-green-500"
+                    : data.status === "Approved" &&
+                      data.current_role == null &&
+                      "text-green-500"
           }`}
         >
           {data.status == "Approved"
             ? "Diterima"
             : data.status == "Rejected"
               ? "Ditolak"
-              : "Diproses"}
+              : data.status == "Finished"
+                ? "Selesai"
+                : "Diproses"}
         </span>
       );
     }
@@ -96,9 +100,11 @@ const Table = ({
                 ? "text-amber-500"
                 : data.status == "Rejected"
                   ? "text-red-500"
-                  : data.status === "Approved" &&
-                    data.current_role == null &&
-                    "text-green-500"
+                  : data.status === "Finished"
+                    ? "text-green-500"
+                    : data.status === "Approved" &&
+                      data.current_role == null &&
+                      "text-green-500"
           }`}
         >
           {data.status === "Processed" &&
@@ -108,7 +114,9 @@ const Table = ({
             data.current_role != "ROLE_KUPTD" &&
             "Diproses"}
           {data.status === "Rejected" && "Ditolak"}
-          {data.status === "Approved" && data.current_role == null && "Selesai"}
+          {(data.status === "Approved" || data.status === "Finished") &&
+            (data.current_role == null || data.current_role === "ROLE_KABID") &&
+            "Selesai"}
         </span>
       );
     }
@@ -121,15 +129,21 @@ const Table = ({
               ? "text-amber-500"
               : data.status == "Rejected"
                 ? "text-red-500"
-                : data.status === "Approved" &&
-                  data.current_role == null &&
-                  "text-green-500"
+                : data.status === "Finished"
+                  ? "text-green-500"
+                  : data.status === "Approved" &&
+                    data.current_role == null &&
+                    "text-green-500"
         }`}
       >
         {data.status === "Processed" && data.current_role == role && "Diterima"}
         {data.status === "Processed" && data.current_role != role && "Diproses"}
         {data.status === "Rejected" && "Ditolak"}
-        {data.status === "Approved" && data.current_role == null && "Selesai"}
+        {(data.status === "Approved" || data.status === "Finished") &&
+          (data.current_role == null || data.current_role === "ROLE_KABID") &&
+          "Selesai"}
+        {/* {data.status === "Approved" && data.current_role == null && "Selesai"} */}
+        {/* {data.status === 'Finished' && data.current_role == 'ROLE_KABID' && "Selesai"} */}
       </span>
     );
   };
@@ -141,18 +155,24 @@ const Table = ({
           ? "diterima"
           : data.status === "Rejected"
             ? "ditolak"
-            : "diproses"
-        : role === "ROLE_KASUBAG_TU_UPDT"
+            : data.status === "Finished"
+              ? "selesai"
+              : "diproses"
+        : role === "ROLE_KASUBAG_TU_UPDT" || role === "ROLE_KUPTD"
           ? data.status === "Processed" && data.current_role === "ROLE_KUPTD"
             ? "diterima"
             : data.status === "Rejected"
               ? "ditolak"
-              : "diproses"
+              : data.status === "Finished"
+                ? "selesai"
+                : "diproses"
           : data.status === "Processed"
             ? data.current_role === role
               ? "diterima"
               : "diproses"
-            : "ditolak";
+            : data.status === "Finished"
+              ? "selesai"
+              : "ditolak";
 
     if (role === "ROLE_PENDAFTAR") {
       return (
@@ -284,13 +304,13 @@ const Table = ({
               </td>
               {/* <td>{data.noPendaftaran}</td> */}
               <td>{data.noWajibRetribusi ?? "-"}</td>
-              <td>{data.pemilik.namaPemilik}</td>
+              <td>{data.pemilik?.namaPemilik ?? "-"}</td>
               <td>{data.namaObjekRetribusi}</td>
               <td>
                 <div className="w-72">{data.alamat}</div>
               </td>
               <td className="whitespace-nowrap">
-                {data.kelurahan.namaKelurahan}
+                {data.kelurahan?.namaKelurahan ?? "-"}
               </td>
               <td className="whitespace-nowrap">
                 {data.kecamatan.namaKecamatan}
@@ -341,7 +361,7 @@ const Table = ({
                   minimumFractionDigits: 0,
                 }).format(data.tarifPertahun) || 0}
               </td>
-              <td>{data.user.namaLengkap}</td>
+              <td>{data.user?.namaLengkap ?? "-"}</td>
               {data.status == "Rejected" && <td>{data.keterangan}</td>}
               <td>
                 {/* <span

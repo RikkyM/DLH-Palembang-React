@@ -272,8 +272,8 @@ const Index = ({
   ]);
 
   return (
-    <Layout title="INBOX SELESAI (SPKRD)">
-      <Head title="Inbox Selesai (SPKRD)" />
+    <Layout title="KARTU KENDALI">
+      <Head title="Kartu Kendali" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="relative flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
@@ -471,6 +471,9 @@ const Index = ({
                           </th>
                         </React.Fragment>
                       ))}
+                      <th className="sticky top-0 cursor-pointer select-none truncate bg-[#F1B174]">
+                        UPTD P. Jawab
+                      </th>
                     </TableHead>
                   </thead>
                   <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
@@ -562,6 +565,7 @@ const Index = ({
                               </React.Fragment>
                             );
                           })}
+                          <td>{data.uptd_p_jawab}</td>
                           <td
                             className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
                           >

@@ -20,7 +20,7 @@ const KabidNavigation = () => {
 
   const inboxInputs = [
     {
-      label: "Inbox Diterima",
+      label: "Diterima",
       route: "kabid.wajib-retribusi.diterima",
       activeRoute: [
         "kabid.wajib-retribusi.diterima",
@@ -32,11 +32,11 @@ const KabidNavigation = () => {
           .filter((i) => i.current_role === "ROLE_KABID").length || "",
     },
     // {
-    //   label: "Inbox Diproses",
+    //   label: "Diproses",
     //   route: "kabid.wajib-retribusi.diproses",
     // },
     {
-      label: "Inbox Ditolak",
+      label: "Ditolak",
       route: "kabid.wajib-retribusi.ditolak",
       activeRoute: [
         "kabid.wajib-retribusi.ditolak",
@@ -45,9 +45,13 @@ const KabidNavigation = () => {
       badge: inbox.filter((i) => i.status === "Rejected").length || "",
     },
     {
-      label: "Inbox Selesai (SPKRD)",
-      route: "kabid.skrd.index",
-      activeRoute: "kabid.skrd.*",
+      label: "Selesai",
+      route: "kabid.wajib-retribusi.selesai",
+      activeRoute: [
+        "kabid.wajib-retribusi.selesai",
+        "kabid.wajib-retribusi.show",
+      ],
+      // activeRoute: "kabid.skrd.*",
     },
   ];
 
@@ -139,6 +143,19 @@ const KabidNavigation = () => {
           items={inboxInputs}
           defaultOpen={isAccordionActive(inboxInputs)}
         />
+        <Link
+          prefetch
+          cacheFor="5m"
+          preserveScroll
+          className={`block rounded px-3 py-2 transition-all duration-300 ${
+            route().current("kabid.skrd.*")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("kabid.skrd.index")}
+        >
+          Kartu Kendali
+        </Link>
 
         <AccordionItem
           title="Laporan"

@@ -18,8 +18,9 @@ Route::middleware('role:ROLE_KABID')->prefix('kabid')->name('kabid.')->group(fun
         Route::name('wajib-retribusi.')->controller(WajibRetribusiController::class)->group(function () {
             Route::get('/diterima', 'diterima')->name('diterima');
             Route::get('/ditolak', 'ditolak')->name('ditolak');
+            Route::get('/selesai', 'selesai')->name('selesai');
             Route::get('/{status}/{retribusi}/show', 'show')
-                ->where(['status' => 'diterima|ditolak'])
+                ->where(['status' => 'diterima|ditolak|selesai'])
                 ->name('show');
             Route::post('/{retribusi}/create-skrd', 'createSkrd')->name('create-skrd');
         });

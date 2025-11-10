@@ -24,13 +24,13 @@ Route::middleware('role:ROLE_KASUBAG_TU_UPDT')->prefix('kasubag')->name('kasubag
             Route::get('/diterima', 'diterima')->name('diterima');
             Route::get('/diproses', 'diproses')->name('diproses');
             Route::get('/ditolak', 'ditolak')->name('ditolak');
+            Route::get('/selesai', 'selesai')->name('selesai');
             Route::get('/{status}/{retribusi}/show', 'show')
-                ->where(['status' => 'diterima|diproses|ditolak'])
+                ->where(['status' => 'diterima|diproses|ditolak|selesai'])
                 ->name('show');
         });
-
-        Route::resource('/skrd', SkrdController::class)->only(['index', 'show']);
     });
+    Route::resource('/kartu-kendali', SkrdController::class)->only(['index', 'show']);
 
     Route::prefix('tagihan')->group(function () {
         Route::resource('/surat-tagihan', InvoiceController::class)
@@ -58,17 +58,17 @@ Route::middleware('role:ROLE_KASUBAG_TU_UPDT')->prefix('kasubag')->name('kasubag
             Route::prefix('/spkrd')->group(function () {
                 Route::get('/', 'spkrd')->name('spkrd');
                 Route::get('/detail', 'spkrdDetail')
-                ->name('spkrd.detail');
+                    ->name('spkrd.detail');
             });
             Route::prefix('/retribusi-kecamatan')->group(function () {
                 Route::get('/', 'retribusiKecamatan')->name('retribusi-kecamatan');
                 Route::get('/detail', 'detailRetribusiKecamatan')
-                ->name('retribusi-kecamatan.detail');
+                    ->name('retribusi-kecamatan.detail');
             });
             Route::prefix('/retribusi-uptd')->group(function () {
                 Route::get('/', 'penerimaan')->name('penerimaan');
                 Route::get('/detail', 'penerimaanDetail')
-                ->name('penerimaan.detail');
+                    ->name('penerimaan.detail');
             });
             Route::prefix('/nota-tagihan')->group(function () {
                 Route::get('/', 'notaTagihan')->name('nota-tagihan');

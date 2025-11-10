@@ -10,7 +10,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('role:ROLE_BENDAHARA')->prefix('bendahara')->name('bendahara.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('/inbox-data/skrd', SkrdController::class)->only(['index', 'show']);
+    // Route::resource()
+    Route::resource('/kartu-kendali', SkrdController::class)
+        ->only(['index', 'show'])
+        ->parameters([
+            'kartu-kendali' => 'skrd'
+        ]);
     Route::resource('/tagihan/surat-tagihan', InvoiceController::class)
         ->only(['index', 'show'])
         ->parameters([

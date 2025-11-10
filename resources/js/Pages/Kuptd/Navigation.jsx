@@ -21,7 +21,7 @@ const KuptdNavigation = () => {
 
   const inboxItems = [
     {
-      label: "Inbox Diterima",
+      label: "Diterima",
       route: "kuptd.wajib-retribusi.diterima",
       activeRoute: [
         "kuptd.wajib-retribusi.diterima",
@@ -33,7 +33,7 @@ const KuptdNavigation = () => {
           .filter((i) => i.current_role === "ROLE_KUPTD").length || "",
     },
     {
-      label: "Inbox Diproses",
+      label: "Diproses",
       route: "kuptd.wajib-retribusi.diproses",
       activeRoute: [
         "kuptd.wajib-retribusi.diproses",
@@ -45,13 +45,21 @@ const KuptdNavigation = () => {
           .filter((i) => i.current_role !== "ROLE_KUPTD").length || "",
     },
     {
-      label: "Inbox Ditolak",
+      label: "Ditolak",
       route: "kuptd.wajib-retribusi.ditolak",
       activeRoute: [
         "kuptd.wajib-retribusi.ditolak",
         "kuptd.wajib-retribusi.show",
       ],
       badge: data.filter((i) => i.status === "Rejected").length || "",
+    },
+    {
+      label: "Selesai",
+      route: "kuptd.wajib-retribusi.selesai",
+      activeRoute: [
+        "kuptd.wajib-retribusi.selesai",
+        "kuptd.wajib-retribusi.show",
+      ],
     },
     // {
     //   label: "Inbox Selesai (SPKRD)",
@@ -128,6 +136,12 @@ const KuptdNavigation = () => {
               if (
                 item.label.toLowerCase().includes("ditolak") &&
                 params.status === "ditolak"
+              ) {
+                return route().current(r);
+              }
+              if (
+                item.label.toLowerCase().includes("selesai") &&
+                params.status === "selesai"
               ) {
                 return route().current(r);
               }

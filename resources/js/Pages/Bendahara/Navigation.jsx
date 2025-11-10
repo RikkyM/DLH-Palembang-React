@@ -7,13 +7,16 @@ const BendaharaNavigation = () => {
   const { props } = usePage();
   const { auth, inbox } = props[0];
 
-  const inboxItems = [
-    {
-      label: "Inbox Selesai (SPKRD)",
-      route: "bendahara.skrd.index",
-      activeRoute: "bendahara.skrd.*",
-    },
-  ];
+  // const inboxItems = [
+  //   {
+  //     label: "Selesai",
+  //     route: "bendahara.wajib-retribusi.selesai",
+  //     activeRoute: [
+  //       "bendahara.wajib-retribusi.selesai",
+  //       "bendahara.wajib-retribusi.*",
+  //     ],
+  //   },
+  // ];
 
   const penerimaanItems = [
     {
@@ -82,6 +85,12 @@ const BendaharaNavigation = () => {
               ) {
                 return route().current(r);
               }
+              if (
+                item.label.toLowerCase().includes("selesai") &&
+                params.status === "selesai"
+              ) {
+                return route().current(r);
+              }
               return false;
             }
             return route().current(r);
@@ -109,11 +118,11 @@ const BendaharaNavigation = () => {
           Dashboard
         </Link>
 
-        <AccordionItem
+        {/* <AccordionItem
           title="Inbox Data"
           items={inboxItems}
           defaultOpen={isAccordionActive(inboxItems)}
-        />
+        /> */}
         {/* <AccordionItem
           title="Tagihan"
           items={tagihanItems}
@@ -138,6 +147,19 @@ const BendaharaNavigation = () => {
           items={penerimaanItems}
           defaultOpen={isAccordionActive(penerimaanItems)}
         />
+
+        <Link
+          prefetch
+          cacheFor="60s"
+          className={`block whitespace-nowrap rounded px-3 py-2 transition-all duration-300 ${
+            route().current("bendahara.kartu-kendali.*")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("bendahara.kartu-kendali.index")}
+        >
+          Kartu Kendali
+        </Link>
 
         <AccordionItem
           title="Laporan"

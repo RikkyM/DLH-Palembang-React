@@ -40,11 +40,12 @@ Route::middleware('role:ROLE_SUPERADMIN')->prefix('super-admin')->name('super-ad
             Route::get('/diterima', 'diterima')->name('diterima');
             Route::get('/diproses', 'diproses')->name('diproses');
             Route::get('/ditolak', 'ditolak')->name('ditolak');
+            Route::get('/selesai', 'selesai')->name('selesai');
             Route::get('/{status}/{retribusi}/edit', 'edit')
                 ->where(['status' => 'diterima|ditolak'])
                 ->name('edit');
             Route::get('/{status}/{retribusi}/show', 'show')
-                ->where(['status' => 'diterima|diproses|ditolak'])
+                ->where(['status' => 'diterima|diproses|ditolak|selesai'])
                 ->name('show');
             Route::put('/{id}/send', 'send')->name('send');
         });

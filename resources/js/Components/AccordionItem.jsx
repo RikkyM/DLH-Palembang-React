@@ -40,6 +40,13 @@ const AccordionItem = ({ title, items, defaultOpen = false }) => {
           ) {
             return route().current(r);
           }
+
+          if (
+            item.label.toLowerCase().includes("selesai") &&
+            params.status === "selesai"
+          ) {
+            return route().current(r);
+          }
           return false;
         }
         return route().current(r);

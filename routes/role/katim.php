@@ -19,8 +19,9 @@ Route::middleware('role:ROLE_KATIM')->prefix('katim')->name('katim.')->group(fun
             Route::get('/diterima', 'diterima')->name('diterima');
             Route::get('/diproses', 'diproses')->name('diproses');
             Route::get('/ditolak', 'ditolak')->name('ditolak');
+            Route::get('/selesai', 'selesai')->name('selesai');
             Route::get('/{status}/{retribusi}/show', 'show')
-                ->where(['status' => 'diterima|diproses|ditolak'])
+                ->where(['status' => 'diterima|diproses|ditolak|selesai'])
                 ->name('show');
         });
 

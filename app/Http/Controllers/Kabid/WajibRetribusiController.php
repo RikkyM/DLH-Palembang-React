@@ -10,6 +10,7 @@ use App\Models\Pemilik;
 use App\Models\Skrd;
 use App\Models\SubKategori;
 use App\Models\TandaTangan;
+use App\Models\Uptd;
 use App\Models\User;
 use App\Models\WajibRetribusi;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -288,6 +289,24 @@ class WajibRetribusiController extends Controller
         );
     }
 
+    public function selesai(Request $request)
+    {
+        return $this->renderWajibRetribusi(
+            $request,
+            null,
+            'Selesai',
+            fn($q) => $q->where(function ($data) {
+                $data->where(function ($d) {
+                    $d->where('status', 'Finished')
+                        ->where('current_role', 'ROLE_KABID');
+                })->orWhere(function ($d) {
+                    $d->where('status', 'Approved')
+                        ->where('current_role', null);
+                });
+            })
+        );
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -420,6 +439,8 @@ class WajibRetribusiController extends Controller
             'actionDate' => now()->toIso8601String()
         ];
 
+        $uptd = Uptd::find($retribusi->uptdId);
+
         $dataSkrd = [
             'noWajibRetribusi' => $retribusi->noWajibRetribusi,
             'noSkrd' => $retribusi->noSkrd ?? Skrd::generateNoSkrd(),
@@ -431,6 +452,7 @@ class WajibRetribusiController extends Controller
             'deskripsiUsaha' => $retribusi->deskripsiUsaha,
             'kelurahanObjekRetribusi' => $retribusi->kelurahan->namaKelurahan,
             'kecamatanObjekRetribusi' => $retribusi->kecamatan->namaKecamatan,
+            'uptd_p_jawab' => $uptd->namaUptd,
             'alamatObjekRetribusi' => $retribusi->alamat,
             'namaKategori' => $retribusi->kategori->namaKategori,
             'namaSubKategori' => $retribusi->subKategori->namaSubKategori,

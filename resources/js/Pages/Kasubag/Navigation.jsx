@@ -21,7 +21,7 @@ const KasubagNavigation = () => {
 
   const inboxItems = [
     {
-      label: "Inbox Diterima",
+      label: "Diterima",
       route: "kasubag.wajib-retribusi.diterima",
       activeRoute: [
         "kasubag.wajib-retribusi.diterima",
@@ -33,7 +33,7 @@ const KasubagNavigation = () => {
           .filter((i) => i.current_role === "ROLE_KUPTD").length || "",
     },
     {
-      label: "Inbox Diproses",
+      label: "Diproses",
       route: "kasubag.wajib-retribusi.diproses",
       activeRoute: [
         "kasubag.wajib-retribusi.diproses",
@@ -45,7 +45,7 @@ const KasubagNavigation = () => {
           .filter((i) => i.current_role !== "ROLE_KUPTD").length || "",
     },
     {
-      label: "Inbox Ditolak",
+      label: "Ditolak",
       route: "kasubag.wajib-retribusi.ditolak",
       activeRoute: [
         "kasubag.wajib-retribusi.ditolak",
@@ -53,11 +53,14 @@ const KasubagNavigation = () => {
       ],
       badge: data.filter((i) => i.status === "Rejected").length || "",
     },
-    // {
-    //   label: "Inbox Selesai (SPKRD)",
-    //   route: "kasubag.skrd.index",
-    //   activeRoute: "kasubag.skrd.*",
-    // },
+    {
+      label: "Selesai",
+      route: "kasubag.wajib-retribusi.selesai",
+      activeRoute: [
+        "kasubag.wajib-retribusi.selesai",
+        "kasubag.wajib-retribusi.show",
+      ],
+    },
   ];
 
   const penerimaanItems = [
@@ -128,6 +131,12 @@ const KasubagNavigation = () => {
               ) {
                 return route().current(r);
               }
+              if (
+                item.label.toLowerCase().includes("selesai") &&
+                params.status === "selesai"
+              ) {
+                return route().current(r);
+              }
               return false;
             }
             return route().current(r);
@@ -194,11 +203,11 @@ const KasubagNavigation = () => {
           prefetch
           cacheFor="60s"
           className={`block whitespace-nowrap rounded px-3 py-2 transition-all duration-300 ${
-            route().current("kasubag.skrd.*")
+            route().current("kasubag.kartu-kendali.*")
               ? "bg-[#B3CEAF] font-medium text-white"
               : "bg-transparent hover:bg-neutral-300"
           }`}
-          href={route("kasubag.skrd.index")}
+          href={route("kasubag.kartu-kendali.index")}
         >
           Kartu Kendali
         </Link>

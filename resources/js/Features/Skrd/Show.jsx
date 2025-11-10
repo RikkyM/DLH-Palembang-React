@@ -47,75 +47,75 @@ const Show = ({ user, data, bulan }) => {
           </button>
         </div>
         <h2 className="col-span-2 font-semibold">Informasi</h2>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Nama Pemilik :</p>
-          <p>{data.pemilik?.namaPemilik ?? "-"}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Nama Pemilik</div>
+          <p>: {data.pemilik?.namaPemilik ?? "-"}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Nomor Induk Kependudukan (NIK) :</p>
-          <p>{data.pemilik?.nik ?? "-"}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Nomor Induk Kependudukan (NIK)</div>
+          <p>: {data.pemilik?.nik ?? "-"}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Alamat :</p>
-          <p>{data.pemilik?.alamat ?? "-"}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Alamat</div>
+          <p>: {data.pemilik?.alamat ?? "-"}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Nomor Handphone :</p>
-          <p>{data.pemilik?.noHP ?? "-"}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Nomor Handphone</div>
+          <p>: {data.pemilik?.noHP ?? "-"}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Jabatan :</p>
-          <p>{data.pemilik?.jabatan ?? "-"}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Jabatan</div>
+          <p>: {data.pemilik?.jabatan ?? "-"}</p>
         </div>
         <h2 className="col-span-2 font-semibold">UPTD</h2>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Wilayah UPTD :</p>
-          <p>{data.uptd.namaUptd}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Wilayah UPTD</div>
+          <p>: {data.uptd?.namaUptd ?? "-"}</p>
         </div>
         <h2 className="col-span-2 font-semibold">Wajib Retribusi</h2>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Nomor SKRD :</p>
-          <p>{data.noSkrd}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Nomor SKRD</div>
+          <p>: {data.noSkrd}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Nomor Wajib Retribusi :</p>
-          <p>{data.noWajibRetribusi}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Nomor Wajib Retribusi</div>
+          <p>: {data.noWajibRetribusi}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Nama Objek Retribusi :</p>
-          <p>{data.namaObjekRetribusi}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Nama Objek Retribusi</div>
+          <p>: {data.namaObjekRetribusi}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Alamat :</p>
-          <p>{data.alamatObjekRetribusi}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Alamat</div>
+          <p>: {data.alamatObjekRetribusi}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Kecamatan :</p>
-          <p>{data.kecamatanObjekRetribusi}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Kecamatan</div>
+          <p>: {data.kecamatanObjekRetribusi}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Kelurahan :</p>
-          <p>{data.kelurahanObjekRetribusi}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Kelurahan</div>
+          <p>: {data.kelurahanObjekRetribusi ?? "-"}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Klasifikasi - Objek :</p>
-          <p>{data.namaKategori}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Klasifikasi - Objek</div>
+          <p>: {data.namaKategori}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Kelas :</p>
-          <p>{data.namaSubKategori}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Kelas</div>
+          <p>: {data.namaSubKategori}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Jenis/Deskripsi :</p>
-          <p>{data.deskripsiUsaha}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Jenis/Deskripsi</div>
+          <p>: {data.deskripsiUsaha}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Per Bulan :</p>
-          <p>{data.tarifPerBulanObjekRetribusi}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Per Bulan</div>
+          <p>: {data.tarifPerBulanObjekRetribusi}</p>
         </div>
-        <div className="col-span-2 grid grid-cols-2 text-sm">
-          <p>Per Tahun :</p>
-          <p>{data.tarifPerTahunObjekRetribusi}</p>
+        <div className="col-span-2 flex gap-5 text-sm">
+          <div className="w-full max-w-96">Per Tahun</div>
+          <p>: {data.tarifPerTahunObjekRetribusi}</p>
         </div>
         <div className="grid grid-cols-1 gap-2 text-sm">
           <h2 className="font-bold">
@@ -134,7 +134,7 @@ const Show = ({ user, data, bulan }) => {
 
                 return (
                   <tr key={i} className="w-full">
-                    <td>{bulan}</td>
+                    <td className="w-44 max-w-44">{bulan}</td>
                     <td>:</td>
                     <td>
                       {pembayaranBulan

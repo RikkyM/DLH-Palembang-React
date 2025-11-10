@@ -191,7 +191,7 @@ class WajibRetribusiController extends Controller
         ]);
 
         $tahunOptions = WajibRetribusi::select('created_at')
-        ->get()
+            ->get()
             ->pluck('created_at')
             ->map(fn($date) => Carbon::parse($date)->year)
             ->unique()
@@ -288,7 +288,7 @@ class WajibRetribusiController extends Controller
                             ->where('current_role', 'ROLE_KABID');
                     })->orWhere(function ($data) {
                         $data->where('status', 'Approved')
-                        ->whereNull('current_role');
+                            ->whereNull('current_role');
                     });
                 }
 
@@ -336,6 +336,24 @@ class WajibRetribusiController extends Controller
                 $q->where('status', 'Rejected');
                 // ->where('current_role', '!=', 'ROLE_KUPTD')
                 // ->orWhereNull('current_role');
+            })
+        );
+    }
+
+    public function selesai(Request $request)
+    {
+        return $this->renderWajibRetribusi(
+            $request,
+            null,
+            'Selesai',
+            fn($q) => $q->where(function ($data) {
+                $data->where(function ($d) {
+                    $d->where('status', 'Finished')
+                        ->where('current_role', 'ROLE_KABID');
+                })->orWhere(function ($d) {
+                    $d->where('status', 'Approved')
+                        ->where('current_role', null);
+                });
             })
         );
     }

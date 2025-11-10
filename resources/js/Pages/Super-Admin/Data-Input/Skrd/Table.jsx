@@ -37,6 +37,9 @@ const Table = ({
               </th>
             </React.Fragment>
           ))}
+          <th className="sticky top-0 cursor-pointer select-none truncate bg-[#F1B174]">
+            UPTD P. Jawab
+          </th>
         </TableHead>
       </thead>
       <tbody className="divide-y divide-neutral-300 text-xs md:text-sm">
@@ -84,7 +87,7 @@ const Table = ({
               </td>
               <td>{fmtIDR(paidEffective(data))}</td>
               <td>{fmtIDR(sisaTagihan(data))}</td>
-              <td>{data.namaPendaftar ?? '-'}</td>
+              <td>{data.namaPendaftar ?? "-"}</td>
               <td>{data.namaPenagih ?? "-"}</td>
               <td className="text-left">
                 {sisaTagihan(data) === 0 ? (
@@ -126,6 +129,7 @@ const Table = ({
                   </React.Fragment>
                 );
               })}
+              <td>{data.uptd_p_jawab}</td>
               <td
                 className={`sticky right-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"}`}
               >

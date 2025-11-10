@@ -324,6 +324,19 @@ class WajibRetribusiController extends Controller
         return $this->renderWajibRetribusi($request, null, 'Ditolak', fn($q) => $q->where('status', 'Rejected'));
     }
 
+    public function selesai(Request $request)
+    {
+        return $this->renderWajibRetribusi($request, null, 'Selesai', fn($q) => $q->where(function ($data) {
+            $data->where(function ($d) {
+                $d->where('status', 'Finished')
+                    ->where('current_role', 'ROLE_KABID');
+            })->orWhere(function ($d) {
+                $d->where('status', 'Approved')
+                    ->where('current_role', null);
+            });
+        }));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -680,6 +693,8 @@ class WajibRetribusiController extends Controller
                     ]
                 ]
             ];
+
+            dd($dataToSave);
 
             WajibRetribusi::create($dataToSave);
 

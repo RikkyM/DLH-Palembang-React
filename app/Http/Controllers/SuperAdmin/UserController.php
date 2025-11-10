@@ -23,6 +23,7 @@ class UserController extends Controller
         $search = $request->get('search');
         $sortBy = $request->get('sort', 'id');
         $sortDir = $request->get('direction', 'asc');
+        $getPage = $request->get('per_page', 10);
 
         $users = User::query()
             ->whereNotNull('username')
@@ -44,8 +45,11 @@ class UserController extends Controller
                     ->where('u2.username', '<>', '')
                     ->whereColumn('u2.id', '>', 'users.id');
             })
-            ->orderBy($sortBy, $sortDir)
-            ->paginate(10)
+            ->orderBy($sortBy, $sortDir);
+        // ->paginate(10)
+        // ->withQueryString();
+
+        $datas = $getPage <= 0 ? $users->get() : $users->paginate($getPage)
             ->withQueryString();
 
         $uptdOptions = Uptd::select('id', 'namaUptd')
@@ -59,12 +63,13 @@ class UserController extends Controller
             });
 
         return Inertia::render('Super-Admin/Master-Data/User/Index', [
-            'users' => $users,
+            'users' => $datas,
             'uptd' => $uptdOptions,
             'filters' => [
                 'search' => $search && trim($search) !== '' ? $search : null,
                 'sort' => $sortBy,
-                'direction' => $sortDir
+                'direction' => $sortDir,
+                'per_page' => (int) $getPage
             ]
         ]);
     }

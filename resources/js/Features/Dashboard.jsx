@@ -221,7 +221,7 @@ const DashboardPages = ({
               </div>
             </div>
             <div className="flex flex-col text-sm">
-              <span className="font-semibold">Penerimaan UPTD</span>
+              <span className="font-semibold">Penerimaan UPTD P. Jawab</span>
               <span className="flex flex-wrap font-semibold text-green-600">
                 <Deferred data="stats" fallback={<p>Memuat...</p>}>
                   {loading && <p>Memuat...</p>}
@@ -239,7 +239,7 @@ const DashboardPages = ({
         </div>
         <div className="order-3 col-span-2 row-span-1 rounded border border-gray-300 bg-white px-10 py-6 shadow sm:row-span-2 lg:order-2 lg:col-span-1 lg:mt-2">
           <h2 className="mb-4 text-lg font-semibold">
-            Penerimaan Kecamatan{" "}
+            Penerimaan Retribusi{" "}
             <Deferred data="year" fallback={<span>Memuat...</span>}>
               {loading && <span>Memuat...</span>}
               {!loading && year}

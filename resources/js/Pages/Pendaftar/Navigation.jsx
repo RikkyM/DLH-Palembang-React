@@ -24,7 +24,7 @@ const PendaftarNavigation = () => {
 
   const inboxItems = [
     {
-      label: "Inbox Diterima",
+      label: "Diterima",
       route: "pendaftar.wajib-retribusi.diterima",
       activeRoute: [
         "pendaftar.wajib-retribusi.diterima",
@@ -36,7 +36,7 @@ const PendaftarNavigation = () => {
           .filter((i) => i.current_role === "ROLE_PENDAFTAR").length || "",
     },
     {
-      label: "Inbox Diproses",
+      label: "Diproses",
       route: "pendaftar.wajib-retribusi.diproses",
       badge:
         inbox
@@ -44,7 +44,7 @@ const PendaftarNavigation = () => {
           .filter((i) => i.current_role !== "ROLE_PENDAFTAR").length || "",
     },
     {
-      label: "Inbox Ditolak",
+      label: "Ditolak",
       route: "pendaftar.wajib-retribusi.ditolak",
       activeRoute: [
         "pendaftar.wajib-retribusi.ditolak",
@@ -52,11 +52,14 @@ const PendaftarNavigation = () => {
       ],
       badge: inbox.filter((i) => i.status === "Rejected").length || "",
     },
-    // {
-    //   label: "Inbox Selesai (SPKRD)",
-    //   route: "pendaftar.skrd.index",
-    //   activeRoute: "pendaftar.skrd.*",
-    // },
+    {
+      label: "Selesai",
+      route: "pendaftar.wajib-retribusi.selesai",
+      activeRoute: [
+        "pendaftar.wajib-retribusi.selesai",
+        // "pendaftar.wajib-retribusi.edit",
+      ],
+    },
   ];
 
   const laporanItems = [
@@ -175,6 +178,19 @@ const PendaftarNavigation = () => {
           items={inboxItems}
           defaultOpen={isAccordionActive(inboxItems)}
         />
+        <Link
+          prefetch
+          cacheFor="5m"
+          preserveScroll
+          className={`block rounded px-3 py-2 transition-all duration-300 ${
+            route().current("pendaftar.skrd.*")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("pendaftar.skrd.index")}
+        >
+          Kartu Kendali
+        </Link>
         <AccordionItem
           title="Laporan"
           items={laporanItems}

@@ -20,7 +20,7 @@ const KatimNavigation = () => {
 
   const inboxItems = [
     {
-      label: "Inbox Diterima",
+      label: "Diterima",
       route: "katim.wajib-retribusi.diterima",
       activeRoute: [
         "katim.wajib-retribusi.diterima",
@@ -32,7 +32,7 @@ const KatimNavigation = () => {
           .filter((i) => i.current_role === "ROLE_KATIM").length || "",
     },
     {
-      label: "Inbox Diproses",
+      label: "Diproses",
       route: "katim.wajib-retribusi.diproses",
       activeRoute: [
         "katim.wajib-retribusi.diproses",
@@ -48,7 +48,7 @@ const KatimNavigation = () => {
           ).length || "",
     },
     {
-      label: "Inbox Ditolak",
+      label: "Ditolak",
       route: "katim.wajib-retribusi.ditolak",
       activeRoute: [
         "katim.wajib-retribusi.ditolak",
@@ -57,9 +57,12 @@ const KatimNavigation = () => {
       badge: inbox.filter((i) => i.status === "Rejected").length || "",
     },
     {
-      label: "Inbox Selesai (SPKRD)",
-      route: "katim.skrd.index",
-      activeRoute: "katim.skrd.*",
+      label: "Selesai",
+      route: "katim.wajib-retribusi.selesai",
+      activeRoute: [
+        "katim.wajib-retribusi.selesai",
+        "katim.wajib-retribusi.show",
+      ],
     },
   ];
 
@@ -142,6 +145,12 @@ const KatimNavigation = () => {
               ) {
                 return route().current(r);
               }
+              if (
+                item.label.toLowerCase().includes("selesai") &&
+                params.status === "selesai"
+              ) {
+                return route().current(r);
+              }
               return false;
             }
             return route().current(r);
@@ -179,6 +188,19 @@ const KatimNavigation = () => {
           items={inboxItems}
           defaultOpen={isAccordionActive(inboxItems)}
         />
+        <Link
+          prefetch
+          cacheFor="5m"
+          preserveScroll
+          className={`block rounded px-3 py-2 transition-all duration-300 ${
+            route().current("katim.skrd.*")
+              ? "bg-[#B3CEAF] font-medium text-white"
+              : "bg-transparent hover:bg-neutral-300"
+          }`}
+          href={route("katim.skrd.index")}
+        >
+          Kartu Kendali
+        </Link>
         <AccordionItem
           title="Laporan"
           items={laporanItems}

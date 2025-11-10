@@ -24,7 +24,7 @@ const SuperAdminNavigation = () => {
 
   const inboxItems = [
     {
-      label: "Inbox Diterima",
+      label: "Diterima",
       route: "super-admin.wajib-retribusi.diterima",
       activeRoute: [
         "super-admin.wajib-retribusi.diterima",
@@ -36,7 +36,7 @@ const SuperAdminNavigation = () => {
           .filter((i) => i.current_role === "ROLE_PENDAFTAR").length || "",
     },
     {
-      label: "Inbox Diproses",
+      label: "Diproses",
       route: "super-admin.wajib-retribusi.diproses",
       activeRoute: [
         "super-admin.wajib-retribusi.diproses",
@@ -48,7 +48,7 @@ const SuperAdminNavigation = () => {
           .filter((i) => i.current_role !== "ROLE_PENDAFTAR").length || "",
     },
     {
-      label: "Inbox Ditolak",
+      label: "Ditolak",
       route: "super-admin.wajib-retribusi.ditolak",
       activeRoute: [
         "super-admin.wajib-retribusi.ditolak",
@@ -56,11 +56,15 @@ const SuperAdminNavigation = () => {
       ],
       badge: inbox.filter((i) => i.status === "Rejected").length || "",
     },
-    // {
-    //   label: "Inbox Selesai (SPKRD)",
-    //   route: "super-admin.skrd.index",
-    //   activeRoute: "super-admin.skrd.*",
-    // },
+    {
+      label: "Selesai",
+      route: "super-admin.wajib-retribusi.selesai",
+      activeRoute: [
+        "super-admin.wajib-retribusi.selesai",
+        "super-admin.wajib-retribusi.show",
+      ],
+      // activeRoute: "super-admin.skrd.*",
+    },
   ];
 
   // const tagihanItems = [
@@ -193,6 +197,12 @@ const SuperAdminNavigation = () => {
               if (
                 item.label.toLowerCase().includes("ditolak") &&
                 params.status === "ditolak"
+              ) {
+                return route().current(r);
+              }
+              if (
+                item.label.toLowerCase().includes("selesai") &&
+                params.status === "selesai"
               ) {
                 return route().current(r);
               }

@@ -21,6 +21,7 @@ Route::middleware('role:ROLE_PENDAFTAR')->prefix('pendaftar')->name('pendaftar.'
             Route::get('/diterima', 'diterima')->name('diterima');
             Route::get('/diproses', 'diproses')->name('diproses');
             Route::get('/ditolak', 'ditolak')->name('ditolak');
+            Route::get('/selesai', 'selesai')->name('selesai');
             Route::get('/{status}/{retribusi}/edit', 'edit')
                 ->where(['status' => 'diterima|ditolak'])
                 ->name('edit');

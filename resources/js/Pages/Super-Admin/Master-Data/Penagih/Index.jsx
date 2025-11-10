@@ -42,8 +42,8 @@ const Index = ({ datas, filters, uptdOptions = [] }) => {
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="flex w-full gap-2 sm:flex-row md:w-auto md:items-center">
-            <div className="flex w-full items-center gap-2 w-max">
-              <div className="relative flex w-full gap-2 w-max">
+            <div className="flex w-full w-max items-center gap-2">
+              <div className="relative flex w-full w-max gap-2">
                 <label
                   htmlFor="showData"
                   className="relative flex w-full min-w-20 max-w-24 cursor-pointer items-center gap-1.5 text-sm"

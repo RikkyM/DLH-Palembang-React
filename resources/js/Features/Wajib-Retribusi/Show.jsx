@@ -173,7 +173,7 @@ const WajibRetribusiShow = ({
             className="cursor-auto rounded bg-gray-200 px-3 py-2 capitalize outline-none"
             type="text"
             id="pemohon"
-            value={retribusi.pemilik.namaPemilik}
+            value={retribusi.pemilik?.namaPemilik ?? "-"}
             disabled={true}
           />
         </div>
@@ -195,11 +195,11 @@ const WajibRetribusiShow = ({
             <label htmlFor="rt">RT</label>
             <input
               className="cursor-auto rounded bg-gray-200 px-3 py-2 outline-none"
-              type="number"
+              type="text"
               id="rt"
               autoComplete="off"
               placeholder="RT"
-              value={retribusi.rt}
+              value={retribusi.rt ?? "-"}
               readOnly={true}
             />
           </div>
@@ -207,11 +207,11 @@ const WajibRetribusiShow = ({
             <label htmlFor="rw">RW</label>
             <input
               className="cursor-auto rounded bg-gray-200 px-3 py-2 outline-none"
-              type="number"
+              type="text"
               id="rw"
               autoComplete="off"
               placeholder="RW"
-              value={retribusi.rw}
+              value={retribusi.rw ?? "-"}
               readOnly={true}
             />
           </div>
@@ -231,7 +231,7 @@ const WajibRetribusiShow = ({
               className="cursor-auto rounded bg-gray-200 px-3 py-2 capitalize outline-none"
               type="text"
               id="kelurahan"
-              value={retribusi.kelurahan.namaKelurahan}
+              value={retribusi.kelurahan?.namaKelurahan ?? "-"}
               disabled={true}
             />
           </div>
@@ -427,7 +427,7 @@ const WajibRetribusiShow = ({
               className="cursor-auto rounded bg-gray-200 px-3 py-2 capitalize outline-none"
               type="text"
               id="statusTempat"
-              value={retribusi.statusTempat}
+              value={retribusi.statusTempat ?? "-"}
               disabled={true}
             />
           </div>
@@ -435,11 +435,11 @@ const WajibRetribusiShow = ({
             <label htmlFor="jBangunan">Jumlah Bangunan</label>
             <input
               className="cursor-auto rounded bg-gray-200 px-3 py-2 outline-none"
-              type="number"
+              type="text"
               id="jBangunan"
               autoComplete="off"
               placeholder="Jumlah Bangunan..."
-              value={retribusi.jumlahBangunan}
+              value={retribusi.jumlahBangunan ?? "-"}
               readOnly={true}
             />
           </div>
@@ -451,7 +451,7 @@ const WajibRetribusiShow = ({
               id="jLantai"
               autoComplete="off"
               placeholder="Jumlah Lantai..."
-              value={retribusi.jumlahLantai}
+              value={retribusi.jumlahLantai ?? "-"}
               readOnly={true}
             />
           </div>
@@ -502,7 +502,7 @@ const WajibRetribusiShow = ({
               id="penagih"
               autoComplete="off"
               placeholder="-"
-              value={retribusi.penagih.nama}
+              value={retribusi.penagih?.nama ?? "-"}
               readOnly={true}
             />
           </div>
@@ -517,50 +517,64 @@ const WajibRetribusiShow = ({
           />
         </div>
 
-        <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
-          <h2>Bangunan</h2>
-          {retribusi.image ? (
-            <img
-              src={route("private.file", {
-                type: "image",
-                filename: retribusi.image,
-              })}
-              alt=""
+        <div className="col-span-2 grid grid-cols-1 gap-3 lg:grid-cols-3">
+          <div className="flex flex-col gap-1.5 text-sm md:col-span-1">
+            <h2>Bangunan</h2>
+            {retribusi.image ? (
+              <img
+                src={route("private.file", {
+                  type: "image",
+                  filename: retribusi.image,
+                })}
+                alt=""
+              />
+            ) : (
+              <>
+                <h2 className="text-sm">Tidak ada Gambar</h2>
+              </>
+            )}
+          </div>
+          <div className="flex flex-col gap-1.5 text-sm md:col-span-1">
+            <h2>Berkas</h2>
+            {retribusi.file ? (
+              <>
+                {retribusi.file.toLowerCase().endsWith(".pdf") ? (
+                  <iframe
+                    className="h-[600px]"
+                    src={route("private.file", {
+                      type: "file",
+                      filename: retribusi.file,
+                    })}
+                    alt="berkas pdf"
+                  />
+                ) : (
+                  <img
+                    src={route("private.file", {
+                      type: "file",
+                      filename: retribusi.file,
+                    })}
+                    alt="berkas gambar"
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                <h2 className="text-sm">Tidak ada Berkas</h2>
+              </>
+            )}
+          </div>
+          <div className="flex flex-col gap-1.5 text-sm md:col-span-1">
+            <h2>UPTD Penanggung Jawab</h2>
+            <input
+              className="cursor-auto rounded bg-gray-200 px-3 py-2 outline-none"
+              type="url"
+              id="penagih"
+              autoComplete="off"
+              placeholder="-"
+              value={retribusi.uptd?.namaUptd ?? "-"}
+              readOnly={true}
             />
-          ) : (
-            <>
-              <h2 className="text-sm">Tidak ada Gambar</h2>
-            </>
-          )}
-        </div>
-        <div className="col-span-2 flex flex-col gap-1.5 text-sm md:col-span-1">
-          <h2>Berkas</h2>
-          {retribusi.file ? (
-            <>
-              {retribusi.file.toLowerCase().endsWith(".pdf") ? (
-                <iframe
-                  className="h-[600px]"
-                  src={route("private.file", {
-                    type: "file",
-                    filename: retribusi.file,
-                  })}
-                  alt="berkas pdf"
-                />
-              ) : (
-                <img
-                  src={route("private.file", {
-                    type: "file",
-                    filename: retribusi.file,
-                  })}
-                  alt="berkas gambar"
-                />
-              )}
-            </>
-          ) : (
-            <>
-              <h2 className="text-sm">Tidak ada Berkas</h2>
-            </>
-          )}
+          </div>
         </div>
       </div>
     </section>
