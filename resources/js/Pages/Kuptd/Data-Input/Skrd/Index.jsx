@@ -81,15 +81,14 @@ const Index = ({
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-
-    {
-      key: "noWajibRetribusi",
-      label: "no wajib retribusi",
-      align: "text-left truncate",
-    },
     {
       key: "noSkrd",
       label: "no spkrd",
+      align: "text-left truncate",
+    },
+    {
+      key: "noWajibRetribusi",
+      label: "no wajib retribusi",
       align: "text-left truncate",
     },
     {

@@ -26,6 +26,7 @@
     <tbody>
         @foreach ($data as $index => $item)
             <tr>
+                {{-- {{ dd($item) }} --}}
                 <td>{{ $item->noSkrd }}</td>
                 <td>{{ $item->noWajibRetribusi }}</td>
                 <td>{{ $item->created_at ? $item->created_at->format('d-m-Y') : '-' }}</td>
@@ -38,8 +39,9 @@
                 <td>{{ $item->deskripsiUsaha }}</td>
                 <td>{{ $item->tagihanPerBulanSkrd }}</td>
                 <td>{{ $item->tagihanPerTahunSkrd }}</td>
-                <td>{{ $item->pembayaran_sum_jumlah_bayar }}</td>
-                <td>{{ $item->tagihanPerTahunSkrd - $item->pembayaran_sum_jumlah_bayar }}</td>
+                <td>{{ $item->setoran_sum_jumlah + $item->pembayaran_sum_jumlah_bayar }}</td>
+                <td>{{ $item->tagihanPerTahunSkrd - ($item->setoran_sum_jumlah + $item->pembayaran_sum_jumlah_bayar) }}
+                </td>
                 @for ($bulan = 1; $bulan <= 12; $bulan++)
                     @php
                         $bulanNama = $bulanMap[$bulan] ?? null;

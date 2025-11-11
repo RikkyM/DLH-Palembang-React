@@ -84,15 +84,14 @@ const Index = ({
 
   const columns = [
     { key: "id", label: "No", align: "text-center" },
-
-    {
-      key: "noWajibRetribusi",
-      label: "no wajib retribusi",
-      align: "text-left truncate",
-    },
     {
       key: "noSkrd",
       label: "no spkrd",
+      align: "text-left truncate",
+    },
+    {
+      key: "noWajibRetribusi",
+      label: "no wajib retribusi",
       align: "text-left truncate",
     },
     {
@@ -489,8 +488,8 @@ const Index = ({
                               index +
                               1}
                           </td>
-                          <td>{data.noWajibRetribusi}</td>
                           <td>{data.noSkrd}</td>
+                          <td>{data.noWajibRetribusi}</td>
                           <td>
                             {new Date(data.created_at)
                               .toLocaleDateString("en-GB")

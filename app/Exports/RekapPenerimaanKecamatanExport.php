@@ -33,7 +33,7 @@ class RekapPenerimaanKecamatanExport implements FromCollection, WithHeadings, Wi
         $rangeCol = DB::raw('DATE(COALESCE(tanggalSkrd, created_at))');
 
         return Kecamatan::with([
-            'uptd.skrd' =>
+            'skrds' =>
             function ($q) use ($startDate, $endDate, $rangeCol) {
                 if ($startDate || $endDate) {
                     $q->when($startDate && $endDate, fn($data) => $data->whereBetween($rangeCol, [$startDate, $endDate]))
@@ -43,19 +43,17 @@ class RekapPenerimaanKecamatanExport implements FromCollection, WithHeadings, Wi
                     $q->whereYear($rangeCol, Carbon::now()->year);
                 }
             },
-            'uptd.skrd.setoran' => function ($q) {
+            'skrds.setoran' => function ($q) {
                 $q->where('status', 'Approved')->where('current_stage', 'bendahara');
             },
-            'uptd.skrd.detailSetoran',
-            'uptd.skrd.pembayaran'
+            'skrds.detailSetoran',
+            'skrds.pembayaran'
         ])
             ->get()
             ->map(function ($kec, $i) {
-                $tagihanPertahun = $kec->uptd->skrd->sum('tagihanPerTahunSkrd');
-                $totalBayar = $kec->uptd->skrd->sum(function ($skrd) {
-                    $totalSetoran =
-                        $skrd->detailSetoran
-                        ->sum('jumlahBayar');
+                $tagihanPertahun = $kec->skrds->sum('tagihanPerTahunSkrd');
+                $totalBayar = $kec->skrds->sum(function ($skrd) {
+                    $totalSetoran = $skrd->detailSetoran->sum('jumlahBayar');
                     $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar');
 
                     return $totalSetoran + $totalPembayaran;
@@ -64,7 +62,7 @@ class RekapPenerimaanKecamatanExport implements FromCollection, WithHeadings, Wi
                 return [
                     'id'                => $i,
                     'namaKecamatan'     => $kec->namaKecamatan,
-                    'kecamatan'         => $kec->uptd->skrd->count(),
+                    'kecamatan'         => $kec->skrds->count(),
                     'tagihanPertahun'   => $tagihanPertahun,
                     'totalBayar'        => $totalBayar,
                     'sisaBayar'         => ($tagihanPertahun - $totalBayar)

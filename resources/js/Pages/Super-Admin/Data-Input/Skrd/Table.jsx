@@ -55,8 +55,8 @@ const Table = ({
                   index +
                   1}
               </td>
-              <td>{data.noWajibRetribusi}</td>
               <td>{data.noSkrd}</td>
+              <td>{data.noWajibRetribusi}</td>
               <td>
                 {new Date(data.created_at)
                   .toLocaleDateString("en-GB")

@@ -79,13 +79,13 @@ const Skrd = ({
   const columns = [
     { key: "id", label: "No", align: "text-center" },
     {
-      key: "noWajibRetribusi",
-      label: "no wajib retribusi",
+      key: "noSkrd",
+      label: "no spkrd",
       align: "text-left truncate",
     },
     {
-      key: "noSkrd",
-      label: "no spkrd",
+      key: "noWajibRetribusi",
+      label: "no wajib retribusi",
       align: "text-left truncate",
     },
     {

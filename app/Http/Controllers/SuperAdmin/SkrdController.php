@@ -126,7 +126,7 @@ class SkrdController extends Controller
 
         if ($getTahun) {
             $skrd->whereYear('created_at', (int) $getTahun);
-            dd($getTahun);
+
         }
 
 

@@ -42,21 +42,26 @@ class RekapRetribusiExport implements FromCollection, WithHeadings, WithMapping,
         $rangeCol = DB::raw('DATE(COALESCE(tanggalSkrd, created_at))');
 
         return Uptd::with([
-            'skrd' => fn($q) => $filter($q, $rangeCol),
-            'skrd.pembayaran',
-            'skrd.setoran',
-            'skrd.detailSetoran'
+            'skrds' => fn($q) => $filter($q, $rangeCol),
+            'skrds.pembayaran',
+            'skrds.setoran' => function ($q) {
+                $q->where('status', 'Approved')->where('current_stage', 'bendahara');
+            },
+            'skrds.setoran.detailSetoran'
         ])
             ->where('namaUptd', '!=', 'Dinas')
             ->get(['id', 'namaUptd'])
             ->map(function ($u, $i) {
-                $tagihanPertahun = $u->skrd->sum('tagihanPerTahunSkrd');
+                $tagihanPertahun = $u->skrds->sum('tagihanPerTahunSkrd');
 
-                $totalBayar = $u->skrd->sum(function ($skrd) {
-                    $totalSetoran    = $skrd->setoran
-                        ->where('status', 'Approved')
-                        ->where('current_stage', 'bendahara')
-                        ->sum('jumlahBayar');
+                $totalBayar = $u->skrds->sum(function ($skrd) {
+                    // $totalSetoran    = $skrd->setoran
+                    //     ->where('status', 'Approved')
+                    //     ->where('current_stage', 'bendahara')
+                    //     ->sum('jumlahBayar');
+                    $totalSetoran = $skrd->setoran->sum(function ($setoran) {
+                        return $setoran->detailSetoran->sum('jumlahBayar');
+                    });
                     $totalPembayaran = $skrd->pembayaran->sum('jumlahBayar');
 
                     return $totalSetoran + $totalPembayaran;
@@ -65,7 +70,7 @@ class RekapRetribusiExport implements FromCollection, WithHeadings, WithMapping,
                 return [
                     'id'        => $i,
                     'namaUptd'        => $u->namaUptd,
-                    'skrd'            => $u->skrd->count(),
+                    'skrd'            => $u->skrds->count(),
                     'tagihanPertahun' => $tagihanPertahun,
                     'totalBayar'      => $totalBayar,
                     'sisaBayar'       => ($tagihanPertahun - $totalBayar),

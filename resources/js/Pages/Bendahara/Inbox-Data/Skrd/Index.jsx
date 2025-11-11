@@ -79,13 +79,13 @@ const Skrd = ({
   const columns = [
     { key: "id", label: "No", align: "text-center" },
     {
-      key: "noWajibRetribusi",
-      label: "no wajib retribusi",
+      key: "noSkrd",
+      label: "no spkrd",
       align: "text-left truncate",
     },
     {
-      key: "noSkrd",
-      label: "no spkrd",
+      key: "noWajibRetribusi",
+      label: "no wajib retribusi",
       align: "text-left truncate",
     },
     {
@@ -259,7 +259,7 @@ const Skrd = ({
 
   return (
     <Layout title="KARTU KENDALI">
-    <Head title="Kartu Kendali"/>
+      <Head title="Kartu Kendali" />
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
         <div className="mb-3 flex w-full flex-col justify-between gap-3 rounded bg-white p-2 shadow lg:flex-row lg:items-center">
           <div className="relative flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center">
@@ -592,7 +592,10 @@ const Skrd = ({
                             <button
                               onClick={() =>
                                 router.get(
-                                  route("bendahara.kartu-kendali.show", data.id),
+                                  route(
+                                    "bendahara.kartu-kendali.show",
+                                    data.id,
+                                  ),
                                 )
                               }
                               className="flex items-center gap-1.5 whitespace-nowrap outline-none"

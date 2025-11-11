@@ -147,6 +147,8 @@ class SkrdDataExport implements FromView, ShouldAutoSize, WithStyles, WithColumn
         //     }
         // }))->values();
 
+        // dd($query);
+
         $bulanID = [
             'Januari' => 'January',
             'Februari' => 'February',
