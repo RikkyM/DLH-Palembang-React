@@ -71,6 +71,7 @@ const Table = ({
               <td>{data.namaKategori}</td>
               <td className="min-w-32">{data.namaSubKategori}</td>
               <td>{data.deskripsiUsaha}</td>
+              <td className="text-center">{data.jumlahBulan} Bulan</td>
               <td>
                 {new Intl.NumberFormat("id-ID", {
                   style: "currency",

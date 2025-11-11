@@ -52,6 +52,7 @@ class SkrdController extends Controller
                 "kecamatanObjekRetribusi",
                 'uptd_p_jawab',
                 "deskripsiUsaha",
+                'jumlahBulan',
                 "tagihanPerBulanSkrd",
                 "tagihanPerTahunSkrd",
                 'namaKategori',

@@ -58,6 +58,7 @@ class SkrdController extends Controller
                 "kecamatanObjekRetribusi",
                 'uptd_p_jawab',
                 "deskripsiUsaha",
+                'jumlahBulan',
                 "tagihanPerBulanSkrd",
                 "tagihanPerTahunSkrd",
                 'namaKategori',
@@ -128,7 +129,6 @@ class SkrdController extends Controller
             $skrd->whereYear('created_at', (int) $getTahun);
 
         }
-
 
         $kategori = Kategori::select('kodeKategori', 'namaKategori')->get();
         $subKategori = $kategoriId ?

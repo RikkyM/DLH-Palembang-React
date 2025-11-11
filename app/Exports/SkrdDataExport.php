@@ -196,22 +196,22 @@ class SkrdDataExport implements FromView, ShouldAutoSize, WithStyles, WithColumn
     {
         $formatIDR = '_("Rp"* #,##0_);_("Rp"* (#,##0);_("Rp"* "-"_);_(@_)';
         return [
-            'K' => $formatIDR,
             'L' => $formatIDR,
             'M' => $formatIDR,
             'N' => $formatIDR,
             'O' => $formatIDR,
-            'Q' => $formatIDR,
-            'S' => $formatIDR,
-            'U' => $formatIDR,
-            'W' => $formatIDR,
-            'Y' => $formatIDR,
-            'AA' => $formatIDR,
-            'AC' => $formatIDR,
-            'AE' => $formatIDR,
-            'AG' => $formatIDR,
-            'AI' => $formatIDR,
-            'AK' => $formatIDR,
+            'P' => $formatIDR,
+            'R' => $formatIDR,
+            'T' => $formatIDR,
+            'V' => $formatIDR,
+            'X' => $formatIDR,
+            'Z' => $formatIDR,
+            'AB' => $formatIDR,
+            'AD' => $formatIDR,
+            'AF' => $formatIDR,
+            'AH' => $formatIDR,
+            'AJ' => $formatIDR,
+            'AL' => $formatIDR,
         ];
     }
 

@@ -11,6 +11,7 @@
             <th>KLASIFIKASI - OBJEK</th>
             <th>KELAS</th>
             <th>JENIS/DESKRIPSI</th>
+            <th>JUMLAH BULAN</th>
             <th>PER BULAN</th>
             <th>PER TAHUN</th>
             <th>JUMLAH TERTAGIH</th>
@@ -37,6 +38,7 @@
                 <td>{{ $item->namaKategori }}</td>
                 <td>{{ $item->namaSubKategori }}</td>
                 <td>{{ $item->deskripsiUsaha }}</td>
+                <td>{{ $item->jumlahBulan }} Bulan</td>
                 <td>{{ $item->tagihanPerBulanSkrd }}</td>
                 <td>{{ $item->tagihanPerTahunSkrd }}</td>
                 <td>{{ $item->setoran_sum_jumlah + $item->pembayaran_sum_jumlah_bayar }}</td>

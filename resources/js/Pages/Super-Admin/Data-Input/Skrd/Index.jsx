@@ -135,6 +135,11 @@ const Index = ({
       align: "text-left truncate",
     },
     {
+      key: "jumlahBulan",
+      label: "jumlah bulan",
+      align: "text-left truncate",
+    },
+    {
       key: "tagihanPerBulanSkrd",
       label: "Tarif /bulan",
       align: "text-left truncate",

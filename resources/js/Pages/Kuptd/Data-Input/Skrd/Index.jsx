@@ -128,6 +128,11 @@ const Index = ({
       align: "text-left truncate",
     },
     {
+      key: "jumlahBulan",
+      label: "jumlah bulan",
+      align: "text-left truncate",
+    },
+    {
       key: "tagihanPerBulanSkrd",
       label: "Tarif /bulan",
       align: "text-left truncate",
@@ -460,6 +465,7 @@ const Index = ({
                           <td>{data.namaKategori}</td>
                           <td className="min-w-32">{data.namaSubKategori}</td>
                           <td>{data.deskripsiUsaha}</td>
+                          <td className="text-center">{data.jumlahBulan} Bulan</td>
                           <td>
                             {new Intl.NumberFormat("id-ID", {
                               style: "currency",
