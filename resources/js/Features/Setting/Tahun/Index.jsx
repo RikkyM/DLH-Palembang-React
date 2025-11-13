@@ -1,11 +1,14 @@
-import { Head, useForm } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { useToast } from "@/Context/ToastContext";
 import FormInput from "@/Components/FormInput";
 import Label from "@/Components/Label";
 import Input from "@/Components/Input";
+import { roleConfig } from "@/Constants/roleConfig";
 
 const Index = ({ itm }) => {
   const { showToast } = useToast();
+  const { props } = usePage();
+  const role = props[0]?.auth?.user?.role;
   const { data, setData, errors, processing, put } = useForm({
     tahun: itm?.tahun ?? "",
   });
@@ -13,7 +16,7 @@ const Index = ({ itm }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    put(route("super-admin.tahun-retribusi-update"), {
+    put(route(`${roleConfig[role]}.tahun-retribusi-update`), {
       preserveScroll: true,
       preserveState: false,
       onSuccess: () => showToast("Berhasil update tahun Retribusi.", "success"),

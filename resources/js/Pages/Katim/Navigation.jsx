@@ -5,7 +5,8 @@ import Calendar from "react-calendar";
 
 const KatimNavigation = () => {
   const { props } = usePage();
-  const { inbox } = props[0];
+  const { inbox, auth } = props[0];
+  const namaLengkap = auth?.user?.namaLengkap;
 
   const permohonanItems = [
     {
@@ -97,28 +98,12 @@ const KatimNavigation = () => {
     },
   ];
 
-  // const settingItems = [
-  //   {
-  //     label: "Uptd",
-  //     // route: "super-admin.uptd",
-  //   },
-  //   {
-  //     label: "User / Pegawai",
-  //     // route: "super-admin.user",
-  //   },
-  //   {
-  //     label: "Kecamatan",
-  //   },
-  //   {
-  //     label: "Kelurahan",
-  //   },
-  //   {
-  //     label: "Kategori",
-  //   },
-  //   {
-  //     label: "Sub Kategori",
-  //   },
-  // ];
+  const settingItems = [
+    {
+      label: "Tahun Retribusi",
+      route: "katim.tahun-retribusi",
+    },
+  ];
 
   const isAccordionActive = (items) =>
     items.some((item) => {
@@ -206,6 +191,13 @@ const KatimNavigation = () => {
           items={laporanItems}
           defaultOpen={isAccordionActive(laporanItems)}
         />
+        {namaLengkap.includes("Jessie Zarastami") && (
+          <AccordionItem
+            title="Setting"
+            items={settingItems}
+            defaultOpen={isAccordionActive(settingItems)}
+          />
+        )}
         <div className="py-3">
           <Calendar />
         </div>

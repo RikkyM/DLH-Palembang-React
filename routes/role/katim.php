@@ -5,6 +5,7 @@ use App\Http\Controllers\Katim\DashboardController;
 use App\Http\Controllers\Katim\SkrdController;
 use App\Http\Controllers\Katim\WajibRetribusiController;
 use App\Http\Controllers\RekapitulasiController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('role:ROLE_KATIM')->prefix('katim')->name('katim.')->group(function () {
@@ -49,6 +50,11 @@ Route::middleware('role:ROLE_KATIM')->prefix('katim')->name('katim.')->group(fun
                 Route::get('/', 'notaTagihan')->name('nota-tagihan');
             });
         });
+    });
+
+    Route::prefix('setting')->controller(SettingController::class)->group(function () {
+        Route::get('/tahun-retribusi', 'tahunRetribusi')->name('tahun-retribusi');
+        Route::put('/tahun-retribusi', 'tahunRetribusiUpdate')->name('tahun-retribusi-update');
     });
 
     Route::get('/akun', [AccountController::class, 'index'])->name('akun');
