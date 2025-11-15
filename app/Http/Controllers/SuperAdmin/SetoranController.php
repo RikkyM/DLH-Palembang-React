@@ -40,7 +40,8 @@ class SetoranController extends Controller
 
         if ($getSearch && trim($getSearch) !== '') {
             $query->whereHas('skrd', function ($q) use ($getSearch) {
-                $q->where('noSkrd', 'like', "%{$getSearch}%");
+                $q->where('noSkrd', 'like', "%{$getSearch}%")
+                    ->orWhere('namaObjekRetribusi', 'like', "%{$getSearch}%");
             })
                 ->orWhere(function ($q) use ($getSearch) {
                     $q->where('nomorNota', 'like', "%{$getSearch}%");
@@ -62,6 +63,11 @@ class SetoranController extends Controller
             case 'kecamatan':
                 $query->leftJoin('skrd', 'setoran.skrdId', '=', 'skrd.id')
                     ->orderBy('skrd.kecamatanObjekRetribusi', $sortDir)
+                    ->select('setoran.*');
+                break;
+            case 'tagihanPerBulanSkrd':
+                $query->leftJoin('skrd', 'setoran.skrdId', '=', 'skrd.id')
+                    ->orderBy('skrd.tagihanPerBulanSkrd', $sortDir)
                     ->select('setoran.*');
                 break;
             default:

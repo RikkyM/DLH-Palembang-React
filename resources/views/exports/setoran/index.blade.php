@@ -156,6 +156,7 @@
                                     </div>
                                 </td>
                                 {{-- <td style="width: 20px; vertical-align: top; padding: 5px; padding-bottom: 50px;"></td> --}}
+                                {{ dd($kuptd) }}
                                 <td
                                     style="width: 420px; padding: 5px; text-transform: capitalize; padding-bottom: 10px; vertical-align: middle; font-weight: 700;">
                                     <div style="padding-left: 120px; padding: 3px auto;">{{ $kuptd->namaLengkap }}

@@ -19,7 +19,7 @@ class SetoranExport implements FromCollection, WithHeadings, WithMapping, Should
      */
     public function collection()
     {
-        return Setoran::with('skrd')->get();
+        return Setoran::with('skrd')->orderBy('created_at', 'desc')->get();
     }
 
     public function map($setoran): array
@@ -45,10 +45,11 @@ class SetoranExport implements FromCollection, WithHeadings, WithMapping, Should
         }
 
         return [
-            $setoran->nomorNota,
+            str_contains(strtolower($setoran->nomorNota), 'temp') ? "-" : $setoran->nomorNota,
             $setoran->skrd->noSkrd,
             $setoran->skrd->namaObjekRetribusi,
             $setoran->skrd->kecamatanObjekRetribusi,
+            $setoran->skrd->tagihanPerBulanSkrd,
             $setoran->metodeBayar ?? "-",
             $setoran->namaBank ?? "-",
             Carbon::parse($setoran->tanggalBayar)->format('d-m-Y'),
@@ -58,6 +59,7 @@ class SetoranExport implements FromCollection, WithHeadings, WithMapping, Should
             $setoran->namaPenyetor ?? "-",
             $setoran->keteranganBulan ?? "-",
             Carbon::parse($setoran->tanggal_diterima)->format('d-m-Y'),
+            $setoran->keterangan,
             $status
         ];
     }
@@ -69,6 +71,7 @@ class SetoranExport implements FromCollection, WithHeadings, WithMapping, Should
             'No SPKRD',
             'Nama Objek Retribusi',
             'Kecamatan',
+            "Tarif Per-Bulan",
             'Cara Bayar',
             'Nama Bank',
             'Tanggal Bayar',
@@ -78,6 +81,7 @@ class SetoranExport implements FromCollection, WithHeadings, WithMapping, Should
             'Pengirim / Penyetor',
             'Ket. Bulan Bayar',
             'Tanggal Keuangan',
+            'Keterangan',
             'Status'
         ];
     }
@@ -93,7 +97,8 @@ class SetoranExport implements FromCollection, WithHeadings, WithMapping, Should
     {
         $formatIDR = '_("Rp"* #,##0_);_("Rp"* (#,##0);_("Rp"* "-"_);_(@_)';
         return [
-            'H' => $formatIDR
+            'I' => $formatIDR,
+            'E' => $formatIDR
         ];
     }
 }

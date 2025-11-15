@@ -16,7 +16,10 @@ class SetoranController extends Controller
         $setoran->load(['detailSetoran', 'skrd']);
 
         $kecamatan = $setoran->skrd->uptdId;
-        $kuptd = User::where('uptdId', $kecamatan)->first();
+        $kuptd = User::where(function($q) use ($kecamatan) {
+            $q->where('uptdId', $kecamatan)
+                ->where('role', 'ROLE_KUPTD');
+        })->first();
 
         $pdf = Pdf::loadView('exports.setoran.index', [
             'setoran' => $setoran,

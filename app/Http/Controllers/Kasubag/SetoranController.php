@@ -82,17 +82,20 @@ class SetoranController extends Controller
         $getPage = $request->get('per_page', 10);
         $getSkrd = $request->get('skrd');
         $getMetode = $request->get('metode');
+        $getTanggal = $request->get('tanggal_bayar');
 
         $query = Setoran::with(['skrd', 'detailSetoran'])
             ->whereRelation('skrd', 'uptdId', auth()->user()->uptdId);
 
         if ($getSearch && trim($getSearch) !== '') {
             $query->whereHas('skrd', function ($q) use ($getSearch) {
-                $q->where('noSkrd', 'like', "%{$getSearch}%");
+                $q->where('noSkrd', 'like', "%{$getSearch}%")
+                    ->orWhere('namaObjekRetribusi', 'like', "%{$getSearch}%");
             })
                 ->orWhere(function ($q) use ($getSearch) {
                     $q->where('nomorNota', 'like', "%{$getSearch}%");
-                });
+                })
+                ->orWhere('namaBank', 'like', "%{$getSearch}%");
         }
 
         switch ($sortBy) {
@@ -104,6 +107,16 @@ class SetoranController extends Controller
             case 'namaObjekRetribusi':
                 $query->leftJoin('skrd', 'setoran.skrdId', '=', 'skrd.id')
                     ->orderBy('skrd.namaObjekRetribusi', $sortDir)
+                    ->select('setoran.*');
+                break;
+            case 'kecamatan':
+                $query->leftJoin('skrd', 'setoran.skrdId', '=', 'skrd.id')
+                    ->orderBy('skrd.kecamatanObjekRetribusi', $sortDir)
+                    ->select('setoran.*');
+                break;
+            case 'tagihanPerBulanSkrd':
+                $query->leftJoin('skrd', 'setoran.skrdId', '=', 'skrd.id')
+                    ->orderBy('skrd.tagihanPerBulanSkrd', $sortDir)
                     ->select('setoran.*');
                 break;
             default:
@@ -119,6 +132,10 @@ class SetoranController extends Controller
             $query->where('metodeBayar', $getMetode);
         }
 
+        if ($getTanggal) {
+            $query->whereDate('tanggalBayar', $getTanggal);
+        }
+
         $skrdOptions = Skrd::with('setoran')
             ->where('uptdId', auth()->user()->uptdId)
             ->orderBy('created_at', 'desc')
@@ -131,14 +148,15 @@ class SetoranController extends Controller
         $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render('Kasubag/Penerimaan/Index', [
-            'datas' => $datas,
+            'datas' => Inertia::defer(fn() => $datas),
             'filters' => [
                 'search' => ($getSearch && trim($getSearch) === '') ? $getSearch : null,
                 'sort' => $sortBy,
                 'direction' => $sortDir,
                 'per_page' => (int) $getPage,
                 'skrd' => (int) $getSkrd,
-                'metode' => $getMetode
+                'metode' => $getMetode,
+                'tanggal_bayar' => $getTanggal
             ],
             'skrdOptions' => $skrdOptions,
             'metodeOptions' => $this->getMetodeBayar(),

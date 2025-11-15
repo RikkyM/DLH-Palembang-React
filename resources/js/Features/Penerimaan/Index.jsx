@@ -11,7 +11,7 @@ import {
 import SearchableSelect from "@/Components/SearchableSelect";
 import TableHead from "@/Components/TableHead";
 import { useEffect, useRef, useState } from "react";
-import { Head, Link, router } from "@inertiajs/react";
+import { Deferred, Head, Link, router } from "@inertiajs/react";
 import SmartPagination from "@/Components/SmartPagination";
 import LoadingTable from "@/Components/LoadingTable";
 import Confirmation from "./Confirmation";
@@ -131,6 +131,11 @@ const DataSetoran = ({
       align: "text-left",
     },
     { key: "kecamatan", label: "kecamatan", align: "text-center" },
+    {
+      key: "tagihanPerBulanSkrd",
+      label: "tarif per-bulan",
+      align: "text-center",
+    },
     { key: "metodeBayar", label: "cara bayar", align: "text-center" },
     { key: "namaBank", label: "nama bank", align: "text-center" },
     { key: "tanggalBayar", label: "tanggal bayar", align: "text-left" },
@@ -141,6 +146,11 @@ const DataSetoran = ({
     { key: "keteranganBulan", label: "ket. bulan bayar", align: "text-left" },
     { key: "tanggal_diterima", label: "Tgl Keuangan", align: "text-left" },
     { key: "buktiBayar", label: "bukti setor", align: "text-left" },
+    {
+      key: "keterangan",
+      label: "keterangan",
+      align: "text-left max-w-72 w-full",
+    },
     { key: "status", label: "status", align: "text-left" },
   ];
   const buildParams = (additionalParams = {}) => {
@@ -173,7 +183,6 @@ const DataSetoran = ({
 
     router.get(route(`${routeConfig}.data-setoran.index`), params, {
       preserveState: true,
-      replace: true,
       // only: only,
       only: ["datas", "skrdOptions", "metodeOptions", "filters"],
       onStart: () => setIsLoading(true),
@@ -342,7 +351,7 @@ const DataSetoran = ({
                 autoComplete="off"
                 type="search"
                 id="search"
-                placeholder="Cari Nomor Nota..."
+                placeholder="Cari data..."
                 className="flex-1 outline-none"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -371,11 +380,9 @@ const DataSetoran = ({
         </div>
 
         <div
-          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)] ${!isLoading && "shadow"}`}
+          className={`max-h-[calc(100%_-_230px)] overflow-auto rounded sm:max-h-[calc(100%_-_180px)] md:max-h-[calc(100%_-_200px)] lg:max-h-[calc(100%_-_150px)]`}
         >
-          {isLoading ? (
-            <LoadingTable />
-          ) : (
+          <Deferred data="datas" fallback={<LoadingTable />}>
             <table className="min-w-full divide-y divide-gray-300 p-3">
               <thead className="truncate">
                 <TableHead
@@ -415,11 +422,20 @@ const DataSetoran = ({
                           {data.skrd?.kecamatanObjekRetribusi ?? "-"}
                         </div>
                       </td>
-                      <td className="text-center text-xs md:text-sm">
-                        {data.metodeBayar}
+                      <td className="text-xs md:text-sm">
+                        <div className="max-w-72">
+                          {Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data.skrd?.tagihanPerBulanSkrd ?? "-")}
+                        </div>
                       </td>
                       <td className="text-center text-xs md:text-sm">
-                        {data.namaBank}
+                        {data.metodeBayar ?? "-"}
+                      </td>
+                      <td className="text-center text-xs md:text-sm">
+                        {data.namaBank ?? "-"}
                       </td>
                       <td className="text-center text-xs md:text-sm">
                         {data.tanggalBayar
@@ -443,12 +459,14 @@ const DataSetoran = ({
                       <td className="text-center text-xs md:text-sm">
                         {data.jumlahBulan} Bulan
                       </td>
-                      <td className="text-xs md:text-sm">{data.noRef}</td>
                       <td className="text-xs md:text-sm">
-                        {data.namaPenyetor}
+                        {data.noRef ?? "-"}
                       </td>
                       <td className="text-xs md:text-sm">
-                        {data.keteranganBulan}
+                        {data.namaPenyetor ?? "-"}
+                      </td>
+                      <td className="text-xs md:text-sm">
+                        {data.keteranganBulan ?? "-"}
                       </td>
                       <td className="text-xs md:text-sm">
                         {data.tanggal_diterima
@@ -477,6 +495,11 @@ const DataSetoran = ({
                         ) : (
                           <>Tidak ada</>
                         )}
+                      </td>
+                      <td className="w-full max-w-72 overflow-hidden text-left text-xs md:text-sm">
+                        <div className="w-full min-w-56 max-w-56 text-pretty">
+                          {data?.keterangan ?? "-"}
+                        </div>
                       </td>
                       <td
                         className={`whitespace-nowrap text-sm ${data.status === "Processed" ? "text-blue-500" : data.status === "Approved" ? "text-green-500" : data.status === "Cancelled" ? "text-amber-500" : "text-red-500"}`}
@@ -567,9 +590,11 @@ const DataSetoran = ({
                 )}
               </tbody>
             </table>
-          )}
+          </Deferred>
         </div>
-        {!isLoading && <SmartPagination datas={datas} filters={filters} />}
+        <Deferred data="datas">
+          <SmartPagination datas={datas} filters={filters} />
+        </Deferred>
       </section>
       <Confirmation
         isOpen={modalState.type === "confirmation"}

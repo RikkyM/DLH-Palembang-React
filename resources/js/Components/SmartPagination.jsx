@@ -54,12 +54,8 @@ const SmartPagination = ({
         </div>
 
         <div className="mx-auto flex items-center gap-1 md:mx-0">
-          <Link
-            as="button"
-            preserveState
-            preserveScroll
-            replace
-            prefetch
+          <button
+            type="button"
             onClick={() => currentPage > 1 && handlePageClick(currentPage - 1)}
             className={`rounded-lg border border-gray-200 bg-white px-2 py-2 transition-colors duration-200 ${
               currentPage <= 1
@@ -69,7 +65,7 @@ const SmartPagination = ({
             disabled={currentPage <= 1}
           >
             <ChevronLeft size={16} />
-          </Link>
+          </button>
 
           {pagesToShow.map((page, index) => {
             if (page === "...") {
@@ -96,6 +92,7 @@ const SmartPagination = ({
           })}
 
           <button
+            type="button"
             onClick={() =>
               currentPage < lastPage && handlePageClick(currentPage + 1)
             }

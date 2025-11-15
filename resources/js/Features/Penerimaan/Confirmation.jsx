@@ -4,11 +4,12 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 
 const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
-  const { data, setData, processing, put } = useForm();
+  const { data, setData, errors, processing, put } = useForm();
 
   useEffect(() => {
     if (isOpen) {
       setData({
+        keterangan: setoran.keterangan ?? "",
         status: setoran.status ?? null,
         current_stage: setoran.current_stage,
       });
@@ -90,13 +91,31 @@ const Confirmation = ({ isOpen, onClose, setoran, route: config }) => {
           {config === "kasubag"
             ? "Apakah anda yakin ingin memproses data setoran ke kepala UPTD?"
             : config === "bendahara" && setoran && setoran.status === "Approved"
-              ? "Apakah anda ingin menarik setoran ini ?"
-              : "Apakah anda yakin ingin memproses data setoran ke Bendahara?"}
+              ? "Apakah anda ingin menarik setoran ini?"
+              : "Apakah anda yakin ingin menerima data setoran?"}
         </div>
         <form
           onSubmit={(e) => handleSubmit(e, setoran.nomorNota)}
-          className="px-5 pb-3"
+          className="space-y-2 px-5 pb-3"
         >
+          {config !== "kasubag" && (
+            <div className="w-full space-y-1.5">
+              <label htmlFor="keterangan" className="block w-max text-sm">
+                Keterangan
+              </label>
+              <input
+                id="keterangan"
+                name="keterangan"
+                type="text"
+                className="w-full rounded border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-[1px] focus:ring-blue-400"
+                value={data.keterangan}
+                onChange={(e) => setData("keterangan", e.target.value)}
+              />
+              {errors.keterangan && (
+                <p className="text-xs text-red-500">{errors.keterangan}</p>
+              )}
+            </div>
+          )}
           <div className="flex flex-col gap-3 text-xs md:flex-row md:justify-end md:gap-2 md:text-sm">
             {config !== "kasubag" && (
               <button

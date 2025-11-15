@@ -1,10 +1,30 @@
+import { Link, usePage } from "@inertiajs/react";
+import { ChevronLeft } from "lucide-react";
+import { roleConfig } from "@/Constants/roleConfig";
+
 const Detail = ({ data }) => {
+  const { auth } = usePage().props[0];
+  const role = auth?.user?.role;
+
+  const routeConfig = roleConfig[role];
+
+  console.log(route(`${routeConfig}.data-setoran.index`));
+
   return (
     <>
       <section className="h-[calc(100dvh_-_80px)] touch-pan-y overflow-auto p-3">
+        <div className="p-3">
+          <Link
+            href={route(`${routeConfig}.data-setoran.index`)}
+            className="flex items-center text-sm"
+          >
+            <ChevronLeft className="max-w-4" />
+            Kembali
+          </Link>
+        </div>
         <div className="rounded border bg-white p-3 shadow">
           <h2 className="mb-3 text-sm font-semibold md:text-base">
-            Nomor Nota: {data.nomorNota}
+            Nomor Nota: {data.nomorNota.toLowerCase().includes('temp') ? '-' : data.nomorNota}
           </h2>
           <div className="grid gap-2 lg:grid-cols-2">
             <div className="text-sm">

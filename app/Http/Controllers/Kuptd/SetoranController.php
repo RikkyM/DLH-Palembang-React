@@ -32,6 +32,7 @@ class SetoranController extends Controller
         $getPage = $request->get('per_page', 10);
         $getSkrd = $request->get('skrd');
         $getMetode = $request->get('metode');
+        $getTanggal = $request->get('tanggal_bayar');
 
         $query = Setoran::with(['skrd', 'detailSetoran'])
             ->where('current_stage', '!=', 'kasubag')
@@ -39,11 +40,13 @@ class SetoranController extends Controller
 
         if ($getSearch && trim($getSearch) !== '') {
             $query->whereHas('skrd', function ($q) use ($getSearch) {
-                $q->where('noSkrd', 'like', "%{$getSearch}%");
+                $q->where('noSkrd', 'like', "%{$getSearch}%")
+                    ->orWhere('namaObjekRetribusi', 'like', "%{$getSearch}%");
             })
                 ->orWhere(function ($q) use ($getSearch) {
                     $q->where('nomorNota', 'like', "%{$getSearch}%");
-                });
+                })
+                ->orWhere('namaBank', 'like', "%{$getSearch}%");
         }
 
         switch ($sortBy) {
@@ -62,6 +65,11 @@ class SetoranController extends Controller
                     ->orderBy('skrd.kecamatanObjekRetribusi', $sortDir)
                     ->select('setoran.*');
                 break;
+            case 'tagihanPerBulanSkrd':
+                $query->leftJoin('skrd', 'setoran.skrdId', '=', 'skrd.id')
+                    ->orderBy('skrd.tagihanPerBulanSkrd', $sortDir)
+                    ->select('setoran.*');
+                break;
             default:
                 $query->orderBy($sortBy, $sortDir);
                 break;
@@ -73,6 +81,10 @@ class SetoranController extends Controller
 
         if ($getMetode) {
             $query->where('metodeBayar', $getMetode);
+        }
+
+        if ($getTanggal) {
+            $query->whereDate('tanggalBayar', $getTanggal);
         }
 
         $skrdOptions = Skrd::with('setoran')
@@ -87,14 +99,15 @@ class SetoranController extends Controller
         $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
 
         return Inertia::render('Kuptd/Penerimaan/Index', [
-            'datas' => $datas,
+            'datas' => Inertia::defer(fn() => $datas),
             'filters' => [
                 'search' => ($getSearch && trim($getSearch) === '') ? $getSearch : null,
                 'sort' => $sortBy,
                 'direction' => $sortDir,
                 'per_page' => (int) $getPage,
                 'skrd' => (int) $getSkrd,
-                'metode' => $getMetode
+                'metode' => $getMetode,
+                'tanggal_bayar' => $getTanggal
             ],
             'skrdOptions' => $skrdOptions,
             'metodeOptions' => $this->getMetodeBayar(),
@@ -143,8 +156,14 @@ class SetoranController extends Controller
     public function update(Request $request)
     {
         $setoran = Setoran::where('nomorNota', $request->nota)->firstOrFail();
+        $request->validate([
+            'keterangan' => 'required'
+        ], [
+            'keterangan.required' => 'Keterangan perlu diisi.'
+        ]);
         try {
             DB::transaction(function () use ($request, $setoran) {
+                // dd($request->all());
                 if ($request->status === "Rejected") {
                     $setoran->update([
                         'status' => 'Rejected',
@@ -162,6 +181,7 @@ class SetoranController extends Controller
 
                     $setoran->nomorNota = $newNota;
                     $setoran->current_stage = 'bendahara';
+                    $setoran->keterangan = $request->keterangan ?: null;
                     $setoran->save();
                 } else {
                     $setoran->update(['current_stage' => 'bendahara']);
