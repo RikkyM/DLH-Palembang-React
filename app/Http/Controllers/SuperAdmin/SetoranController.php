@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DetailSetoran;
+use App\Models\Kecamatan;
 use App\Models\Setoran;
 use App\Models\Skrd;
 use Illuminate\Http\Request;
@@ -35,6 +36,8 @@ class SetoranController extends Controller
         $getSkrd = $request->get('skrd');
         $getMetode = $request->get('metode');
         $getTanggal = $request->get('tanggal_bayar');
+        $getKecamatan = $request->get('kecamatan');
+        $nominal = $request->get('nominal');
 
         $query = Setoran::with(['skrd', 'detailSetoran']);
 
@@ -87,12 +90,28 @@ class SetoranController extends Controller
             $query->whereDate('tanggalBayar', $getTanggal);
         }
 
+        if ($getKecamatan) {
+            $query->whereRelation('skrd', 'kecamatanObjekRetribusi', $getKecamatan);
+        }
+
+        if ($nominal) {
+            // $query->where('jumlahBayar', 'like', "%{$nominal}%");
+            $query->where('jumlahBayar', $nominal);
+        }
+
         $skrdOptions = Skrd::with('setoran')
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(fn($s) => [
                 'value' => (string) $s->id,
                 'label' => (string) $s->noSkrd
+            ]);
+
+        $kecamatanOptions = Kecamatan::orderBy('namaKecamatan')
+            ->get()
+            ->map(fn($kec) => [
+                'value' => (string) $kec->namaKecamatan,
+                'label' => (string) $kec->namaKecamatan,
             ]);
 
         $datas = $getPage <= 0 ? $query->get() : $query->paginate($getPage)->withQueryString();
@@ -106,9 +125,12 @@ class SetoranController extends Controller
                 'per_page' => (int) $getPage,
                 'skrd' => (int) $getSkrd,
                 'metode' => $getMetode,
-                'tanggal_bayar' => $getTanggal
+                'tanggal_bayar' => $getTanggal,
+                'kecamatan' => $getKecamatan,
+                'nominal' => (int) $nominal
             ],
             'skrdOptions' => $skrdOptions,
+            'kecamatanOptions' => $kecamatanOptions,
             'metodeOptions' => $this->getMetodeBayar(),
             'role' => auth()->user()->role
         ]);

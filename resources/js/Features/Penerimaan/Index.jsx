@@ -21,6 +21,7 @@ const DataSetoran = ({
   filters,
   skrdOptions = [],
   metodeOptions = [],
+  kecamatanOptions = [],
   role,
 }) => {
   const { modalState, openModal, closeModal } = useProvider();
@@ -30,9 +31,11 @@ const DataSetoran = ({
   const [perPage, setPerPage] = useState(() => {
     return filters.per_page && filters.per_page !== 10 ? filters.per_page : 10;
   });
+  const [kecamatan, setKecamatan] = useState(filters.kecamatan || null);
   const [skrd, setSkrd] = useState(filters.skrd || "");
   const [metode, setMetode] = useState(filters.metode || "");
   const [tanggal, setTanggal] = useState(filters.tanggal_bayar || "");
+  const [nominal, setNominal] = useState(filters.nominal || null);
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
@@ -160,6 +163,8 @@ const DataSetoran = ({
     if (skrd) params.skrd = skrd;
     if (metode) params.metode = metode;
     if (tanggal) params.tanggal_bayar = tanggal;
+    if (kecamatan) params.kecamatan = kecamatan.toLowerCase();
+    if (nominal) params.nominal = nominal
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (sort && sort !== "nomorNota") {
       params.sort = sort;
@@ -210,7 +215,7 @@ const DataSetoran = ({
 
       return () => clearTimeout(timeoutId);
     }
-  }, [search]);
+  }, [search, nominal]);
 
   useEffect(() => {
     // if (!datas) return;
@@ -226,7 +231,7 @@ const DataSetoran = ({
       //   onFinish: () => setIsLoading(false),
       // });
     }
-  }, [sort, direction, skrd, metode, perPage, tanggal]);
+  }, [sort, direction, skrd, metode, perPage, tanggal, kecamatan]);
 
   const actionButtons = (data) => {
     const isCurrentStage =
@@ -328,6 +333,17 @@ const DataSetoran = ({
                     }}
                     placeholder="Pilih Metode Bayar"
                   />
+                  {!["ROLE_KASUBAG_TU_UPDT", "ROLE_KUPTD"].includes(role) && (
+                    <SearchableSelect
+                      id="kecamatan"
+                      options={kecamatanOptions}
+                      value={kecamatan}
+                      onChange={(val) => {
+                        setKecamatan(val);
+                      }}
+                      placeholder="Pilih Kecamatan"
+                    />
+                  )}
                   <div>
                     <input
                       id="tanggalBayar"
@@ -339,6 +355,21 @@ const DataSetoran = ({
                       }}
                     />
                   </div>
+                  <label
+                    htmlFor="nominal"
+                    className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
+                  >
+                    <Search size={20} />
+                    <input
+                      autoComplete="off"
+                      type="number"
+                      id="nominal"
+                      placeholder="Input nominal"
+                      className="flex-1 outline-none"
+                      value={nominal}
+                      onChange={(e) => setNominal(e.target.value)}
+                    />
+                  </label>
                 </div>
               </div>
             </div>
