@@ -586,7 +586,7 @@ const DataSetoran = ({
                       <td className="text-xs md:text-sm">
                         {data.keteranganBulan ?? "-"}
                       </td>
-                      <td className="text-xs md:text-sm">
+                      <td className="whitespace-nowrap text-xs md:text-sm">
                         {data.tanggal_serah
                           ? new Date(data.tanggal_serah).toLocaleString(
                               "id-ID",
@@ -598,7 +598,7 @@ const DataSetoran = ({
                             )
                           : "-"}
                       </td>
-                      <td className="text-xs md:text-sm">
+                      <td className="whitespace-nowrap text-xs md:text-sm">
                         {data.tanggal_diterima
                           ? new Date(data.tanggal_diterima).toLocaleString(
                               "id-ID",
