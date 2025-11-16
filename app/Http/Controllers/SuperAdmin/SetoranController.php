@@ -35,7 +35,10 @@ class SetoranController extends Controller
         $getPage = $request->get('per_page', 10);
         $getSkrd = $request->get('skrd');
         $getMetode = $request->get('metode');
+        $getStatus = $request->get('status');
         $getTanggal = $request->get('tanggal_bayar');
+        $tanggalSerah = $request->get('tanggal_serah');
+        $tanggalAcc = $request->get('tanggal_acc');
         $getKecamatan = $request->get('kecamatan');
         $nominal = $request->get('nominal');
 
@@ -90,6 +93,10 @@ class SetoranController extends Controller
             $query->whereDate('tanggalBayar', $getTanggal);
         }
 
+        if ($tanggalAcc) {
+            $query->whereDate('tanggal_diterima', $tanggalAcc);
+        }
+
         if ($getKecamatan) {
             $query->whereRelation('skrd', 'kecamatanObjekRetribusi', $getKecamatan);
         }
@@ -98,6 +105,21 @@ class SetoranController extends Controller
             // $query->where('jumlahBayar', 'like', "%{$nominal}%");
             $query->where('jumlahBayar', $nominal);
         }
+
+        if ($getStatus) {
+            $query->where('status', $getStatus);
+        }
+
+        $statuses = [
+            'Approved' => 'Diterima',
+            'Processed' => 'Diproses',
+            'Rejected' => 'Ditolak',
+        ];
+
+        $statusOptions = collect($statuses)->map(fn($label, $value) => [
+            'value' => $value,
+            'label' => $label,
+        ])->values()->all();
 
         $skrdOptions = Skrd::with('setoran')
             ->orderBy('created_at', 'desc')
@@ -126,9 +148,13 @@ class SetoranController extends Controller
                 'skrd' => (int) $getSkrd,
                 'metode' => $getMetode,
                 'tanggal_bayar' => $getTanggal,
+                'tanggal_serah' => $tanggalSerah,
+                'tanggal_acc'   => $tanggalAcc,
                 'kecamatan' => $getKecamatan,
-                'nominal' => (int) $nominal
+                'nominal' => (int) $nominal,
+                'status' => $getStatus && trim($getStatus) !== '' ? $getStatus : null
             ],
+            'statusOptions' => $statusOptions,
             'skrdOptions' => $skrdOptions,
             'kecamatanOptions' => $kecamatanOptions,
             'metodeOptions' => $this->getMetodeBayar(),

@@ -22,6 +22,7 @@ const DataSetoran = ({
   skrdOptions = [],
   metodeOptions = [],
   kecamatanOptions = [],
+  statusOptions = [],
   role,
 }) => {
   const { modalState, openModal, closeModal } = useProvider();
@@ -34,7 +35,10 @@ const DataSetoran = ({
   const [kecamatan, setKecamatan] = useState(filters.kecamatan || null);
   const [skrd, setSkrd] = useState(filters.skrd || "");
   const [metode, setMetode] = useState(filters.metode || "");
+  const [status, setStatus] = useState(filters.status || "");
   const [tanggal, setTanggal] = useState(filters.tanggal_bayar || "");
+  const [tanggalSerah, setTanggalSerah] = useState(filters.tanggal_serah || "");
+  const [tanggalAcc, setTanggalAcc] = useState(filters.tanggal_acc || "");
   const [nominal, setNominal] = useState(filters.nominal || null);
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -147,7 +151,8 @@ const DataSetoran = ({
     { key: "noRef", label: "nomor referensi", align: "text-left" },
     { key: "namaPenyetor", label: "pengirim / penyetor", align: "text-left" },
     { key: "keteranganBulan", label: "ket. bulan bayar", align: "text-left" },
-    { key: "tanggal_diterima", label: "Tgl Keuangan", align: "text-left" },
+    { key: "tanggal_diterima", label: "Tgl Serah", align: "text-left" },
+    { key: "tanggal_diterima", label: "Tgl Acc Bendahara", align: "text-left" },
     { key: "buktiBayar", label: "bukti setor", align: "text-left" },
     {
       key: "keterangan",
@@ -163,8 +168,10 @@ const DataSetoran = ({
     if (skrd) params.skrd = skrd;
     if (metode) params.metode = metode;
     if (tanggal) params.tanggal_bayar = tanggal;
+    if (tanggalAcc) params.tanggal_acc = tanggalAcc;
     if (kecamatan) params.kecamatan = kecamatan.toLowerCase();
-    if (nominal) params.nominal = nominal
+    if (nominal) params.nominal = nominal;
+    if (status) params.status = status;
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (sort && sort !== "nomorNota") {
       params.sort = sort;
@@ -231,7 +238,17 @@ const DataSetoran = ({
       //   onFinish: () => setIsLoading(false),
       // });
     }
-  }, [sort, direction, skrd, metode, perPage, tanggal, kecamatan]);
+  }, [
+    sort,
+    direction,
+    skrd,
+    metode,
+    perPage,
+    tanggal,
+    tanggalAcc,
+    kecamatan,
+    status,
+  ]);
 
   const actionButtons = (data) => {
     const isCurrentStage =
@@ -322,7 +339,7 @@ const DataSetoran = ({
                     onChange={(val) => {
                       setSkrd(val);
                     }}
-                    placeholder="Pilih Nomor SPKRD"
+                    placeholder="Nomor SPKRD"
                   />
                   <SearchableSelect
                     id="metodeSetor"
@@ -331,7 +348,7 @@ const DataSetoran = ({
                     onChange={(val) => {
                       setMetode(val);
                     }}
-                    placeholder="Pilih Metode Bayar"
+                    placeholder="Metode Bayar"
                   />
                   {!["ROLE_KASUBAG_TU_UPDT", "ROLE_KUPTD"].includes(role) && (
                     <SearchableSelect
@@ -341,20 +358,66 @@ const DataSetoran = ({
                       onChange={(val) => {
                         setKecamatan(val);
                       }}
-                      placeholder="Pilih Kecamatan"
+                      placeholder="Kecamatan"
                     />
                   )}
-                  <div>
+                  <SearchableSelect
+                    id="status"
+                    options={statusOptions}
+                    value={status}
+                    onChange={(val) => {
+                      setStatus(val);
+                    }}
+                    placeholder="Status"
+                  />
+                  <label htmlFor="tanggalBayar">
                     <input
                       id="tanggalBayar"
-                      type="date"
+                      type={tanggal ? "date" : "text"}
+                      placeholder="Tanggal bayar"
                       className="w-full rounded border bg-white p-2"
                       value={tanggal || ""}
+                      onFocus={(e) => (e.target.type = "date")}
+                      onBlur={(e) => {
+                        if (!e.target.value) e.target.type = "text";
+                      }}
                       onChange={(e) => {
                         setTanggal(e.target.value);
                       }}
                     />
-                  </div>
+                  </label>
+                  <label htmlFor="tanggalSerah">
+                    <input
+                      id="tanggalSerah"
+                      type={tanggalSerah ? "date" : "text"}
+                      placeholder="Tanggal serah"
+                      className="w-full rounded border bg-white p-2"
+                      value={tanggalSerah || ""}
+                      onFocus={(e) => (e.target.type = "date")}
+                      onBlur={(e) => {
+                        if (!e.target.value) e.target.type = "text";
+                      }}
+                      onChange={(e) => {
+                        setTanggalSerah(e.target.value);
+                      }}
+                    />
+                  </label>
+                  <label htmlFor="tanggalAcc">
+                    <input
+                      id="tanggalAcc"
+                      type={tanggalAcc ? "date" : "text"}
+                      placeholder="Tanggal acc bendahara"
+                      className="w-full rounded border bg-white p-2"
+                      value={tanggalAcc || ""}
+                      onFocus={(e) => (e.target.type = "date")}
+                      onBlur={(e) => {
+                        if (!e.target.value) e.target.type = "text";
+                      }}
+                      onChange={(e) => {
+                        setTanggalAcc(e.target.value);
+                      }}
+                    />
+                  </label>
                   <label
                     htmlFor="nominal"
                     className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
@@ -375,15 +438,15 @@ const DataSetoran = ({
             </div>
             <label
               htmlFor="search"
-              className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
+              className="flex w-full items-center gap-1.5 rounded border p-2 text-sm shadow md:w-[250px]"
             >
               <Search size={20} />
               <input
                 autoComplete="off"
                 type="search"
                 id="search"
-                placeholder="Cari data..."
-                className="flex-1 outline-none"
+                placeholder="Cari nama atau nota bayar..."
+                className="w-full flex-1 outline-none"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -498,6 +561,18 @@ const DataSetoran = ({
                       </td>
                       <td className="text-xs md:text-sm">
                         {data.keteranganBulan ?? "-"}
+                      </td>
+                      <td className="text-xs md:text-sm">
+                        {data.tanggal_diterima
+                          ? new Date(data.tanggal_diterima).toLocaleString(
+                              "id-ID",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )
+                          : "-"}
                       </td>
                       <td className="text-xs md:text-sm">
                         {data.tanggal_diterima

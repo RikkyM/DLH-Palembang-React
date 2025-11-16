@@ -15,7 +15,7 @@ const TableHead = ({ columns, sort, direction, onSort, rowSpan = 0, colSpan = 0,
       {columns.map((col) => (
         <th
           key={col.key}
-          className={`${col.align} sticky top-0 z-0 cursor-pointer select-none bg-[#F1B174]`}
+          className={`${col.align} sticky top-0 z-0 cursor-pointer select-none bg-[#F1B174] border-x`}
           onClick={() => handleSort(col.key)}
           title="Sort"
           colSpan={colSpan}

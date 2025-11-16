@@ -27,6 +27,7 @@ class Setoran extends Model
         'buktiBayar',
         'status',
         'current_stage',
+        'tanggal_serah',
         'tanggal_diterima',
         'tanggal_batal',
         "created_at",
