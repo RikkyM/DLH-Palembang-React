@@ -41,6 +41,7 @@ class SetoranController extends Controller
         $tanggalAcc = $request->get('tanggal_acc');
         $getKecamatan = $request->get('kecamatan');
         $nominal = $request->get('nominal');
+        $getTarif = $request->get('tarif_perbulan');
 
         $query = Setoran::with(['skrd', 'detailSetoran']);
 
@@ -106,6 +107,10 @@ class SetoranController extends Controller
             $query->where('jumlahBayar', $nominal);
         }
 
+        if ($getTarif) {
+            $query->whereRelation('skrd', 'tagihanPerBulanSkrd', $getTarif);
+        }
+
         if ($getStatus) {
             $query->where('status', $getStatus);
         }
@@ -152,6 +157,7 @@ class SetoranController extends Controller
                 'tanggal_acc'   => $tanggalAcc,
                 'kecamatan' => $getKecamatan,
                 'nominal' => (int) $nominal,
+                'tarif_perbulan' => (int) $getTarif,
                 'status' => $getStatus && trim($getStatus) !== '' ? $getStatus : null
             ],
             'statusOptions' => $statusOptions,

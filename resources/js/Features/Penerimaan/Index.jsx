@@ -40,6 +40,9 @@ const DataSetoran = ({
   const [tanggalSerah, setTanggalSerah] = useState(filters.tanggal_serah || "");
   const [tanggalAcc, setTanggalAcc] = useState(filters.tanggal_acc || "");
   const [nominal, setNominal] = useState(filters.nominal || null);
+  const [tarifPerbulan, setTarifPerbulan] = useState(
+    filters.tarif_perbulan || null,
+  );
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const filterRef = useRef(null);
@@ -159,7 +162,11 @@ const DataSetoran = ({
       label: "keterangan",
       align: "text-left max-w-72 w-full",
     },
-    { key: "status", label: "status", align: "text-left sticky top-0 right-12 z-10" },
+    {
+      key: "status",
+      label: "status",
+      align: "text-left sticky top-0 right-12 z-10",
+    },
   ];
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
@@ -171,6 +178,7 @@ const DataSetoran = ({
     if (tanggalAcc) params.tanggal_acc = tanggalAcc;
     if (kecamatan) params.kecamatan = kecamatan.toLowerCase();
     if (nominal) params.nominal = nominal;
+    if (tarifPerbulan) params.tarif_perbulan = tarifPerbulan;
     if (status) params.status = status;
     if (perPage && perPage !== 10) params.per_page = perPage;
     if (sort && sort !== "nomorNota") {
@@ -222,7 +230,7 @@ const DataSetoran = ({
 
       return () => clearTimeout(timeoutId);
     }
-  }, [search, nominal]);
+  }, [search, nominal, tarifPerbulan]);
 
   useEffect(() => {
     // if (!datas) return;
@@ -433,6 +441,21 @@ const DataSetoran = ({
                       onChange={(e) => setNominal(e.target.value)}
                     />
                   </label>
+                  <label
+                    htmlFor="tarifPerbulan"
+                    className="flex w-full items-center gap-1.5 rounded border bg-white p-2 text-sm shadow md:max-w-80"
+                  >
+                    <Search size={20} />
+                    <input
+                      autoComplete="off"
+                      type="number"
+                      id="tarifPerbulan"
+                      placeholder="Tarif per-bulan"
+                      className="flex-1 outline-none"
+                      value={tarifPerbulan}
+                      onChange={(e) => setTarifPerbulan(e.target.value)}
+                    />
+                  </label>
                 </div>
               </div>
             </div>
@@ -608,7 +631,7 @@ const DataSetoran = ({
                         </div>
                       </td>
                       <td
-                        className={`sticky right-12 whitespace-nowrap text-sm z-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"} ${data.status === "Processed" ? "text-blue-500" : data.status === "Approved" ? "text-green-500" : data.status === "Cancelled" ? "text-amber-500" : "text-red-500"}`}
+                        className={`sticky right-12 z-0 whitespace-nowrap text-sm ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"} ${data.status === "Processed" ? "text-blue-500" : data.status === "Approved" ? "text-green-500" : data.status === "Cancelled" ? "text-amber-500" : "text-red-500"}`}
                       >
                         {/* {data.status === "Processed"
                           ? "Diproses"
