@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('setoran', function (Blueprint $table) {
-            $table->date('tanggal_serah')->nullable()->after('current_stage');
+            $table->datetime('tanggal_serah')->nullable()->after('current_stage');
         });
     }
 

@@ -181,6 +181,7 @@ class SetoranController extends Controller
 
                     $setoran->nomorNota = $newNota;
                     $setoran->current_stage = 'bendahara';
+                    $setoran->tanggal_serah = now();
                     $setoran->keterangan = $request->keterangan ?: null;
                     $setoran->save();
                 } else {

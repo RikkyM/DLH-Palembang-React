@@ -94,6 +94,10 @@ class SetoranController extends Controller
             $query->whereDate('tanggalBayar', $getTanggal);
         }
 
+        if ($tanggalSerah) {
+            $query->whereDate('tanggal_serah', $tanggalSerah);
+        }
+
         if ($tanggalAcc) {
             $query->whereDate('tanggal_diterima', $tanggalAcc);
         }

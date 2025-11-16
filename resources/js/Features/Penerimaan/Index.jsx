@@ -253,6 +253,7 @@ const DataSetoran = ({
     metode,
     perPage,
     tanggal,
+    tanggalSerah,
     tanggalAcc,
     kecamatan,
     status,
@@ -586,8 +587,8 @@ const DataSetoran = ({
                         {data.keteranganBulan ?? "-"}
                       </td>
                       <td className="text-xs md:text-sm">
-                        {data.tanggal_diterima
-                          ? new Date(data.tanggal_diterima).toLocaleString(
+                        {data.tanggal_serah
+                          ? new Date(data.tanggal_serah).toLocaleString(
                               "id-ID",
                               {
                                 day: "numeric",
