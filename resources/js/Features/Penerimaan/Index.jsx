@@ -175,6 +175,7 @@ const DataSetoran = ({
     if (skrd) params.skrd = skrd;
     if (metode) params.metode = metode;
     if (tanggal) params.tanggal_bayar = tanggal;
+    if (tanggalSerah) params.tanggal_serah = tanggalSerah
     if (tanggalAcc) params.tanggal_acc = tanggalAcc;
     if (kecamatan) params.kecamatan = kecamatan.toLowerCase();
     if (nominal) params.nominal = nominal;

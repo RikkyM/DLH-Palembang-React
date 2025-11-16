@@ -32,7 +32,12 @@ class SetoranController extends Controller
         $getPage = $request->get('per_page', 10);
         $getSkrd = $request->get('skrd');
         $getMetode = $request->get('metode');
+        $getStatus = $request->get('status');
         $getTanggal = $request->get('tanggal_bayar');
+        $tanggalSerah = $request->get('tanggal_serah');
+        $tanggalAcc = $request->get('tanggal_acc');
+        $nominal = $request->get('nominal');
+        $getTarif = $request->get('tarif_perbulan');
 
         $query = Setoran::with(['skrd', 'detailSetoran'])
             ->where('current_stage', '!=', 'kasubag')
@@ -87,6 +92,38 @@ class SetoranController extends Controller
             $query->whereDate('tanggalBayar', $getTanggal);
         }
 
+        if ($tanggalSerah) {
+            $query->whereDate('tanggal_serah', $tanggalSerah);
+        }
+
+        if ($tanggalAcc) {
+            $query->whereDate('tanggal_diterima', $tanggalAcc);
+        }
+
+        if ($nominal) {
+            // $query->where('jumlahBayar', 'like', "%{$nominal}%");
+            $query->where('jumlahBayar', $nominal);
+        }
+
+        if ($getTarif) {
+            $query->whereRelation('skrd', 'tagihanPerBulanSkrd', $getTarif);
+        }
+
+        if ($getStatus) {
+            $query->where('status', $getStatus);
+        }
+
+        $statuses = [
+            'Approved' => 'Diterima',
+            'Processed' => 'Diproses',
+            'Rejected' => 'Ditolak',
+        ];
+
+        $statusOptions = collect($statuses)->map(fn($label, $value) => [
+            'value' => $value,
+            'label' => $label,
+        ])->values()->all();
+
         $skrdOptions = Skrd::with('setoran')
             ->where('uptdId', auth()->user()->uptdId)
             ->orderBy('created_at', 'desc')
@@ -107,8 +144,14 @@ class SetoranController extends Controller
                 'per_page' => (int) $getPage,
                 'skrd' => (int) $getSkrd,
                 'metode' => $getMetode,
-                'tanggal_bayar' => $getTanggal
+                'tanggal_bayar' => $getTanggal,
+                'tanggal_serah' => $tanggalSerah,
+                'tanggal_acc'   => $tanggalAcc,
+                'nominal' => (int) $nominal,
+                'tarif_perbulan' => (int) $getTarif,
+                'status' => $getStatus && trim($getStatus) !== '' ? $getStatus : null
             ],
+            'statusOptions' => $statusOptions,
             'skrdOptions' => $skrdOptions,
             'metodeOptions' => $this->getMetodeBayar(),
             'role' => auth()->user()->role
