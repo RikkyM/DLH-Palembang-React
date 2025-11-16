@@ -159,7 +159,7 @@ const DataSetoran = ({
       label: "keterangan",
       align: "text-left max-w-72 w-full",
     },
-    { key: "status", label: "status", align: "text-left sticky right-12 z-12" },
+    { key: "status", label: "status", align: "text-left sticky top-0 right-12 z-10" },
   ];
   const buildParams = (additionalParams = {}) => {
     const params = { ...additionalParams };
@@ -608,7 +608,7 @@ const DataSetoran = ({
                         </div>
                       </td>
                       <td
-                        className={`sticky right-12 whitespace-nowrap text-sm ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"} ${data.status === "Processed" ? "text-blue-500" : data.status === "Approved" ? "text-green-500" : data.status === "Cancelled" ? "text-amber-500" : "text-red-500"}`}
+                        className={`sticky right-12 whitespace-nowrap text-sm z-0 ${index % 2 === 0 ? "bg-[#B3CEAF]" : "bg-white"} ${data.status === "Processed" ? "text-blue-500" : data.status === "Approved" ? "text-green-500" : data.status === "Cancelled" ? "text-amber-500" : "text-red-500"}`}
                       >
                         {/* {data.status === "Processed"
                           ? "Diproses"
