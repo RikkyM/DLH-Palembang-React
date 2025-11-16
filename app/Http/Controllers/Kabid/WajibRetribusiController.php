@@ -412,7 +412,6 @@ class WajibRetribusiController extends Controller
         $retribusi->status = $request->status;
         $retribusi->historyAction = $history;
         $retribusi->current_role = "ROLE_PENDAFTAR";
-        dd($retribusi);
         $retribusi->save();
 
         return redirect()->back();
