@@ -214,6 +214,7 @@ class SetoranController extends Controller
             DB::transaction(function () use ($request, $setoran) {
                 $setoran->update([
                     'status' => $request->status,
+                    'keterangan' => $request->keterangan ?: null,
                     'tanggal_diterima' => $request->status === 'Approved' ? now() : null
                 ]);
             });

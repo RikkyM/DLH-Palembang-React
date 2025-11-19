@@ -30,6 +30,7 @@ class Setoran extends Model
         'tanggal_serah',
         'tanggal_diterima',
         'tanggal_batal',
+        'keterangan',
         "created_at",
         "updated_at",
     ];

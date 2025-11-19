@@ -210,6 +210,7 @@ class SetoranController extends Controller
                 if ($request->status === "Rejected") {
                     $setoran->update([
                         'status' => 'Rejected',
+                        'keterangan' => $request->keterangan ?: null
                     ]);
                     return;
                 }
